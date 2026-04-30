@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 240" role="img" aria-label="AMOVIN RPA">
+  <rect width="820" height="240" fill="transparent"/>
+  <text x="32" y="150" font-family="Georgia, serif" font-size="76" fill="#b63a12" letter-spacing="8">AM</text>
+  <g transform="translate(178 92)">
+    <circle r="42" fill="#f5c400"/>
+    <g fill="#f5c400">
+      <path d="M0-62 8-38h-16z"/><path d="M0 62 8 38h-16z"/><path d="M62 0 38 8v-16z"/><path d="M-62 0-38 8v-16z"/>
+      <path d="M44-44 32-22 22-32z"/><path d="M44 44 22 32 32 22z"/><path d="M-44 44-32 22-22 32z"/><path d="M-44-44-22-32-32-22z"/>
+    </g>
+    <circle r="28" fill="#8b5e22"/>
+    <circle r="18" fill="#5f3b18" opacity=".65"/>
+  </g>
+  <text x="235" y="150" font-family="Georgia, serif" font-size="76" fill="#b63a12" letter-spacing="8">VIN</text>
+  <g transform="translate(450 32) scale(.9)">
+    <rect x="60" y="0" width="74" height="74" rx="10" fill="#ef2d2d" transform="rotate(45 97 37)"/>
+    <rect x="10" y="50" width="74" height="74" rx="10" fill="#62c62f" transform="rotate(45 47 87)"/>
+    <rect x="110" y="50" width="74" height="74" rx="10" fill="#ffd82d" transform="rotate(45 147 87)"/>
+    <rect x="60" y="100" width="74" height="74" rx="10" fill="#1685e8" transform="rotate(45 97 137)"/>
+    <circle cx="97" cy="37" r="12" fill="#ef2d2d"/><circle cx="47" cy="87" r="12" fill="#62c62f"/><circle cx="147" cy="87" r="12" fill="#ffd82d"/><circle cx="97" cy="137" r="12" fill="#1685e8"/>
+  </g>
+  <text x="640" y="150" font-family="Georgia, serif" font-size="76" fill="#b63a12" letter-spacing="8">RPA</text>
+</svg>
