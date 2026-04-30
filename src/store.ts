@@ -74,6 +74,7 @@ export interface ChatMessage {
   senderName: string;
   text: string;
   createdAt: string;
+  channel: string; // 'geral' or recipientId for private
 }
 
 export interface FinanceRecord {

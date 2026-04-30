@@ -1,7 +1,6 @@
 import { useRef } from 'react';
-import { Download, Printer, X } from 'lucide-react';
+import { Printer, X } from 'lucide-react';
 import { Professional } from '../store';
-import { downloadElementAsPdf } from '../utils/pdf';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 
 const styles = `@page{size:A4 portrait;margin:14mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.4}.sheet{max-width:790px;margin:0 auto}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:14px}.brand-logo{width:200px;height:65px;object-fit:contain}.org{text-align:right;font-size:11px;line-height:1.3}.title{text-align:center;font-weight:700;font-size:16px;margin:14px 0}.signature{margin-top:40px;text-align:center}.line{width:430px;border-top:1px solid #111;margin:0 auto 5px}.vol-body p{margin:6px 0;font-size:12.5px;line-height:1.35}`;
@@ -22,19 +21,13 @@ export default function ProfessionalTermModal({ professional, termType, onClose 
     win.document.close();
   };
 
-  const handlePDF = () => {
-    if (!ref.current) return;
-    downloadElementAsPdf(ref.current, `Termo_${termType === 'parceria' ? 'Parceria' : 'Voluntario'}_${professional.name}.pdf`, styles, 'Confirma a geração e download do PDF?');
-  };
-
   return (
     <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto">
       <div className="mx-auto max-w-4xl rounded-2xl bg-white shadow-2xl">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
-          <h2 className="text-xl font-bold">{termType === 'parceria' ? 'Termo de Parceria e Cooperação' : 'Termo de Adesão ao Trabalho Voluntário'}</h2>
+          <h2 className="text-xl font-bold">{termType === 'parceria' ? 'Termo de Parceria e Cooperacao' : 'Termo de Adesao ao Trabalho Voluntario'}</h2>
           <div className="flex gap-2">
-            <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2"><Printer size={16}/> Imprimir</button>
-            <button onClick={handlePDF} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2"><Download size={16}/> PDF</button>
+            <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2"><Printer size={16}/> {'\u0049\u006d\u0070\u0072\u0069\u006d\u0069\u0072'}</button>
             <button onClick={onClose} className="rounded-md px-3 py-2 text-red-600"><X size={18}/></button>
           </div>
         </div>

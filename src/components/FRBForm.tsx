@@ -5,6 +5,7 @@ import { Printer, Save, X, ClipboardList, FileSignature } from 'lucide-react';
 import MedicalRecordModal from './MedicalRecordModal';
 import TermModal from './TermModal';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
+import { S } from '../utils/strings';
 
 interface Props {
   initialData?: Beneficiary;
@@ -126,25 +127,25 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
     <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex justify-center items-center z-50 p-4 overflow-y-auto">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold text-gray-800">Ficha de Registro do Beneficiário (FRB)</h2>
+          <h2 className="text-xl font-bold text-gray-800">{S.fichaRegistro}</h2>
           <div className="flex space-x-2">
             {formData.id && (
-              <button onClick={() => setShowMedicalRecord(true)} className="p-2 text-amber-700 hover:bg-amber-50 rounded flex items-center gap-1 border border-amber-200" title="Prontuário">
-                <ClipboardList size={20} /> Prontuário
+              <button onClick={() => setShowMedicalRecord(true)} className="p-2 text-amber-700 hover:bg-amber-50 rounded flex items-center gap-1 border border-amber-200" title={S.prontuario}>
+                <ClipboardList size={20} /> {S.prontuario}
               </button>
             )}
-            <button onClick={() => setShowTerm(true)} className="p-2 text-gray-800 hover:bg-yellow-50 rounded flex items-center gap-1 border border-yellow-300 bg-yellow-50" title="Termo de Adesão e Compromisso">
-              <FileSignature size={20} /> Termo de Adesão
+            <button onClick={() => setShowTerm(true)} className="p-2 text-gray-800 hover:bg-yellow-50 rounded flex items-center gap-1 border border-yellow-300 bg-yellow-50" title={S.termoAdesao}>
+              <FileSignature size={20} /> {S.termoAdesao}
             </button>
-            <button onClick={handlePrint} className="p-2 text-gray-600 hover:bg-gray-100 rounded" title="Imprimir">
-              <Printer size={20} /> Imprimir
+            <button onClick={handlePrint} className="p-2 text-gray-600 hover:bg-gray-100 rounded" title={S.imprimir}>
+              <Printer size={20} /> {S.imprimir}
             </button>
             {!_readOnly && (
-              <button onClick={handleSave} className="p-2 text-blue-600 hover:bg-blue-50 rounded flex items-center gap-1" title="Salvar">
-                <Save size={20} /> Salvar
+              <button onClick={handleSave} className="p-2 text-blue-600 hover:bg-blue-50 rounded flex items-center gap-1" title={S.salvar}>
+                <Save size={20} /> {S.salvar}
               </button>
             )}
-            <button onClick={onClose} className="p-2 text-red-600 hover:bg-red-50 rounded" title="Fechar">
+            <button onClick={onClose} className="p-2 text-red-600 hover:bg-red-50 rounded" title={S.fechar}>
               <X size={20} />
             </button>
           </div>

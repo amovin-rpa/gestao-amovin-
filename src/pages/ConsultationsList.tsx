@@ -3,6 +3,7 @@ import { useStore, Beneficiary, MedicalEvolution, MedicalRecord } from '../store
 import { Edit2, Plus, Printer, Save, X } from 'lucide-react';
 import { differenceInYears, parseISO } from 'date-fns';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
+import { S } from '../utils/strings';
 
 export default function ConsultationsList() {
   const { currentUser, beneficiaries, professionals, medicalRecords, consultations, saveMedicalRecord, addConsultation, addAuditLog } = useStore();
@@ -72,15 +73,15 @@ export default function ConsultationsList() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap justify-between items-center gap-4">
-        <h1 className="text-2xl font-semibold text-gray-900">Prontuário</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">{S.prontuario}</h1>
       </div>
 
       {/* Beneficiary selector */}
       <div className="bg-white rounded-xl border border-yellow-100 p-5 shadow-sm">
-        <label className="block text-sm font-semibold text-gray-800 mb-2">Selecione o Beneficiário</label>
+        <label className="block text-sm font-semibold text-gray-800 mb-2">{'Selecione o ' + S.beneficiario}</label>
         <select value={selectedBenId} onChange={(e) => { setSelectedBenId(e.target.value); setEditing(false); }} className="w-full border rounded-md p-2">
-          <option value="">Escolha um beneficiário...</option>
-          {beneficiaries.map(b => <option key={b.id} value={b.id}>{b.fullName} - {b.diagnosis || 'Sem diagnóstico'}</option>)}
+          <option value="">{'Escolha um ' + S.beneficiario + '...'}</option>
+          {beneficiaries.map(b => <option key={b.id} value={b.id}>{b.fullName} - {b.diagnosis || 'Sem diagnostico'}</option>)}
         </select>
       </div>
 
@@ -93,11 +94,11 @@ export default function ConsultationsList() {
               <div><p className="font-bold text-gray-900">{selectedBen.fullName}</p><p className="text-xs text-gray-500">{selectedBen.diagnosis} | CID: {selectedBen.cid} | Idade: {age}</p><p className="text-xs text-gray-500">Resp: {selectedBen.respName} | Tel: {selectedBen.respPhone}</p></div>
             </div>
             <div className="flex gap-2 flex-wrap">
-              {!editing && <button onClick={() => setEditing(true)} className="text-blue-700 p-2 border rounded text-sm inline-flex gap-1 items-center"><Edit2 size={16}/> Editar</button>}
-              {editing && <button onClick={handleSaveRecord} className="text-green-700 p-2 border rounded text-sm inline-flex gap-1 items-center bg-green-50"><Save size={16}/> Salvar</button>}
-              {editing && <button onClick={() => setEditing(false)} className="text-gray-600 p-2 border rounded text-sm inline-flex gap-1 items-center"><X size={16}/> Cancelar</button>}
-              <button onClick={() => setShowEvoForm(true)} className="text-amber-800 p-2 border border-amber-300 rounded text-sm inline-flex gap-1 items-center bg-amber-50"><Plus size={16}/> Evolução</button>
-              <button onClick={handlePrint} className="text-gray-600 p-2 border rounded text-sm inline-flex gap-1 items-center"><Printer size={16}/> Imprimir</button>
+              {!editing && <button onClick={() => setEditing(true)} className="text-blue-700 p-2 border rounded text-sm inline-flex gap-1 items-center"><Edit2 size={16}/> {S.editar}</button>}
+              {editing && <button onClick={handleSaveRecord} className="text-green-700 p-2 border rounded text-sm inline-flex gap-1 items-center bg-green-50"><Save size={16}/> {S.salvar}</button>}
+              {editing && <button onClick={() => setEditing(false)} className="text-gray-600 p-2 border rounded text-sm inline-flex gap-1 items-center"><X size={16}/> {S.cancelar}</button>}
+              <button onClick={() => setShowEvoForm(true)} className="text-amber-800 p-2 border border-amber-300 rounded text-sm inline-flex gap-1 items-center bg-amber-50"><Plus size={16}/> {S.evolucao}</button>
+              <button onClick={handlePrint} className="text-gray-600 p-2 border rounded text-sm inline-flex gap-1 items-center"><Printer size={16}/> {S.imprimir}</button>
             </div>
           </div>
 

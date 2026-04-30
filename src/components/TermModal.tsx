@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 import { Beneficiary } from '../store';
-import { Download, Printer, X } from 'lucide-react';
-import { downloadElementAsPdf } from '../utils/pdf';
+import { Printer, X } from 'lucide-react';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 
 export default function TermModal({ beneficiary, onClose }: { beneficiary: Beneficiary; onClose: () => void }) {
@@ -15,19 +14,13 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     win.document.close();
   };
 
-  const handlePDF = async () => {
-    if (!ref.current) return;
-    downloadElementAsPdf(ref.current, `Termo_Adesao_${beneficiary.fullName || 'Beneficiario'}.pdf`, styles, 'Confirma a geração e download do PDF do termo de adesão?');
-  };
-
   return (
     <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto">
       <div className="mx-auto max-w-4xl rounded-2xl bg-white shadow-2xl">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
-          <h2 className="text-xl font-bold">Termo de Adesão e Compromisso</h2>
+          <h2 className="text-xl font-bold">{'Termo de Ades\u00e3o e Compromisso'}</h2>
           <div className="flex gap-2">
-            <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2"><Printer size={16}/> Imprimir</button>
-            <button onClick={handlePDF} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2"><Download size={16}/> PDF</button>
+            <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2"><Printer size={16}/> {'\u0049\u006d\u0070\u0072\u0069\u006d\u0069\u0072'}</button>
             <button onClick={onClose} className="rounded-md px-3 py-2 text-red-600"><X size={18}/></button>
           </div>
         </div>

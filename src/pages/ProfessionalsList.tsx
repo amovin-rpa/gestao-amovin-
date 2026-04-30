@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Edit2, Eye, EyeOff, Plus, Printer, Trash2, X } from 'lucide-react';
 import { Professional, useStore } from '../store';
 import ProfessionalTermModal from '../components/ProfessionalTermModal';
+import { S } from '../utils/strings';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 
 type ProfessionalForm = Omit<Professional, 'id'>;
@@ -32,11 +33,24 @@ export default function ProfessionalsList() {
   const openEdit = (p: Professional) => { setEditingId(p.id); setFormData({ photoUrl: p.photoUrl || '', name: p.name, specialty: p.specialty, hasRegistration: p.hasRegistration || 'Não', registration: p.registration || '', cpf: p.cpf || '', phone: p.phone, bondType: p.bondType || '', login: p.login, password: p.password, accessRole: p.accessRole }); setIsFormOpen(true); };
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setFormData((prev) => ({ ...prev, photoUrl: reader.result as string }));
-    reader.readAsDataURL(file);
+    try {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        try {
+          setFormData((prev) => ({ ...prev, photoUrl: reader.result as string }));
+        } catch (err) {
+          console.error('Error setting photo:', err);
+        }
+      };
+      reader.onerror = () => console.error('Error reading file');
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Photo upload error:', err);
+    }
+    // Reset the input so same file can be selected again
+    event.target.value = '';
   };
 
   const handleSave = (event: React.FormEvent) => {
@@ -54,7 +68,7 @@ export default function ProfessionalsList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6"><h1 className="text-2xl font-semibold text-gray-900">Profissionais</h1><button onClick={openNew} className="bg-yellow-400 hover:bg-yellow-500 text-gray-950 px-4 py-2 rounded-md flex items-center gap-2 font-semibold"><Plus size={20} /> Adicionar</button></div>
+      <div className="flex justify-between items-center mb-6"><h1 className="text-2xl font-semibold text-gray-900">{S.profissionais}</h1><button onClick={openNew} className="bg-yellow-400 hover:bg-yellow-500 text-gray-950 px-4 py-2 rounded-md flex items-center gap-2 font-semibold"><Plus size={20} /> {S.adicionar}</button></div>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md"><ul className="divide-y divide-gray-200">
         {professionals.length === 0 ? <li className="px-6 py-4 text-center text-gray-500">Nenhum profissional cadastrado.</li> : [...professionals].sort((a,b) => a.name.localeCompare(b.name,'pt-BR')).map((prof) => (
@@ -104,7 +118,7 @@ export default function ProfessionalsList() {
 
       {termProfessional && <ProfessionalTermModal professional={termProfessional} termType={termType} onClose={() => setTermProfessional(null)} />}
 
-      <div style={{ display: 'none' }} ref={printRef}>{selectedProfessional && <div className="sheet"><div className="header"><img src={AMOVIN_LOGO_SRC} alt="Amovin" className="brand-logo" /><div><h1>Gestao Amovin Integrado</h1><p>Cadastro Profissional</p></div></div><div style={{display:'flex', gap:'20px'}}><div className="photo-box">{selectedProfessional.photoUrl ? <img src={selectedProfessional.photoUrl} alt="" /> : 'Foto 3x4'}</div><div style={{flex:1}}><Fld label="Nome" value={selectedProfessional.name}/><Fld label="Profissão" value={selectedProfessional.specialty}/><Fld label="CPF" value={selectedProfessional.cpf}/><Fld label="Registro" value={selectedProfessional.hasRegistration === 'Sim' ? selectedProfessional.registration : 'Não possui'}/><Fld label="Telefone" value={selectedProfessional.phone}/><Fld label="Vínculo" value={selectedProfessional.bondType}/></div></div></div>}</div>
+      <div style={{ display: 'none' }} ref={printRef}>{selectedProfessional && <div className="sheet"><div className="header"><img src={AMOVIN_LOGO_SRC} alt="Amovin" className="brand-logo" /><div><h1>Gestao Amovin Integrado</h1><p>Cadastro Profissional</p></div></div><div style={{display:'flex', gap:'20px'}}><div className="photo-box">{selectedProfessional.photoUrl ? <img src={selectedProfessional.photoUrl} alt="" /> : 'Foto 3x4'}</div><div style={{flex:1}}><Fld label="Nome" value={selectedProfessional.name}/><Fld label="Profissao" value={selectedProfessional.specialty}/><Fld label="CPF" value={selectedProfessional.cpf}/><Fld label="Registro" value={selectedProfessional.hasRegistration === 'Sim' ? selectedProfessional.registration : 'Nao possui'}/><Fld label="Telefone" value={selectedProfessional.phone}/><Fld label="Vinculo" value={selectedProfessional.bondType}/></div></div></div>}</div>
     </div>
   );
 }
