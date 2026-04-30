@@ -23,7 +23,7 @@ export default function Login() {
     }
     if (activeTab === 'admin') {
       if (!password.trim()) {
-        setError('Informe a senha do administrador. Senha padrao: amovin2026');
+        setError('Informe a senha do administrador.');
         return;
       }
 
@@ -45,7 +45,7 @@ export default function Login() {
         return;
       }
 
-      setError('Login ou senha de administrador invalido. Use admin / amovin2026 ou um profissional administrador cadastrado.');
+      setError('Login ou senha de administrador inválido.');
       return;
     }
 
@@ -154,9 +154,7 @@ export default function Login() {
                 </button>
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                {activeTab === 'admin'
-                  ? 'Acesso padrao: login admin e senha amovin2026. Altere criando um profissional com ambiente Administrador.'
-                  : 'Para profissionais, use o login, a senha e o ambiente definidos pelo administrador.'}
+                Use o login e a senha definidos pelo administrador.
               </p>
             </div>
 

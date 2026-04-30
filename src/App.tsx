@@ -11,6 +11,7 @@ import Reports from './pages/Reports';
 import PatientsList from './pages/PatientsList';
 import Chat from './pages/Chat';
 import Agenda from './pages/Agenda';
+import ConsultationsList from './pages/ConsultationsList';
 
 function App() {
   const currentUser = useStore((state) => state.currentUser);
@@ -32,6 +33,7 @@ function App() {
           <Route path="pacientes" element={<PatientsList />} />
           <Route path="chat" element={<Chat />} />
           <Route path="agenda" element={<Agenda />} />
+          <Route path="prontuario" element={<ConsultationsList />} />
         </Route>
       </Routes>
     </Router>

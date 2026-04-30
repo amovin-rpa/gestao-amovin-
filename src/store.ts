@@ -14,7 +14,6 @@ export interface User {
 export interface Beneficiary {
   id: string;
   photoUrl?: string;
-  // DADOS DO BENEFICIARIO
   fullName: string;
   birthDate: string;
   gender: string;
@@ -22,19 +21,18 @@ export interface Beneficiary {
   cpf: string;
   diagnosis: string;
   cid: string;
-  supportLevel: string; // 'Sim' ou 'Não'
+  supportLevel: string;
   supportLevelDetails?: string;
   comorbidities: string;
-  isStudent: string; // 'Sim' ou 'Não'
+  hasComorbidities: string;
+  isStudent: string;
   schoolName?: string;
   schoolGrade?: string;
-  // PERFIL E NECESSIDADES
   hasAllergies: string;
   allergiesDetails?: string;
   continuousMedication: string;
   medicationDetails?: string;
-  activities: string[]; // Apoio Informativo, etc
-  // DADOS DO RESPONSÁVEL
+  activities: string[];
   respName: string;
   respPhone: string;
   respAddress: string;
@@ -44,7 +42,6 @@ export interface Beneficiary {
   respRelationshipOther?: string;
   familyIncome: string;
   irpfDependent: string;
-  
   inclusionDate: string;
 }
 
@@ -55,10 +52,12 @@ export interface Professional {
   specialty: string;
   phone: string;
   cpf?: string;
+  hasRegistration?: string;
+  registration?: string;
+  bondType?: string; // Contratado, Parceiro Social, Voluntário
   login: string;
   password: string;
   accessRole: Exclude<Role, null>;
-  registration?: string;
 }
 
 export interface Volunteer {
@@ -82,6 +81,8 @@ export interface FinanceRecord {
   type: 'income' | 'expense';
   value: number;
   date: string;
+  month: string;
+  year: string;
   category: string;
   description?: string;
   eventDate?: string;
@@ -154,6 +155,15 @@ export interface ScheduleItem {
   time: string;
   type: string;
   notes?: string;
+  status?: 'agendado' | 'presente' | 'falta' | 'falta_justificada' | 'ausencia';
+}
+
+export interface AuditLog {
+  id: string;
+  action: string;
+  user: string;
+  details: string;
+  timestamp: string;
 }
 
 interface AppState {
@@ -166,6 +176,7 @@ interface AppState {
   chatMessages: ChatMessage[];
   medicalRecords: MedicalRecord[];
   schedule: ScheduleItem[];
+  auditLogs: AuditLog[];
   
   login: (role: Role, name: string, specialty?: string, professionalId?: string) => void;
   logout: () => void;
@@ -188,9 +199,12 @@ interface AppState {
   addChatMessage: (message: Omit<ChatMessage, 'id' | 'createdAt'>) => void;
   saveMedicalRecord: (record: Omit<MedicalRecord, 'id' | 'updatedAt'> & { id?: string }) => void;
   addScheduleItem: (item: Omit<ScheduleItem, 'id'>) => void;
+  updateScheduleItem: (id: string, data: Partial<ScheduleItem>) => void;
   deleteScheduleItem: (id: string) => void;
+  addAuditLog: (action: string, details: string) => void;
 }
 
+// Separate persisted data from session-only currentUser
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
@@ -203,6 +217,7 @@ export const useStore = create<AppState>()(
       chatMessages: [],
       medicalRecords: [],
       schedule: [],
+      auditLogs: [],
       
       login: (role, name, specialty, professionalId) => set({ currentUser: { role, name, specialty, professionalId } }),
       logout: () => set({ currentUser: null }),
@@ -258,14 +273,32 @@ export const useStore = create<AppState>()(
         };
       }),
       addScheduleItem: (item) => set((state) => ({
-        schedule: [...state.schedule, { ...item, id: uuidv4() }]
+        schedule: [...state.schedule, { ...item, id: uuidv4(), status: item.status || 'agendado' }]
+      })),
+      updateScheduleItem: (id, data) => set((state) => ({
+        schedule: state.schedule.map((item) => item.id === id ? { ...item, ...data } : item)
       })),
       deleteScheduleItem: (id) => set((state) => ({
         schedule: state.schedule.filter((item) => item.id !== id)
       })),
+      addAuditLog: (action, details) => set((state) => ({
+        auditLogs: [...state.auditLogs, { id: uuidv4(), action, user: state.currentUser?.name || 'Sistema', details, timestamp: new Date().toISOString() }]
+      })),
     }),
     {
-      name: 'frb-storage', // local storage key
+      name: 'frb-storage',
+      partialize: (state) => {
+        // Persist everything EXCEPT currentUser (session only)
+        const { currentUser, ...rest } = state;
+        return rest;
+      },
     }
   )
 );
+
+// Auto-logout when browser/tab closes
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    useStore.getState().logout();
+  });
+}

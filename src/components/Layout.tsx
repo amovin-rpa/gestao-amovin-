@@ -33,9 +33,11 @@ export default function Layout() {
       { name: 'Chat', icon: MessageCircle, path: '/chat' },
     ],
     consulta: [
-      { name: 'Meus Atendimentos', icon: Calendar, path: '/' },
+      { name: 'Início', icon: Home, path: '/' },
+      { name: 'Prontuário', icon: FileText, path: '/prontuario' },
       { name: 'Minha Agenda', icon: Calendar, path: '/agenda' },
-      { name: 'Pacientes', icon: Users, path: '/pacientes' },
+      { name: 'Beneficiários', icon: Users, path: '/pacientes' },
+      { name: 'Relatórios', icon: Activity, path: '/relatorios' },
       { name: 'Chat', icon: MessageCircle, path: '/chat' },
     ]
   };

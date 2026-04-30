@@ -1,9 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useStore, Beneficiary } from '../store';
 import { differenceInYears, parseISO } from 'date-fns';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import { Printer, Download, Save, X, ClipboardList, FileSignature } from 'lucide-react';
+import { Printer, Save, X, ClipboardList, FileSignature } from 'lucide-react';
 import MedicalRecordModal from './MedicalRecordModal';
 import TermModal from './TermModal';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
@@ -11,10 +9,12 @@ import { AMOVIN_LOGO_SRC } from '../assets/logo';
 interface Props {
   initialData?: Beneficiary;
   onClose: () => void;
+  readOnly?: boolean;
 }
 
-export default function FRBForm({ initialData, onClose }: Props) {
-  const { addBeneficiary, updateBeneficiary, currentUser } = useStore();
+export default function FRBForm({ initialData, onClose, readOnly = false }: Props) {
+  const { addBeneficiary, updateBeneficiary, currentUser, addAuditLog } = useStore();
+  const _readOnly = readOnly;
   const [formData, setFormData] = useState<Partial<Beneficiary>>(initialData || {
     activities: [],
     supportLevel: 'Não',
@@ -61,48 +61,15 @@ export default function FRBForm({ initialData, onClose }: Props) {
   };
 
   const handleSave = () => {
+    if (_readOnly) return;
     if (initialData?.id) {
       updateBeneficiary(initialData.id, formData);
+      addAuditLog('Editar beneficiário', formData.fullName || '');
     } else {
       addBeneficiary(formData as Omit<Beneficiary, 'id' | 'inclusionDate'>);
+      addAuditLog('Cadastrar beneficiário', formData.fullName || '');
     }
     onClose();
-  };
-
-  const generatePDF = async () => {
-    if (window.confirm("Deseja confirmar o download do PDF desta ficha?")) {
-      if (printRef.current) {
-        // We make it temporarily visible for html2canvas to render correctly
-        printRef.current.style.display = 'block';
-        const canvas = await html2canvas(printRef.current, { scale: 2 });
-        printRef.current.style.display = 'none';
-        
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        let heightLeft = pdfHeight;
-        let position = 0;
-
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-        heightLeft -= pageHeight;
-        while (heightLeft > 0) {
-          position = heightLeft - pdfHeight;
-          pdf.addPage('a4', 'portrait');
-          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-          heightLeft -= pageHeight;
-        }
-        const url = URL.createObjectURL(pdf.output('blob'));
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `FRB_${formData.fullName || 'Beneficiario'}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }
-    }
   };
 
   const handlePrint = () => {
@@ -170,14 +137,13 @@ export default function FRBForm({ initialData, onClose }: Props) {
               <FileSignature size={20} /> Termo de Adesão
             </button>
             <button onClick={handlePrint} className="p-2 text-gray-600 hover:bg-gray-100 rounded" title="Imprimir">
-              <Printer size={20} />
+              <Printer size={20} /> Imprimir
             </button>
-            <button onClick={generatePDF} className="p-2 text-gray-600 hover:bg-gray-100 rounded" title="Salvar PDF">
-              <Download size={20} />
-            </button>
-            <button onClick={handleSave} className="p-2 text-blue-600 hover:bg-blue-50 rounded flex items-center gap-1" title="Salvar">
-              <Save size={20} /> Salvar
-            </button>
+            {!_readOnly && (
+              <button onClick={handleSave} className="p-2 text-blue-600 hover:bg-blue-50 rounded flex items-center gap-1" title="Salvar">
+                <Save size={20} /> Salvar
+              </button>
+            )}
             <button onClick={onClose} className="p-2 text-red-600 hover:bg-red-50 rounded" title="Fechar">
               <X size={20} />
             </button>
@@ -252,9 +218,10 @@ export default function FRBForm({ initialData, onClose }: Props) {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Nível de Suporte</label>
-                  <select name="supportLevel" value={formData.supportLevel || 'Não'} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
-                    <option value="Não">Não</option>
+                  <select name="supportLevel" value={formData.supportLevel || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                    <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
                   </select>
                 </div>
 
@@ -265,13 +232,24 @@ export default function FRBForm({ initialData, onClose }: Props) {
                   </div>
                 )}
 
-                <div className="md:col-span-2">
+                <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Comorbidades
                     <span className="block text-xs font-normal text-gray-500">(Outras condições associadas Ex. Epilepsia, distúrbios do sono, seletividade alimentar e etc)</span>
                   </label>
-                  <textarea name="comorbidities" value={formData.comorbidities || ''} onChange={handleChange} rows={2} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2" />
+                  <select name="hasComorbidities" value={formData.hasComorbidities || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                    <option value="">Selecione...</option>
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                  </select>
                 </div>
+
+                {formData.hasComorbidities === 'Sim' && (
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700">Quais comorbidades?</label>
+                    <textarea name="comorbidities" value={formData.comorbidities || ''} onChange={handleChange} rows={2} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2" />
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Estudante?</label>

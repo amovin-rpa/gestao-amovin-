@@ -1,27 +1,21 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-export async function downloadElementAsPdf(element: HTMLElement, fileName: string, styles: string, confirmMessage: string) {
+export async function downloadElementAsPdf(element: HTMLElement, fileName: string, _styles: string, confirmMessage: string) {
   if (!window.confirm(confirmMessage)) return;
 
-  const container = document.createElement('div');
-  try {
-    container.style.position = 'fixed';
-    container.style.left = '-10000px';
-    container.style.top = '0';
-    container.style.width = '794px';
-    container.style.background = '#ffffff';
-    container.innerHTML = `<style data-pdf-style>${styles}</style>${element.innerHTML}`;
-    document.body.appendChild(container);
+  // Make element visible temporarily if hidden
+  const wasHidden = element.style.display === 'none';
+  if (wasHidden) element.style.display = 'block';
 
-    const canvas = await html2canvas(container, {
+  try {
+    const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
-      onclone: (doc) => {
-        doc.querySelectorAll('style:not([data-pdf-style]), link[rel="stylesheet"]').forEach((node) => node.remove());
-      },
+      width: element.scrollWidth,
+      height: element.scrollHeight,
     });
 
     const pdf = new jsPDF('p', 'mm', 'a4');
@@ -42,19 +36,25 @@ export async function downloadElementAsPdf(element: HTMLElement, fileName: strin
       left -= pageHeight;
     }
 
+    // Force download using blob + link click
     const blob = pdf.output('blob');
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.download = fileName;
+    link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    
+    // Cleanup after a short delay
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 500);
   } catch (error) {
-    console.error(error);
-    alert('Não foi possível gerar o PDF. Tente imprimir e salvar como PDF pelo navegador.');
+    console.error('PDF generation error:', error);
+    alert('Erro ao gerar PDF. Tente usar a opção Imprimir e salve como PDF.');
   } finally {
-    if (container.parentNode) document.body.removeChild(container);
+    if (wasHidden) element.style.display = 'none';
   }
 }
