@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useStore, ScheduleItem } from '../store';
-import { Check, Edit2, Plus, Trash2 } from 'lucide-react';
+import { Check, Edit2, Mail, Phone, Plus, Trash2 } from 'lucide-react';
 import { isToday, isThisWeek, parseISO, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 
 const statusLabels: Record<string, string> = { agendado: 'Agendado', presente: 'Presente', falta: 'Falta', falta_justificada: 'Falta Justificada', ausencia: 'Declaração de Ausência' };
@@ -91,6 +91,8 @@ export default function Agenda() {
                 ) : (
                   <button onClick={() => setEditingItemId(item.id)} className="text-blue-700 p-1.5 border rounded" title="Editar status"><Edit2 size={16}/></button>
                 )}
+                <button onClick={() => { const ben2 = beneficiaries.find(b => b.id === item.beneficiaryId); if (!ben2?.respPhone) return alert('Telefone do responsavel nao cadastrado'); const phone = ben2.respPhone.replace(/\D/g,''); const msg = encodeURIComponent(`Olá ${ben2.respName || ''}, lembramos que ${ben2.fullName} tem atendimento agendado: ${item.type} em ${new Date(item.date+'T'+(item.time||'00:00')).toLocaleString()}. AMOVIN`); window.open(`https://wa.me/55${phone}?text=${msg}`, '_blank'); }} className="text-green-700 p-1.5 border rounded" title="WhatsApp"><Phone size={16}/></button>
+                <button onClick={() => { const ben2 = beneficiaries.find(b => b.id === item.beneficiaryId); const subject = encodeURIComponent('Lembrete de Agendamento - AMOVIN'); const body = encodeURIComponent(`Prezado(a) ${ben2?.respName || ''},\n\nLembramos que ${ben2?.fullName || ''} tem atendimento agendado:\n${item.type}\nData: ${new Date(item.date+'T'+(item.time||'00:00')).toLocaleString()}\n\nAtenciosamente,\nAMOVIN`); window.open(`mailto:?subject=${subject}&body=${body}`, '_blank'); }} className="text-blue-700 p-1.5 border rounded" title="E-mail"><Mail size={16}/></button>
                 <button onClick={() => deleteScheduleItem(item.id)} className="text-red-600 p-1.5 border rounded"><Trash2 size={16}/></button>
               </div>
             </div>

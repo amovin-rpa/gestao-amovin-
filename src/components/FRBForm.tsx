@@ -63,12 +63,13 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
 
   const handleSave = () => {
     if (_readOnly) return;
+    const dataToSave = { ...formData, matricula: formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '' };
     if (initialData?.id) {
-      updateBeneficiary(initialData.id, formData);
-      addAuditLog('Editar beneficiário', formData.fullName || '');
+      updateBeneficiary(initialData.id, dataToSave);
+      addAuditLog('Editar beneficiario', formData.fullName || '');
     } else {
-      addBeneficiary(formData as Omit<Beneficiary, 'id' | 'inclusionDate'>);
-      addAuditLog('Cadastrar beneficiário', formData.fullName || '');
+      addBeneficiary(dataToSave as Omit<Beneficiary, 'id' | 'inclusionDate'>);
+      addAuditLog('Cadastrar beneficiario', formData.fullName || '');
     }
     onClose();
   };
@@ -173,9 +174,14 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
                   <h3 className="text-lg font-semibold border-b pb-2">DADOS DO BENEFICIÁRIO</h3>
                 </div>
                 
-                <div className="md:col-span-2">
+                <div>
                   <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
                   <input type="text" name="fullName" value={formData.fullName || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">{'Matr\u00edcula'}</label>
+                  <input type="text" value={formData.matricula || (formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '')} readOnly className="mt-1 block w-full rounded-md border-gray-200 bg-gray-100 shadow-sm sm:text-sm border p-2 text-gray-600" />
+                  <p className="text-xs text-gray-400 mt-1">{'Gerada automaticamente pelos 6 primeiros d\u00edgitos do CPF'}</p>
                 </div>
 
                 <div>

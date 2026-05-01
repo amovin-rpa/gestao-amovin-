@@ -14,6 +14,7 @@ export interface User {
 export interface Beneficiary {
   id: string;
   photoUrl?: string;
+  matricula?: string;
   fullName: string;
   birthDate: string;
   gender: string;

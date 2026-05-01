@@ -4,6 +4,7 @@ import { useStore } from '../store';
 import { ArrowLeft, LogOut, Menu, MessageCircle, X, Cloud, User, Users, FileText, Activity, Home, Briefcase, Calendar } from 'lucide-react';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { S } from '../utils/strings';
+import ChatWidget from './ChatWidget';
 
 export default function Layout() {
   const { currentUser, logout } = useStore();
@@ -107,6 +108,7 @@ export default function Layout() {
           <div className="py-6"><div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8"><Outlet /></div></div>
         </main>
       </div>
+      <ChatWidget />
     </div>
   );
 }
