@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
+import { saveToFirebase, deleteFromFirebase } from './firebaseSync';
 
 export type Role = 'admin' | 'recepcao' | 'consulta' | null;
 
@@ -55,7 +56,7 @@ export interface Professional {
   cpf?: string;
   hasRegistration?: string;
   registration?: string;
-  bondType?: string; // Contratado, Parceiro Social, Voluntário
+  bondType?: string;
   login: string;
   password: string;
   accessRole: Exclude<Role, null>;
@@ -75,7 +76,7 @@ export interface ChatMessage {
   senderName: string;
   text: string;
   createdAt: string;
-  channel: string; // 'geral' or recipientId for private
+  channel: string;
 }
 
 export interface FinanceRecord {
@@ -206,7 +207,6 @@ interface AppState {
   addAuditLog: (action: string, details: string) => void;
 }
 
-// Separate persisted data from session-only currentUser
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
@@ -224,74 +224,117 @@ export const useStore = create<AppState>()(
       login: (role, name, specialty, professionalId) => set({ currentUser: { role, name, specialty, professionalId } }),
       logout: () => set({ currentUser: null }),
       
-      addBeneficiary: (b) => set((state) => ({
-        beneficiaries: [...state.beneficiaries, { ...b, id: uuidv4(), inclusionDate: new Date().toISOString() }]
-      })),
-      updateBeneficiary: (id, b) => set((state) => ({
-        beneficiaries: state.beneficiaries.map((item) => item.id === id ? { ...item, ...b } : item)
-      })),
-      deleteBeneficiary: (id) => set((state) => ({
-        beneficiaries: state.beneficiaries.filter((item) => item.id !== id)
-      })),
+      addBeneficiary: (b) => {
+        const newItem = { ...b, id: uuidv4(), inclusionDate: new Date().toISOString() };
+        set((state) => ({ beneficiaries: [...state.beneficiaries, newItem] }));
+        saveToFirebase('beneficiaries', newItem as unknown as Record<string, unknown>);
+      },
+      updateBeneficiary: (id, b) => {
+        set((state) => {
+          const updated = state.beneficiaries.map((item) => item.id === id ? { ...item, ...b } : item);
+          const found = updated.find(item => item.id === id);
+          if (found) saveToFirebase('beneficiaries', found as unknown as Record<string, unknown>);
+          return { beneficiaries: updated };
+        });
+      },
+      deleteBeneficiary: (id) => {
+        set((state) => ({ beneficiaries: state.beneficiaries.filter((item) => item.id !== id) }));
+        deleteFromFirebase('beneficiaries', id);
+      },
 
-      addProfessional: (p) => set((state) => ({
-        professionals: [...state.professionals, { ...p, id: uuidv4() }]
-      })),
-      updateProfessional: (id, p) => set((state) => ({
-        professionals: state.professionals.map((item) => item.id === id ? { ...item, ...p } : item)
-      })),
-      deleteProfessional: (id) => set((state) => ({
-        professionals: state.professionals.filter((item) => item.id !== id)
-      })),
+      addProfessional: (p) => {
+        const newItem = { ...p, id: uuidv4() };
+        set((state) => ({ professionals: [...state.professionals, newItem] }));
+        saveToFirebase('professionals', newItem as unknown as Record<string, unknown>);
+      },
+      updateProfessional: (id, p) => {
+        set((state) => {
+          const updated = state.professionals.map((item) => item.id === id ? { ...item, ...p } : item);
+          const found = updated.find(item => item.id === id);
+          if (found) saveToFirebase('professionals', found as unknown as Record<string, unknown>);
+          return { professionals: updated };
+        });
+      },
+      deleteProfessional: (id) => {
+        set((state) => ({ professionals: state.professionals.filter((item) => item.id !== id) }));
+        deleteFromFirebase('professionals', id);
+      },
 
-      addVolunteer: (v) => set((state) => ({
-        volunteers: [...state.volunteers, { ...v, id: uuidv4() }]
-      })),
-      updateVolunteer: (id, v) => set((state) => ({
-        volunteers: state.volunteers.map((item) => item.id === id ? { ...item, ...v } : item)
-      })),
-      deleteVolunteer: (id) => set((state) => ({
-        volunteers: state.volunteers.filter((item) => item.id !== id)
-      })),
+      addVolunteer: (v) => {
+        const newItem = { ...v, id: uuidv4() };
+        set((state) => ({ volunteers: [...state.volunteers, newItem] }));
+        saveToFirebase('volunteers', newItem as unknown as Record<string, unknown>);
+      },
+      updateVolunteer: (id, v) => {
+        set((state) => {
+          const updated = state.volunteers.map((item) => item.id === id ? { ...item, ...v } : item);
+          const found = updated.find(item => item.id === id);
+          if (found) saveToFirebase('volunteers', found as unknown as Record<string, unknown>);
+          return { volunteers: updated };
+        });
+      },
+      deleteVolunteer: (id) => {
+        set((state) => ({ volunteers: state.volunteers.filter((item) => item.id !== id) }));
+        deleteFromFirebase('volunteers', id);
+      },
 
-      addFinance: (f) => set((state) => ({
-        finances: [...state.finances, { ...f, id: uuidv4() }]
-      })),
+      addFinance: (f) => {
+        const newItem = { ...f, id: uuidv4() };
+        set((state) => ({ finances: [...state.finances, newItem] }));
+        saveToFirebase('finances', newItem as unknown as Record<string, unknown>);
+      },
 
-      addConsultation: (c) => set((state) => ({
-        consultations: [...state.consultations, { ...c, id: uuidv4() }]
-      })),
-      addChatMessage: (message) => set((state) => ({
-        chatMessages: [...state.chatMessages, { ...message, id: uuidv4(), createdAt: new Date().toISOString() }]
-      })),
-      saveMedicalRecord: (record) => set((state) => {
+      addConsultation: (c) => {
+        const newItem = { ...c, id: uuidv4() };
+        set((state) => ({ consultations: [...state.consultations, newItem] }));
+        saveToFirebase('consultations', newItem as unknown as Record<string, unknown>);
+      },
+      addChatMessage: (message) => {
+        const newItem = { ...message, id: uuidv4(), createdAt: new Date().toISOString() };
+        set((state) => ({ chatMessages: [...state.chatMessages, newItem] }));
+        saveToFirebase('chatMessages', newItem as unknown as Record<string, unknown>);
+      },
+      saveMedicalRecord: (record) => {
         const id = record.id || uuidv4();
         const nextRecord = { ...record, id, updatedAt: new Date().toISOString() } as MedicalRecord;
-        const exists = state.medicalRecords.some((item) => item.id === id);
-        return {
-          medicalRecords: exists
-            ? state.medicalRecords.map((item) => item.id === id ? nextRecord : item)
-            : [...state.medicalRecords, nextRecord]
-        };
-      }),
-      addScheduleItem: (item) => set((state) => ({
-        schedule: [...state.schedule, { ...item, id: uuidv4(), status: item.status || 'agendado' }]
-      })),
-      updateScheduleItem: (id, data) => set((state) => ({
-        schedule: state.schedule.map((item) => item.id === id ? { ...item, ...data } : item)
-      })),
-      deleteScheduleItem: (id) => set((state) => ({
-        schedule: state.schedule.filter((item) => item.id !== id)
-      })),
-      addAuditLog: (action, details) => set((state) => ({
-        auditLogs: [...state.auditLogs, { id: uuidv4(), action, user: state.currentUser?.name || 'Sistema', details, timestamp: new Date().toISOString() }]
-      })),
+        set((state) => {
+          const exists = state.medicalRecords.some((item) => item.id === id);
+          return {
+            medicalRecords: exists
+              ? state.medicalRecords.map((item) => item.id === id ? nextRecord : item)
+              : [...state.medicalRecords, nextRecord]
+          };
+        });
+        saveToFirebase('medicalRecords', nextRecord as unknown as Record<string, unknown>);
+      },
+      addScheduleItem: (item) => {
+        const newItem = { ...item, id: uuidv4(), status: item.status || 'agendado' as const };
+        set((state) => ({ schedule: [...state.schedule, newItem] }));
+        saveToFirebase('schedule', newItem as unknown as Record<string, unknown>);
+      },
+      updateScheduleItem: (id, data) => {
+        set((state) => {
+          const updated = state.schedule.map((item) => item.id === id ? { ...item, ...data } : item);
+          const found = updated.find(item => item.id === id);
+          if (found) saveToFirebase('schedule', found as unknown as Record<string, unknown>);
+          return { schedule: updated };
+        });
+      },
+      deleteScheduleItem: (id) => {
+        set((state) => ({ schedule: state.schedule.filter((item) => item.id !== id) }));
+        deleteFromFirebase('schedule', id);
+      },
+      addAuditLog: (action, details) => {
+        const newItem = { id: uuidv4(), action, user: useStore.getState().currentUser?.name || 'Sistema', details, timestamp: new Date().toISOString() };
+        set((state) => ({ auditLogs: [...state.auditLogs, newItem] }));
+        saveToFirebase('auditLogs', newItem as unknown as Record<string, unknown>);
+      },
     }),
     {
       name: 'frb-storage',
       partialize: (state) => {
-        // Persist everything EXCEPT currentUser (session only)
         const { currentUser, ...rest } = state;
+        void currentUser;
         return rest;
       },
     }

@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './store';
+import { startFirebaseSync } from './firebaseSync';
 import Login from './pages/Login';
 import Layout from './components/Layout';
 import DashboardHome from './pages/DashboardHome';
@@ -15,6 +17,10 @@ import ConsultationsList from './pages/ConsultationsList';
 
 function App() {
   const currentUser = useStore((state) => state.currentUser);
+
+  useEffect(() => {
+    startFirebaseSync();
+  }, []);
 
   return (
     <Router>
