@@ -3,8 +3,7 @@ import { useStore } from '../store';
 import { isThisWeek, isToday, parseISO } from 'date-fns';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { Calendar, Clock, Upload } from 'lucide-react';
-import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { uploadAllToFirebase } from '../firebaseSync';
 
 const statusLabels: Record<string, string> = { agendado: 'Agendado', presente: 'Presente', falta: 'Falta', falta_justificada: 'Falta Just.', ausencia: 'Ausência' };
 const statusColors: Record<string, string> = { agendado: 'bg-gray-100 text-gray-800', presente: 'bg-green-100 text-green-800', falta: 'bg-red-100 text-red-800', falta_justificada: 'bg-yellow-100 text-yellow-800', ausencia: 'bg-blue-100 text-blue-800' };
@@ -159,28 +158,13 @@ function SyncToFirebaseButton() {
   const [done, setDone] = useState(false);
   const store = useStore.getState();
 
-  const COLS = ['beneficiaries','professionals','volunteers','finances','consultations','chatMessages','medicalRecords','schedule','auditLogs'] as const;
+  // Sync uses uploadAllToFirebase from firebaseSync
 
   const handleSync = async () => {
-    if (!window.confirm('Enviar todos os dados locais para a nuvem Firebase?\n\nIsso vai copiar todos os cadastros para a nuvem do Google para que fiquem acessiveis de qualquer dispositivo.')) return;
+    if (!window.confirm('Enviar todos os dados locais para a nuvem Firebase?\n\nIsso vai copiar todos os cadastros para a nuvem do Google.')) return;
     setSyncing(true);
     try {
-      let total = 0;
-      for (const colName of COLS) {
-        const items = (store as unknown as Record<string, unknown[]>)[colName] || [];
-        // Check if Firebase already has data
-        const existing = await getDocs(collection(db, colName));
-        const existingIds = new Set<string>();
-        existing.forEach(d => existingIds.add(d.id));
-
-        for (const item of items) {
-          const record = item as Record<string, unknown>;
-          if (!record.id) continue;
-          if (existingIds.has(record.id as string)) continue; // skip existing
-          await setDoc(doc(db, colName, record.id as string), record);
-          total++;
-        }
-      }
+      const total = await uploadAllToFirebase(store as unknown as Record<string, unknown>);
       setDone(true);
       alert(`Sincronizacao concluida! ${total} registro(s) enviados para a nuvem.`);
     } catch (err) {
@@ -190,10 +174,6 @@ function SyncToFirebaseButton() {
       setSyncing(false);
     }
   };
-
-  const hasLocalData = COLS.some(c => ((store as unknown as Record<string, unknown[]>)[c] || []).length > 0);
-
-  if (!hasLocalData && !done) return null;
 
   return (
     <div className="bg-white overflow-hidden shadow-sm rounded-2xl border border-blue-100">
