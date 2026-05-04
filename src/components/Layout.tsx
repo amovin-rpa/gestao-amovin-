@@ -7,12 +7,18 @@ import { S } from '../utils/strings';
 import ChatWidget from './ChatWidget';
 
 export default function Layout() {
-  const { currentUser, logout } = useStore();
+  const { currentUser, professionals, logout } = useStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
   const storageMb = (JSON.stringify(useStore.getState()).length / 1024 / 1024).toFixed(2);
-  const maxStorage = 50;
+  const firebaseStorage = '1.000'; // 1GB Firestore free
+  const firebasePhotos = '5.000'; // 5GB Storage free
+  
+  // Find the professional's photo if logged in
+  const currentProfessional = professionals.find(p => p.id === currentUser?.professionalId || p.name === currentUser?.name);
+  const userPhoto = currentProfessional?.photoUrl;
+  const roleLabel = currentUser?.role === 'admin' ? 'Administrador' : currentUser?.role === 'recepcao' ? 'Recepcao' : currentUser?.specialty || 'Profissional';
 
   const navItems = {
     admin: [
@@ -81,10 +87,24 @@ export default function Layout() {
                 ))}
               </nav>
             </div>
-            <div className="flex-shrink-0 flex border-t border-gray-200 p-4 flex-col gap-2">
-              <div className="flex items-center text-xs text-gray-500"><Cloud className="h-4 w-4 mr-1 text-green-500" /> Nuvem Ativa ({storageMb}MB / {maxStorage}MB)</div>
+            <div className="flex-shrink-0 border-t border-gray-200 p-4 space-y-3">
+              <div className="space-y-1">
+                <div className="flex items-center text-xs text-gray-500"><Cloud className="h-4 w-4 mr-1 text-green-500" /> Firebase (Nuvem Google)</div>
+                <div className="text-[10px] text-gray-400 ml-5">Banco: {storageMb}MB / {firebaseStorage}MB</div>
+                <div className="text-[10px] text-gray-400 ml-5">Fotos: {firebasePhotos}MB disponivel</div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5 ml-5 mt-1" style={{maxWidth:'160px'}}><div className="bg-green-500 h-1.5 rounded-full" style={{width:`${Math.min((parseFloat(storageMb)/parseFloat(firebaseStorage))*100,100)}%`}}></div></div>
+              </div>
               <button onClick={logout} className="flex-shrink-0 w-full group block text-left">
-                <div className="flex items-center"><div className="inline-block h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center"><User className="h-5 w-5 text-gray-500" /></div><div className="ml-3"><p className="text-sm font-medium text-gray-700">{currentUser?.name}</p><p className="text-xs font-medium text-gray-500">Sair</p></div></div>
+                <div className="flex items-center">
+                  <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
+                    {userPhoto ? <img src={userPhoto} alt="" className="h-full w-full object-cover" /> : <User className="h-5 w-5 text-gray-500" />}
+                  </div>
+                  <div className="ml-3 min-w-0">
+                    <p className="text-sm font-medium text-gray-700 truncate">{currentUser?.name}</p>
+                    <p className="text-xs text-gray-500">{roleLabel}</p>
+                    <p className="text-xs font-medium text-red-500 group-hover:text-red-700">Sair</p>
+                  </div>
+                </div>
               </button>
             </div>
           </div>
