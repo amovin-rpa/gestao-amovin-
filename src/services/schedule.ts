@@ -15,7 +15,7 @@ export interface ScheduleSlot {
   createdAt: string;
 }
 
-export async function createScheduleSlot(data: Omit<ScheduleSlot, 'id' | 'createdAt'>): Promise<string> {
+export async function createScheduleSlot(data) {
   const docRef = await addDoc(collection(db, 'schedule'), {
     ...data,
     createdAt: new Date().toISOString()
@@ -23,23 +23,23 @@ export async function createScheduleSlot(data: Omit<ScheduleSlot, 'id' | 'create
   return docRef.id;
 }
 
-export async function updateScheduleSlot(id: string, data: Partial<ScheduleSlot>): Promise<void> {
+export async function updateScheduleSlot(id, data) {
   await updateDoc(doc(db, 'schedule', id), data);
 }
 
-export async function deleteScheduleSlot(id: string): Promise<void> {
+export async function deleteScheduleSlot(id) {
   await deleteDoc(doc(db, 'schedule', id));
 }
 
-export async function getScheduleByProfessional(professionalId: string): Promise<ScheduleSlot[]> {
+export async function getScheduleByProfessional(professionalId) {
   const q = query(collection(db, 'schedule'), where('professionalId', '==', professionalId));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as ScheduleSlot));
+  return snapshot.docs.map(function(d) { return { id: d.id, ...d.data() }; });
 }
 
-export async function getScheduleByMonth(yearMonth: string): Promise<ScheduleSlot[]> {
+export async function getScheduleByMonth(yearMonth) {
   const snapshot = await getDocs(collection(db, 'schedule'));
   return snapshot.docs
-    .map(d => ({ id: d.id, ...d.data() } as ScheduleSlot))
-    .filter(s => s.date.startsWith(yearMonth));
+    .map(function(d) { return { id: d.id, ...d.data() }; })
+    .filter(function(s) { return s.date.startsWith(yearMonth); });
 }
