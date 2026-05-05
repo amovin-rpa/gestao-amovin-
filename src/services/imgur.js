@@ -5,17 +5,20 @@ export async function uploadToImgur(file) {
   formData.append('image', file);
 
   try {
-    const res = await fetch('https://api.imgur.com/3/image', {
+    const res = await fetch('https://api.imgbb.com/1/upload?key=SUA_API_KEY_AQUI', {
       method: 'POST',
-      headers: {
-        Authorization: 'Client-ID 1482c3d5a9b4e3c'
-      },
       body: formData
     });
     const data = await res.json();
-    return data.data.link.replace('i.imgur.com', 'i.imgur.com/1200w.jpg'); // Otimiza
+
+    if (data.success) {
+      return data.data.url;
+    } else {
+      console.error('Erro upload:', data);
+      return '';
+    }
   } catch (error) {
-    console.error('Erro foto Imgur:', error);
+    console.error('Erro foto:', error);
     return '';
   }
 }
