@@ -5,7 +5,7 @@ export async function uploadToImgur(file) {
   formData.append('image', file);
 
   try {
-    const res = await fetch('https://api.imgbb.com/1/upload?key=SUA_API_KEY_AQUI', {
+    const res = await fetch('https://api.imgbb.com/1/upload?key=060960c4dbe92c7d945e2c79dc923324', {
       method: 'POST',
       body: formData
     });
