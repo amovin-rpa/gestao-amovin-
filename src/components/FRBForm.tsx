@@ -218,4 +218,4 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
       {showTerm && <TermModal beneficiary={formData as Beneficiary} onClose={() => setShowTerm(false)} />}
     </div>
   );
-
+}
