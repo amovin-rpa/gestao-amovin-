@@ -16,9 +16,17 @@ const statusLabels: Record<string, string> = {
 const statusColors: Record<string, string> = {
   agendado: 'bg-gray-100 text-gray-800',
   presente: 'bg-green-100 text-green-800',
-  falta: 'bg-red-100 text-red-800',
+  falta: 'bg-red-200 text-red-900 font-bold',
   falta_justificada: 'bg-yellow-100 text-yellow-800',
   cancelamento: 'bg-purple-100 text-purple-800',
+};
+
+const statusBarColors: Record<string, string> = {
+  agendado: 'bg-blue-400',
+  presente: 'bg-green-500',
+  falta: 'bg-red-600',
+  falta_justificada: 'bg-yellow-500',
+  cancelamento: 'bg-purple-500',
 };
 
 const offices = ['Consultório 1', 'Consultório 2', 'Consultório 3'];
@@ -65,6 +73,8 @@ export default function Agenda() {
 
   const [view, setView] = useState<'todos' | 'dia' | 'semana' | 'mes'>('todos');
   const [activeTab, setActiveTab] = useState<'agendamentos' | 'disponibilidade'>('agendamentos');
+
+  const [calendarViewMonth, setCalendarViewMonth] = useState(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
 
   const [slots, setSlots] = useState<Slot[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(now.toISOString().slice(0, 7));
@@ -154,6 +164,19 @@ export default function Agenda() {
     return days;
   }, [form.calendarMonth]);
 
+  const monthCalendarDays = useMemo(() => {
+    const [y, m] = calendarViewMonth.split('-').map(Number);
+    const total = getDaysInMonth(new Date(y, m - 1));
+    const firstDay = new Date(y, m - 1, 1).getDay();
+    const days: (number | null)[] = Array(firstDay).fill(null);
+    for (let i = 1; i <= total; i++) days.push(i);
+    return days;
+  }, [calendarViewMonth]);
+
+  const monthAppointments = useMemo(() => {
+    return allItems.filter(item => item.date.startsWith(calendarViewMonth));
+  }, [allItems, calendarViewMonth]);
+
   const toggleDay = (day: number) => {
     const [y, m] = form.calendarMonth.split('-').map(Number);
     const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -233,6 +256,12 @@ export default function Agenda() {
     setPresenceItemId(null);
   };
 
+  const changeCalendarMonth = (delta: number) => {
+    const [y, m] = calendarViewMonth.split('-').map(Number);
+    const next = new Date(y, m - 1 + delta, 1);
+    setCalendarViewMonth(`${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}`);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -272,7 +301,7 @@ export default function Agenda() {
                 const isPresenceOpen = presenceItemId === item.id;
 
                 return (
-                  <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b p-4 gap-3">
+                  <div key={item.id} className={`flex flex-col sm:flex-row sm:items-center justify-between border-b p-4 gap-3 ${st === 'falta' ? 'bg-red-50' : ''}`}>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-900">
                         {item.date ? new Date(`${item.date}T${item.time || '00:00'}`).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'}
@@ -331,6 +360,78 @@ export default function Agenda() {
                 );
               })
             )}
+          </div>
+
+          {/* CALENDÁRIO MENSAL VISUAL */}
+          <div className="bg-white rounded-2xl shadow-sm border border-yellow-100 p-4 mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <Calendar size={20}/> Visão do Mês
+              </h2>
+              <div className="flex items-center gap-2">
+                <button onClick={() => changeCalendarMonth(-1)} className="px-3 py-1 border rounded hover:bg-gray-50">◀</button>
+                <span className="text-sm font-semibold w-40 text-center">
+                  {monthNames[parseInt(calendarViewMonth.split('-')[1]) - 1]} {calendarViewMonth.split('-')[0]}
+                </span>
+                <button onClick={() => changeCalendarMonth(1)} className="px-3 py-1 border rounded hover:bg-gray-50">▶</button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-500 mb-2">
+              {weekDays.map(d => <div key={d} className="py-1">{d}</div>)}
+            </div>
+
+            <div className="grid grid-cols-7 gap-1">
+              {monthCalendarDays.map((day, idx) => {
+                if (!day) return <div key={idx} className="min-h-[90px]" />;
+                const [y, m] = calendarViewMonth.split('-').map(Number);
+                const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayAppointments = monthAppointments.filter(a => a.date === dateStr);
+                const isTodayDay = dateStr === now.toISOString().split('T')[0];
+
+                return (
+                  <div
+                    key={idx}
+                    className={`min-h-[90px] border rounded-md p-1 text-left
+                      ${isTodayDay ? 'bg-yellow-50 border-yellow-400' : 'bg-white'}
+                    `}
+                  >
+                    <div className={`text-xs font-bold mb-1 ${isTodayDay ? 'text-yellow-700' : 'text-gray-600'}`}>
+                      {day}
+                    </div>
+                    <div className="space-y-0.5">
+                      {dayAppointments.slice(0, 3).map((a) => {
+                        const ben = beneficiaries.find(b => b.id === a.beneficiaryId);
+                        const st = a.status || 'agendado';
+                        return (
+                          <button
+                            key={a.id}
+                            onClick={() => openEditForm(a)}
+                            className={`w-full text-left text-[10px] leading-tight px-1 py-0.5 rounded text-white truncate ${statusBarColors[st]} hover:opacity-90`}
+                            title={`${a.time} - ${ben?.fullName || ''} - ${statusLabels[st]}`}
+                          >
+                            {a.time} {ben?.fullName?.split(' ')[0] || ''}
+                          </button>
+                        );
+                      })}
+                      {dayAppointments.length > 3 && (
+                        <div className="text-[10px] text-gray-500 font-semibold">
+                          +{dayAppointments.length - 3} mais
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex flex-wrap gap-3 mt-4 text-xs">
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-400 inline-block"></span> Agendado</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500 inline-block"></span> Presente</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-600 inline-block"></span> Falta</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-500 inline-block"></span> Falta Justificada</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-purple-500 inline-block"></span> Cancelado</span>
+            </div>
           </div>
         </>
       )}
