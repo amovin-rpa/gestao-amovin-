@@ -54,8 +54,19 @@ interface Slot {
 
 export default function Agenda() {
   const { currentUser, beneficiaries, professionals, schedule, addScheduleItem, updateScheduleItem, deleteScheduleItem } = useStore();
-  const professionalId = currentUser?.professionalId || professionals.find((p) => p.name === currentUser?.name)?.id || '';
-  const professionalName = currentUser?.name || '';
+
+  // CORREÇÃO: busca por ID OU por nome OU por login
+  const myProfessional = useMemo(() => {
+    if (!currentUser) return null;
+    return professionals.find(p =>
+      p.id === currentUser.professionalId ||
+      p.name === currentUser.name ||
+      p.login === currentUser.name
+    ) || null;
+  }, [currentUser, professionals]);
+
+  const professionalId = myProfessional?.id || currentUser?.professionalId || '';
+  const professionalName = myProfessional?.name || currentUser?.name || '';
 
   const now = new Date();
   const [formOpen, setFormOpen] = useState(false);
@@ -70,6 +81,10 @@ export default function Agenda() {
     selectedDays: [] as string[],
     calendarMonth: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`,
   });
+
+  useEffect(() => {
+    setForm(f => ({ ...f, professionalId }));
+  }, [professionalId]);
 
   const [view, setView] = useState<'todos' | 'dia' | 'semana' | 'mes'>('todos');
   const [activeTab, setActiveTab] = useState<'agendamentos' | 'disponibilidade'>('agendamentos');
@@ -139,6 +154,7 @@ export default function Agenda() {
     return acc;
   }, {} as Record<string, Slot[]>);
 
+  // TODOS VEEM TODOS OS AGENDAMENTOS
   const allItems = useMemo(() => {
     return [...schedule].sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`));
   }, [schedule]);
@@ -216,14 +232,31 @@ export default function Agenda() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!form.beneficiaryId) {
+      alert('Selecione um beneficiário!');
+      return;
+    }
+
+    const finalProfessionalId = currentUser?.role === 'admin'
+      ? form.professionalId
+      : professionalId;
+
+    if (!finalProfessionalId) {
+      alert('Erro: profissional não identificado. Verifique seu cadastro de profissional.');
+      return;
+    }
+
     if (form.selectedDays.length === 0) {
       alert('Selecione pelo menos um dia no calendário!');
       return;
     }
 
-    const prof = professionals.find(
-      (p) => p.id === (currentUser?.role === 'admin' ? form.professionalId : professionalId)
-    );
+    if (!form.time) {
+      alert('Selecione um horário!');
+      return;
+    }
+
+    const prof = professionals.find((p) => p.id === finalProfessionalId);
     const specialty = prof?.specialty || currentUser?.specialty || 'Consulta';
 
     if (editingItem) {
@@ -237,7 +270,7 @@ export default function Agenda() {
       form.selectedDays.forEach(date => {
         addScheduleItem({
           beneficiaryId: form.beneficiaryId,
-          professionalId: currentUser?.role === 'admin' ? form.professionalId : professionalId,
+          professionalId: finalProfessionalId,
           date,
           time: form.time,
           type: specialty,
@@ -266,6 +299,11 @@ export default function Agenda() {
       <div>
         <h1 className="text-2xl font-semibold text-gray-900">Agenda Geral</h1>
         <p className="text-sm text-gray-500">Todos os agendamentos da AMOVIN</p>
+        {currentUser?.role !== 'admin' && !myProfessional && (
+          <p className="text-xs text-red-600 mt-1 bg-red-50 border border-red-200 rounded p-2">
+            ⚠️ Atenção: Seu usuário não está vinculado a um profissional cadastrado. Avise o administrador.
+          </p>
+        )}
       </div>
 
       <div className="flex gap-2 border-b">
@@ -307,7 +345,7 @@ export default function Agenda() {
                         {' às '}{item.time || '-'}
                       </p>
                       <p className="text-sm text-gray-600 font-medium">{item.type}</p>
-                      <p className="text-sm text-gray-500">{ben?.fullName || 'Beneficiário'} | {prof?.name || currentUser?.name}</p>
+                      <p className="text-sm text-gray-500">{ben?.fullName || 'Beneficiário'} | {prof?.name || 'Profissional'}</p>
                       {item.notes && <p className="text-xs text-gray-400 mt-0.5">📝 {item.notes}</p>}
                       <span className={`mt-1 inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${statusColors[st]}`}>{statusLabels[st]}</span>
                     </div>
@@ -503,13 +541,19 @@ export default function Agenda() {
                 </div>
               )}
 
-              {currentUser?.role === 'admin' && !editingItem && (
+              {(currentUser?.role === 'admin' || !myProfessional) && !editingItem && (
                 <div>
                   <label className="block text-sm font-medium mb-1">Profissional</label>
                   <select required value={form.professionalId} onChange={(e) => setForm({ ...form, professionalId: e.target.value })} className="block w-full border border-gray-300 rounded-md p-2">
                     <option value="">Selecione...</option>
                     {professionals.map((p) => <option key={p.id} value={p.id}>{p.name} - {p.specialty}</option>)}
                   </select>
+                </div>
+              )}
+
+              {currentUser?.role !== 'admin' && myProfessional && !editingItem && (
+                <div className="bg-blue-50 border border-blue-200 rounded-md p-2 text-sm">
+                  <strong>Profissional:</strong> {myProfessional.name} - {myProfessional.specialty}
                 </div>
               )}
 
