@@ -4,6 +4,14 @@ import { Printer, X } from 'lucide-react';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { S } from '../utils/strings';
 
+// FUNÇÃO QUE CORRIGE A DATA (evita problema de fuso horário)
+function formatDateBR(dateString?: string): string {
+  if (!dateString) return '________________';
+  const [year, month, day] = dateString.split('-');
+  if (!year || !month || !day) return '________________';
+  return `${day}/${month}/${year}`;
+}
+
 export default function TermModal({ beneficiary, onClose }: { beneficiary: Beneficiary; onClose: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const styles = `@page{size:A4 portrait;margin:16mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:18px}.brand-logo{width:230px;height:75px;object-fit:contain}.org{text-align:right;font-size:12px;line-height:1.35}.title{text-align:center;font-weight:700;font-size:18px;margin:20px 0}p{margin:8px 0}ul{margin:4px 0 8px 0;padding-left:20px}li{margin-bottom:4px}.signature{margin-top:50px;text-align:center}.line{width:430px;border-top:1px solid #111;margin:0 auto 6px}.page2{page-break-before:always;break-before:page}`;
@@ -14,6 +22,10 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     win.document.write(`<html><head><title>Termo</title><meta charset="UTF-8"/><style>${styles}</style></head><body>${ref.current.innerHTML}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close()}}<\/script></body></html>`);
     win.document.close();
   };
+
+  // Data de hoje formatada para BR
+  const hoje = new Date();
+  const dataHoje = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
 
   return (
     <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto">
@@ -34,7 +46,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
 
             <div className="title">{'TERMO DE ADES\u00c3O E COMPROMISSO'}</div>
 
-            <p><strong>{'1. IDENTIFICA\u00c7\u00c3O'}</strong><br/>{'ASSOCIADO(A) RESPONS\u00c1VEL: '}{beneficiary.respName || '________________'}{', CPF: '}{beneficiary.respCpf || '________________'}{', '}{beneficiary.respAddress || 'Endereco nao informado'}{'.'}<br/>{'BENEFICI\u00c1RIO (FILHO/A): '}{beneficiary.fullName || '________________'}{', '}{beneficiary.birthDate ? new Date(beneficiary.birthDate).toLocaleDateString() : 'Data de nascimento nao informada'}{'.'}</p>
+            <p><strong>{'1. IDENTIFICA\u00c7\u00c3O'}</strong><br/>{'ASSOCIADO(A) RESPONS\u00c1VEL: '}{beneficiary.respName || '________________'}{', CPF: '}{beneficiary.respCpf || '________________'}{', '}{beneficiary.respAddress || 'Endereco nao informado'}{'.'}<br/>{'BENEFICI\u00c1RIO (FILHO/A): '}{beneficiary.fullName || '________________'}{'   |   MATR\u00cdCULA: '}{beneficiary.matricula || '________________'}{', Nascimento: '}{formatDateBR(beneficiary.birthDate)}{'.'}</p>
 
             <p><strong>{'2. DO OBJETO'}</strong>{' O presente termo formaliza a participa\u00e7\u00e3o do benefici\u00e1rio nas atividades promovidas pela Associa\u00e7\u00e3o, visando o suporte, a inclus\u00e3o e a defesa de direitos, conforme o Estatuto Social da entidade.'}</p>
 
@@ -75,7 +87,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
 
               <p><strong>{'7. DISPOSI\u00c7\u00d5ES GERAIS'}</strong>{' Este termo tem validade por tempo indeterminado, podendo ser rescindido por qualquer uma das partes mediante aviso pr\u00e9vio. Os casos omissos ser\u00e3o resolvidos pela Diretoria Executiva.'}</p>
 
-              <p>{'Rio Parana\u00edba - MG, '}{new Date().toLocaleDateString()}</p>
+              <p>{'Rio Parana\u00edba - MG, '}{dataHoje}</p>
 
               <div className="signature"><div className="line"></div>{'Assinatura Representante Amovin'}</div>
               <div className="signature"><div className="line"></div>{'Assinatura do Respons\u00e1vel do Benefici\u00e1rio'}</div>
