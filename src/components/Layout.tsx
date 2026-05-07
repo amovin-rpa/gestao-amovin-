@@ -1,28 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useStore } from '../store';
 import { ArrowLeft, LogOut, Menu, MessageCircle, X, Cloud, User, Users, FileText, Activity, Home, Briefcase, Calendar } from 'lucide-react';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { S } from '../utils/strings';
 import ChatWidget from './ChatWidget';
+import { db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function Layout() {
   const { currentUser, professionals, logout } = useStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
+  // INDICADOR FIREBASE
+  const [firebaseStatus, setFirebaseStatus] = useState<'connected' | 'offline' | 'checking'>('checking');
+
+  useEffect(() => {
+    const checkFirebase = async () => {
+      try {
+        const testDoc = doc(db, '_status', 'check');
+        await getDoc(testDoc);
+        setFirebaseStatus('connected');
+      } catch {
+        setFirebaseStatus('offline');
+      }
+    };
+
+    checkFirebase();
+
+    const interval = setInterval(checkFirebase, 30000);
+
+    const handleOnline = () => checkFirebase();
+    const handleOffline = () => setFirebaseStatus('offline');
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   const storageMb = (JSON.stringify(useStore.getState()).length / 1024 / 1024).toFixed(2);
-  const firebaseStorage = '1.000'; // 1GB Firestore free
-  const firebasePhotos = '5.000'; // 5GB Storage free
-  
-  // Find the professional's photo if logged in
+  const firebaseStorage = '1.000';
+  const firebasePhotos = '5.000';
+
   const currentProfessional = professionals.find(p => p.id === currentUser?.professionalId || p.name === currentUser?.name);
   const userPhoto = currentProfessional?.photoUrl;
   const roleLabel = currentUser?.role === 'admin' ? 'Administrador' : currentUser?.role === 'recepcao' ? 'Recepcao' : currentUser?.specialty || 'Profissional';
 
   const navItems = {
     admin: [
-      { name: 'Dashboard', icon: Home, path: '/' },
+      { name: 'Home', icon: Home, path: '/' },
       { name: 'Agenda Geral', icon: Calendar, path: '/agenda' },
       { name: S.beneficiarios + ' (FRB)', icon: Users, path: '/beneficiarios' },
       { name: S.profissionais, icon: User, path: '/profissionais' },
@@ -32,7 +63,7 @@ export default function Layout() {
       { name: 'Chat', icon: MessageCircle, path: '/chat' },
     ],
     recepcao: [
-      { name: 'Dashboard', icon: Home, path: '/' },
+      { name: 'Home', icon: Home, path: '/' },
       { name: 'Agenda', icon: Calendar, path: '/agenda' },
       { name: S.beneficiarios + ' (FRB)', icon: Users, path: '/beneficiarios' },
       { name: S.profissionais, icon: User, path: '/profissionais' },
@@ -50,6 +81,55 @@ export default function Layout() {
   };
 
   const currentNav = currentUser?.role ? navItems[currentUser.role] : [];
+
+  // COMPONENTE DO INDICADOR
+  const FirebaseIndicator = () => {
+    if (firebaseStatus === 'connected') {
+      return (
+        <div className="inline-flex items-center gap-2 rounded-full bg-green-50 border border-green-200 px-3 py-1.5">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+          </span>
+          <span className="text-xs font-semibold text-green-700">Firebase Conectado</span>
+        </div>
+      );
+    }
+
+    if (firebaseStatus === 'offline') {
+      return (
+        <div className="inline-flex items-center gap-2 rounded-full bg-red-50 border border-red-200 px-3 py-1.5">
+          <span className="inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+          <span className="text-xs font-semibold text-red-700">Firebase Offline</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className="inline-flex items-center gap-2 rounded-full bg-yellow-50 border border-yellow-200 px-3 py-1.5">
+        <span className="inline-flex rounded-full h-2.5 w-2.5 bg-yellow-500 animate-pulse"></span>
+        <span className="text-xs font-semibold text-yellow-700">Verificando...</span>
+      </div>
+    );
+  };
+
+  // VERSÃO COMPACTA (mobile)
+  const FirebaseIndicatorMobile = () => {
+    const color =
+      firebaseStatus === 'connected' ? 'bg-green-500' :
+      firebaseStatus === 'offline' ? 'bg-red-500' :
+      'bg-yellow-500';
+
+    return (
+      <div className="inline-flex items-center" title={
+        firebaseStatus === 'connected' ? 'Firebase Conectado' :
+        firebaseStatus === 'offline' ? 'Firebase Offline' :
+        'Verificando...'
+      }>
+        <span className={`inline-flex rounded-full h-3 w-3 ${color}`}></span>
+      </div>
+    );
+  };
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -115,7 +195,10 @@ export default function Layout() {
         <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-white border-b border-gray-200 flex items-center justify-between pr-4">
           <button className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900" onClick={() => setSidebarOpen(true)}><Menu className="h-6 w-6" /></button>
           <img src={AMOVIN_LOGO_SRC} alt="Amovin" className="h-12 w-auto object-contain" />
-          <button onClick={logout} className="text-gray-600"><LogOut className="h-5 w-5" /></button>
+          <div className="flex items-center gap-2">
+            <FirebaseIndicatorMobile />
+            <button onClick={logout} className="text-gray-600"><LogOut className="h-5 w-5" /></button>
+          </div>
         </div>
         <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
           <div className="hidden lg:flex items-center justify-between bg-gradient-to-r from-yellow-50 via-white to-amber-50 border-b border-yellow-100 px-8 py-4">
@@ -123,7 +206,10 @@ export default function Layout() {
               <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-amber-800"><ArrowLeft size={18} /> {S.voltar}</button>
               <img src={AMOVIN_LOGO_SRC} alt="Amovin" className="h-14 w-auto object-contain" />
             </div>
-            <button onClick={logout} className="inline-flex items-center gap-2 rounded-md bg-gray-950 px-4 py-2 text-sm font-semibold text-yellow-300 hover:bg-gray-800"><LogOut size={16} /> Sair do ambiente</button>
+            <div className="flex items-center gap-4">
+              <FirebaseIndicator />
+              <button onClick={logout} className="inline-flex items-center gap-2 rounded-md bg-gray-950 px-4 py-2 text-sm font-semibold text-yellow-300 hover:bg-gray-800"><LogOut size={16} /> Sair do ambiente</button>
+            </div>
           </div>
           <div className="py-6"><div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8"><Outlet /></div></div>
         </main>
