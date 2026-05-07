@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useStore, ScheduleItem } from '../store';
-import { Check, Edit2, Phone, Plus, Trash2, Calendar, Clock, MapPin, Loader2, X, CheckCircle } from 'lucide-react';
+import { Edit2, Phone, Plus, Trash2, Calendar, Clock, MapPin, Loader2, X, CheckCircle } from 'lucide-react';
 import { isToday, isThisWeek, parseISO, startOfMonth, endOfMonth, isWithinInterval, getDaysInMonth } from 'date-fns';
 import { collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -22,7 +22,12 @@ const statusColors: Record<string, string> = {
 };
 
 const offices = ['Consultório 1', 'Consultório 2', 'Consultório 3'];
-const timeSlots = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+
+const timeSlots = Array.from({ length: 49 }, (_, i) => {
+  const h = Math.floor(i / 2);
+  const m = i % 2 === 0 ? '00' : '30';
+  return `${String(h).padStart(2, '0')}:${m}`;
+});
 
 const weekDays = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -140,7 +145,6 @@ export default function Agenda() {
     });
   }, [allItems, view]);
 
-  // CALENDÁRIO - gerar dias do mês
   const calendarDays = useMemo(() => {
     const [y, m] = form.calendarMonth.split('-').map(Number);
     const total = getDaysInMonth(new Date(y, m - 1));
@@ -281,23 +285,12 @@ export default function Agenda() {
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap relative">
-
-                      {/* BOTÃO EDITAR */}
-                      <button
-                        onClick={() => openEditForm(item)}
-                        className="text-blue-700 p-1.5 border rounded hover:bg-blue-50"
-                        title="Editar"
-                      >
+                      <button onClick={() => openEditForm(item)} className="text-blue-700 p-1.5 border rounded hover:bg-blue-50" title="Editar">
                         <Edit2 size={16}/>
                       </button>
 
-                      {/* BOTÃO CONFIRMAR PRESENÇA */}
                       <div className="relative">
-                        <button
-                          onClick={() => setPresenceItemId(isPresenceOpen ? null : item.id)}
-                          className="inline-flex items-center gap-1 text-green-700 p-1.5 border rounded hover:bg-green-50 text-xs font-semibold"
-                          title="Confirmar Presença"
-                        >
+                        <button onClick={() => setPresenceItemId(isPresenceOpen ? null : item.id)} className="inline-flex items-center gap-1 text-green-700 p-1.5 border rounded hover:bg-green-50 text-xs font-semibold" title="Confirmar Presença">
                           <CheckCircle size={16}/> Presença
                         </button>
 
@@ -310,11 +303,7 @@ export default function Agenda() {
                               { value: 'falta_justificada', label: '📝 Falta Justificada', color: 'text-yellow-700 hover:bg-yellow-50' },
                               { value: 'cancelamento', label: '🚫 Cancelamento', color: 'text-purple-700 hover:bg-purple-50' },
                             ].map(opt => (
-                              <button
-                                key={opt.value}
-                                onClick={() => saveStatus(item.id, opt.value as ScheduleItem['status'])}
-                                className={`w-full text-left px-4 py-2 text-sm font-medium ${opt.color}`}
-                              >
+                              <button key={opt.value} onClick={() => saveStatus(item.id, opt.value as ScheduleItem['status'])} className={`w-full text-left px-4 py-2 text-sm font-medium ${opt.color}`}>
                                 {opt.label}
                               </button>
                             ))}
@@ -322,7 +311,6 @@ export default function Agenda() {
                         )}
                       </div>
 
-                      {/* BOTÃO WHATSAPP */}
                       <button
                         onClick={() => {
                           const b2 = beneficiaries.find(b => b.id === item.beneficiaryId);
@@ -335,12 +323,7 @@ export default function Agenda() {
                         <Phone size={16}/>
                       </button>
 
-                      {/* BOTÃO EXCLUIR */}
-                      <button
-                        onClick={() => { if (window.confirm('Excluir agendamento?')) deleteScheduleItem(item.id); }}
-                        className="text-red-600 p-1.5 border rounded hover:bg-red-50"
-                        title="Excluir"
-                      >
+                      <button onClick={() => { if (window.confirm('Excluir agendamento?')) deleteScheduleItem(item.id); }} className="text-red-600 p-1.5 border rounded hover:bg-red-50" title="Excluir">
                         <Trash2 size={16}/>
                       </button>
                     </div>
@@ -408,7 +391,6 @@ export default function Agenda() {
         </div>
       )}
 
-      {/* MODAL NOVO/EDITAR AGENDAMENTO */}
       {formOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[60] p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
@@ -418,7 +400,6 @@ export default function Agenda() {
             </div>
 
             <form onSubmit={submit} className="space-y-4">
-
               {!editingItem && (
                 <div>
                   <label className="block text-sm font-medium mb-1">Beneficiário</label>
@@ -452,7 +433,6 @@ export default function Agenda() {
                 <input type="text" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Opcional..." className="block w-full border border-gray-300 rounded-md p-2" />
               </div>
 
-              {/* CALENDÁRIO VISUAL */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-sm font-medium">
@@ -520,7 +500,6 @@ export default function Agenda() {
         </div>
       )}
 
-      {/* MODAL DISPONIBILIDADE */}
       {isSlotFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[60] p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl">
