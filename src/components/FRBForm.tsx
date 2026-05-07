@@ -14,6 +14,14 @@ interface Props {
   readOnly?: boolean;
 }
 
+// FUNÇÃO QUE CORRIGE A DATA (evita problema de fuso horário)
+function formatDateBR(dateString?: string): string {
+  if (!dateString) return '-';
+  const [year, month, day] = dateString.split('-');
+  if (!year || !month || !day) return '-';
+  return `${day}/${month}/${year}`;
+}
+
 export default function FRBForm({ initialData, onClose, readOnly = false }: Props) {
   const { addBeneficiary, updateBeneficiary, currentUser, addAuditLog } = useStore();
   const _readOnly = readOnly;
@@ -161,7 +169,6 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
               </div>
             </div>
 
-            {/* PERFIL E NECESSIDADES */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2"><h3 className="text-lg font-semibold border-b pb-2 mt-4">PERFIL E NECESSIDADES</h3></div>
               <div><label className="block text-sm font-medium text-gray-700">Possui alergia ou restrição alimentar?</label><select name="hasAllergies" value={formData.hasAllergies || 'Não'} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="Não">Não</option><option value="Sim">Sim</option></select></div>
@@ -170,7 +177,6 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
               {formData.continuousMedication === 'Sim' && <div><label className="block text-sm font-medium text-gray-700">Qual medicação?</label><input type="text" name="medicationDetails" value={formData.medicationDetails || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>}
               <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700 mb-2">Quais atendimentos ou atividades você mais busca na associação hoje:</label><div className="flex flex-wrap gap-4">{['Apoio Informativo Jurídico/Direitos', 'Oficinas Pedagógicas', 'Terapias', 'Lazer/Socialização', 'Acolhimento Familiar'].map(activity => (<label key={activity} className="flex items-center space-x-2"><input type="checkbox" checked={formData.activities?.includes(activity) || false} onChange={() => handleCheckboxChange(activity)} className="rounded border-gray-300 text-blue-600 shadow-sm" /><span className="text-sm text-gray-700">{activity}</span></label>))}</div></div>
 
-              {/* DADOS DO RESPONSÁVEL */}
               <div className="md:col-span-2"><h3 className="text-lg font-semibold border-b pb-2 mt-4">DADOS DO RESPONSÁVEL</h3></div>
               <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700">Nome completo do responsável</label><input type="text" name="respName" value={formData.respName || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
               <div><label className="block text-sm font-medium text-gray-700">Telefone/Whatsapp</label><input type="text" name="respPhone" value={formData.respPhone || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
@@ -186,7 +192,6 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
         </div>
       </div>
 
-      {/* PRINT TEMPLATE */}
       <div style={{ display: 'none' }} ref={printRef} className="print-container bg-white p-8 w-[800px]">
         <div className="header">
           <img src={AMOVIN_LOGO_SRC} alt="Logo Amovin" className="brand-logo" />
@@ -196,7 +201,7 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
           <div className="photo-box">{formData.photoUrl ? <img src={formData.photoUrl} alt="Foto" /> : <span style={{ fontSize: '12px', color: '#999', textAlign: 'center' }}>Foto 3x4</span>}</div>
           <div style={{ flex: 1 }}>
             <div className="section-title" style={{ marginTop: 0 }}>DADOS DO BENEFICIÁRIO</div>
-            <div className="row"><div className="field" style={{ flex: 2 }}><div className="label">Nome Completo</div><div className="value">{formData.fullName || '-'}</div></div><div className="field"><div className="label">Matrícula</div><div className="value">{formData.matricula || (formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '-')}</div></div><div className="field"><div className="label">Data de Nasc. / Idade</div><div className="value">{formData.birthDate ? `${new Date(formData.birthDate).toLocaleDateString()} (${calculateAge(formData.birthDate)})` : '-'}</div></div></div>
+            <div className="row"><div className="field" style={{ flex: 2 }}><div className="label">Nome Completo</div><div className="value">{formData.fullName || '-'}</div></div><div className="field"><div className="label">Matrícula</div><div className="value">{formData.matricula || (formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '-')}</div></div><div className="field"><div className="label">Data de Nasc. / Idade</div><div className="value">{formData.birthDate ? `${formatDateBR(formData.birthDate)} (${calculateAge(formData.birthDate)})` : '-'}</div></div></div>
             <div className="row"><div className="field"><div className="label">Gênero</div><div className="value">{formData.gender || '-'}</div></div><div className="field"><div className="label">RG</div><div className="value">{formData.rg || '-'}</div></div><div className="field"><div className="label">CPF</div><div className="value">{formData.cpf || '-'}</div></div></div>
           </div>
         </div>
@@ -211,7 +216,7 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
         <div className="row"><div className="field"><div className="label">Telefone/Whatsapp</div><div className="value">{formData.respPhone || '-'}</div></div><div className="field"><div className="label">RG</div><div className="value">{formData.respRg || '-'}</div></div><div className="field"><div className="label">CPF</div><div className="value">{formData.respCpf || '-'}</div></div></div>
         <div className="row"><div className="field"><div className="label">Endereço</div><div className="value">{formData.respAddress || '-'}</div></div></div>
         <div className="row"><div className="field"><div className="label">Renda Familiar</div><div className="value">{formData.familyIncome || '-'}</div></div><div className="field"><div className="label">Dependente IRPF</div><div className="value">{formData.irpfDependent || '-'}</div></div></div>
-        <div className="signature-area"><div className="signature-line"></div><div className="signature-name">{currentUser?.name}</div><div className="signature-date">Assinado digitalmente em: {new Date().toLocaleDateString()}</div></div>
+        <div className="signature-area"><div className="signature-line"></div><div className="signature-name">{currentUser?.name}</div><div className="signature-date">Assinado digitalmente em: {new Date().toLocaleDateString('pt-BR')}</div></div>
       </div>
 
       {showMedicalRecord && formData.id && <MedicalRecordModal beneficiary={formData as Beneficiary} onClose={() => setShowMedicalRecord(false)} />}
