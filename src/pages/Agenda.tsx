@@ -1,12 +1,26 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useStore, ScheduleItem } from '../store';
-import { Check, Edit2, Mail, Phone, Plus, Trash2, Calendar, Clock, MapPin, Loader2, X } from 'lucide-react';
+import { Check, Edit2, Phone, Plus, Trash2, Calendar, Clock, MapPin, Loader2, X } from 'lucide-react';
 import { isToday, isThisWeek, parseISO, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 
-const statusLabels: Record<string, string> = { agendado: 'Agendado', presente: 'Presente', falta: 'Falta', falta_justificada: 'Falta Justificada', ausencia: 'Declaração de Ausência' };
-const statusColors: Record<string, string> = { agendado: 'bg-gray-100 text-gray-800', presente: 'bg-green-100 text-green-800', falta: 'bg-red-100 text-red-800', falta_justificada: 'bg-yellow-100 text-yellow-800', ausencia: 'bg-blue-100 text-blue-800' };
+const statusLabels: Record<string, string> = {
+  agendado: 'Agendado',
+  presente: 'Presente',
+  falta: 'Falta',
+  falta_justificada: 'Falta Justificada',
+  ausencia: 'Declaração de Ausência'
+};
+
+const statusColors: Record<string, string> = {
+  agendado: 'bg-gray-100 text-gray-800',
+  presente: 'bg-green-100 text-green-800',
+  falta: 'bg-red-100 text-red-800',
+  falta_justificada: 'bg-yellow-100 text-yellow-800',
+  ausencia: 'bg-blue-100 text-blue-800'
+};
+
 const offices = ['Consultório 1', 'Consultório 2', 'Consultório 3'];
 const timeSlots = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
 
@@ -26,10 +40,22 @@ export default function Agenda() {
   const { currentUser, beneficiaries, professionals, schedule, addScheduleItem, updateScheduleItem, deleteScheduleItem } = useStore();
   const professionalId = currentUser?.professionalId || professionals.find((p) => p.name === currentUser?.name)?.id || '';
   const professionalName = currentUser?.name || '';
-  const [form, setForm] = useState({ beneficiaryId: '', professionalId: professionalId, date: '', time: '', type: '', notes: '', status: 'agendado' as ScheduleItem['status'] });
+
+  const [form, setForm] = useState({
+    beneficiaryId: '',
+    professionalId: professionalId,
+    date: '',
+    time: '',
+    notes: '',
+    status: 'agendado' as ScheduleItem['status'],
+    repeatMonthly: false,
+    selectedMonth: new Date().toISOString().slice(0, 7)
+  });
+
   const [view, setView] = useState<'todos' | 'dia' | 'semana' | 'mes'>('todos');
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'agendamentos' | 'disponibilidade'>('agendamentos');
+
   const [slots, setSlots] = useState<Slot[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [isSlotFormOpen, setIsSlotFormOpen] = useState(false);
@@ -51,14 +77,31 @@ export default function Agenda() {
     finally { setIsLoadingSlots(false); }
   };
 
-  const openNewSlot = () => { setEditingSlot(null); setSlotForm({ date: '', time: '', office: 'Consultório 1', isAvailable: true, isBlocked: false }); setIsSlotFormOpen(true); };
-  const openEditSlot = (slot: Slot) => { setEditingSlot(slot); setSlotForm({ date: slot.date, time: slot.time, office: slot.office, isAvailable: slot.isAvailable, isBlocked: slot.isBlocked }); setIsSlotFormOpen(true); };
+  const openNewSlot = () => {
+    setEditingSlot(null);
+    setSlotForm({ date: '', time: '', office: 'Consultório 1', isAvailable: true, isBlocked: false });
+    setIsSlotFormOpen(true);
+  };
+
+  const openEditSlot = (slot: Slot) => {
+    setEditingSlot(slot);
+    setSlotForm({ date: slot.date, time: slot.time, office: slot.office, isAvailable: slot.isAvailable, isBlocked: slot.isBlocked });
+    setIsSlotFormOpen(true);
+  };
 
   const handleSaveSlot = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSavingSlot(true);
     try {
-      const data = { professionalId, professionalName, date: slotForm.date, time: slotForm.time, office: slotForm.office, isAvailable: slotForm.isAvailable, isBlocked: slotForm.isBlocked };
+      const data = {
+        professionalId,
+        professionalName,
+        date: slotForm.date,
+        time: slotForm.time,
+        office: slotForm.office,
+        isAvailable: slotForm.isAvailable,
+        isBlocked: slotForm.isBlocked
+      };
       if (editingSlot?.id) await updateDoc(doc(db, 'schedule', editingSlot.id), data);
       else await addDoc(collection(db, 'schedule'), { ...data, createdAt: new Date().toISOString() });
       await loadSlots();
@@ -79,7 +122,11 @@ export default function Agenda() {
     return `${dias[dt.getDay()]}, ${day}/${m}/${y}`;
   };
 
-  const grouped = slots.reduce((acc, s) => { if (!acc[s.date]) acc[s.date] = []; acc[s.date].push(s); return acc; }, {} as Record<string, Slot[]>);
+  const grouped = slots.reduce((acc, s) => {
+    if (!acc[s.date]) acc[s.date] = [];
+    acc[s.date].push(s);
+    return acc;
+  }, {} as Record<string, Slot[]>);
 
   const allItems = useMemo(() => {
     const items = currentUser?.role === 'admin' ? schedule : schedule.filter((item) => item.professionalId === professionalId);
@@ -99,8 +146,59 @@ export default function Agenda() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    addScheduleItem({ ...form, professionalId: currentUser?.role === 'admin' ? form.professionalId : professionalId });
-    setForm({ beneficiaryId: '', professionalId, date: '', time: '', type: '', notes: '', status: 'agendado' });
+
+    const prof = professionals.find(
+      (p) => p.id === (currentUser?.role === 'admin' ? form.professionalId : professionalId)
+    );
+
+    const specialty = prof?.specialty || 'Consulta';
+
+    if (!form.repeatMonthly) {
+      addScheduleItem({
+        beneficiaryId: form.beneficiaryId,
+        professionalId: currentUser?.role === 'admin' ? form.professionalId : professionalId,
+        date: form.date,
+        time: form.time,
+        type: specialty,
+        notes: form.notes,
+        status: form.status
+      });
+    } else {
+      const [year, month] = form.selectedMonth.split('-').map(Number);
+      const start = new Date(year, month - 1, 1);
+      const end = new Date(year, month, 0);
+
+      const selectedDate = new Date(form.date);
+      const targetWeekday = selectedDate.getDay();
+
+      const current = new Date(start);
+
+      while (current <= end) {
+        if (current.getDay() === targetWeekday) {
+          addScheduleItem({
+            beneficiaryId: form.beneficiaryId,
+            professionalId: currentUser?.role === 'admin' ? form.professionalId : professionalId,
+            date: current.toISOString().split('T')[0],
+            time: form.time,
+            type: specialty,
+            notes: form.notes,
+            status: form.status
+          });
+        }
+        current.setDate(current.getDate() + 1);
+      }
+    }
+
+    setForm({
+      beneficiaryId: '',
+      professionalId,
+      date: '',
+      time: '',
+      notes: '',
+      status: 'agendado',
+      repeatMonthly: false,
+      selectedMonth: new Date().toISOString().slice(0, 7)
+    });
   };
 
   const saveStatus = (id: string, status: ScheduleItem['status']) => {
@@ -116,12 +214,8 @@ export default function Agenda() {
       </div>
 
       <div className="flex gap-2 border-b">
-        <button onClick={() => setActiveTab('agendamentos')} className={`px-4 py-2 text-sm font-semibold border-b-2 ${activeTab === 'agendamentos' ? 'border-yellow-500 text-yellow-700' : 'border-transparent text-gray-500'}`}>
-          📋 Agendamentos
-        </button>
-        <button onClick={() => setActiveTab('disponibilidade')} className={`px-4 py-2 text-sm font-semibold border-b-2 ${activeTab === 'disponibilidade' ? 'border-yellow-500 text-yellow-700' : 'border-transparent text-gray-500'}`}>
-          📅 Minha Disponibilidade
-        </button>
+        <button onClick={() => setActiveTab('agendamentos')} className={`px-4 py-2 text-sm font-semibold border-b-2 ${activeTab === 'agendamentos' ? 'border-yellow-500 text-yellow-700' : 'border-transparent text-gray-500'}`}>📋 Agendamentos</button>
+        <button onClick={() => setActiveTab('disponibilidade')} className={`px-4 py-2 text-sm font-semibold border-b-2 ${activeTab === 'disponibilidade' ? 'border-yellow-500 text-yellow-700' : 'border-transparent text-gray-500'}`}>📅 Minha Disponibilidade</button>
       </div>
 
       {activeTab === 'agendamentos' && (
@@ -131,15 +225,35 @@ export default function Agenda() {
               <option value="">Beneficiário...</option>
               {beneficiaries.map((b) => <option key={b.id} value={b.id}>{b.fullName}</option>)}
             </select>
+
             {currentUser?.role === 'admin' && (
               <select required value={form.professionalId} onChange={(e) => setForm({ ...form, professionalId: e.target.value })} className="rounded-md border p-2 md:col-span-2">
                 <option value="">Profissional...</option>
                 {professionals.map((p) => <option key={p.id} value={p.id}>{p.name} - {p.specialty}</option>)}
               </select>
             )}
+
             <input required type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="rounded-md border p-2" />
             <input required type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="rounded-md border p-2" />
-            <input required placeholder="Atendimento/atividade" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className="rounded-md border p-2 md:col-span-2" />
+
+            <select value={form.selectedMonth} onChange={(e) => setForm({ ...form, selectedMonth: e.target.value })} className="rounded-md border p-2">
+              {Array.from({ length: 12 }).map((_, i) => {
+                const d = new Date();
+                d.setMonth(d.getMonth() + i);
+                const value = d.toISOString().slice(0, 7);
+                return (
+                  <option key={value} value={value}>
+                    {d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                  </option>
+                );
+              })}
+            </select>
+
+            <label className="flex items-center gap-2 text-sm md:col-span-2">
+              <input type="checkbox" checked={form.repeatMonthly} onChange={(e) => setForm({ ...form, repeatMonthly: e.target.checked })} />
+              Gerar agenda do mês inteiro
+            </label>
+
             <input placeholder="Observações" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="rounded-md border p-2 md:col-span-3" />
             <button className="inline-flex items-center justify-center gap-2 rounded-md bg-yellow-400 px-4 py-2 font-semibold text-gray-950"><Plus size={18}/> Agendar</button>
           </form>
