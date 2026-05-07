@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useStore, ScheduleItem } from '../store';
-import { Check, Edit2, Phone, Plus, Trash2, Calendar, Clock, MapPin, Loader2, X } from 'lucide-react';
-import { isToday, isThisWeek, parseISO, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
+import { Check, Edit2, Phone, Plus, Trash2, Calendar, Clock, MapPin, Loader2, X, CheckCircle } from 'lucide-react';
+import { isToday, isThisWeek, parseISO, startOfMonth, endOfMonth, isWithinInterval, getDaysInMonth } from 'date-fns';
 import { collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -10,7 +10,7 @@ const statusLabels: Record<string, string> = {
   presente: 'Presente',
   falta: 'Falta',
   falta_justificada: 'Falta Justificada',
-  ausencia: 'Declaração de Ausência'
+  cancelamento: 'Cancelado',
 };
 
 const statusColors: Record<string, string> = {
@@ -18,11 +18,14 @@ const statusColors: Record<string, string> = {
   presente: 'bg-green-100 text-green-800',
   falta: 'bg-red-100 text-red-800',
   falta_justificada: 'bg-yellow-100 text-yellow-800',
-  ausencia: 'bg-blue-100 text-blue-800'
+  cancelamento: 'bg-purple-100 text-purple-800',
 };
 
 const offices = ['Consultório 1', 'Consultório 2', 'Consultório 3'];
 const timeSlots = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+
+const weekDays = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
 interface Slot {
   id?: string;
@@ -41,23 +44,25 @@ export default function Agenda() {
   const professionalId = currentUser?.professionalId || professionals.find((p) => p.name === currentUser?.name)?.id || '';
   const professionalName = currentUser?.name || '';
 
+  const now = new Date();
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ScheduleItem | null>(null);
+  const [presenceItemId, setPresenceItemId] = useState<string | null>(null);
+
   const [form, setForm] = useState({
     beneficiaryId: '',
     professionalId: professionalId,
-    date: '',
     time: '',
     notes: '',
-    status: 'agendado' as ScheduleItem['status'],
-    repeatMonthly: false,
-    selectedMonth: new Date().toISOString().slice(0, 7)
+    selectedDays: [] as string[],
+    calendarMonth: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`,
   });
 
   const [view, setView] = useState<'todos' | 'dia' | 'semana' | 'mes'>('todos');
-  const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'agendamentos' | 'disponibilidade'>('agendamentos');
 
   const [slots, setSlots] = useState<Slot[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [selectedMonth, setSelectedMonth] = useState(now.toISOString().slice(0, 7));
   const [isSlotFormOpen, setIsSlotFormOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState<Slot | null>(null);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
@@ -93,15 +98,7 @@ export default function Agenda() {
     e.preventDefault();
     setIsSavingSlot(true);
     try {
-      const data = {
-        professionalId,
-        professionalName,
-        date: slotForm.date,
-        time: slotForm.time,
-        office: slotForm.office,
-        isAvailable: slotForm.isAvailable,
-        isBlocked: slotForm.isBlocked
-      };
+      const data = { professionalId, professionalName, date: slotForm.date, time: slotForm.time, office: slotForm.office, isAvailable: slotForm.isAvailable, isBlocked: slotForm.isBlocked };
       if (editingSlot?.id) await updateDoc(doc(db, 'schedule', editingSlot.id), data);
       else await addDoc(collection(db, 'schedule'), { ...data, createdAt: new Date().toISOString() });
       await loadSlots();
@@ -117,9 +114,8 @@ export default function Agenda() {
 
   const formatDate = (d: string) => {
     const [y, m, day] = d.split('-');
-    const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
     const dt = new Date(Number(y), Number(m) - 1, Number(day));
-    return `${dias[dt.getDay()]}, ${day}/${m}/${y}`;
+    return `${weekDays[dt.getDay()]}, ${day}/${m}/${y}`;
   };
 
   const grouped = slots.reduce((acc, s) => {
@@ -144,66 +140,93 @@ export default function Agenda() {
     });
   }, [allItems, view]);
 
+  // CALENDÁRIO - gerar dias do mês
+  const calendarDays = useMemo(() => {
+    const [y, m] = form.calendarMonth.split('-').map(Number);
+    const total = getDaysInMonth(new Date(y, m - 1));
+    const firstDay = new Date(y, m - 1, 1).getDay();
+    const days: (number | null)[] = Array(firstDay).fill(null);
+    for (let i = 1; i <= total; i++) days.push(i);
+    return days;
+  }, [form.calendarMonth]);
+
+  const toggleDay = (day: number) => {
+    const [y, m] = form.calendarMonth.split('-').map(Number);
+    const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    setForm(prev => ({
+      ...prev,
+      selectedDays: prev.selectedDays.includes(dateStr)
+        ? prev.selectedDays.filter(d => d !== dateStr)
+        : [...prev.selectedDays, dateStr]
+    }));
+  };
+
+  const openNewForm = () => {
+    setEditingItem(null);
+    setForm({
+      beneficiaryId: '',
+      professionalId: professionalId,
+      time: '',
+      notes: '',
+      selectedDays: [],
+      calendarMonth: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`,
+    });
+    setFormOpen(true);
+  };
+
+  const openEditForm = (item: ScheduleItem) => {
+    setEditingItem(item);
+    setForm({
+      beneficiaryId: item.beneficiaryId,
+      professionalId: item.professionalId,
+      time: item.time,
+      notes: item.notes || '',
+      selectedDays: [item.date],
+      calendarMonth: item.date.slice(0, 7),
+    });
+    setFormOpen(true);
+  };
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (form.selectedDays.length === 0) {
+      alert('Selecione pelo menos um dia no calendário!');
+      return;
+    }
 
     const prof = professionals.find(
       (p) => p.id === (currentUser?.role === 'admin' ? form.professionalId : professionalId)
     );
+    const specialty = prof?.specialty || currentUser?.specialty || 'Consulta';
 
-    const specialty = prof?.specialty || 'Consulta';
-
-    if (!form.repeatMonthly) {
-      addScheduleItem({
-        beneficiaryId: form.beneficiaryId,
-        professionalId: currentUser?.role === 'admin' ? form.professionalId : professionalId,
-        date: form.date,
+    if (editingItem) {
+      updateScheduleItem(editingItem.id, {
+        date: form.selectedDays[0],
         time: form.time,
-        type: specialty,
         notes: form.notes,
-        status: form.status
+        type: specialty,
       });
     } else {
-      const [year, month] = form.selectedMonth.split('-').map(Number);
-      const start = new Date(year, month - 1, 1);
-      const end = new Date(year, month, 0);
-
-      const selectedDate = new Date(form.date);
-      const targetWeekday = selectedDate.getDay();
-
-      const current = new Date(start);
-
-      while (current <= end) {
-        if (current.getDay() === targetWeekday) {
-          addScheduleItem({
-            beneficiaryId: form.beneficiaryId,
-            professionalId: currentUser?.role === 'admin' ? form.professionalId : professionalId,
-            date: current.toISOString().split('T')[0],
-            time: form.time,
-            type: specialty,
-            notes: form.notes,
-            status: form.status
-          });
-        }
-        current.setDate(current.getDate() + 1);
-      }
+      form.selectedDays.forEach(date => {
+        addScheduleItem({
+          beneficiaryId: form.beneficiaryId,
+          professionalId: currentUser?.role === 'admin' ? form.professionalId : professionalId,
+          date,
+          time: form.time,
+          type: specialty,
+          notes: form.notes,
+          status: 'agendado',
+        });
+      });
     }
 
-    setForm({
-      beneficiaryId: '',
-      professionalId,
-      date: '',
-      time: '',
-      notes: '',
-      status: 'agendado',
-      repeatMonthly: false,
-      selectedMonth: new Date().toISOString().slice(0, 7)
-    });
+    setFormOpen(false);
   };
 
   const saveStatus = (id: string, status: ScheduleItem['status']) => {
     updateScheduleItem(id, { status });
-    setEditingItemId(null);
+    setPresenceItemId(null);
   };
 
   return (
@@ -220,51 +243,18 @@ export default function Agenda() {
 
       {activeTab === 'agendamentos' && (
         <>
-          <form onSubmit={submit} className="rounded-2xl border border-yellow-100 bg-white p-5 shadow-sm grid grid-cols-1 md:grid-cols-6 gap-3">
-            <select required value={form.beneficiaryId} onChange={(e) => setForm({ ...form, beneficiaryId: e.target.value })} className="rounded-md border p-2 md:col-span-2">
-              <option value="">Beneficiário...</option>
-              {beneficiaries.map((b) => <option key={b.id} value={b.id}>{b.fullName}</option>)}
-            </select>
-
-            {currentUser?.role === 'admin' && (
-              <select required value={form.professionalId} onChange={(e) => setForm({ ...form, professionalId: e.target.value })} className="rounded-md border p-2 md:col-span-2">
-                <option value="">Profissional...</option>
-                {professionals.map((p) => <option key={p.id} value={p.id}>{p.name} - {p.specialty}</option>)}
-              </select>
-            )}
-
-            <input required type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="rounded-md border p-2" />
-            <input required type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="rounded-md border p-2" />
-
-            <select value={form.selectedMonth} onChange={(e) => setForm({ ...form, selectedMonth: e.target.value })} className="rounded-md border p-2">
-              {Array.from({ length: 12 }).map((_, i) => {
-                const d = new Date();
-                d.setMonth(d.getMonth() + i);
-                const value = d.toISOString().slice(0, 7);
-                return (
-                  <option key={value} value={value}>
-                    {d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-                  </option>
-                );
-              })}
-            </select>
-
-            <label className="flex items-center gap-2 text-sm md:col-span-2">
-              <input type="checkbox" checked={form.repeatMonthly} onChange={(e) => setForm({ ...form, repeatMonthly: e.target.checked })} />
-              Gerar agenda do mês inteiro
-            </label>
-
-            <input placeholder="Observações" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="rounded-md border p-2 md:col-span-3" />
-            <button className="inline-flex items-center justify-center gap-2 rounded-md bg-yellow-400 px-4 py-2 font-semibold text-gray-950"><Plus size={18}/> Agendar</button>
-          </form>
-
-          <div className="flex gap-2 flex-wrap">
-            {(['todos','dia','semana','mes'] as const).map((v) => (
-              <button key={v} onClick={() => setView(v)} className={`px-4 py-2 rounded-md text-sm font-medium ${view === v ? 'bg-yellow-400 text-gray-950' : 'bg-white border text-gray-600'}`}>
-                {v === 'todos' ? 'Todos' : v === 'dia' ? 'Hoje' : v === 'semana' ? 'Esta Semana' : 'Este Mês'}
-              </button>
-            ))}
-            <span className="text-sm text-gray-500 self-center ml-2">{filteredItems.length} agendamento(s)</span>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 flex-wrap">
+              {(['todos','dia','semana','mes'] as const).map((v) => (
+                <button key={v} onClick={() => setView(v)} className={`px-4 py-2 rounded-md text-sm font-medium ${view === v ? 'bg-yellow-400 text-gray-950' : 'bg-white border text-gray-600'}`}>
+                  {v === 'todos' ? 'Todos' : v === 'dia' ? 'Hoje' : v === 'semana' ? 'Esta Semana' : 'Este Mês'}
+                </button>
+              ))}
+              <span className="text-sm text-gray-500 self-center ml-2">{filteredItems.length} agendamento(s)</span>
+            </div>
+            <button onClick={openNewForm} className="inline-flex items-center gap-2 rounded-md bg-yellow-400 px-4 py-2 font-semibold text-gray-950 text-sm">
+              <Plus size={18}/> Novo Agendamento
+            </button>
           </div>
 
           <div className="rounded-2xl border border-yellow-100 bg-white shadow-sm overflow-hidden">
@@ -275,31 +265,84 @@ export default function Agenda() {
                 const ben = beneficiaries.find((b) => b.id === item.beneficiaryId);
                 const prof = professionals.find((p) => p.id === item.professionalId);
                 const st = item.status || 'agendado';
-                const isEditing = editingItemId === item.id;
+                const isPresenceOpen = presenceItemId === item.id;
+
                 return (
                   <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b p-4 gap-3">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">{item.date ? new Date(`${item.date}T${item.time || '00:00'}`).toLocaleString() : '-'} - {item.type}</p>
-                      <p className="text-sm text-gray-500">{ben?.fullName || 'Beneficiário'} | {prof?.name || currentUser?.name} {item.notes ? `| ${item.notes}` : ''}</p>
+                      <p className="font-semibold text-gray-900">
+                        {item.date ? new Date(`${item.date}T${item.time || '00:00'}`).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'}
+                        {' às '}{item.time || '-'}
+                      </p>
+                      <p className="text-sm text-gray-600 font-medium">{item.type}</p>
+                      <p className="text-sm text-gray-500">{ben?.fullName || 'Beneficiário'} | {prof?.name || currentUser?.name}</p>
+                      {item.notes && <p className="text-xs text-gray-400 mt-0.5">📝 {item.notes}</p>}
                       <span className={`mt-1 inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${statusColors[st]}`}>{statusLabels[st]}</span>
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {isEditing ? (
-                        <>
-                          <select defaultValue={st} id={`status-${item.id}`} className="text-xs border rounded-md p-1.5">
-                            <option value="agendado">Agendado</option>
-                            <option value="presente">Presente</option>
-                            <option value="falta">Falta</option>
-                            <option value="falta_justificada">Falta Justificada</option>
-                            <option value="ausencia">Declaração de Ausência</option>
-                          </select>
-                          <button onClick={() => { const el = document.getElementById(`status-${item.id}`) as HTMLSelectElement; saveStatus(item.id, el.value as ScheduleItem['status']); }} className="text-green-700 p-1.5 border rounded bg-green-50"><Check size={16}/></button>
-                        </>
-                      ) : (
-                        <button onClick={() => setEditingItemId(item.id)} className="text-blue-700 p-1.5 border rounded"><Edit2 size={16}/></button>
-                      )}
-                      <button onClick={() => { const b2 = beneficiaries.find(b => b.id === item.beneficiaryId); if (!b2?.respPhone) return alert('Telefone não cadastrado'); window.open(`https://wa.me/55${b2.respPhone.replace(/\D/g,'')}?text=${encodeURIComponent(`Olá, lembramos do atendimento: ${item.type}. AMOVIN`)}`, '_blank'); }} className="text-green-700 p-1.5 border rounded"><Phone size={16}/></button>
-                      <button onClick={() => deleteScheduleItem(item.id)} className="text-red-600 p-1.5 border rounded"><Trash2 size={16}/></button>
+
+                    <div className="flex items-center gap-2 flex-wrap relative">
+
+                      {/* BOTÃO EDITAR */}
+                      <button
+                        onClick={() => openEditForm(item)}
+                        className="text-blue-700 p-1.5 border rounded hover:bg-blue-50"
+                        title="Editar"
+                      >
+                        <Edit2 size={16}/>
+                      </button>
+
+                      {/* BOTÃO CONFIRMAR PRESENÇA */}
+                      <div className="relative">
+                        <button
+                          onClick={() => setPresenceItemId(isPresenceOpen ? null : item.id)}
+                          className="inline-flex items-center gap-1 text-green-700 p-1.5 border rounded hover:bg-green-50 text-xs font-semibold"
+                          title="Confirmar Presença"
+                        >
+                          <CheckCircle size={16}/> Presença
+                        </button>
+
+                        {isPresenceOpen && (
+                          <div className="absolute right-0 top-9 z-50 bg-white border rounded-lg shadow-xl w-52">
+                            <div className="p-2 border-b text-xs font-bold text-gray-500">Confirmar Presença</div>
+                            {[
+                              { value: 'presente', label: '✅ Presente', color: 'text-green-700 hover:bg-green-50' },
+                              { value: 'falta', label: '❌ Falta', color: 'text-red-600 hover:bg-red-50' },
+                              { value: 'falta_justificada', label: '📝 Falta Justificada', color: 'text-yellow-700 hover:bg-yellow-50' },
+                              { value: 'cancelamento', label: '🚫 Cancelamento', color: 'text-purple-700 hover:bg-purple-50' },
+                            ].map(opt => (
+                              <button
+                                key={opt.value}
+                                onClick={() => saveStatus(item.id, opt.value as ScheduleItem['status'])}
+                                className={`w-full text-left px-4 py-2 text-sm font-medium ${opt.color}`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* BOTÃO WHATSAPP */}
+                      <button
+                        onClick={() => {
+                          const b2 = beneficiaries.find(b => b.id === item.beneficiaryId);
+                          if (!b2?.respPhone) return alert('Telefone não cadastrado');
+                          window.open(`https://wa.me/55${b2.respPhone.replace(/\D/g,'')}?text=${encodeURIComponent(`Olá! Lembramos do atendimento de ${b2.fullName}: ${item.type} em ${item.date} às ${item.time}. AMOVIN`)}`, '_blank');
+                        }}
+                        className="text-green-700 p-1.5 border rounded hover:bg-green-50"
+                        title="WhatsApp"
+                      >
+                        <Phone size={16}/>
+                      </button>
+
+                      {/* BOTÃO EXCLUIR */}
+                      <button
+                        onClick={() => { if (window.confirm('Excluir agendamento?')) deleteScheduleItem(item.id); }}
+                        className="text-red-600 p-1.5 border rounded hover:bg-red-50"
+                        title="Excluir"
+                      >
+                        <Trash2 size={16}/>
+                      </button>
                     </div>
                   </div>
                 );
@@ -365,6 +408,119 @@ export default function Agenda() {
         </div>
       )}
 
+      {/* MODAL NOVO/EDITAR AGENDAMENTO */}
+      {formOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[60] p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold">{editingItem ? '✏️ Editar Agendamento' : '📅 Novo Agendamento'}</h3>
+              <button onClick={() => setFormOpen(false)} className="text-gray-500 hover:text-red-600"><X size={20} /></button>
+            </div>
+
+            <form onSubmit={submit} className="space-y-4">
+
+              {!editingItem && (
+                <div>
+                  <label className="block text-sm font-medium mb-1">Beneficiário</label>
+                  <select required value={form.beneficiaryId} onChange={(e) => setForm({ ...form, beneficiaryId: e.target.value })} className="block w-full border border-gray-300 rounded-md p-2">
+                    <option value="">Selecione...</option>
+                    {beneficiaries.map((b) => <option key={b.id} value={b.id}>{b.fullName}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {currentUser?.role === 'admin' && !editingItem && (
+                <div>
+                  <label className="block text-sm font-medium mb-1">Profissional</label>
+                  <select required value={form.professionalId} onChange={(e) => setForm({ ...form, professionalId: e.target.value })} className="block w-full border border-gray-300 rounded-md p-2">
+                    <option value="">Selecione...</option>
+                    {professionals.map((p) => <option key={p.id} value={p.id}>{p.name} - {p.specialty}</option>)}
+                  </select>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Horário</label>
+                <select required value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="block w-full border border-gray-300 rounded-md p-2">
+                  <option value="">Selecione...</option>
+                  {timeSlots.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Observações</label>
+                <input type="text" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Opcional..." className="block w-full border border-gray-300 rounded-md p-2" />
+              </div>
+
+              {/* CALENDÁRIO VISUAL */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium">
+                    {editingItem ? 'Novo dia (selecione 1):' : 'Selecione os dias:'}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button type="button" onClick={() => {
+                      const [y, m] = form.calendarMonth.split('-').map(Number);
+                      const prev = new Date(y, m - 2, 1);
+                      setForm(f => ({ ...f, calendarMonth: `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, '0')}`, selectedDays: [] }));
+                    }} className="px-2 py-1 border rounded text-sm">◀</button>
+                    <span className="text-sm font-semibold">
+                      {monthNames[parseInt(form.calendarMonth.split('-')[1]) - 1]} {form.calendarMonth.split('-')[0]}
+                    </span>
+                    <button type="button" onClick={() => {
+                      const [y, m] = form.calendarMonth.split('-').map(Number);
+                      const next = new Date(y, m, 1);
+                      setForm(f => ({ ...f, calendarMonth: `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}`, selectedDays: [] }));
+                    }} className="px-2 py-1 border rounded text-sm">▶</button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-500 mb-1">
+                  {weekDays.map(d => <div key={d}>{d}</div>)}
+                </div>
+
+                <div className="grid grid-cols-7 gap-1">
+                  {calendarDays.map((day, idx) => {
+                    if (!day) return <div key={idx} />;
+                    const [y, m] = form.calendarMonth.split('-').map(Number);
+                    const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const isSelected = form.selectedDays.includes(dateStr);
+                    const isToday2 = dateStr === now.toISOString().split('T')[0];
+                    return (
+                      <button
+                        type="button"
+                        key={idx}
+                        onClick={() => toggleDay(day)}
+                        className={`rounded-full w-9 h-9 text-sm font-semibold mx-auto flex items-center justify-center transition-all
+                          ${isSelected ? 'bg-yellow-400 text-gray-900 shadow' : 'hover:bg-yellow-100 text-gray-700'}
+                          ${isToday2 && !isSelected ? 'border-2 border-yellow-400' : ''}
+                        `}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {form.selectedDays.length > 0 && (
+                  <p className="text-xs text-green-700 font-semibold mt-2">
+                    ✅ {form.selectedDays.length} dia(s) selecionado(s)
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button type="button" onClick={() => setFormOpen(false)} className="px-4 py-2 border rounded-md text-sm">Cancelar</button>
+                <button type="submit" className="px-6 py-2 bg-yellow-400 text-gray-950 font-bold rounded-md text-sm">
+                  {editingItem ? 'Salvar Alteração' : `Agendar ${form.selectedDays.length > 0 ? `(${form.selectedDays.length} dia${form.selectedDays.length > 1 ? 's' : ''})` : ''}`}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DISPONIBILIDADE */}
       {isSlotFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[60] p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl">
