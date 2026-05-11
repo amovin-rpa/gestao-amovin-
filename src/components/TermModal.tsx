@@ -15,18 +15,22 @@ function formatDateBR(dateString?: string): string {
 type TermType = 'adesao' | 'consentimento' | null;
 
 export default function TermModal({ beneficiary, onClose }: { beneficiary: Beneficiary; onClose: () => void }) {
+  // ⚠️ IMPORTANTE: Iniciar com null para mostrar o menu de seleção primeiro
   const [selectedTerm, setSelectedTerm] = useState<TermType>(null);
+  
   const [professionalData, setProfessionalData] = useState({
     name: '',
     specialty: '',
     crefito: '',
   });
+  
   const [localDate, setLocalDate] = useState({
     city: 'Rio Paranaíba - MG',
     date: new Date().toLocaleDateString('pt-BR'),
   });
   
   const ref = useRef<HTMLDivElement>(null);
+  
   const styles = `@page{size:A4 portrait;margin:16mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:18px}.brand-logo{width:230px;height:75px;object-fit:contain}.org{text-align:right;font-size:12px;line-height:1.35}.title{text-align:center;font-weight:700;font-size:18px;margin:20px 0}p{margin:8px 0}ul{margin:4px 0 8px 0;padding-left:20px}li{margin-bottom:4px}.signature{margin-top:50px;text-align:center}.line{width:430px;border-top:1px solid #111;margin:0 auto 6px}.page2{page-break-before:always;break-before:page}.field-inline{display:inline;font-weight:bold;border-bottom:1px solid #000;padding:0 5px;margin:0 3px}.double-signature{display:flex;justify-content:space-between;margin-top:60px;page-break-inside:avoid}.sig-box{width:45%;text-align:center}.sig-box .line{border-top:1px solid #000;margin-bottom:8px}`;
 
   const handlePrint = () => {
@@ -47,7 +51,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   };
 
-  // Tela de seleção de termos
+  // ✅ TELA 1: MENU DE SELEÇÃO DE TERMOS (aparece quando selectedTerm é null)
   if (!selectedTerm) {
     return (
       <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto flex items-center justify-center">
@@ -63,8 +67,12 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
           </div>
 
           <div className="p-6 space-y-4">
+            {/* Botão: Termo de Adesão */}
             <button
-              onClick={() => setSelectedTerm('adesao')}
+              onClick={() => {
+                console.log('Selecionado: adesao');
+                setSelectedTerm('adesao');
+              }}
               className="w-full text-left p-5 border-2 border-blue-200 rounded-xl hover:bg-blue-50 hover:border-blue-400 transition-all flex items-center gap-4 group"
             >
               <div className="p-3 bg-blue-100 rounded-lg group-hover:scale-110 transition-transform">
@@ -76,8 +84,12 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
               </div>
             </button>
 
+            {/* Botão: Termo de Consentimento */}
             <button
-              onClick={() => setSelectedTerm('consentimento')}
+              onClick={() => {
+                console.log('Selecionado: consentimento');
+                setSelectedTerm('consentimento');
+              }}
               className="w-full text-left p-5 border-2 border-green-200 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all flex items-center gap-4 group"
             >
               <div className="p-3 bg-green-100 rounded-lg group-hover:scale-110 transition-transform">
@@ -94,7 +106,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     );
   }
 
-  // Termo de Consentimento
+  // ✅ TELA 2: TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO
   if (selectedTerm === 'consentimento') {
     const respName = beneficiary.respName || '_________________________';
     const respCpf = formatCPF(beneficiary.respCpf || '');
@@ -113,7 +125,10 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
               Termo de Consentimento Livre e Esclarecido
             </h2>
             <div className="flex gap-2">
-              <button onClick={() => setSelectedTerm(null)} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
+              <button onClick={() => {
+                console.log('Voltando para menu');
+                setSelectedTerm(null);
+              }} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
                 ← Voltar
               </button>
               <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2 bg-green-600 text-white hover:bg-green-700">
@@ -193,7 +208,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
               </div>
             </div>
 
-            {/* Área do termo */}
+            {/* Área do termo para impressão */}
             <div className="flex-1 p-6 overflow-y-auto bg-gray-100">
               <div ref={ref} className="sheet bg-white p-8 w-[790px] mx-auto shadow-lg" style={{ fontSize: '13px', lineHeight: '1.5' }}>
                 
@@ -262,14 +277,17 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     );
   }
 
-  // Termo de Adesão (original)
+  // ✅ TELA 3: TERMO DE ADESÃO E COMPROMISSO (original)
   return (
     <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto">
       <div className="mx-auto max-w-4xl rounded-2xl bg-white shadow-2xl">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
           <h2 className="text-xl font-bold">{S.termoAdesao + ' e Compromisso'}</h2>
           <div className="flex gap-2">
-            <button onClick={() => setSelectedTerm(null)} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
+            <button onClick={() => {
+              console.log('Voltando para menu');
+              setSelectedTerm(null);
+            }} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
               ← Ver outros termos
             </button>
             <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2">
