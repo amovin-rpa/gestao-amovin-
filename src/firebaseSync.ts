@@ -49,6 +49,42 @@ async function initialSync() {
   }
 }
 
+// 🔥 FUNÇÃO ADICIONADA: Força o upload de TODOS os dados locais para o Firebase
+export async function uploadAllToFirebase(): Promise<boolean> {
+  try {
+    console.log('🚀 Iniciando upload completo para Firebase...');
+    const state = useStore.getState();
+    let totalUploaded = 0;
+
+    for (const colName of COLLECTIONS) {
+      const localItems = (state as unknown as Record<string, unknown[]>)[colName] || [];
+      
+      if (localItems.length > 0) {
+        console.log(`📤 Enviando ${localItems.length} itens de: ${colName}`);
+        const batch = writeBatch(db);
+        
+        for (const item of localItems) {
+          const record = item as Record<string, unknown>;
+          if (!record.id) continue;
+          
+          const docRef = doc(db, colName, record.id as string);
+          batch.set(docRef, record, { merge: true });
+        }
+        
+        await batch.commit();
+        totalUploaded += localItems.length;
+        console.log(`✅ ${colName}: ${localItems.length} itens enviados`);
+      }
+    }
+    
+    console.log(`🎉 Upload concluído! Total de registros enviados: ${totalUploaded}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Erro no uploadAllToFirebase:', error);
+    return false;
+  }
+}
+
 // Listen to all collections in Firestore and sync to local store
 export function startFirebaseSync() {
   stopFirebaseSync();
