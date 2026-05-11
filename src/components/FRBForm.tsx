@@ -17,9 +17,14 @@ interface Props {
 // FUNÇÃO QUE CORRIGE A DATA (evita problema de fuso horário)
 function formatDateBR(dateString?: string): string {
   if (!dateString) return '-';
-  const [year, month, day] = dateString.split('-');
-  if (!year || !month || !day) return '-';
-  return `${day}/${month}/${year}`;
+  // Remove qualquer informação de horário ou fuso, mantendo apenas a data
+  const dataLimpa = dateString.split('T')[0];
+  const [ano, mes, dia] = dataLimpa.split('-');
+  if (!ano || !mes || !dia) return '-';
+  // Garante que dia e mês tenham 2 dígitos (ex: 05, não 5)
+  const diaFormatado = dia.padStart(2, '0');
+  const mesFormatado = mes.padStart(2, '0');
+  return `${diaFormatado}/${mesFormatado}/${ano}`;
 }
 
 export default function FRBForm({ initialData, onClose, readOnly = false }: Props) {
