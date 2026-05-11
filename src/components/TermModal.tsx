@@ -15,7 +15,7 @@ function formatDateBR(dateString?: string): string {
 type TermType = 'adesao' | 'consentimento' | null;
 
 export default function TermModal({ beneficiary, onClose }: { beneficiary: Beneficiary; onClose: () => void }) {
-  const [selectedTerm, setSelectedTerm] = useState<TermType>('adesao');
+  const [selectedTerm, setSelectedTerm] = useState<TermType>(null);
   const [professionalData, setProfessionalData] = useState({
     name: '',
     specialty: '',
