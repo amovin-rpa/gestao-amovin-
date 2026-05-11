@@ -1,231 +1,390 @@
-import React, { useState, useRef } from 'react';
-import { useStore, Beneficiary } from '../store';
-import { differenceInYears, parseISO } from 'date-fns';
-import { Printer, Save, X, ClipboardList, FileSignature, Loader2 } from 'lucide-react';
-import MedicalRecordModal from './MedicalRecordModal';
-import TermModal from './TermModal';
+import { useRef, useState } from 'react';
+import { Beneficiary } from '../store';
+import { Printer, X, FileText, ClipboardCheck } from 'lucide-react';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { S } from '../utils/strings';
-import { uploadToImgur } from '../services/imgur';
-
-interface Props {
-  initialData?: Beneficiary;
-  onClose: () => void;
-  readOnly?: boolean;
-}
 
 // FUNÇÃO QUE CORRIGE A DATA (evita problema de fuso horário)
 function formatDateBR(dateString?: string): string {
-  if (!dateString) return '-';
-  // Remove qualquer informação de horário ou fuso, mantendo apenas a data
-  const dataLimpa = dateString.split('T')[0];
-  const [ano, mes, dia] = dataLimpa.split('-');
-  if (!ano || !mes || !dia) return '-';
-  // Garante que dia e mês tenham 2 dígitos (ex: 05, não 5)
-  const diaFormatado = dia.padStart(2, '0');
-  const mesFormatado = mes.padStart(2, '0');
-  return `${diaFormatado}/${mesFormatado}/${ano}`;
+  if (!dateString) return '________________';
+  const [year, month, day] = dateString.split('-');
+  if (!year || !month || !day) return '________________';
+  return `${day}/${month}/${year}`;
 }
 
-export default function FRBForm({ initialData, onClose, readOnly = false }: Props) {
-  const { addBeneficiary, updateBeneficiary, currentUser, addAuditLog } = useStore();
-  const _readOnly = readOnly;
-  const [formData, setFormData] = useState<Partial<Beneficiary>>(initialData || {
-    activities: [],
-    supportLevel: 'Não',
-    isStudent: 'Não',
-    hasAllergies: 'Não',
-    continuousMedication: 'Não',
+type TermType = 'adesao' | 'consentimento' | null;
+
+export default function TermModal({ beneficiary, onClose }: { beneficiary: Beneficiary; onClose: () => void }) {
+  // ✅ CORREÇÃO: Iniciar com null para mostrar o menu de seleção primeiro
+  const [selectedTerm, setSelectedTerm] = useState<TermType>(null);
+  const [professionalData, setProfessionalData] = useState({
+    name: '',
+    specialty: '',
+    crefito: '',
   });
-  const [isSaving, setIsSaving] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const printRef = useRef<HTMLDivElement>(null);
-  const [showMedicalRecord, setShowMedicalRecord] = useState(false);
-  const [showTerm, setShowTerm] = useState(false);
-
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, photoUrl: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const calculateAge = (dateString?: string) => {
-    if (!dateString) return '';
-    try { return differenceInYears(new Date(), parseISO(dateString)) + ' anos'; } catch { return ''; }
-  };
-
-  const handleCheckboxChange = (value: string) => {
-    const current = formData.activities || [];
-    if (current.includes(value)) {
-      setFormData(prev => ({ ...prev, activities: current.filter(a => a !== value) }));
-    } else {
-      setFormData(prev => ({ ...prev, activities: [...current, value] }));
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = async () => {
-    if (_readOnly) return;
-    setIsSaving(true);
-    try {
-      let finalPhotoUrl = formData.photoUrl;
-      if (selectedFile) {
-        const imgurLink = await uploadToImgur(selectedFile);
-        if (imgurLink) finalPhotoUrl = imgurLink;
-      }
-      const dataToSave = { ...formData, photoUrl: finalPhotoUrl, matricula: formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '' };
-      if (initialData?.id) {
-        await updateBeneficiary(initialData.id, dataToSave);
-        addAuditLog('Editar beneficiario', formData.fullName || '');
-      } else {
-        await addBeneficiary(dataToSave as Omit<Beneficiary, 'id' | 'inclusionDate'>);
-        addAuditLog('Cadastrar beneficiario', formData.fullName || '');
-      }
-      onClose();
-    } catch (err) {
-      console.error('Erro ao salvar:', err);
-      alert('Erro ao salvar. Tente novamente.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const [localDate, setLocalDate] = useState({
+    city: 'Rio Paranaíba - MG',
+    date: new Date().toLocaleDateString('pt-BR'),
+  });
+  
+  const ref = useRef<HTMLDivElement>(null);
+  const styles = `@page{size:A4 portrait;margin:16mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:18px}.brand-logo{width:230px;height:75px;object-fit:contain}.org{text-align:right;font-size:12px;line-height:1.35}.title{text-align:center;font-weight:700;font-size:18px;margin:20px 0}p{margin:8px 0}ul{margin:4px 0 8px 0;padding-left:20px}li{margin-bottom:4px}.signature{margin-top:50px;text-align:center}.line{width:430px;border-top:1px solid #111;margin:0 auto 6px}.page2{page-break-before:always;break-before:page}.field-inline{display:inline;font-weight:bold;border-bottom:1px solid #000;padding:0 5px;margin:0 3px}.double-signature{display:flex;justify-content:space-between;margin-top:60px;page-break-inside:avoid}.sig-box{width:45%;text-align:center}.sig-box .line{border-top:1px solid #000;margin-bottom:8px}`;
 
   const handlePrint = () => {
-    const printWindow = window.open('', '_blank');
-    if (printWindow && printRef.current) {
-      printRef.current.style.display = 'block';
-      const printContent = printRef.current.innerHTML;
-      printRef.current.style.display = 'none';
-      printWindow.document.write(`<html><head><title>Impressão FRB</title><style>body{font-family:sans-serif;padding:20px}@page{size:A4 portrait;margin:16mm}.print-container{max-width:800px;margin:0 auto}.header{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:20px}.brand-logo{width:220px;height:70px;object-fit:contain}.photo-box{width:3cm;height:4cm;border:1px solid #000;display:flex;align-items:center;justify-content:center;overflow:hidden}.photo-box img{width:100%;height:100%;object-fit:cover}.title-box{text-align:center;flex-grow:1}.section-title{font-weight:bold;background-color:#f0f0f0;padding:5px;margin-top:20px;border:1px solid #ddd}.row{display:flex;gap:20px;margin-bottom:10px;border-bottom:1px dashed #eee;padding-bottom:5px}.field{flex:1}.label{font-weight:bold;font-size:12px;color:#555}.value{font-size:14px;margin-top:2px}.signature-area{margin-top:50px;text-align:center}.signature-line{width:300px;border-top:1px solid #000;margin:0 auto 5px auto}</style></head><body>${printContent}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close()}}</script></body></html>`);
-      printWindow.document.close();
-    }
+    const win = window.open('', '_blank');
+    if (!win || !ref.current) return;
+    win.document.write(`<html><head><title>Termo</title><meta charset="UTF-8"/><style>${styles}</style></head><body>${ref.current.innerHTML}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close()}}<\/script></body></html>`);
+    win.document.close();
   };
 
-  return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex justify-center items-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold text-gray-800">{S.fichaRegistro}</h2>
-          <div className="flex space-x-2">
-            {formData.id && (
-              <button onClick={() => setShowMedicalRecord(true)} className="p-2 text-amber-700 hover:bg-amber-50 rounded flex items-center gap-1 border border-amber-200" title={S.prontuario}>
-                <ClipboardList size={20} /> {S.prontuario}
-              </button>
-            )}
-            <button onClick={() => setShowTerm(true)} className="p-2 text-gray-800 hover:bg-yellow-50 rounded flex items-center gap-1 border border-yellow-300 bg-yellow-50" title={S.termoAdesao}>
-              <FileSignature size={20} /> {S.termoAdesao}
-            </button>
-            <button onClick={handlePrint} className="p-2 text-gray-600 hover:bg-gray-100 rounded" title={S.imprimir}>
-              <Printer size={20} /> {S.imprimir}
-            </button>
-            {!_readOnly && (
-              <button onClick={handleSave} disabled={isSaving} className="p-2 text-blue-600 hover:bg-blue-50 rounded flex items-center gap-1 disabled:text-gray-400" title={S.salvar}>
-                {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                {isSaving ? 'Salvando...' : S.salvar}
-              </button>
-            )}
-            <button onClick={onClose} className="p-2 text-red-600 hover:bg-red-50 rounded" title={S.fechar}>
+  // Data de hoje formatada para BR
+  const hoje = new Date();
+  const dataHoje = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
+
+  // Formata CPF
+  const formatCPF = (cpf: string): string => {
+    if (!cpf) return '________________';
+    const numbers = cpf.replace(/\D/g, '');
+    return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  };
+
+  // ✅ TELA DE SELEÇÃO DE TERMOS (aparece primeiro)
+  if (!selectedTerm) {
+    return (
+      <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto flex items-center justify-center">
+        <div className="mx-auto max-w-2xl rounded-2xl bg-white shadow-2xl">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <FileText className="text-blue-600" />
+              Selecionar Termo
+            </h2>
+            <button onClick={onClose} className="rounded-md px-3 py-2 text-red-600 hover:bg-red-50">
               <X size={20} />
             </button>
           </div>
-        </div>
 
-        <div className="p-6 overflow-y-auto flex-1">
-          <div className="space-y-6">
-            <div className="flex items-start gap-6">
-              <div className="flex flex-col items-center">
-                <div className="w-24 h-32 border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 overflow-hidden relative">
-                  {formData.photoUrl ? (
-                    <img src={formData.photoUrl} alt="Foto 3x4" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-xs text-gray-400 text-center">Foto 3x4<br/>Retangular</span>
-                  )}
-                  <input type="file" accept="image/*" onChange={handlePhotoUpload} className="absolute inset-0 opacity-0 cursor-pointer" />
-                </div>
-                <span className="text-xs text-blue-600 mt-1 cursor-pointer">Alterar Foto</span>
+          <div className="p-6 space-y-4">
+            <button
+              onClick={() => setSelectedTerm('adesao')}
+              className="w-full text-left p-5 border-2 border-blue-200 rounded-xl hover:bg-blue-50 hover:border-blue-400 transition-all flex items-center gap-4 group"
+            >
+              <div className="p-3 bg-blue-100 rounded-lg group-hover:scale-110 transition-transform">
+                <FileText className="text-blue-600" size={28} />
               </div>
+              <div>
+                <div className="font-bold text-gray-800 text-lg">Termo de Adesão e Compromisso</div>
+                <div className="text-sm text-gray-500">Termo padrão de participação nas atividades da associação</div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setSelectedTerm('consentimento')}
+              className="w-full text-left p-5 border-2 border-green-200 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all flex items-center gap-4 group"
+            >
+              <div className="p-3 bg-green-100 rounded-lg group-hover:scale-110 transition-transform">
+                <ClipboardCheck className="text-green-600" size={28} />
+              </div>
+              <div>
+                <div className="font-bold text-gray-800 text-lg">Termo de Consentimento Livre e Esclarecido</div>
+                <div className="text-sm text-gray-500">Autorização para tratamento fisioterapêutico</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO
+  if (selectedTerm === 'consentimento') {
+    const respName = beneficiary.respName || '_________________________';
+    const respCpf = formatCPF(beneficiary.respCpf || '');
+    const respAddress = beneficiary.respAddress || '_________________________';
+    const beneficiaryName = beneficiary.fullName || '_________________________';
+    const profName = professionalData.name || '_________________________';
+    const profSpecialty = professionalData.specialty || '_________________________';
+    const profCrefito = professionalData.crefito || '_________________________';
+
+    return (
+      <div className="fixed inset-0 z-[60] bg-gray-900/70 p-2 overflow-y-auto">
+        <div className="mx-auto max-w-6xl rounded-2xl bg-white shadow-2xl">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <ClipboardCheck className="text-green-600" />
+              Termo de Consentimento Livre e Esclarecido
+            </h2>
+            <div className="flex gap-2">
+              <button onClick={() => setSelectedTerm(null)} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
+                ← Voltar
+              </button>
+              <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2 bg-green-600 text-white hover:bg-green-700">
+                <Printer size={16} /> {S.imprimir}
+              </button>
+              <button onClick={onClose} className="rounded-md px-3 py-2 text-red-600 hover:bg-red-50">
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col lg:flex-row">
+            {/* Painel lateral - Dados do profissional */}
+            <div className="w-full lg:w-80 p-5 border-r bg-gray-50 overflow-y-auto max-h-[calc(100vh-100px)]">
+              <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <ClipboardCheck className="text-green-600" size={20} />
+                Dados do Profissional
+              </h3>
               
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2"><h3 className="text-lg font-semibold border-b pb-2">DADOS DO BENEFICIÁRIO</h3></div>
-                <div><label className="block text-sm font-medium text-gray-700">Nome Completo</label><input type="text" name="fullName" value={formData.fullName || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-                <div><label className="block text-sm font-medium text-gray-700">Matrícula</label><input type="text" value={formData.matricula || (formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '')} readOnly className="mt-1 block w-full rounded-md border-gray-200 bg-gray-100 shadow-sm border p-2 text-gray-600" /><p className="text-xs text-gray-400 mt-1">Gerada automaticamente pelos 6 primeiros dígitos do CPF</p></div>
-                <div><label className="block text-sm font-medium text-gray-700">Data de Nascimento</label><div className="flex items-center gap-2"><input type="date" name="birthDate" value={formData.birthDate || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /><span className="text-sm font-medium text-gray-600 mt-1 whitespace-nowrap">{calculateAge(formData.birthDate)}</span></div></div>
-                <div><label className="block text-sm font-medium text-gray-700">Gênero</label><select name="gender" value={formData.gender || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="">Selecione...</option><option value="Feminino">Feminino</option><option value="Masculino">Masculino</option><option value="Não-Binário">Não-Binário</option><option value="Prefiro não responder">Prefiro não responder</option></select></div>
-                <div><label className="block text-sm font-medium text-gray-700">RG</label><input type="text" name="rg" value={formData.rg || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-                <div><label className="block text-sm font-medium text-gray-700">CPF</label><input type="text" name="cpf" value={formData.cpf || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-                <div><label className="block text-sm font-medium text-gray-700">Diagnóstico/Condição</label><input type="text" name="diagnosis" value={formData.diagnosis || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-                <div><label className="block text-sm font-medium text-gray-700">CID (Código Internacional de Doença)</label><input type="text" name="cid" value={formData.cid || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-                <div><label className="block text-sm font-medium text-gray-700">Nível de Suporte</label><select name="supportLevel" value={formData.supportLevel || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="">Selecione...</option><option value="Sim">Sim</option><option value="Não">Não</option></select></div>
-                {formData.supportLevel === 'Sim' && <div><label className="block text-sm font-medium text-gray-700">Qual nível de suporte?</label><input type="text" name="supportLevelDetails" value={formData.supportLevelDetails || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>}
-                <div><label className="block text-sm font-medium text-gray-700">Comorbidades<span className="block text-xs font-normal text-gray-500">(Outras condições associadas)</span></label><select name="hasComorbidities" value={formData.hasComorbidities || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="">Selecione...</option><option value="Sim">Sim</option><option value="Não">Não</option></select></div>
-                {formData.hasComorbidities === 'Sim' && <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700">Quais comorbidades?</label><textarea name="comorbidities" value={formData.comorbidities || ''} onChange={handleChange} rows={2} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>}
-                <div><label className="block text-sm font-medium text-gray-700">Estudante?</label><select name="isStudent" value={formData.isStudent || 'Não'} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="Não">Não</option><option value="Sim">Sim</option></select></div>
-                {formData.isStudent === 'Sim' && <div className="grid grid-cols-2 gap-2"><div><label className="block text-sm font-medium text-gray-700">Escola</label><input type="text" name="schoolName" value={formData.schoolName || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div><div><label className="block text-sm font-medium text-gray-700">Série</label><input type="text" name="schoolGrade" value={formData.schoolGrade || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div></div>}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Nome do Profissional *</label>
+                  <input
+                    type="text"
+                    value={professionalData.name}
+                    onChange={(e) => setProfessionalData(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    placeholder="Ex: Maria Silva Santos"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Especialidade *</label>
+                  <input
+                    type="text"
+                    value={professionalData.specialty}
+                    onChange={(e) => setProfessionalData(prev => ({ ...prev, specialty: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    placeholder="Ex: Fisioterapeuta Neurofuncional"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">CREFITO-4 *</label>
+                  <input
+                    type="text"
+                    value={professionalData.crefito}
+                    onChange={(e) => setProfessionalData(prev => ({ ...prev, crefito: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    placeholder="Ex: 123456-F"
+                  />
+                </div>
+
+                <div className="pt-4 border-t">
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Cidade</label>
+                  <input
+                    type="text"
+                    value={localDate.city}
+                    onChange={(e) => setLocalDate(prev => ({ ...prev, city: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Data</label>
+                  <input
+                    type="text"
+                    value={localDate.date}
+                    onChange={(e) => setLocalDate(prev => ({ ...prev, date: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg text-xs text-green-800">
+                <strong>💡 Dica:</strong> Preencha todos os campos para gerar o termo corretamente.
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2"><h3 className="text-lg font-semibold border-b pb-2 mt-4">PERFIL E NECESSIDADES</h3></div>
-              <div><label className="block text-sm font-medium text-gray-700">Possui alergia ou restrição alimentar?</label><select name="hasAllergies" value={formData.hasAllergies || 'Não'} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="Não">Não</option><option value="Sim">Sim</option></select></div>
-              {formData.hasAllergies === 'Sim' && <div><label className="block text-sm font-medium text-gray-700">Qual alergia?</label><input type="text" name="allergiesDetails" value={formData.allergiesDetails || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>}
-              <div><label className="block text-sm font-medium text-gray-700">Faz uso de medicação contínua?</label><select name="continuousMedication" value={formData.continuousMedication || 'Não'} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="Não">Não</option><option value="Sim">Sim</option></select></div>
-              {formData.continuousMedication === 'Sim' && <div><label className="block text-sm font-medium text-gray-700">Qual medicação?</label><input type="text" name="medicationDetails" value={formData.medicationDetails || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>}
-              <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700 mb-2">Quais atendimentos ou atividades você mais busca na associação hoje:</label><div className="flex flex-wrap gap-4">{['Apoio Informativo Jurídico/Direitos', 'Oficinas Pedagógicas', 'Terapias', 'Lazer/Socialização', 'Acolhimento Familiar'].map(activity => (<label key={activity} className="flex items-center space-x-2"><input type="checkbox" checked={formData.activities?.includes(activity) || false} onChange={() => handleCheckboxChange(activity)} className="rounded border-gray-300 text-blue-600 shadow-sm" /><span className="text-sm text-gray-700">{activity}</span></label>))}</div></div>
+            {/* Área do termo para impressão */}
+            <div className="flex-1 p-6 overflow-y-auto bg-gray-100">
+              <div ref={ref} className="sheet bg-white p-8 w-[790px] mx-auto shadow-lg" style={{ fontSize: '13px', lineHeight: '1.5' }}>
+                
+                {/* Header */}
+                <div className="header">
+                  <img src={AMOVIN_LOGO_SRC} className="brand-logo" alt="Logo" />
+                  <div className="org">
+                    <strong>Associação e Movimento pela Inclusão em Rio Paranaíba</strong><br />
+                    CNPJ: 55.880.046/0001-34<br />
+                    INSTAGRAM: @amovin_rpa<br />
+                    EMAIL: contato@amovin.org.br<br />
+                    WHATSAPP: (34) 99821-0513
+                  </div>
+                </div>
 
-              <div className="md:col-span-2"><h3 className="text-lg font-semibold border-b pb-2 mt-4">DADOS DO RESPONSÁVEL</h3></div>
-              <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700">Nome completo do responsável</label><input type="text" name="respName" value={formData.respName || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-              <div><label className="block text-sm font-medium text-gray-700">Telefone/Whatsapp</label><input type="text" name="respPhone" value={formData.respPhone || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-              <div><label className="block text-sm font-medium text-gray-700">Vínculo com Beneficiário</label><select name="respRelationship" value={formData.respRelationship || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="">Selecione...</option><option value="Mãe">Mãe</option><option value="Pai">Pai</option><option value="Avó">Avó</option><option value="Avô">Avô</option><option value="Tutor Legal">Tutor Legal</option><option value="Outros">Outros</option></select></div>
-              {formData.respRelationship === 'Outros' && <div><label className="block text-sm font-medium text-gray-700">Qual vínculo?</label><input type="text" name="respRelationshipOther" value={formData.respRelationshipOther || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>}
-              <div><label className="block text-sm font-medium text-gray-700">RG</label><input type="text" name="respRg" value={formData.respRg || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-              <div><label className="block text-sm font-medium text-gray-700">CPF</label><input type="text" name="respCpf" value={formData.respCpf || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-              <div className="md:col-span-2"><label className="block text-sm font-medium text-gray-700">Endereço completo</label><input type="text" name="respAddress" value={formData.respAddress || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2" /></div>
-              <div><label className="block text-sm font-medium text-gray-700">Renda familiar</label><select name="familyIncome" value={formData.familyIncome || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="">Selecione...</option><option value="Até 2.000">Até 2.000</option><option value="2.001 a 5.000">2.001 a 5.000</option><option value="5.001 a 10.000">5.001 a 10.000</option><option value="Acima de 10.001">Acima de 10.001</option></select></div>
-              <div><label className="block text-sm font-medium text-gray-700">Criança incluída como dependente no IRPF?</label><select name="irpfDependent" value={formData.irpfDependent || ''} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"><option value="">Selecione...</option><option value="Sim">Sim</option><option value="Não">Não</option><option value="Não tenho certeza">Não tenho certeza</option></select></div>
+                <div className="title">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</div>
+
+                <div style={{ marginTop: '20px', marginBottom: '25px' }}>
+                  <p style={{ margin: '10px 0' }}>
+                    <strong>Profissional responsável:</strong> <span className="field-inline">{profName}</span><br />
+                    <strong>Especialidade:</strong> <span className="field-inline">{profSpecialty}</span>
+                  </p>
+                </div>
+
+                <div style={{ textAlign: 'justify', textIndent: '40px', margin: '20px 0' }}>
+                  <p>
+                    Eu, <span className="field-inline">{respName}</span>, portador(a) do CPF: <span className="field-inline">{respCpf}</span>, residente <span className="field-inline">{respAddress}</span>, DECLARO, estando em pleno gozo de minhas faculdades mentais, que fui previamente informado(a) pelo(a) Fisioterapeuta, Dr(a). <span className="field-inline">{profName}</span>, registrado(a) no CREFITO-4 sob o nº <span className="field-inline">{profCrefito}</span>, acerca do meu estado de saúde funcional, bem como declaro que recebi deste(a) todos os esclarecimentos necessários no que se refere ao diagnóstico fisioterapêutico e/ou os objetivos da assistência fisioterapêutica para o tratamento ao qual o menor <span className="field-inline">{beneficiaryName}</span> irá ser submetido, tendo este cumprido o dever que lhe é imposto no art. 14, inciso V, da Res. COFFITO nº 424/2013.
+                  </p>
+                </div>
+
+                <div style={{ textAlign: 'justify', textIndent: '40px', margin: '15px 0' }}>
+                  <p>
+                    Declaro, ainda, ter sido informado(a), de forma clara, acerca da finalidade, riscos e benefícios de referido tratamento, bem como dos efeitos colaterais e outras anormalidades e intercorrências que poderão advir do mesmo.
+                  </p>
+                </div>
+
+                <p style={{ margin: '25px 0 40px 0', fontWeight: 'bold' }}>
+                  Concordo com todas as informações descritas acima.
+                </p>
+
+                <p style={{ textAlign: 'right', margin: '30px 0', fontWeight: 'bold' }}>
+                  {localDate.city}, {localDate.date}.
+                </p>
+
+                <div className="double-signature">
+                  <div className="sig-box">
+                    <div className="line"></div>
+                    <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{respName}</div>
+                    <div style={{ fontSize: '11px', color: '#555' }}>Responsável Legal<br />CPF: {respCpf}</div>
+                  </div>
+                  <div className="sig-box">
+                    <div className="line"></div>
+                    <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{profName}</div>
+                    <div style={{ fontSize: '11px', color: '#555' }}>
+                      {profSpecialty}<br />
+                      CREFITO-4: {profCrefito}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
       </div>
+    );
+  }
 
-      <div style={{ display: 'none' }} ref={printRef} className="print-container bg-white p-8 w-[800px]">
-        <div className="header">
-          <img src={AMOVIN_LOGO_SRC} alt="Logo Amovin" className="brand-logo" />
-          <div className="title-box"><h1 style={{ margin: 0, fontSize: '24px' }}>Gestao Amovin Integrado</h1><h2 style={{ margin: '5px 0 0 0', fontSize: '18px', fontWeight: 'normal' }}>Ficha de Registro do Beneficiário</h2></div>
-        </div>
-        <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-          <div className="photo-box">{formData.photoUrl ? <img src={formData.photoUrl} alt="Foto" /> : <span style={{ fontSize: '12px', color: '#999', textAlign: 'center' }}>Foto 3x4</span>}</div>
-          <div style={{ flex: 1 }}>
-            <div className="section-title" style={{ marginTop: 0 }}>DADOS DO BENEFICIÁRIO</div>
-            <div className="row"><div className="field" style={{ flex: 2 }}><div className="label">Nome Completo</div><div className="value">{formData.fullName || '-'}</div></div><div className="field"><div className="label">Matrícula</div><div className="value">{formData.matricula || (formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '-')}</div></div><div className="field"><div className="label">Data de Nasc. / Idade</div><div className="value">{formData.birthDate ? `${formatDateBR(formData.birthDate)} (${calculateAge(formData.birthDate)})` : '-'}</div></div></div>
-            <div className="row"><div className="field"><div className="label">Gênero</div><div className="value">{formData.gender || '-'}</div></div><div className="field"><div className="label">RG</div><div className="value">{formData.rg || '-'}</div></div><div className="field"><div className="label">CPF</div><div className="value">{formData.cpf || '-'}</div></div></div>
+  // ✅ TERMO DE ADESÃO E COMPROMISSO (original)
+  return (
+    <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto">
+      <div className="mx-auto max-w-4xl rounded-2xl bg-white shadow-2xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
+          <h2 className="text-xl font-bold">{S.termoAdesao + ' e Compromisso'}</h2>
+          <div className="flex gap-2">
+            <button onClick={() => setSelectedTerm(null)} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
+              ← Ver outros termos
+            </button>
+            <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2">
+              <Printer size={16} /> {S.imprimir}
+            </button>
+            <button onClick={onClose} className="rounded-md px-3 py-2 text-red-600 hover:bg-red-50">
+              <X size={18} />
+            </button>
           </div>
         </div>
-        <div className="row"><div className="field"><div className="label">Diagnóstico/Condição</div><div className="value">{formData.diagnosis || '-'}</div></div><div className="field"><div className="label">CID</div><div className="value">{formData.cid || '-'}</div></div></div>
-        <div className="row"><div className="field"><div className="label">Nível de Suporte</div><div className="value">{formData.supportLevel === 'Sim' ? `Sim - ${formData.supportLevelDetails}` : 'Não'}</div></div><div className="field"><div className="label">Estudante</div><div className="value">{formData.isStudent === 'Sim' ? `Sim - Escola: ${formData.schoolName} (Série: ${formData.schoolGrade})` : 'Não'}</div></div></div>
-        <div className="row"><div className="field"><div className="label">Comorbidades</div><div className="value">{formData.comorbidities || '-'}</div></div></div>
-        <div className="section-title">PERFIL E NECESSIDADES</div>
-        <div className="row"><div className="field"><div className="label">Alergia/Restrição</div><div className="value">{formData.hasAllergies === 'Sim' ? `Sim - ${formData.allergiesDetails}` : 'Não'}</div></div><div className="field"><div className="label">Medicação Contínua</div><div className="value">{formData.continuousMedication === 'Sim' ? `Sim - ${formData.medicationDetails}` : 'Não'}</div></div></div>
-        <div className="row"><div className="field"><div className="label">Atividades Buscadas</div><div className="value">{formData.activities?.length ? formData.activities.join(', ') : '-'}</div></div></div>
-        <div className="section-title">DADOS DO RESPONSÁVEL</div>
-        <div className="row"><div className="field" style={{ flex: 2 }}><div className="label">Nome Completo</div><div className="value">{formData.respName || '-'}</div></div><div className="field"><div className="label">Vínculo</div><div className="value">{formData.respRelationship === 'Outros' ? formData.respRelationshipOther : formData.respRelationship || '-'}</div></div></div>
-        <div className="row"><div className="field"><div className="label">Telefone/Whatsapp</div><div className="value">{formData.respPhone || '-'}</div></div><div className="field"><div className="label">RG</div><div className="value">{formData.respRg || '-'}</div></div><div className="field"><div className="label">CPF</div><div className="value">{formData.respCpf || '-'}</div></div></div>
-        <div className="row"><div className="field"><div className="label">Endereço</div><div className="value">{formData.respAddress || '-'}</div></div></div>
-        <div className="row"><div className="field"><div className="label">Renda Familiar</div><div className="value">{formData.familyIncome || '-'}</div></div><div className="field"><div className="label">Dependente IRPF</div><div className="value">{formData.irpfDependent || '-'}</div></div></div>
-        <div className="signature-area"><div className="signature-line"></div><div className="signature-name">{currentUser?.name}</div><div className="signature-date">Assinado digitalmente em: {new Date().toLocaleDateString('pt-BR')}</div></div>
-      </div>
 
-      {showMedicalRecord && formData.id && <MedicalRecordModal beneficiary={formData as Beneficiary} onClose={() => setShowMedicalRecord(false)} />}
-      {showTerm && <TermModal beneficiary={formData as Beneficiary} onClose={() => setShowTerm(false)} />}
+        <div className="p-6">
+          <div ref={ref} className="sheet bg-white p-8 w-[790px] mx-auto" style={{ fontSize: '13px', lineHeight: '1.5' }}>
+
+            {/* === PAGE 1 === */}
+            <div className="header">
+              <img src={AMOVIN_LOGO_SRC} className="brand-logo" alt="Logo" />
+              <div className="org">
+                <strong>Associação e Movimento pela Inclusão em Rio Paranaíba</strong><br />
+                CNPJ: 55.880.046/0001-34<br />
+                INSTAGRAM: @amovin_rpa<br />
+                EMAIL: contato@amovin.org.br<br />
+                WHATSAPP: (34) 99821-0513
+              </div>
+            </div>
+
+            <div className="title">TERMO DE ADESÃO E COMPROMISSO</div>
+
+            <p>
+              <strong>1. IDENTIFICAÇÃO</strong><br />
+              ASSOCIADO(A) RESPONSÁVEL: {beneficiary.respName || '________________'}, CPF: {beneficiary.respCpf || '________________'}, {beneficiary.respAddress || 'Endereco nao informado'}.<br />
+              BENEFICIÁRIO (FILHO/A): {beneficiary.fullName || '________________'}   |   MATRÍCULA: {beneficiary.matricula || '________________'}, Nascimento: {formatDateBR(beneficiary.birthDate)}.
+            </p>
+
+            <p>
+              <strong>2. DO OBJETO</strong> O presente termo formaliza a participação do beneficiário nas atividades promovidas pela Associação, visando o suporte, a inclusão e a defesa de direitos, conforme o Estatuto Social da entidade.
+            </p>
+
+            <p>
+              <strong>3. COMPROMISSOS DA ASSOCIAÇÃO</strong>
+            </p>
+            <ul>
+              <li>Oferecer atividades, orientações ou acolhimento conforme a disponibilidade de voluntários e recursos.</li>
+              <li>Zelar pelo bem-estar e segurança dos beneficiários durante o período das atividades na sede.</li>
+              <li>Manter sigilo sobre laudos e dados sensíveis compartilhados pela família.</li>
+            </ul>
+
+            <p>
+              <strong>4. COMPROMISSOS DOS PAIS/RESPONSÁVEIS</strong>
+            </p>
+            <ul>
+              <li><strong>Frequência e Pontualidade:</strong> Comunicar ausências em oficinas ou atendimentos com no mínimo 24h de antecedência.</li>
+              <li><strong>Cláusula de Frequência:</strong> A ocorrência de 03 faltas consecutivas ou alternadas, sem comprovação ou justificativa, resultará na perda da vaga no horário atual, sendo o beneficiário redirecionado para o final da fila, se houver fila de espera.</li>
+              <li><strong>Participação Ativa e Voluntariado:</strong> O responsável compromete-se a realizar, no mínimo, 03 participações voluntárias anuais nas ações da associação.</li>
+              <li><strong>Atualização de Dados:</strong> Informar qualquer mudança de telefone, endereço ou quadro clínico/médico do beneficiário.</li>
+            </ul>
+
+            <p>
+              <strong>5. PROTEÇÃO DE DADOS E IMAGEM (LGPD)</strong>
+            </p>
+            <ul>
+              <li><strong>Dados Sensíveis:</strong> Autorizo a Associação a armazenar cópias de laudos e documentos para fins estritamente para avaliações multidisciplinares, estatísticos e de defesa de direitos.</li>
+              <li><strong>Uso de Imagem:</strong> ( ) SIM   ( ) NÃO - Autorizo a utilização da imagem e voz do beneficiário em fotos e vídeos para divulgação exclusiva das ações da Associação.</li>
+            </ul>
+
+            <div className="signature">
+              <div className="line"></div>
+              Assinatura do Responsável (Seção de Dados e Imagem)
+            </div>
+
+            {/* === PAGE 2 === */}
+            <div className="page2">
+              <div className="header">
+                <img src={AMOVIN_LOGO_SRC} className="brand-logo" alt="Logo" />
+                <div className="org">
+                  <strong>Associação e Movimento pela Inclusão em Rio Paranaíba</strong><br />
+                  CNPJ: 55.880.046/0001-34<br />
+                  INSTAGRAM: @amovin_rpa<br />
+                  EMAIL: contato@amovin.org.br<br />
+                  WHATSAPP: (34) 99821-0513
+                </div>
+              </div>
+
+              <p>
+                <strong>6. DO CUSTO E CONTRIBUIÇÃO</strong>
+              </p>
+              <ul>
+                <li><strong>Gratuidade Atual:</strong> A AMOVIN informa que, na presente data, não realiza a cobrança de mensalidades dos seus membros ou beneficiários.</li>
+                <li><strong>Serviços e Consultas:</strong> A associação busca oferecer acesso a consultas gratuitas ou com valor social, conforme a disponibilidade de parcerias e recursos.</li>
+                <li><strong>Sustentabilidade Financeira:</strong> O modelo de gestão da entidade prioriza a captação e o uso de verbas públicas para o custeio de suas atividades e projetos.</li>
+                <li><strong>Alterações Futuras:</strong> Em caso de necessidade extrema para a manutenção das atividades ou expansão dos serviços, a AMOVIN reserva-se o direito de instituir taxas ou mensalidades, comprometendo-se a informar todos os aderentes com antecedência prévia sobre tais mudanças.</li>
+              </ul>
+
+              <p>
+                <strong>7. DISPOSIÇÕES GERAIS</strong> Este termo tem validade por tempo indeterminado, podendo ser rescindido por qualquer uma das partes mediante aviso prévio. Os casos omissos serão resolvidos pela Diretoria Executiva.
+              </p>
+
+              <p>
+                Rio Paranaíba - MG, {dataHoje}
+              </p>
+
+              <div className="signature">
+                <div className="line"></div>
+                Assinatura Representante Amovin
+              </div>
+              <div className="signature">
+                <div className="line"></div>
+                Assinatura do Responsável do Beneficiário
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
