@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Beneficiary } from '../store';
+import { useRef, useState, useEffect } from 'react';
+import { Beneficiary, Professional, useStore } from '../store';
 import { Printer, X, FileText, ClipboardCheck } from 'lucide-react';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { S } from '../utils/strings';
@@ -15,13 +15,18 @@ function formatDateBR(dateString?: string): string {
 type TermType = 'adesao' | 'consentimento' | null;
 
 export default function TermModal({ beneficiary, onClose }: { beneficiary: Beneficiary; onClose: () => void }) {
+  const { professionals } = useStore();
+  
   // ⚠️ IMPORTANTE: Iniciar com null para mostrar o menu de seleção primeiro
   const [selectedTerm, setSelectedTerm] = useState<TermType>(null);
+  
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState<string>('');
   
   const [professionalData, setProfessionalData] = useState({
     name: '',
     specialty: '',
-    crefito: '',
+    council: '',
+    registration: '',
   });
   
   const [localDate, setLocalDate] = useState({
@@ -31,7 +36,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
   
   const ref = useRef<HTMLDivElement>(null);
   
-  const styles = `@page{size:A4 portrait;margin:16mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:18px}.brand-logo{width:230px;height:75px;object-fit:contain}.org{text-align:right;font-size:12px;line-height:1.35}.title{text-align:center;font-weight:700;font-size:18px;margin:20px 0}p{margin:8px 0}ul{margin:4px 0 8px 0;padding-left:20px}li{margin-bottom:4px}.signature{margin-top:50px;text-align:center}.line{width:430px;border-top:1px solid #111;margin:0 auto 6px}.page2{page-break-before:always;break-before:page}.field-inline{display:inline;font-weight:bold;border-bottom:1px solid #000;padding:0 5px;margin:0 3px}.double-signature{display:flex;justify-content:space-between;margin-top:60px;page-break-inside:avoid}.sig-box{width:45%;text-align:center}.sig-box .line{border-top:1px solid #000;margin-bottom:8px}`;
+  const styles = `@page{size:A4 portrait;margin:16mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:18px}.brand-logo{width:230px;height:75px;object-fit:contain}.org{text-align:right;font-size:12px;line-height:1.35}.title{text-align:center;font-weight:700;font-size:18px;margin:20px 0}p{margin:8px 0}ul{margin:4px 0 8px 0;padding-left:20px}li{margin-bottom:4px}.signature{margin-top:50px;text-align:center}.line{width:430px;border-top:1px solid #111;margin:40px auto 10px auto}.page2{page-break-before:always;break-before:page}.field-inline{display:inline;font-weight:bold;border-bottom:1px solid #000;padding:0 5px;margin:0 3px}.vertical-signatures{margin-top:60px}.sig-block{text-align:center;margin-bottom:40px}.sig-block .line{border-top:1px solid #000;margin-bottom:10px}`;
 
   const handlePrint = () => {
     const win = window.open('', '_blank');
@@ -50,6 +55,21 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     const numbers = cpf.replace(/\D/g, '');
     return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   };
+
+  // ✅ Quando selecionar um profissional, preencher os dados automaticamente
+  useEffect(() => {
+    if (selectedProfessionalId && professionals) {
+      const prof = professionals.find(p => p.id === selectedProfessionalId);
+      if (prof) {
+        setProfessionalData({
+          name: prof.name || '',
+          specialty: prof.specialty || '',
+          council: (prof as any).registrationCouncil || '',
+          registration: prof.registration || '',
+        });
+      }
+    }
+  }, [selectedProfessionalId, professionals]);
 
   // ✅ TELA 1: MENU DE SELEÇÃO DE TERMOS (aparece quando selectedTerm é null)
   if (!selectedTerm) {
@@ -112,9 +132,11 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     const respCpf = formatCPF(beneficiary.respCpf || '');
     const respAddress = beneficiary.respAddress || '_________________________';
     const beneficiaryName = beneficiary.fullName || '_________________________';
+    
     const profName = professionalData.name || '_________________________';
     const profSpecialty = professionalData.specialty || '_________________________';
-    const profCrefito = professionalData.crefito || '_________________________';
+    const profCouncil = professionalData.council || '_________________________';
+    const profRegistration = professionalData.registration || '_________________________';
 
     return (
       <div className="fixed inset-0 z-[60] bg-gray-900/70 p-2 overflow-y-auto">
@@ -141,47 +163,52 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
           </div>
 
           <div className="flex flex-col lg:flex-row">
-            {/* Painel lateral - Dados do profissional */}
+            {/* Painel lateral - Seleção do profissional */}
             <div className="w-full lg:w-80 p-5 border-r bg-gray-50 overflow-y-auto max-h-[calc(100vh-100px)]">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <ClipboardCheck className="text-green-600" size={20} />
-                Dados do Profissional
+                Selecionar Profissional
               </h3>
               
               <div className="space-y-4">
+                {/* Select de profissionais */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Nome do Profissional *</label>
-                  <input
-                    type="text"
-                    value={professionalData.name}
-                    onChange={(e) => setProfessionalData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    placeholder="Ex: Maria Silva Santos"
-                  />
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Profissional *</label>
+                  <select
+                    value={selectedProfessionalId}
+                    onChange={(e) => setSelectedProfessionalId(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                  >
+                    <option value="">Selecione um profissional...</option>
+                    {professionals?.map(prof => (
+                      <option key={prof.id} value={prof.id}>
+                        {prof.name} - {prof.specialty}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Especialidade *</label>
-                  <input
-                    type="text"
-                    value={professionalData.specialty}
-                    onChange={(e) => setProfessionalData(prev => ({ ...prev, specialty: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    placeholder="Ex: Fisioterapeuta Neurofuncional"
-                  />
+                {/* Dados preenchidos automaticamente (somente leitura) */}
+                <div className="p-3 bg-green-50 rounded-lg border border-green-200 space-y-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600">Nome</label>
+                    <p className="text-sm text-gray-800 font-medium">{professionalData.name || '—'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600">Especialidade</label>
+                    <p className="text-sm text-gray-800 font-medium">{professionalData.specialty || '—'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600">Conselho/Órgão</label>
+                    <p className="text-sm text-gray-800 font-medium">{professionalData.council || '—'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600">Nº do Registro</label>
+                    <p className="text-sm text-gray-800 font-medium">{professionalData.registration || '—'}</p>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">CREFITO-4 *</label>
-                  <input
-                    type="text"
-                    value={professionalData.crefito}
-                    onChange={(e) => setProfessionalData(prev => ({ ...prev, crefito: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    placeholder="Ex: 123456-F"
-                  />
-                </div>
-
+                {/* Local e Data - Automáticos */}
                 <div className="pt-4 border-t">
                   <label className="block text-xs font-semibold text-gray-700 mb-1">Cidade</label>
                   <input
@@ -204,7 +231,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
               </div>
 
               <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg text-xs text-green-800">
-                <strong>💡 Dica:</strong> Preencha todos os campos para gerar o termo corretamente.
+                <strong>💡 Dica:</strong> Selecione o profissional para preencher automaticamente os dados no termo.
               </div>
             </div>
 
@@ -235,7 +262,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
 
                 <div style={{ textAlign: 'justify', textIndent: '40px', margin: '20px 0' }}>
                   <p>
-                    Eu, <span className="field-inline">{respName}</span>, portador(a) do CPF: <span className="field-inline">{respCpf}</span>, residente <span className="field-inline">{respAddress}</span>, DECLARO, estando em pleno gozo de minhas faculdades mentais, que fui previamente informado(a) pelo(a) Fisioterapeuta, Dr(a). <span className="field-inline">{profName}</span>, registrado(a) no CREFITO-4 sob o nº <span className="field-inline">{profCrefito}</span>, acerca do meu estado de saúde funcional, bem como declaro que recebi deste(a) todos os esclarecimentos necessários no que se refere ao diagnóstico fisioterapêutico e/ou os objetivos da assistência fisioterapêutica para o tratamento ao qual o menor <span className="field-inline">{beneficiaryName}</span> irá ser submetido, tendo este cumprido o dever que lhe é imposto no art. 14, inciso V, da Res. COFFITO nº 424/2013.
+                    Eu, <span className="field-inline">{respName}</span>, portador(a) do CPF: <span className="field-inline">{respCpf}</span>, residente <span className="field-inline">{respAddress}</span>, DECLARO, estando em pleno gozo de minhas faculdades mentais, que fui previamente informado(a) pelo(a) Fisioterapeuta, Dr(a). <span className="field-inline">{profName}</span>, registrado(a) no {profCouncil} sob o nº <span className="field-inline">{profRegistration}</span>, acerca do meu estado de saúde funcional, bem como declaro que recebi deste(a) todos os esclarecimentos necessários no que se refere ao diagnóstico fisioterapêutico e/ou os objetivos da assistência fisioterapêutica para o tratamento ao qual o menor <span className="field-inline">{beneficiaryName}</span> irá ser submetido, tendo este cumprido o dever que lhe é imposto no art. 14, inciso V, da Res. COFFITO nº 424/2013.
                   </p>
                 </div>
 
@@ -253,18 +280,22 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                   {localDate.city}, {localDate.date}.
                 </p>
 
-                <div className="double-signature">
-                  <div className="sig-box">
+                {/* ✅ ASSINATURAS VERTICAIS (uma embaixo da outra) */}
+                <div className="vertical-signatures">
+                  {/* Assinatura do Responsável */}
+                  <div className="sig-block">
                     <div className="line"></div>
                     <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{respName}</div>
                     <div style={{ fontSize: '11px', color: '#555' }}>Responsável Legal<br />CPF: {respCpf}</div>
                   </div>
-                  <div className="sig-box">
+                  
+                  {/* Assinatura do Profissional */}
+                  <div className="sig-block">
                     <div className="line"></div>
                     <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{profName}</div>
                     <div style={{ fontSize: '11px', color: '#555' }}>
                       {profSpecialty}<br />
-                      CREFITO-4: {profCrefito}
+                      {profCouncil}: {profRegistration}
                     </div>
                   </div>
                 </div>
