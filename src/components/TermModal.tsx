@@ -101,8 +101,8 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
   
   const ref = useRef<HTMLDivElement>(null);
   
-  // ✅ ESTILOS ATUALIZADOS: Fonte maior, caixas de texto expandidas, layout A4 otimizado
-  const styles = `@page{size:A4 portrait;margin:10mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto;padding:15px}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:12px}.brand-logo{width:190px;height:60px;object-fit:contain}.org{text-align:right;font-size:11px;line-height:1.3}.title{text-align:center;font-weight:700;font-size:15px;margin:12px 0;text-transform:uppercase;letter-spacing:0.5px}.subtitle{font-weight:bold;margin:14px 0 8px 0;text-decoration:underline;font-size:13px;border-bottom:1px solid #eee;padding-bottom:4px}.field-row{display:flex;gap:12px;margin:6px 0;align-items:center;flex-wrap:wrap}.field-label{font-weight:bold;min-width:150px;font-size:13px;white-space:nowrap}.checkbox-group{display:flex;gap:15px;margin:6px 0;flex-wrap:wrap;align-items:center;font-size:13px}.checkbox-item{display:flex;align-items:center;gap:5px}.form-input{width:100%;border:none;border-bottom:1px solid #444;font-size:14px;font-family:Arial,sans-serif;padding:8px 4px;background:transparent;resize:vertical;min-height:42px;line-height:1.4;box-sizing:border-box}.form-input:focus{outline:none;border-bottom:1px solid #2563eb;background:#f8fafc}.form-input::placeholder{color:#999;font-style:italic}.signature{margin-top:35px;text-align:center}.line{width:420px;border-top:1px solid #111;margin:30px auto 8px auto}.page-break{page-break-before:always}@media print{.form-input{border-bottom:1px solid #111!important;background:transparent!important}}`;
+  // ✅ ESTILOS ATUALIZADOS: Sem placeholders, campos automáticos sem linha inferior
+  const styles = `@page{size:A4 portrait;margin:10mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto;padding:15px}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:12px}.brand-logo{width:190px;height:60px;object-fit:contain}.org{text-align:right;font-size:11px;line-height:1.3}.title{text-align:center;font-weight:700;font-size:15px;margin:12px 0;text-transform:uppercase;letter-spacing:0.5px}.subtitle{font-weight:bold;margin:14px 0 8px 0;text-decoration:underline;font-size:13px;border-bottom:1px solid #eee;padding-bottom:4px}.field-row{display:flex;gap:12px;margin:6px 0;align-items:center;flex-wrap:wrap}.field-label{font-weight:bold;min-width:150px;font-size:13px;white-space:nowrap}.checkbox-group{display:flex;gap:15px;margin:6px 0;flex-wrap:wrap;align-items:center;font-size:13px}.checkbox-item{display:flex;align-items:center;gap:5px}.form-input{width:100%;border:none;border-bottom:1px solid #444;font-size:14px;font-family:Arial,sans-serif;padding:8px 4px;background:transparent;resize:vertical;min-height:42px;line-height:1.4;box-sizing:border-box}.form-input:focus{outline:none;border-bottom:1px solid #2563eb;background:#f8fafc}.form-input-auto{width:100%;border:none;font-size:14px;font-family:Arial,sans-serif;padding:8px 4px;font-weight:bold;background:transparent;min-height:42px;line-height:1.4;box-sizing:border-box}.signature{margin-top:35px;text-align:center}.line{width:420px;border-top:1px solid #111;margin:30px auto 8px auto}.page-break{page-break-before:always}@media print{.form-input{border-bottom:1px solid #111!important}.form-input-auto{border-bottom:none!important}}`;
 
   const handlePrint = () => {
     const win = window.open('', '_blank');
@@ -291,81 +291,198 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                   <div className="org"><strong>AMOVIN – Associação e Movimento pela Inclusão em Rio Paranaíba/MG</strong><br />CNPJ: 55.880.046/0001-34<br />INSTAGRAM: @amovin_rpa | EMAIL: contato@amovin.org.br<br />WHATSAPP: (34) 99821-0513</div>
                 </div>
 
+                {/* ✅ TÍTULO E DADOS DA PROFISSIONAL LOGO ABAIXO */}
                 <div className="title">FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA</div>
-                <p style={{ textAlign: 'center', marginBottom: '15px', fontSize: '13px' }}><strong>Fisioterapeuta:</strong> {profName} – {profCouncil}/{profRegistration}</p>
+                <p style={{ textAlign: 'center', marginBottom: '15px', fontSize: '13px' }}>
+                  <strong>{profName}</strong> – {profSpecialty}<br />
+                  {profCouncil}/{profRegistration}
+                </p>
 
                 {/* IDENTIFICAÇÃO DO PACIENTE */}
                 <p className="subtitle">IDENTIFICAÇÃO DO PACIENTE</p>
-                <div className="field-row"><span className="field-label">NOME:</span><input className="form-input" value={beneficiary.fullName || ''} readOnly style={{ fontWeight: 'bold', background: '#f9fafb' }} /></div>
-                <div className="field-row"><span className="field-label">DATA DE NASCIMENTO:</span><input className="form-input" style={{ maxWidth: '140px' }} value={birthDate} readOnly /><span className="field-label" style={{ minWidth: '70px' }}>SEXO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoF} onChange={() => setAvaliacaoData(p => ({ ...p, sexoF: true, sexoM: false }))} /> F</label><label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoM} onChange={() => setAvaliacaoData(p => ({ ...p, sexoM: true, sexoF: false }))} /> M</label></div><span className="field-label" style={{ minWidth: '60px' }}>IDADE:</span><input className="form-input" style={{ maxWidth: '100px' }} value={age} readOnly /></div>
-                <div className="field-row"><span className="field-label">PESO (kg):</span><input className="form-input" style={{ maxWidth: '120px' }} placeholder="Ex: 25,5" value={avaliacaoData.peso} onChange={e => setAvaliacaoData(p => ({ ...p, peso: e.target.value }))} /><span className="field-label" style={{ minWidth: '80px' }}>ALTURA (cm):</span><input className="form-input" style={{ maxWidth: '120px' }} placeholder="Ex: 120" value={avaliacaoData.altura} onChange={e => setAvaliacaoData(p => ({ ...p, altura: e.target.value }))} /><span className="field-label" style={{ minWidth: '110px' }}>NATURALIDADE:</span><input className="form-input" placeholder="Cidade/UF" value={avaliacaoData.naturalidade} onChange={e => setAvaliacaoData(p => ({ ...p, naturalidade: e.target.value }))} /></div>
-                <div className="field-row"><span className="field-label">NOME DO RESPONSÁVEL:</span><input className="form-input" value={beneficiary.respName || ''} readOnly style={{ fontWeight: 'bold', background: '#f9fafb' }} /><span className="field-label" style={{ minWidth: '90px' }}>CELULAR:</span><input className="form-input" style={{ maxWidth: '160px' }} value={beneficiary.respPhone || ''} readOnly /></div>
-                <div className="field-row"><span className="field-label">ENDEREÇO:</span><input className="form-input" value={beneficiary.respAddress || ''} readOnly style={{ fontWeight: 'bold', background: '#f9fafb' }} /></div>
-                <div className="field-row"><span className="field-label">DIAGNÓSTICO CLÍNICO:</span><input className="form-input" placeholder="Informe o diagnóstico médico" value={avaliacaoData.diagnostico} onChange={e => setAvaliacaoData(p => ({ ...p, diagnostico: e.target.value }))} /></div>
-                <div className="field-row"><span className="field-label">DATA DA AVALIAÇÃO:</span><input className="form-input" style={{ maxWidth: '160px' }} value={`${day} de ${monthCap} de ${year}`} readOnly /></div>
                 
-                <p className="field-row" style={{ marginTop: '8px' }}><span className="field-label">DISPOSITIVOS AUXILIARES:</span>
+                {/* ✅ NOME DO BENEFICIÁRIO AO LADO DA PALAVRA "NOME:" */}
+                <div className="field-row">
+                  <span className="field-label">NOME:</span>
+                  <input className="form-input-auto" value={beneficiary.fullName || ''} readOnly />
+                </div>
+                
+                <div className="field-row">
+                  <span className="field-label">DATA DE NASCIMENTO:</span>
+                  <input className="form-input" style={{ maxWidth: '140px' }} value={birthDate} readOnly />
+                  <span className="field-label" style={{ minWidth: '70px' }}>SEXO:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoF} onChange={() => setAvaliacaoData(p => ({ ...p, sexoF: true, sexoM: false }))} /> F</label>
+                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoM} onChange={() => setAvaliacaoData(p => ({ ...p, sexoM: true, sexoF: false }))} /> M</label>
+                  </div>
+                  <span className="field-label" style={{ minWidth: '60px' }}>IDADE:</span>
+                  <input className="form-input" style={{ maxWidth: '100px' }} value={age} readOnly />
+                </div>
+                
+                <div className="field-row">
+                  <span className="field-label">PESO (kg):</span>
+                  <input className="form-input" style={{ maxWidth: '120px' }} value={avaliacaoData.peso} onChange={e => setAvaliacaoData(p => ({ ...p, peso: e.target.value }))} />
+                  <span className="field-label" style={{ minWidth: '80px' }}>ALTURA (cm):</span>
+                  <input className="form-input" style={{ maxWidth: '120px' }} value={avaliacaoData.altura} onChange={e => setAvaliacaoData(p => ({ ...p, altura: e.target.value }))} />
+                  <span className="field-label" style={{ minWidth: '110px' }}>NATURALIDADE:</span>
+                  <input className="form-input" value={avaliacaoData.naturalidade} onChange={e => setAvaliacaoData(p => ({ ...p, naturalidade: e.target.value }))} />
+                </div>
+                
+                {/* ✅ NOME DO RESPONSÁVEL AO LADO DA PALAVRA "NOME DO RESPONSÁVEL:" */}
+                <div className="field-row">
+                  <span className="field-label">NOME DO RESPONSÁVEL:</span>
+                  <input className="form-input-auto" value={beneficiary.respName || ''} readOnly />
+                  <span className="field-label" style={{ minWidth: '90px' }}>CELULAR:</span>
+                  <input className="form-input-auto" style={{ maxWidth: '160px' }} value={beneficiary.respPhone || ''} readOnly />
+                </div>
+                
+                <div className="field-row">
+                  <span className="field-label">ENDEREÇO:</span>
+                  <input className="form-input-auto" value={beneficiary.respAddress || ''} readOnly />
+                </div>
+                
+                <div className="field-row">
+                  <span className="field-label">DIAGNÓSTICO CLÍNICO:</span>
+                  <input className="form-input" value={avaliacaoData.diagnostico} onChange={e => setAvaliacaoData(p => ({ ...p, diagnostico: e.target.value }))} />
+                </div>
+                
+                <div className="field-row">
+                  <span className="field-label">DATA DA AVALIAÇÃO:</span>
+                  <input className="form-input" style={{ maxWidth: '160px' }} value={`${day} de ${monthCap} de ${year}`} readOnly />
+                </div>
+                
+                <p className="field-row" style={{ marginTop: '8px' }}>
+                  <span className="field-label">DISPOSITIVOS AUXILIARES:</span>
                   <div className="checkbox-group" style={{ marginLeft: '155px', flexWrap: 'wrap' }}>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.cadeiraRodas} onChange={e => setAvaliacaoData(p => ({ ...p, cadeiraRodas: e.target.checked }))} /> CADEIRA DE RODAS</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletasAxilar} onChange={e => setAvaliacaoData(p => ({ ...p, muletasAxilar: e.target.checked }))} /> MULETAS AXILAR</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletaCanadense} onChange={e => setAvaliacaoData(p => ({ ...p, muletaCanadense: e.target.checked }))} /> MULETA CANADENSE</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.bengala} onChange={e => setAvaliacaoData(p => ({ ...p, bengala: e.target.checked }))} /> BENGALA</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.andador} onChange={e => setAvaliacaoData(p => ({ ...p, andador: e.target.checked }))} /> ANDADOR</label>
-                    <label className="checkbox-item">OUTROS: <input className="form-input" style={{ width: '150px', minWidth: '150px', margin: '0 4px' }} placeholder="Especifique" value={avaliacaoData.outrosDispositivos} onChange={e => setAvaliacaoData(p => ({ ...p, outrosDispositivos: e.target.value }))} /></label>
+                    <label className="checkbox-item">OUTROS: <input className="form-input" style={{ width: '150px', minWidth: '150px', margin: '0 4px' }} value={avaliacaoData.outrosDispositivos} onChange={e => setAvaliacaoData(p => ({ ...p, outrosDispositivos: e.target.value }))} /></label>
                   </div>
                 </p>
 
                 {/* HISTÓRIA CLÍNICA */}
                 <p className="subtitle">HISTÓRIA CLÍNICA</p>
-                <p className="field-row"><span className="field-label">QUEIXA PRINCIPAL:</span><textarea className="form-input" rows={2} placeholder="Descreva a queixa principal..." value={avaliacaoData.queixaPrincipal} onChange={e => setAvaliacaoData(p => ({ ...p, queixaPrincipal: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>HMP/HMA:</span><textarea className="form-input" rows={3} placeholder="História da moléstia presente/anterior..." value={avaliacaoData.hmpHma} onChange={e => setAvaliacaoData(p => ({ ...p, hmpHma: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">MEDICAMENTOS EM USO:</span><textarea className="form-input" rows={2} placeholder="Liste os medicamentos..." value={avaliacaoData.medicamentos} onChange={e => setAvaliacaoData(p => ({ ...p, medicamentos: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">RESTRIÇÃO ALIMENTAR:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Não' }))} /> NÃO</label></div> QUAIS: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} placeholder="Especifique a restrição" value={avaliacaoData.restricaoDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, restricaoDetalhes: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">HÁBITOS DE VIDA:</span><textarea className="form-input" rows={2} placeholder="Descreva os hábitos..." value={avaliacaoData.habitosVida} onChange={e => setAvaliacaoData(p => ({ ...p, habitosVida: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">TRATAMENTOS REALIZADOS:</span><textarea className="form-input" rows={2} placeholder="Liste tratamentos anteriores/atuais..." value={avaliacaoData.tratamentosRealizados} onChange={e => setAvaliacaoData(p => ({ ...p, tratamentosRealizados: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">CIRURGIAS:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Não' }))} /> NÃO</label><label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Sim' }))} /> SIM</label></div> QUAL: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} placeholder="Descreva a cirurgia" value={avaliacaoData.cirurgiasDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, cirurgiasDetalhes: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">RESULTADO DE EXAMES:</span><textarea className="form-input" rows={2} placeholder="Anexe ou descreva resultados..." value={avaliacaoData.exames} onChange={e => setAvaliacaoData(p => ({ ...p, exames: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">QUEIXA PRINCIPAL:</span><textarea className="form-input" rows={2} value={avaliacaoData.queixaPrincipal} onChange={e => setAvaliacaoData(p => ({ ...p, queixaPrincipal: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>HMP/HMA:</span><textarea className="form-input" rows={3} value={avaliacaoData.hmpHma} onChange={e => setAvaliacaoData(p => ({ ...p, hmpHma: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">MEDICAMENTOS EM USO:</span><textarea className="form-input" rows={2} value={avaliacaoData.medicamentos} onChange={e => setAvaliacaoData(p => ({ ...p, medicamentos: e.target.value }))} /></p>
+                <p className="field-row">
+                  <span className="field-label">RESTRIÇÃO ALIMENTAR:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Sim' }))} /> SIM</label>
+                    <label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Não' }))} /> NÃO</label>
+                  </div> 
+                  QUAIS: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} value={avaliacaoData.restricaoDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, restricaoDetalhes: e.target.value }))} />
+                </p>
+                <p className="field-row"><span className="field-label">HÁBITOS DE VIDA:</span><textarea className="form-input" rows={2} value={avaliacaoData.habitosVida} onChange={e => setAvaliacaoData(p => ({ ...p, habitosVida: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">TRATAMENTOS REALIZADOS:</span><textarea className="form-input" rows={2} value={avaliacaoData.tratamentosRealizados} onChange={e => setAvaliacaoData(p => ({ ...p, tratamentosRealizados: e.target.value }))} /></p>
+                <p className="field-row">
+                  <span className="field-label">CIRURGIAS:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Não' }))} /> NÃO</label>
+                    <label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Sim' }))} /> SIM</label>
+                  </div> 
+                  QUAL: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} value={avaliacaoData.cirurgiasDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, cirurgiasDetalhes: e.target.value }))} />
+                </p>
+                <p className="field-row"><span className="field-label">RESULTADO DE EXAMES:</span><textarea className="form-input" rows={2} value={avaliacaoData.exames} onChange={e => setAvaliacaoData(p => ({ ...p, exames: e.target.value }))} /></p>
 
                 {/* SAÚDE GERAL DA CRIANÇA */}
                 <p className="subtitle">SAÚDE GERAL DA CRIANÇA</p>
-                <p className="field-row"><span className="field-label">CONVULSÕES:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Não' }))} /> NÃO</label></div> FREQUÊNCIA: <input className="form-input" style={{ width: '200px', minWidth: '200px', margin: '0 8px' }} placeholder="Descreva a frequência" value={avaliacaoData.convulsoesFreq} onChange={e => setAvaliacaoData(p => ({ ...p, convulsoesFreq: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">CONSTIPAÇÃO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, constipacao: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, constipacao: 'Não' }))} /> NÃO</label></div></p>
-                <p className="field-row"><span className="field-label">SONO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="sono" checked={avaliacaoData.sono === 'Bom'} onChange={() => setAvaliacaoData(p => ({ ...p, sono: 'Bom' }))} /> BOM</label><label className="checkbox-item"><input type="radio" name="sono" checked={avaliacaoData.sono === 'Ruim'} onChange={() => setAvaliacaoData(p => ({ ...p, sono: 'Ruim' }))} /> RUIM</label></div></p>
-                <p className="field-row"><span className="field-label">ALIMENTAÇÃO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Pastoso'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Pastoso' }))} /> PASTOSO</label><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Líquido'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Líquido' }))} /> LÍQUIDO</label><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Auxiliado'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Auxiliado' }))} /> AUXILIADO</label><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Independente' }))} /> INDEPENDENTE</label></div></p>
-                <p className="field-row"><span className="field-label">LÍQUIDOS:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Mamadeira'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Mamadeira' }))} /> MAMADEIRA</label><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Copo'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Copo' }))} /> COPO</label><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Auxiliado'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Auxiliado' }))} /> AUXILIADO</label><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Independente' }))} /> INDEPENDENTE</label></div></p>
-                <p className="field-row"><span className="field-label">HIGIENE:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="hig" checked={avaliacaoData.higiene === 'Dependente'} onChange={() => setAvaliacaoData(p => ({ ...p, higiene: 'Dependente' }))} /> DEPENDENTE</label><label className="checkbox-item"><input type="radio" name="hig" checked={avaliacaoData.higiene === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, higiene: 'Independente' }))} /> INDEPENDENTE</label></div></p>
+                <p className="field-row">
+                  <span className="field-label">CONVULSÕES:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Sim' }))} /> SIM</label>
+                    <label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Não' }))} /> NÃO</label>
+                  </div> 
+                  FREQUÊNCIA: <input className="form-input" style={{ width: '200px', minWidth: '200px', margin: '0 8px' }} value={avaliacaoData.convulsoesFreq} onChange={e => setAvaliacaoData(p => ({ ...p, convulsoesFreq: e.target.value }))} />
+                </p>
+                <p className="field-row">
+                  <span className="field-label">CONSTIPAÇÃO:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, constipacao: 'Sim' }))} /> SIM</label>
+                    <label className="checkbox-item"><input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, constipacao: 'Não' }))} /> NÃO</label>
+                  </div>
+                </p>
+                <p className="field-row">
+                  <span className="field-label">SONO:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="sono" checked={avaliacaoData.sono === 'Bom'} onChange={() => setAvaliacaoData(p => ({ ...p, sono: 'Bom' }))} /> BOM</label>
+                    <label className="checkbox-item"><input type="radio" name="sono" checked={avaliacaoData.sono === 'Ruim'} onChange={() => setAvaliacaoData(p => ({ ...p, sono: 'Ruim' }))} /> RUIM</label>
+                  </div>
+                </p>
+                <p className="field-row">
+                  <span className="field-label">ALIMENTAÇÃO:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Pastoso'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Pastoso' }))} /> PASTOSO</label>
+                    <label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Líquido'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Líquido' }))} /> LÍQUIDO</label>
+                    <label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Auxiliado'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Auxiliado' }))} /> AUXILIADO</label>
+                    <label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Independente' }))} /> INDEPENDENTE</label>
+                  </div>
+                </p>
+                <p className="field-row">
+                  <span className="field-label">LÍQUIDOS:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Mamadeira'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Mamadeira' }))} /> MAMADEIRA</label>
+                    <label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Copo'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Copo' }))} /> COPO</label>
+                    <label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Auxiliado'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Auxiliado' }))} /> AUXILIADO</label>
+                    <label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Independente' }))} /> INDEPENDENTE</label>
+                  </div>
+                </p>
+                <p className="field-row">
+                  <span className="field-label">HIGIENE:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="hig" checked={avaliacaoData.higiene === 'Dependente'} onChange={() => setAvaliacaoData(p => ({ ...p, higiene: 'Dependente' }))} /> DEPENDENTE</label>
+                    <label className="checkbox-item"><input type="radio" name="hig" checked={avaliacaoData.higiene === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, higiene: 'Independente' }))} /> INDEPENDENTE</label>
+                  </div>
+                </p>
 
                 {/* EXAME FÍSICO */}
                 <p className="subtitle">EXAME FÍSICO</p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INSPEÇÃO:</span><textarea className="form-input" rows={3} placeholder="Estado geral, pele, deformidade, padrões patológicos..." value={avaliacaoData.inspecao} onChange={e => setAvaliacaoData(p => ({ ...p, inspecao: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>FORÇA MUSCULAR:</span><textarea className="form-input" rows={2} placeholder="Avalie a força muscular..." value={avaliacaoData.forcaMuscular} onChange={e => setAvaliacaoData(p => ({ ...p, forcaMuscular: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>EQUILÍBRIO:</span><textarea className="form-input" rows={2} placeholder="Avalie o equilíbrio..." value={avaliacaoData.equilibrio} onChange={e => setAvaliacaoData(p => ({ ...p, equilibrio: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>POSTURA:</span><textarea className="form-input" rows={2} placeholder="Descreva a postura..." value={avaliacaoData.postura} onChange={e => setAvaliacaoData(p => ({ ...p, postura: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>REFLEXOS:</span><textarea className="form-input" rows={2} placeholder="Avalie os reflexos..." value={avaliacaoData.reflexos} onChange={e => setAvaliacaoData(p => ({ ...p, reflexos: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PALPAÇÃO:</span><textarea className="form-input" rows={2} placeholder="Tônus, trofismo, edema..." value={avaliacaoData.palpacao} onChange={e => setAvaliacaoData(p => ({ ...p, palpacao: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">ADM MMSS:</span><textarea className="form-input" rows={2} placeholder="Amplitude de movimento membros superiores..." value={avaliacaoData.admMmss} onChange={e => setAvaliacaoData(p => ({ ...p, admMmss: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">ADM MMII:</span><textarea className="form-input" rows={2} placeholder="Amplitude de movimento membros inferiores..." value={avaliacaoData.admMmii} onChange={e => setAvaliacaoData(p => ({ ...p, admMmii: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PADRÕES DE MOVIMENTO:</span><textarea className="form-input" rows={2} placeholder="Habilidades e inabilidades observadas..." value={avaliacaoData.padroesMovimento} onChange={e => setAvaliacaoData(p => ({ ...p, padroesMovimento: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INSPEÇÃO:</span><textarea className="form-input" rows={3} value={avaliacaoData.inspecao} onChange={e => setAvaliacaoData(p => ({ ...p, inspecao: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>FORÇA MUSCULAR:</span><textarea className="form-input" rows={2} value={avaliacaoData.forcaMuscular} onChange={e => setAvaliacaoData(p => ({ ...p, forcaMuscular: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>EQUILÍBRIO:</span><textarea className="form-input" rows={2} value={avaliacaoData.equilibrio} onChange={e => setAvaliacaoData(p => ({ ...p, equilibrio: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>POSTURA:</span><textarea className="form-input" rows={2} value={avaliacaoData.postura} onChange={e => setAvaliacaoData(p => ({ ...p, postura: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>REFLEXOS:</span><textarea className="form-input" rows={2} value={avaliacaoData.reflexos} onChange={e => setAvaliacaoData(p => ({ ...p, reflexos: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PALPAÇÃO:</span><textarea className="form-input" rows={2} value={avaliacaoData.palpacao} onChange={e => setAvaliacaoData(p => ({ ...p, palpacao: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">ADM MMSS:</span><textarea className="form-input" rows={2} value={avaliacaoData.admMmss} onChange={e => setAvaliacaoData(p => ({ ...p, admMmss: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">ADM MMII:</span><textarea className="form-input" rows={2} value={avaliacaoData.admMmii} onChange={e => setAvaliacaoData(p => ({ ...p, admMmii: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PADRÕES DE MOVIMENTO:</span><textarea className="form-input" rows={2} value={avaliacaoData.padroesMovimento} onChange={e => setAvaliacaoData(p => ({ ...p, padroesMovimento: e.target.value }))} /></p>
 
                 {/* AVALIAÇÃO FUNCIONAL */}
                 <p className="subtitle">AVALIAÇÃO FUNCIONAL</p>
-                <p className="field-row"><span className="field-label">SUSTENTA CABEÇA / ROLAR LATERAL:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Não' }))} /> NÃO</label><label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Às vezes'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Às vezes' }))} /> ÀS VEZES</label></div></p>
-                <p className="field-row"><span className="field-label">ROLAR PARA VENTRAL:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Não' }))} /> NÃO</label><label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Às vezes'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Às vezes' }))} /> ÀS VEZES</label></div></p>
-                <p className="field-row"><span className="field-label">SENTAR (COM/SEM APOIO):</span><textarea className="form-input" rows={2} placeholder="Descreva a capacidade de sentar..." value={avaliacaoData.sentar} onChange={e => setAvaliacaoData(p => ({ ...p, sentar: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label">ARRASTAR/ENGATINHAR:</span><textarea className="form-input" rows={2} placeholder="Descreva a mobilidade..." value={avaliacaoData.arrastar} onChange={e => setAvaliacaoData(p => ({ ...p, arrastar: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>MOBILIDADES:</span><textarea className="form-input" rows={2} placeholder="Descreva as mobilidades..." value={avaliacaoData.mobilidades} onChange={e => setAvaliacaoData(p => ({ ...p, mobilidades: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>TRANSFERÊNCIAS:</span><textarea className="form-input" rows={2} placeholder="Descreva as transferências..." value={avaliacaoData.transferencias} onChange={e => setAvaliacaoData(p => ({ ...p, transferencias: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INDEPENDÊNCIA FUNCIONAL:</span><textarea className="form-input" rows={2} placeholder="Avalie a independência..." value={avaliacaoData.independenciaFuncional} onChange={e => setAvaliacaoData(p => ({ ...p, independenciaFuncional: e.target.value }))} /></p>
+                <p className="field-row">
+                  <span className="field-label">SUSTENTA CABEÇA / ROLAR LATERAL:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Sim' }))} /> SIM</label>
+                    <label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Não' }))} /> NÃO</label>
+                    <label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Às vezes'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Às vezes' }))} /> ÀS VEZES</label>
+                  </div>
+                </p>
+                <p className="field-row">
+                  <span className="field-label">ROLAR PARA VENTRAL:</span>
+                  <div className="checkbox-group" style={{ margin: 0 }}>
+                    <label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Sim' }))} /> SIM</label>
+                    <label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Não' }))} /> NÃO</label>
+                    <label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Às vezes'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Às vezes' }))} /> ÀS VEZES</label>
+                  </div>
+                </p>
+                <p className="field-row"><span className="field-label">SENTAR (COM/SEM APOIO):</span><textarea className="form-input" rows={2} value={avaliacaoData.sentar} onChange={e => setAvaliacaoData(p => ({ ...p, sentar: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">ARRASTAR/ENGATINHAR:</span><textarea className="form-input" rows={2} value={avaliacaoData.arrastar} onChange={e => setAvaliacaoData(p => ({ ...p, arrastar: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>MOBILIDADES:</span><textarea className="form-input" rows={2} value={avaliacaoData.mobilidades} onChange={e => setAvaliacaoData(p => ({ ...p, mobilidades: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>TRANSFERÊNCIAS:</span><textarea className="form-input" rows={2} value={avaliacaoData.transferencias} onChange={e => setAvaliacaoData(p => ({ ...p, transferencias: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INDEPENDÊNCIA FUNCIONAL:</span><textarea className="form-input" rows={2} value={avaliacaoData.independenciaFuncional} onChange={e => setAvaliacaoData(p => ({ ...p, independenciaFuncional: e.target.value }))} /></p>
 
                 {/* DIAGNÓSTICO E PLANO */}
                 <p className="subtitle">DIAGNÓSTICO FISIOTERAPÊUTICO</p>
-                <textarea className="form-input" rows={3} placeholder="Elabore o diagnóstico fisioterapêutico..." value={avaliacaoData.diagnosticoFisio} onChange={e => setAvaliacaoData(p => ({ ...p, diagnosticoFisio: e.target.value }))} />
+                <textarea className="form-input" rows={3} value={avaliacaoData.diagnosticoFisio} onChange={e => setAvaliacaoData(p => ({ ...p, diagnosticoFisio: e.target.value }))} />
                 
                 <p className="subtitle">OBJETIVOS</p>
-                <textarea className="form-input" rows={3} placeholder="Liste os objetivos terapêuticos..." value={avaliacaoData.objetivos} onChange={e => setAvaliacaoData(p => ({ ...p, objetivos: e.target.value }))} />
+                <textarea className="form-input" rows={3} value={avaliacaoData.objetivos} onChange={e => setAvaliacaoData(p => ({ ...p, objetivos: e.target.value }))} />
                 
                 <p className="subtitle">PLANO DE TRATAMENTO</p>
-                <textarea className="form-input" rows={4} placeholder="Descreva o plano de tratamento..." value={avaliacaoData.planoTratamento} onChange={e => setAvaliacaoData(p => ({ ...p, planoTratamento: e.target.value }))} />
+                <textarea className="form-input" rows={4} value={avaliacaoData.planoTratamento} onChange={e => setAvaliacaoData(p => ({ ...p, planoTratamento: e.target.value }))} />
 
                 {/* Local, Data e Assinatura */}
                 <p style={{ marginTop: '25px', textAlign: 'right', fontSize: '13px' }}>{localDate.city}, {day} de {monthCap} de {year}.</p>
