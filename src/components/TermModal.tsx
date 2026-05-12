@@ -101,8 +101,8 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
   
   const ref = useRef<HTMLDivElement>(null);
   
-  // ✅ ESTILOS ATUALIZADOS: Sem placeholders, campos automáticos sem linha inferior
-  const styles = `@page{size:A4 portrait;margin:10mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto;padding:15px}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:12px}.brand-logo{width:190px;height:60px;object-fit:contain}.org{text-align:right;font-size:11px;line-height:1.3}.title{text-align:center;font-weight:700;font-size:15px;margin:12px 0;text-transform:uppercase;letter-spacing:0.5px}.subtitle{font-weight:bold;margin:14px 0 8px 0;text-decoration:underline;font-size:13px;border-bottom:1px solid #eee;padding-bottom:4px}.field-row{display:flex;gap:12px;margin:6px 0;align-items:center;flex-wrap:wrap}.field-label{font-weight:bold;min-width:150px;font-size:13px;white-space:nowrap}.checkbox-group{display:flex;gap:15px;margin:6px 0;flex-wrap:wrap;align-items:center;font-size:13px}.checkbox-item{display:flex;align-items:center;gap:5px}.form-input{width:100%;border:none;border-bottom:1px solid #444;font-size:14px;font-family:Arial,sans-serif;padding:8px 4px;background:transparent;resize:vertical;min-height:42px;line-height:1.4;box-sizing:border-box}.form-input:focus{outline:none;border-bottom:1px solid #2563eb;background:#f8fafc}.form-input-auto{width:100%;border:none;font-size:14px;font-family:Arial,sans-serif;padding:8px 4px;font-weight:bold;background:transparent;min-height:42px;line-height:1.4;box-sizing:border-box}.signature{margin-top:35px;text-align:center}.line{width:420px;border-top:1px solid #111;margin:30px auto 8px auto}.page-break{page-break-before:always}@media print{.form-input{border-bottom:1px solid #111!important}.form-input-auto{border-bottom:none!important}}`;
+  // ✅ ESTILOS CORRIGIDOS: Campos automáticos como span, sem linha, espaçamento compacto
+  const styles = `@page{size:A4 portrait;margin:10mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.4;font-size:13px}.sheet{max-width:790px;margin:0 auto;padding:15px}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:12px}.brand-logo{width:190px;height:60px;object-fit:contain}.org{text-align:right;font-size:11px;line-height:1.3}.title{text-align:center;font-weight:700;font-size:15px;margin:12px 0;text-transform:uppercase;letter-spacing:0.5px}.subtitle{font-weight:bold;margin:12px 0 6px 0;text-decoration:underline;font-size:13px}.field-row{display:flex;gap:10px;margin:4px 0;align-items:center;flex-wrap:wrap}.field-label{font-weight:bold;min-width:145px;font-size:13px;white-space:nowrap}.field-value{font-weight:bold;font-size:13px;padding:2px 4px}.checkbox-group{display:flex;gap:12px;margin:4px 0;flex-wrap:wrap;align-items:center;font-size:13px}.checkbox-item{display:flex;align-items:center;gap:4px}.form-input{width:100%;border:none;border-bottom:1px solid #444;font-size:13px;font-family:Arial,sans-serif;padding:6px 4px;background:transparent;resize:vertical;min-height:36px;line-height:1.3;box-sizing:border-box}.form-input:focus{outline:none;border-bottom:1px solid #2563eb}.signature{margin-top:30px;text-align:center}.line{width:400px;border-top:1px solid #111;margin:25px auto 6px auto}.page-break{page-break-before:always}@media print{.form-input{border-bottom:1px solid #111!important}}`;
 
   const handlePrint = () => {
     const win = window.open('', '_blank');
@@ -215,7 +215,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                 <ul><li>A finalidade e a natureza do tratamento/intervenção;</li><li>Os benefícios esperados e os riscos eventuais;</li><li>Possíveis efeitos colaterais, intercorrências ou limitações do método aplicado.</li></ul>
                 <p className="subtitle">AUTORIZAÇÃO</p>
                 <p>Estou ciente de que posso, a qualquer momento, solicitar novos esclarecimentos, bem como interromper o tratamento, mediante comunicação prévia ao profissional. Diante do exposto, dou meu livre consentimento para o início e continuidade da assistência proposta.</p>
-                <p style={{ marginTop: '25px', textAlign: 'right' }}>{localDate.city}, {day} de {monthCap} de {year}.</p>
+                <p style={{ marginTop: '20px', textAlign: 'right' }}>{localDate.city}, {day} de {monthCap} de {year}.</p>
                 <div className="signature"><div className="line"></div><div style={{ fontWeight: 'bold', fontSize: '12px' }}>{respName}</div><div style={{ fontSize: '11px', color: '#555' }}>CPF: {respCpf}</div></div>
                 <div className="signature"><div className="line"></div><div style={{ fontWeight: 'bold', fontSize: '12px' }}>{profName}</div><div style={{ fontSize: '11px', color: '#555' }}>{profSpecialty} – {profCouncil}: {profRegistration}</div></div>
               </div>
@@ -226,7 +226,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     );
   }
 
-  // ✅ TELA 3: FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA (ATUALIZADA)
+  // ✅ TELA 3: FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA (CORRIGIDA PARA IMPRESSÃO)
   if (selectedTerm === 'avaliacao_fisio') {
     const { day, month, year } = localDate;
     const monthCap = month.charAt(0).toUpperCase() + month.slice(1);
@@ -291,9 +291,9 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                   <div className="org"><strong>AMOVIN – Associação e Movimento pela Inclusão em Rio Paranaíba/MG</strong><br />CNPJ: 55.880.046/0001-34<br />INSTAGRAM: @amovin_rpa | EMAIL: contato@amovin.org.br<br />WHATSAPP: (34) 99821-0513</div>
                 </div>
 
-                {/* ✅ TÍTULO E DADOS DA PROFISSIONAL LOGO ABAIXO */}
+                {/* TÍTULO E DADOS DA PROFISSIONAL LOGO ABAIXO */}
                 <div className="title">FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA</div>
-                <p style={{ textAlign: 'center', marginBottom: '15px', fontSize: '13px' }}>
+                <p style={{ textAlign: 'center', marginBottom: '12px', fontSize: '13px' }}>
                   <strong>{profName}</strong> – {profSpecialty}<br />
                   {profCouncil}/{profRegistration}
                 </p>
@@ -301,44 +301,43 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                 {/* IDENTIFICAÇÃO DO PACIENTE */}
                 <p className="subtitle">IDENTIFICAÇÃO DO PACIENTE</p>
                 
-                {/* ✅ NOME DO BENEFICIÁRIO AO LADO DA PALAVRA "NOME:" */}
+                {/* ✅ CAMPOS AUTOMÁTICOS USANDO <span> - Sem linha, compacto, ao lado da label */}
                 <div className="field-row">
                   <span className="field-label">NOME:</span>
-                  <input className="form-input-auto" value={beneficiary.fullName || ''} readOnly />
+                  <span className="field-value">{beneficiary.fullName || '___________________________'}</span>
                 </div>
                 
                 <div className="field-row">
                   <span className="field-label">DATA DE NASCIMENTO:</span>
-                  <input className="form-input" style={{ maxWidth: '140px' }} value={birthDate} readOnly />
-                  <span className="field-label" style={{ minWidth: '70px' }}>SEXO:</span>
+                  <span className="field-value">{birthDate}</span>
+                  <span className="field-label" style={{ minWidth: '65px' }}>SEXO:</span>
                   <div className="checkbox-group" style={{ margin: 0 }}>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoF} onChange={() => setAvaliacaoData(p => ({ ...p, sexoF: true, sexoM: false }))} /> F</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoM} onChange={() => setAvaliacaoData(p => ({ ...p, sexoM: true, sexoF: false }))} /> M</label>
                   </div>
-                  <span className="field-label" style={{ minWidth: '60px' }}>IDADE:</span>
-                  <input className="form-input" style={{ maxWidth: '100px' }} value={age} readOnly />
+                  <span className="field-label" style={{ minWidth: '55px' }}>IDADE:</span>
+                  <span className="field-value">{age}</span>
                 </div>
                 
                 <div className="field-row">
                   <span className="field-label">PESO (kg):</span>
-                  <input className="form-input" style={{ maxWidth: '120px' }} value={avaliacaoData.peso} onChange={e => setAvaliacaoData(p => ({ ...p, peso: e.target.value }))} />
-                  <span className="field-label" style={{ minWidth: '80px' }}>ALTURA (cm):</span>
-                  <input className="form-input" style={{ maxWidth: '120px' }} value={avaliacaoData.altura} onChange={e => setAvaliacaoData(p => ({ ...p, altura: e.target.value }))} />
-                  <span className="field-label" style={{ minWidth: '110px' }}>NATURALIDADE:</span>
+                  <input className="form-input" style={{ maxWidth: '110px' }} value={avaliacaoData.peso} onChange={e => setAvaliacaoData(p => ({ ...p, peso: e.target.value }))} />
+                  <span className="field-label" style={{ minWidth: '75px' }}>ALTURA (cm):</span>
+                  <input className="form-input" style={{ maxWidth: '110px' }} value={avaliacaoData.altura} onChange={e => setAvaliacaoData(p => ({ ...p, altura: e.target.value }))} />
+                  <span className="field-label" style={{ minWidth: '105px' }}>NATURALIDADE:</span>
                   <input className="form-input" value={avaliacaoData.naturalidade} onChange={e => setAvaliacaoData(p => ({ ...p, naturalidade: e.target.value }))} />
                 </div>
                 
-                {/* ✅ NOME DO RESPONSÁVEL AO LADO DA PALAVRA "NOME DO RESPONSÁVEL:" */}
                 <div className="field-row">
                   <span className="field-label">NOME DO RESPONSÁVEL:</span>
-                  <input className="form-input-auto" value={beneficiary.respName || ''} readOnly />
-                  <span className="field-label" style={{ minWidth: '90px' }}>CELULAR:</span>
-                  <input className="form-input-auto" style={{ maxWidth: '160px' }} value={beneficiary.respPhone || ''} readOnly />
+                  <span className="field-value">{beneficiary.respName || '___________________________'}</span>
+                  <span className="field-label" style={{ minWidth: '85px' }}>CELULAR:</span>
+                  <span className="field-value">{beneficiary.respPhone || '__________'}</span>
                 </div>
                 
                 <div className="field-row">
                   <span className="field-label">ENDEREÇO:</span>
-                  <input className="form-input-auto" value={beneficiary.respAddress || ''} readOnly />
+                  <span className="field-value">{beneficiary.respAddress || '_______________________________________________________________'}</span>
                 </div>
                 
                 <div className="field-row">
@@ -348,25 +347,25 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                 
                 <div className="field-row">
                   <span className="field-label">DATA DA AVALIAÇÃO:</span>
-                  <input className="form-input" style={{ maxWidth: '160px' }} value={`${day} de ${monthCap} de ${year}`} readOnly />
+                  <span className="field-value" style={{ maxWidth: '150px' }}>{day} de {monthCap} de {year}</span>
                 </div>
                 
-                <p className="field-row" style={{ marginTop: '8px' }}>
+                <p className="field-row" style={{ marginTop: '6px' }}>
                   <span className="field-label">DISPOSITIVOS AUXILIARES:</span>
-                  <div className="checkbox-group" style={{ marginLeft: '155px', flexWrap: 'wrap' }}>
+                  <div className="checkbox-group" style={{ marginLeft: '150px', flexWrap: 'wrap' }}>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.cadeiraRodas} onChange={e => setAvaliacaoData(p => ({ ...p, cadeiraRodas: e.target.checked }))} /> CADEIRA DE RODAS</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletasAxilar} onChange={e => setAvaliacaoData(p => ({ ...p, muletasAxilar: e.target.checked }))} /> MULETAS AXILAR</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletaCanadense} onChange={e => setAvaliacaoData(p => ({ ...p, muletaCanadense: e.target.checked }))} /> MULETA CANADENSE</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.bengala} onChange={e => setAvaliacaoData(p => ({ ...p, bengala: e.target.checked }))} /> BENGALA</label>
                     <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.andador} onChange={e => setAvaliacaoData(p => ({ ...p, andador: e.target.checked }))} /> ANDADOR</label>
-                    <label className="checkbox-item">OUTROS: <input className="form-input" style={{ width: '150px', minWidth: '150px', margin: '0 4px' }} value={avaliacaoData.outrosDispositivos} onChange={e => setAvaliacaoData(p => ({ ...p, outrosDispositivos: e.target.value }))} /></label>
+                    <label className="checkbox-item">OUTROS: <input className="form-input" style={{ width: '140px', minWidth: '140px', margin: '0 4px' }} value={avaliacaoData.outrosDispositivos} onChange={e => setAvaliacaoData(p => ({ ...p, outrosDispositivos: e.target.value }))} /></label>
                   </div>
                 </p>
 
                 {/* HISTÓRIA CLÍNICA */}
                 <p className="subtitle">HISTÓRIA CLÍNICA</p>
                 <p className="field-row"><span className="field-label">QUEIXA PRINCIPAL:</span><textarea className="form-input" rows={2} value={avaliacaoData.queixaPrincipal} onChange={e => setAvaliacaoData(p => ({ ...p, queixaPrincipal: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>HMP/HMA:</span><textarea className="form-input" rows={3} value={avaliacaoData.hmpHma} onChange={e => setAvaliacaoData(p => ({ ...p, hmpHma: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>HMP/HMA:</span><textarea className="form-input" rows={3} value={avaliacaoData.hmpHma} onChange={e => setAvaliacaoData(p => ({ ...p, hmpHma: e.target.value }))} /></p>
                 <p className="field-row"><span className="field-label">MEDICAMENTOS EM USO:</span><textarea className="form-input" rows={2} value={avaliacaoData.medicamentos} onChange={e => setAvaliacaoData(p => ({ ...p, medicamentos: e.target.value }))} /></p>
                 <p className="field-row">
                   <span className="field-label">RESTRIÇÃO ALIMENTAR:</span>
@@ -374,7 +373,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                     <label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Sim' }))} /> SIM</label>
                     <label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Não' }))} /> NÃO</label>
                   </div> 
-                  QUAIS: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} value={avaliacaoData.restricaoDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, restricaoDetalhes: e.target.value }))} />
+                  QUAIS: <input className="form-input" style={{ width: '240px', minWidth: '240px', margin: '0 6px' }} value={avaliacaoData.restricaoDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, restricaoDetalhes: e.target.value }))} />
                 </p>
                 <p className="field-row"><span className="field-label">HÁBITOS DE VIDA:</span><textarea className="form-input" rows={2} value={avaliacaoData.habitosVida} onChange={e => setAvaliacaoData(p => ({ ...p, habitosVida: e.target.value }))} /></p>
                 <p className="field-row"><span className="field-label">TRATAMENTOS REALIZADOS:</span><textarea className="form-input" rows={2} value={avaliacaoData.tratamentosRealizados} onChange={e => setAvaliacaoData(p => ({ ...p, tratamentosRealizados: e.target.value }))} /></p>
@@ -384,7 +383,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                     <label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Não' }))} /> NÃO</label>
                     <label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Sim' }))} /> SIM</label>
                   </div> 
-                  QUAL: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} value={avaliacaoData.cirurgiasDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, cirurgiasDetalhes: e.target.value }))} />
+                  QUAL: <input className="form-input" style={{ width: '240px', minWidth: '240px', margin: '0 6px' }} value={avaliacaoData.cirurgiasDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, cirurgiasDetalhes: e.target.value }))} />
                 </p>
                 <p className="field-row"><span className="field-label">RESULTADO DE EXAMES:</span><textarea className="form-input" rows={2} value={avaliacaoData.exames} onChange={e => setAvaliacaoData(p => ({ ...p, exames: e.target.value }))} /></p>
 
@@ -396,7 +395,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                     <label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Sim' }))} /> SIM</label>
                     <label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Não' }))} /> NÃO</label>
                   </div> 
-                  FREQUÊNCIA: <input className="form-input" style={{ width: '200px', minWidth: '200px', margin: '0 8px' }} value={avaliacaoData.convulsoesFreq} onChange={e => setAvaliacaoData(p => ({ ...p, convulsoesFreq: e.target.value }))} />
+                  FREQUÊNCIA: <input className="form-input" style={{ width: '190px', minWidth: '190px', margin: '0 6px' }} value={avaliacaoData.convulsoesFreq} onChange={e => setAvaliacaoData(p => ({ ...p, convulsoesFreq: e.target.value }))} />
                 </p>
                 <p className="field-row">
                   <span className="field-label">CONSTIPAÇÃO:</span>
@@ -440,15 +439,15 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
 
                 {/* EXAME FÍSICO */}
                 <p className="subtitle">EXAME FÍSICO</p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INSPEÇÃO:</span><textarea className="form-input" rows={3} value={avaliacaoData.inspecao} onChange={e => setAvaliacaoData(p => ({ ...p, inspecao: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>FORÇA MUSCULAR:</span><textarea className="form-input" rows={2} value={avaliacaoData.forcaMuscular} onChange={e => setAvaliacaoData(p => ({ ...p, forcaMuscular: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>EQUILÍBRIO:</span><textarea className="form-input" rows={2} value={avaliacaoData.equilibrio} onChange={e => setAvaliacaoData(p => ({ ...p, equilibrio: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>POSTURA:</span><textarea className="form-input" rows={2} value={avaliacaoData.postura} onChange={e => setAvaliacaoData(p => ({ ...p, postura: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>REFLEXOS:</span><textarea className="form-input" rows={2} value={avaliacaoData.reflexos} onChange={e => setAvaliacaoData(p => ({ ...p, reflexos: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PALPAÇÃO:</span><textarea className="form-input" rows={2} value={avaliacaoData.palpacao} onChange={e => setAvaliacaoData(p => ({ ...p, palpacao: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>INSPEÇÃO:</span><textarea className="form-input" rows={3} value={avaliacaoData.inspecao} onChange={e => setAvaliacaoData(p => ({ ...p, inspecao: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>FORÇA MUSCULAR:</span><textarea className="form-input" rows={2} value={avaliacaoData.forcaMuscular} onChange={e => setAvaliacaoData(p => ({ ...p, forcaMuscular: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>EQUILÍBRIO:</span><textarea className="form-input" rows={2} value={avaliacaoData.equilibrio} onChange={e => setAvaliacaoData(p => ({ ...p, equilibrio: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>POSTURA:</span><textarea className="form-input" rows={2} value={avaliacaoData.postura} onChange={e => setAvaliacaoData(p => ({ ...p, postura: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>REFLEXOS:</span><textarea className="form-input" rows={2} value={avaliacaoData.reflexos} onChange={e => setAvaliacaoData(p => ({ ...p, reflexos: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>PALPAÇÃO:</span><textarea className="form-input" rows={2} value={avaliacaoData.palpacao} onChange={e => setAvaliacaoData(p => ({ ...p, palpacao: e.target.value }))} /></p>
                 <p className="field-row"><span className="field-label">ADM MMSS:</span><textarea className="form-input" rows={2} value={avaliacaoData.admMmss} onChange={e => setAvaliacaoData(p => ({ ...p, admMmss: e.target.value }))} /></p>
                 <p className="field-row"><span className="field-label">ADM MMII:</span><textarea className="form-input" rows={2} value={avaliacaoData.admMmii} onChange={e => setAvaliacaoData(p => ({ ...p, admMmii: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PADRÕES DE MOVIMENTO:</span><textarea className="form-input" rows={2} value={avaliacaoData.padroesMovimento} onChange={e => setAvaliacaoData(p => ({ ...p, padroesMovimento: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>PADRÕES DE MOVIMENTO:</span><textarea className="form-input" rows={2} value={avaliacaoData.padroesMovimento} onChange={e => setAvaliacaoData(p => ({ ...p, padroesMovimento: e.target.value }))} /></p>
 
                 {/* AVALIAÇÃO FUNCIONAL */}
                 <p className="subtitle">AVALIAÇÃO FUNCIONAL</p>
@@ -470,9 +469,9 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                 </p>
                 <p className="field-row"><span className="field-label">SENTAR (COM/SEM APOIO):</span><textarea className="form-input" rows={2} value={avaliacaoData.sentar} onChange={e => setAvaliacaoData(p => ({ ...p, sentar: e.target.value }))} /></p>
                 <p className="field-row"><span className="field-label">ARRASTAR/ENGATINHAR:</span><textarea className="form-input" rows={2} value={avaliacaoData.arrastar} onChange={e => setAvaliacaoData(p => ({ ...p, arrastar: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>MOBILIDADES:</span><textarea className="form-input" rows={2} value={avaliacaoData.mobilidades} onChange={e => setAvaliacaoData(p => ({ ...p, mobilidades: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>TRANSFERÊNCIAS:</span><textarea className="form-input" rows={2} value={avaliacaoData.transferencias} onChange={e => setAvaliacaoData(p => ({ ...p, transferencias: e.target.value }))} /></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INDEPENDÊNCIA FUNCIONAL:</span><textarea className="form-input" rows={2} value={avaliacaoData.independenciaFuncional} onChange={e => setAvaliacaoData(p => ({ ...p, independenciaFuncional: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>MOBILIDADES:</span><textarea className="form-input" rows={2} value={avaliacaoData.mobilidades} onChange={e => setAvaliacaoData(p => ({ ...p, mobilidades: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>TRANSFERÊNCIAS:</span><textarea className="form-input" rows={2} value={avaliacaoData.transferencias} onChange={e => setAvaliacaoData(p => ({ ...p, transferencias: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '6px' }}>INDEPENDÊNCIA FUNCIONAL:</span><textarea className="form-input" rows={2} value={avaliacaoData.independenciaFuncional} onChange={e => setAvaliacaoData(p => ({ ...p, independenciaFuncional: e.target.value }))} /></p>
 
                 {/* DIAGNÓSTICO E PLANO */}
                 <p className="subtitle">DIAGNÓSTICO FISIOTERAPÊUTICO</p>
@@ -485,7 +484,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
                 <textarea className="form-input" rows={4} value={avaliacaoData.planoTratamento} onChange={e => setAvaliacaoData(p => ({ ...p, planoTratamento: e.target.value }))} />
 
                 {/* Local, Data e Assinatura */}
-                <p style={{ marginTop: '25px', textAlign: 'right', fontSize: '13px' }}>{localDate.city}, {day} de {monthCap} de {year}.</p>
+                <p style={{ marginTop: '20px', textAlign: 'right', fontSize: '13px' }}>{localDate.city}, {day} de {monthCap} de {year}.</p>
                 <div className="signature"><div className="line"></div><div style={{ fontWeight: 'bold', fontSize: '12px' }}>{profName}</div><div style={{ fontSize: '11px', color: '#555' }}>{profSpecialty} – {profCouncil}/{profRegistration}</div></div>
               </div>
             </div>
