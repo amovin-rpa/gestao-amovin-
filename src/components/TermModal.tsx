@@ -47,7 +47,6 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     year: new Date().getFullYear(),
   });
   
-  // Dados editáveis da ficha de avaliação
   const [avaliacaoData, setAvaliacaoData] = useState({
     peso: '',
     altura: '',
@@ -90,27 +89,25 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     diagnosticoFisio: '',
     objetivos: '',
     planoTratamento: '',
-    // Checkboxes dispositivos auxiliares
     cadeiraRodas: false,
     muletasAxilar: false,
     muletaCanadense: false,
     bengala: false,
     andador: false,
     outrosDispositivos: '',
-    // Checkboxes sexo
     sexoF: false,
     sexoM: false,
   });
   
   const ref = useRef<HTMLDivElement>(null);
   
-  // ✅ ESTILOS IDÊNTICOS AO TERMO DE ADESÃO
-  const styles = `@page{size:A4 portrait;margin:12mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.4;font-size:11px}.sheet{max-width:790px;margin:0 auto}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:15px}.brand-logo{width:200px;height:65px;object-fit:contain}.org{text-align:right;font-size:11px;line-height:1.3}.title{text-align:center;font-weight:700;font-size:14px;margin:15px 0;text-transform:uppercase}.subtitle{font-weight:bold;margin:12px 0 6px 0;text-decoration:underline;font-size:12px}.field-row{display:flex;gap:10px;margin:4px 0}.field-label{font-weight:bold;min-width:140px}.field-value{flex:1;border-bottom:1px dotted #999;padding:2px 4px}.checkbox-group{display:flex;gap:15px;margin:4px 0}.checkbox-item{display:flex;align-items:center;gap:4px}.text-area{width:100%;min-height:40px;border:1px solid #ddd;padding:4px;font-size:11px;font-family:Arial,sans-serif;margin:4px 0}.signature{margin-top:40px;text-align:center}.line{width:400px;border-top:1px solid #111;margin:30px auto 8px auto}.page-break{page-break-before:always}.section-box{border:1px solid #eee;padding:8px;margin:6px 0}.print-only{display:block}@media print{.no-print{display:none!important}}`;
+  // ✅ ESTILOS ATUALIZADOS: Fonte maior, caixas de texto expandidas, layout A4 otimizado
+  const styles = `@page{size:A4 portrait;margin:10mm}body{font-family:Arial,sans-serif;color:#111;line-height:1.5;font-size:13px}.sheet{max-width:790px;margin:0 auto;padding:15px}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:12px}.brand-logo{width:190px;height:60px;object-fit:contain}.org{text-align:right;font-size:11px;line-height:1.3}.title{text-align:center;font-weight:700;font-size:15px;margin:12px 0;text-transform:uppercase;letter-spacing:0.5px}.subtitle{font-weight:bold;margin:14px 0 8px 0;text-decoration:underline;font-size:13px;border-bottom:1px solid #eee;padding-bottom:4px}.field-row{display:flex;gap:12px;margin:6px 0;align-items:center;flex-wrap:wrap}.field-label{font-weight:bold;min-width:150px;font-size:13px;white-space:nowrap}.checkbox-group{display:flex;gap:15px;margin:6px 0;flex-wrap:wrap;align-items:center;font-size:13px}.checkbox-item{display:flex;align-items:center;gap:5px}.form-input{width:100%;border:none;border-bottom:1px solid #444;font-size:14px;font-family:Arial,sans-serif;padding:8px 4px;background:transparent;resize:vertical;min-height:42px;line-height:1.4;box-sizing:border-box}.form-input:focus{outline:none;border-bottom:1px solid #2563eb;background:#f8fafc}.form-input::placeholder{color:#999;font-style:italic}.signature{margin-top:35px;text-align:center}.line{width:420px;border-top:1px solid #111;margin:30px auto 8px auto}.page-break{page-break-before:always}@media print{.form-input{border-bottom:1px solid #111!important;background:transparent!important}}`;
 
   const handlePrint = () => {
     const win = window.open('', '_blank');
     if (!win || !ref.current) return;
-    win.document.write(`<html><head><title>Termo</title><meta charset="UTF-8"/><style>${styles}</style></head><body>${ref.current.innerHTML}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close()}}<\/script></body></html>`);
+    win.document.write(`<html><head><title>Ficha de Avaliação</title><meta charset="UTF-8"/><style>${styles}</style></head><body>${ref.current.innerHTML}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close()}}<\/script></body></html>`);
     win.document.close();
   };
 
@@ -136,72 +133,30 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     }
   }, [selectedProfessionalId, professionals]);
 
-  // ✅ TELA 1: MENU DE SELEÇÃO DE TERMOS
+  // ✅ TELA 1: MENU DE SELEÇÃO
   if (!selectedTerm) {
     return (
       <div className="fixed inset-0 z-[60] bg-gray-900/70 p-4 overflow-y-auto flex items-center justify-center">
         <div className="mx-auto max-w-2xl rounded-2xl bg-white shadow-2xl">
           <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <FileText className="text-blue-600" />
-              Selecionar Documento
-            </h2>
-            <button onClick={onClose} className="rounded-md px-3 py-2 text-red-600 hover:bg-red-50">
-              <X size={20} />
-            </button>
+            <h2 className="text-xl font-bold flex items-center gap-2"><FileText className="text-blue-600" /> Selecionar Documento</h2>
+            <button onClick={onClose} className="rounded-md px-3 py-2 text-red-600 hover:bg-red-50"><X size={20} /></button>
           </div>
-
           <div className="p-6 space-y-4">
-            <button
-              onClick={() => setSelectedTerm('adesao')}
-              className="w-full text-left p-5 border-2 border-blue-200 rounded-xl hover:bg-blue-50 hover:border-blue-400 transition-all flex items-center gap-4 group"
-            >
-              <div className="p-3 bg-blue-100 rounded-lg group-hover:scale-110 transition-transform">
-                <FileText className="text-blue-600" size={28} />
-              </div>
-              <div>
-                <div className="font-bold text-gray-800 text-lg">Termo de Adesão e Compromisso</div>
-                <div className="text-sm text-gray-500">Termo padrão de participação nas atividades da associação</div>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setSelectedTerm('consentimento')}
-              className="w-full text-left p-5 border-2 border-green-200 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all flex items-center gap-4 group"
-            >
-              <div className="p-3 bg-green-100 rounded-lg group-hover:scale-110 transition-transform">
-                <ClipboardCheck className="text-green-600" size={28} />
-              </div>
-              <div>
-                <div className="font-bold text-gray-800 text-lg">Termo de Consentimento Livre e Esclarecido</div>
-                <div className="text-sm text-gray-500">Autorização para tratamento fisioterapêutico</div>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setSelectedTerm('avaliacao_fisio')}
-              className="w-full text-left p-5 border-2 border-purple-200 rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-all flex items-center gap-4 group"
-            >
-              <div className="p-3 bg-purple-100 rounded-lg group-hover:scale-110 transition-transform">
-                <Stethoscope className="text-purple-600" size={28} />
-              </div>
-              <div>
-                <div className="font-bold text-gray-800 text-lg">Ficha de Avaliação Fisioterapêutica Pediátrica</div>
-                <div className="text-sm text-gray-500">Avaliação clínica e funcional do paciente pediátrico</div>
-              </div>
-            </button>
+            <button onClick={() => setSelectedTerm('adesao')} className="w-full text-left p-5 border-2 border-blue-200 rounded-xl hover:bg-blue-50 hover:border-blue-400 transition-all flex items-center gap-4 group"><div className="p-3 bg-blue-100 rounded-lg group-hover:scale-110 transition-transform"><FileText className="text-blue-600" size={28} /></div><div><div className="font-bold text-gray-800 text-lg">Termo de Adesão e Compromisso</div><div className="text-sm text-gray-500">Termo padrão de participação nas atividades da associação</div></div></button>
+            <button onClick={() => setSelectedTerm('consentimento')} className="w-full text-left p-5 border-2 border-green-200 rounded-xl hover:bg-green-50 hover:border-green-400 transition-all flex items-center gap-4 group"><div className="p-3 bg-green-100 rounded-lg group-hover:scale-110 transition-transform"><ClipboardCheck className="text-green-600" size={28} /></div><div><div className="font-bold text-gray-800 text-lg">Termo de Consentimento Livre e Esclarecido</div><div className="text-sm text-gray-500">Autorização para tratamento fisioterapêutico</div></div></button>
+            <button onClick={() => setSelectedTerm('avaliacao_fisio')} className="w-full text-left p-5 border-2 border-purple-200 rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-all flex items-center gap-4 group"><div className="p-3 bg-purple-100 rounded-lg group-hover:scale-110 transition-transform"><Stethoscope className="text-purple-600" size={28} /></div><div><div className="font-bold text-gray-800 text-lg">Ficha de Avaliação Fisioterapêutica Pediátrica</div><div className="text-sm text-gray-500">Avaliação clínica e funcional do paciente pediátrico</div></div></button>
           </div>
         </div>
       </div>
     );
   }
 
-  // ✅ TELA 2: TERMO DE CONSENTIMENTO (TCLE) - Mantido igual
+  // ✅ TELA 2: TERMO DE CONSENTIMENTO (TCLE)
   if (selectedTerm === 'consentimento') {
     const respName = beneficiary.respName || '_________________________';
     const respCpf = formatCPF(beneficiary.respCpf || '');
     const respAddress = beneficiary.respAddress || '_________________________';
-    const beneficiaryName = beneficiary.fullName || '_________________________';
     const profName = professionalData.name || '_________________________';
     const profSpecialty = professionalData.specialty || '_________________________';
     const profCouncil = professionalData.council || '_________________________';
@@ -213,10 +168,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
       <div className="fixed inset-0 z-[60] bg-gray-900/70 p-2 overflow-y-auto">
         <div className="mx-auto max-w-6xl rounded-2xl bg-white shadow-2xl">
           <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <ClipboardCheck className="text-green-600" />
-              Termo de Consentimento Livre e Esclarecido
-            </h2>
+            <h2 className="text-xl font-bold flex items-center gap-2"><ClipboardCheck className="text-green-600" /> Termo de Consentimento Livre e Esclarecido</h2>
             <div className="flex gap-2">
               <button onClick={() => setSelectedTerm(null)} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">← Voltar</button>
               <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2 bg-green-600 text-white hover:bg-green-700"><Printer size={16} /> {S.imprimir}</button>
@@ -274,7 +226,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
     );
   }
 
-  // ✅ TELA 3: FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA
+  // ✅ TELA 3: FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA (ATUALIZADA)
   if (selectedTerm === 'avaliacao_fisio') {
     const { day, month, year } = localDate;
     const monthCap = month.charAt(0).toUpperCase() + month.slice(1);
@@ -289,10 +241,7 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
       <div className="fixed inset-0 z-[60] bg-gray-900/70 p-2 overflow-y-auto">
         <div className="mx-auto max-w-6xl rounded-2xl bg-white shadow-2xl">
           <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 rounded-t-2xl">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Stethoscope className="text-purple-600" />
-              Ficha de Avaliação Fisioterapêutica Pediátrica
-            </h2>
+            <h2 className="text-xl font-bold flex items-center gap-2"><Stethoscope className="text-purple-600" /> Ficha de Avaliação Fisioterapêutica Pediátrica</h2>
             <div className="flex gap-2">
               <button onClick={() => setSelectedTerm(null)} className="rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">← Voltar</button>
               <button onClick={handlePrint} className="rounded-md border px-3 py-2 text-sm inline-flex gap-2 bg-purple-600 text-white hover:bg-purple-700"><Printer size={16} /> {S.imprimir}</button>
@@ -301,166 +250,126 @@ export default function TermModal({ beneficiary, onClose }: { beneficiary: Benef
           </div>
 
           <div className="flex flex-col lg:flex-row">
-            {/* Painel lateral - Dados e preenchimento */}
+            {/* Painel lateral - Dados e preenchimento rápido */}
             <div className="w-full lg:w-80 p-5 border-r bg-gray-50 overflow-y-auto max-h-[calc(100vh-100px)]">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2"><Stethoscope className="text-purple-600" size={20} /> Dados da Avaliação</h3>
-              
               <div className="space-y-4">
-                {/* Select de profissionais */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Fisioterapeuta *</label>
+                <div><label className="block text-xs font-semibold text-gray-700 mb-1">Fisioterapeuta *</label>
                   <select value={selectedProfessionalId} onChange={(e) => setSelectedProfessionalId(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white">
                     <option value="">Selecione um profissional...</option>
                     {professionals?.map(prof => (<option key={prof.id} value={prof.id}>{prof.name} - {prof.specialty}</option>))}
                   </select>
                 </div>
-
-                {/* Dados auto-preenchidos */}
                 <div className="p-3 bg-purple-50 rounded-lg border border-purple-200 space-y-2">
                   <p className="text-xs font-semibold text-gray-600">Profissional:</p>
                   <p className="text-sm text-gray-800">{professionalData.name || '—'}</p>
                   <p className="text-xs text-gray-500">{professionalData.specialty} – {professionalData.council}: {professionalData.registration}</p>
                 </div>
-
-                {/* Dados do paciente (auto) */}
                 <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 space-y-2">
                   <p className="text-xs font-semibold text-gray-600">Paciente:</p>
                   <p className="text-sm text-gray-800">{beneficiary.fullName || '—'}</p>
                   <p className="text-xs text-gray-500">Nasc: {birthDate} | Idade: {age}</p>
-                  <p className="text-xs text-gray-500">Resp: {beneficiary.respName || '—'}</p>
                 </div>
-
-                {/* Data da avaliação */}
-                <div className="pt-2 border-t">
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">Data da Avaliação</label>
+                <div className="pt-2 border-t"><label className="block text-xs font-semibold text-gray-700 mb-2">Data da Avaliação</label>
                   <div className="grid grid-cols-3 gap-2">
                     <div><label className="block text-[10px] text-gray-500">Dia</label><input type="number" min="1" max="31" value={day} onChange={(e) => setLocalDate(prev => ({ ...prev, day: parseInt(e.target.value) || 1 }))} className="w-full px-2 py-1 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-[10px] text-gray-500">Mês</label><input type="text" value={monthCap} onChange={(e) => setLocalDate(prev => ({ ...prev, month: e.target.value }))} className="w-full px-2 py-1 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-[10px] text-gray-500">Ano</label><input type="number" value={year} onChange={(e) => setLocalDate(prev => ({ ...prev, year: parseInt(e.target.value) || new Date().getFullYear() }))} className="w-full px-2 py-1 border border-gray-300 rounded text-sm" /></div>
                   </div>
                 </div>
-
-                {/* Campos editáveis principais */}
-                <div className="space-y-3 pt-2 border-t">
-                  <div><label className="block text-xs font-semibold text-gray-700 mb-1">Peso (kg)</label><input type="text" value={avaliacaoData.peso} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, peso: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" placeholder="Ex: 25,5" /></div>
-                  <div><label className="block text-xs font-semibold text-gray-700 mb-1">Altura (cm)</label><input type="text" value={avaliacaoData.altura} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, altura: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" placeholder="Ex: 120" /></div>
-                  <div><label className="block text-xs font-semibold text-gray-700 mb-1">Naturalidade</label><input type="text" value={avaliacaoData.naturalidade} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, naturalidade: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
-                  <div><label className="block text-xs font-semibold text-gray-700 mb-1">Diagnóstico Clínico</label><textarea value={avaliacaoData.diagnostico} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, diagnostico: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" rows={2} /></div>
-                </div>
               </div>
-
-              <div className="mt-6 p-3 bg-purple-50 border border-purple-200 rounded-lg text-xs text-purple-800">
-                <strong>💡 Dica:</strong> Os dados do paciente são preenchidos automaticamente. Edite os campos da avaliação conforme necessário.
-              </div>
+              <div className="mt-6 p-3 bg-purple-50 border border-purple-200 rounded-lg text-xs text-purple-800"><strong>💡 Dica:</strong> Preencha os campos diretamente na ficha ao lado. Tudo será salvo e impresso automaticamente.</div>
             </div>
 
-            {/* Área da ficha para impressão */}
+            {/* Área da ficha para impressão e edição */}
             <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
-              <div ref={ref} className="sheet bg-white p-6 w-[790px] mx-auto shadow-lg" style={{ fontSize: '11px', lineHeight: '1.4' }}>
+              <div ref={ref} className="sheet bg-white p-6 w-[790px] mx-auto shadow-lg">
                 
-                {/* Header - PADRÃO DOS TERMOS */}
+                {/* Header */}
                 <div className="header">
                   <img src={AMOVIN_LOGO_SRC} className="brand-logo" alt="Logo" />
-                  <div className="org">
-                    <strong>AMOVIN – Associação e Movimento pela Inclusão em Rio Paranaíba/MG</strong><br />
-                    CNPJ: 55.880.046/0001-34<br />
-                    INSTAGRAM: @amovin_rpa | EMAIL: contato@amovin.org.br<br />
-                    WHATSAPP: (34) 99821-0513
-                  </div>
+                  <div className="org"><strong>AMOVIN – Associação e Movimento pela Inclusão em Rio Paranaíba/MG</strong><br />CNPJ: 55.880.046/0001-34<br />INSTAGRAM: @amovin_rpa | EMAIL: contato@amovin.org.br<br />WHATSAPP: (34) 99821-0513</div>
                 </div>
 
                 <div className="title">FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA</div>
-                
-                <p style={{ textAlign: 'center', marginBottom: '15px', fontSize: '11px' }}>
-                  <strong>Fisioterapeuta:</strong> {profName} – {profCouncil}/{profRegistration}
-                </p>
+                <p style={{ textAlign: 'center', marginBottom: '15px', fontSize: '13px' }}><strong>Fisioterapeuta:</strong> {profName} – {profCouncil}/{profRegistration}</p>
 
                 {/* IDENTIFICAÇÃO DO PACIENTE */}
                 <p className="subtitle">IDENTIFICAÇÃO DO PACIENTE</p>
-                <div className="field-row"><span className="field-label">NOME:</span><span className="field-value">{beneficiary.fullName || '___________________________'}</span></div>
-                <div className="field-row"><span className="field-label">DATA DE NASCIMENTO:</span><span className="field-value">{birthDate}</span><span className="field-label" style={{minWidth:'80px'}}>SEXO:</span><span className="field-value" style={{minWidth:'100px'}}>{avaliacaoData.sexoF ? '(X) F' : '( ) F'} {avaliacaoData.sexoM ? '(X) M' : '( ) M'}</span><span className="field-label" style={{minWidth:'70px'}}>IDADE:</span><span className="field-value">{age}</span></div>
-                <div className="field-row"><span className="field-label">PESO:</span><span className="field-value">{avaliacaoData.peso || '__________'}</span><span className="field-label" style={{minWidth:'90px'}}>ALTURA:</span><span className="field-value">{avaliacaoData.altura || '__________'}</span><span className="field-label" style={{minWidth:'130px'}}>NATURALIDADE:</span><span className="field-value">{avaliacaoData.naturalidade || '__________'}</span></div>
-                <div className="field-row"><span className="field-label">NOME DO RESPONSÁVEL:</span><span className="field-value">{beneficiary.respName || '___________________________'}</span><span className="field-label" style={{minWidth:'100px'}}>CELULAR:</span><span className="field-value">{beneficiary.respPhone || '__________'}</span></div>
-                <div className="field-row"><span className="field-label">ENDEREÇO:</span><span className="field-value">{beneficiary.respAddress || '_______________________________________________________________'}</span></div>
-                <div className="field-row"><span className="field-label">DIAGNÓSTICO CLÍNICO:</span><span className="field-value">{avaliacaoData.diagnostico || '__________________________________________________________________'}</span></div>
-                <div className="field-row"><span className="field-label">DATA DA AVALIAÇÃO:</span><span className="field-value">{day}/{monthCap.substring(0,3).toLowerCase()}/{year}</span></div>
+                <div className="field-row"><span className="field-label">NOME:</span><input className="form-input" value={beneficiary.fullName || ''} readOnly style={{ fontWeight: 'bold', background: '#f9fafb' }} /></div>
+                <div className="field-row"><span className="field-label">DATA DE NASCIMENTO:</span><input className="form-input" style={{ maxWidth: '140px' }} value={birthDate} readOnly /><span className="field-label" style={{ minWidth: '70px' }}>SEXO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoF} onChange={() => setAvaliacaoData(p => ({ ...p, sexoF: true, sexoM: false }))} /> F</label><label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.sexoM} onChange={() => setAvaliacaoData(p => ({ ...p, sexoM: true, sexoF: false }))} /> M</label></div><span className="field-label" style={{ minWidth: '60px' }}>IDADE:</span><input className="form-input" style={{ maxWidth: '100px' }} value={age} readOnly /></div>
+                <div className="field-row"><span className="field-label">PESO (kg):</span><input className="form-input" style={{ maxWidth: '120px' }} placeholder="Ex: 25,5" value={avaliacaoData.peso} onChange={e => setAvaliacaoData(p => ({ ...p, peso: e.target.value }))} /><span className="field-label" style={{ minWidth: '80px' }}>ALTURA (cm):</span><input className="form-input" style={{ maxWidth: '120px' }} placeholder="Ex: 120" value={avaliacaoData.altura} onChange={e => setAvaliacaoData(p => ({ ...p, altura: e.target.value }))} /><span className="field-label" style={{ minWidth: '110px' }}>NATURALIDADE:</span><input className="form-input" placeholder="Cidade/UF" value={avaliacaoData.naturalidade} onChange={e => setAvaliacaoData(p => ({ ...p, naturalidade: e.target.value }))} /></div>
+                <div className="field-row"><span className="field-label">NOME DO RESPONSÁVEL:</span><input className="form-input" value={beneficiary.respName || ''} readOnly style={{ fontWeight: 'bold', background: '#f9fafb' }} /><span className="field-label" style={{ minWidth: '90px' }}>CELULAR:</span><input className="form-input" style={{ maxWidth: '160px' }} value={beneficiary.respPhone || ''} readOnly /></div>
+                <div className="field-row"><span className="field-label">ENDEREÇO:</span><input className="form-input" value={beneficiary.respAddress || ''} readOnly style={{ fontWeight: 'bold', background: '#f9fafb' }} /></div>
+                <div className="field-row"><span className="field-label">DIAGNÓSTICO CLÍNICO:</span><input className="form-input" placeholder="Informe o diagnóstico médico" value={avaliacaoData.diagnostico} onChange={e => setAvaliacaoData(p => ({ ...p, diagnostico: e.target.value }))} /></div>
+                <div className="field-row"><span className="field-label">DATA DA AVALIAÇÃO:</span><input className="form-input" style={{ maxWidth: '160px' }} value={`${day} de ${monthCap} de ${year}`} readOnly /></div>
                 
                 <p className="field-row" style={{ marginTop: '8px' }}><span className="field-label">DISPOSITIVOS AUXILIARES:</span>
-                  <span className="checkbox-group">
-                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.cadeiraRodas} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, cadeiraRodas: e.target.checked }))} /> CADEIRA DE RODAS</label>
-                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletasAxilar} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, muletasAxilar: e.target.checked }))} /> MULETAS AXILAR</label>
-                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletaCanadense} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, muletaCanadense: e.target.checked }))} /> MULETA CANADENSE</label>
-                  </span>
-                </p>
-                <p className="checkbox-group" style={{ marginLeft: '145px' }}>
-                  <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.bengala} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, bengala: e.target.checked }))} /> BENGALA</label>
-                  <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.andador} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, andador: e.target.checked }))} /> ANDADOR</label>
-                  <label className="checkbox-item">OUTROS: <input type="text" value={avaliacaoData.outrosDispositivos} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, outrosDispositivos: e.target.value }))} style={{ border: 'none', borderBottom: '1px dotted #999', width: '120px', marginLeft: '4px' }} /></label>
+                  <div className="checkbox-group" style={{ marginLeft: '155px', flexWrap: 'wrap' }}>
+                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.cadeiraRodas} onChange={e => setAvaliacaoData(p => ({ ...p, cadeiraRodas: e.target.checked }))} /> CADEIRA DE RODAS</label>
+                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletasAxilar} onChange={e => setAvaliacaoData(p => ({ ...p, muletasAxilar: e.target.checked }))} /> MULETAS AXILAR</label>
+                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.muletaCanadense} onChange={e => setAvaliacaoData(p => ({ ...p, muletaCanadense: e.target.checked }))} /> MULETA CANADENSE</label>
+                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.bengala} onChange={e => setAvaliacaoData(p => ({ ...p, bengala: e.target.checked }))} /> BENGALA</label>
+                    <label className="checkbox-item"><input type="checkbox" checked={avaliacaoData.andador} onChange={e => setAvaliacaoData(p => ({ ...p, andador: e.target.checked }))} /> ANDADOR</label>
+                    <label className="checkbox-item">OUTROS: <input className="form-input" style={{ width: '150px', minWidth: '150px', margin: '0 4px' }} placeholder="Especifique" value={avaliacaoData.outrosDispositivos} onChange={e => setAvaliacaoData(p => ({ ...p, outrosDispositivos: e.target.value }))} /></label>
+                  </div>
                 </p>
 
                 {/* HISTÓRIA CLÍNICA */}
                 <p className="subtitle">HISTÓRIA CLÍNICA</p>
-                <p className="field-row"><span className="field-label">QUEIXA PRINCIPAL:</span><span className="field-value">{avaliacaoData.queixaPrincipal || '________________________________________________________________________________________________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>HMP/HMA:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '60px', border: 'none', padding: 0 }} value={avaliacaoData.hmpHma} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, hmpHma: e.target.value }))} /></span></p>
-                <p className="field-row"><span className="field-label">MEDICAMENTOS EM USO:</span><span className="field-value">{avaliacaoData.medicamentos || '________________________________________________________________________________________________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label">RESTRIÇÃO ALIMENTAR:</span><span className="checkbox-group"><label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Sim'} onChange={() => setAvaliacaoData(prev => ({ ...prev, restricaoAlimentar: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Não'} onChange={() => setAvaliacaoData(prev => ({ ...prev, restricaoAlimentar: 'Não' }))} /> NÃO</label></span> QUAIS: <input type="text" value={avaliacaoData.restricaoDetalhes} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, restricaoDetalhes: e.target.value }))} style={{ border: 'none', borderBottom: '1px dotted #999', width: '200px' }} /></p>
-                <p className="field-row"><span className="field-label">HÁBITOS DE VIDA:</span><span className="field-value">{avaliacaoData.habitosVida || '________________________________________________________________________________________________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label">TRATAMENTOS REALIZADOS:</span><span className="field-value">{avaliacaoData.tratamentosRealizados || '________________________________________________________________________________________________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label">CIRURGIAS:</span><span className="checkbox-group"><label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Não'} onChange={() => setAvaliacaoData(prev => ({ ...prev, cirurgias: 'Não' }))} /> NÃO</label><label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Sim'} onChange={() => setAvaliacaoData(prev => ({ ...prev, cirurgias: 'Sim' }))} /> SIM</label></span> QUAL: <input type="text" value={avaliacaoData.cirurgiasDetalhes} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, cirurgiasDetalhes: e.target.value }))} style={{ border: 'none', borderBottom: '1px dotted #999', width: '200px' }} /></p>
-                <p className="field-row"><span className="field-label">RESULTADO DE EXAMES:</span><span className="field-value">{avaliacaoData.exames || '________________________________________________________________________________________________________________________________________________________________'}</span></p>
+                <p className="field-row"><span className="field-label">QUEIXA PRINCIPAL:</span><textarea className="form-input" rows={2} placeholder="Descreva a queixa principal..." value={avaliacaoData.queixaPrincipal} onChange={e => setAvaliacaoData(p => ({ ...p, queixaPrincipal: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>HMP/HMA:</span><textarea className="form-input" rows={3} placeholder="História da moléstia presente/anterior..." value={avaliacaoData.hmpHma} onChange={e => setAvaliacaoData(p => ({ ...p, hmpHma: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">MEDICAMENTOS EM USO:</span><textarea className="form-input" rows={2} placeholder="Liste os medicamentos..." value={avaliacaoData.medicamentos} onChange={e => setAvaliacaoData(p => ({ ...p, medicamentos: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">RESTRIÇÃO ALIMENTAR:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="restricao" checked={avaliacaoData.restricaoAlimentar === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, restricaoAlimentar: 'Não' }))} /> NÃO</label></div> QUAIS: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} placeholder="Especifique a restrição" value={avaliacaoData.restricaoDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, restricaoDetalhes: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">HÁBITOS DE VIDA:</span><textarea className="form-input" rows={2} placeholder="Descreva os hábitos..." value={avaliacaoData.habitosVida} onChange={e => setAvaliacaoData(p => ({ ...p, habitosVida: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">TRATAMENTOS REALIZADOS:</span><textarea className="form-input" rows={2} placeholder="Liste tratamentos anteriores/atuais..." value={avaliacaoData.tratamentosRealizados} onChange={e => setAvaliacaoData(p => ({ ...p, tratamentosRealizados: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">CIRURGIAS:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Não' }))} /> NÃO</label><label className="checkbox-item"><input type="radio" name="cirurgias" checked={avaliacaoData.cirurgias === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, cirurgias: 'Sim' }))} /> SIM</label></div> QUAL: <input className="form-input" style={{ width: '250px', minWidth: '250px', margin: '0 8px' }} placeholder="Descreva a cirurgia" value={avaliacaoData.cirurgiasDetalhes} onChange={e => setAvaliacaoData(p => ({ ...p, cirurgiasDetalhes: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">RESULTADO DE EXAMES:</span><textarea className="form-input" rows={2} placeholder="Anexe ou descreva resultados..." value={avaliacaoData.exames} onChange={e => setAvaliacaoData(p => ({ ...p, exames: e.target.value }))} /></p>
 
                 {/* SAÚDE GERAL DA CRIANÇA */}
                 <p className="subtitle">SAÚDE GERAL DA CRIANÇA</p>
-                <p className="checkbox-group"><label className="checkbox-item">CONVULSÕES: <input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Sim'} onChange={() => setAvaliacaoData(prev => ({ ...prev, convulsoes: 'Sim' }))} /> SIM <input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Não'} onChange={() => setAvaliacaoData(prev => ({ ...prev, convulsoes: 'Não' }))} /> NÃO</label> FREQUÊNCIA: <input type="text" value={avaliacaoData.convulsoesFreq} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, convulsoesFreq: e.target.value }))} style={{ border: 'none', borderBottom: '1px dotted #999', width: '150px' }} /></p>
-                <p className="checkbox-group"><label className="checkbox-item">CONSTIPAÇÃO: <input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Sim'} onChange={() => setAvaliacaoData(prev => ({ ...prev, constipacao: 'Sim' }))} /> SIM <input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Não'} onChange={() => setAvaliacaoData(prev => ({ ...prev, constipacao: 'Não' }))} /> NÃO</label></p>
-                <p className="checkbox-group"><label className="checkbox-item">SONO: <input type="radio" name="sono" checked={avaliacaoData.sono === 'Bom'} onChange={() => setAvaliacaoData(prev => ({ ...prev, sono: 'Bom' }))} /> BOM <input type="radio" name="sono" checked={avaliacaoData.sono === 'Ruim'} onChange={() => setAvaliacaoData(prev => ({ ...prev, sono: 'Ruim' }))} /> RUIM</label></p>
-                <p className="checkbox-group"><label className="checkbox-item">ALIMENTAÇÃO: <input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Pastoso'} onChange={() => setAvaliacaoData(prev => ({ ...prev, alimentacao: 'Pastoso' }))} /> PASTOSO <input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Líquido'} onChange={() => setAvaliacaoData(prev => ({ ...prev, alimentacao: 'Líquido' }))} /> LÍQUIDO <input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Auxiliado'} onChange={() => setAvaliacaoData(prev => ({ ...prev, alimentacao: 'Auxiliado' }))} /> AUXILIADO <input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Independente'} onChange={() => setAvaliacaoData(prev => ({ ...prev, alimentacao: 'Independente' }))} /> INDEPENDENTE</label></p>
-                <p className="checkbox-group"><label className="checkbox-item">LÍQUIDOS: <input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Mamadeira'} onChange={() => setAvaliacaoData(prev => ({ ...prev, liquidos: 'Mamadeira' }))} /> MAMADEIRA <input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Copo'} onChange={() => setAvaliacaoData(prev => ({ ...prev, liquidos: 'Copo' }))} /> COPO <input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Auxiliado'} onChange={() => setAvaliacaoData(prev => ({ ...prev, liquidos: 'Auxiliado' }))} /> AUXILIADO <input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Independente'} onChange={() => setAvaliacaoData(prev => ({ ...prev, liquidos: 'Independente' }))} /> INDEPENDENTE</label></p>
-                <p className="checkbox-group"><label className="checkbox-item">HIGIENE: <input type="radio" name="hig" checked={avaliacaoData.higiene === 'Dependente'} onChange={() => setAvaliacaoData(prev => ({ ...prev, higiene: 'Dependente' }))} /> DEPENDENTE <input type="radio" name="hig" checked={avaliacaoData.higiene === 'Independente'} onChange={() => setAvaliacaoData(prev => ({ ...prev, higiene: 'Independente' }))} /> INDEPENDENTE</label></p>
+                <p className="field-row"><span className="field-label">CONVULSÕES:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="conv" checked={avaliacaoData.convulsoes === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, convulsoes: 'Não' }))} /> NÃO</label></div> FREQUÊNCIA: <input className="form-input" style={{ width: '200px', minWidth: '200px', margin: '0 8px' }} placeholder="Descreva a frequência" value={avaliacaoData.convulsoesFreq} onChange={e => setAvaliacaoData(p => ({ ...p, convulsoesFreq: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">CONSTIPAÇÃO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, constipacao: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="constip" checked={avaliacaoData.constipacao === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, constipacao: 'Não' }))} /> NÃO</label></div></p>
+                <p className="field-row"><span className="field-label">SONO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="sono" checked={avaliacaoData.sono === 'Bom'} onChange={() => setAvaliacaoData(p => ({ ...p, sono: 'Bom' }))} /> BOM</label><label className="checkbox-item"><input type="radio" name="sono" checked={avaliacaoData.sono === 'Ruim'} onChange={() => setAvaliacaoData(p => ({ ...p, sono: 'Ruim' }))} /> RUIM</label></div></p>
+                <p className="field-row"><span className="field-label">ALIMENTAÇÃO:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Pastoso'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Pastoso' }))} /> PASTOSO</label><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Líquido'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Líquido' }))} /> LÍQUIDO</label><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Auxiliado'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Auxiliado' }))} /> AUXILIADO</label><label className="checkbox-item"><input type="radio" name="aliment" checked={avaliacaoData.alimentacao === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, alimentacao: 'Independente' }))} /> INDEPENDENTE</label></div></p>
+                <p className="field-row"><span className="field-label">LÍQUIDOS:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Mamadeira'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Mamadeira' }))} /> MAMADEIRA</label><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Copo'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Copo' }))} /> COPO</label><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Auxiliado'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Auxiliado' }))} /> AUXILIADO</label><label className="checkbox-item"><input type="radio" name="liq" checked={avaliacaoData.liquidos === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, liquidos: 'Independente' }))} /> INDEPENDENTE</label></div></p>
+                <p className="field-row"><span className="field-label">HIGIENE:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="hig" checked={avaliacaoData.higiene === 'Dependente'} onChange={() => setAvaliacaoData(p => ({ ...p, higiene: 'Dependente' }))} /> DEPENDENTE</label><label className="checkbox-item"><input type="radio" name="hig" checked={avaliacaoData.higiene === 'Independente'} onChange={() => setAvaliacaoData(p => ({ ...p, higiene: 'Independente' }))} /> INDEPENDENTE</label></div></p>
 
                 {/* EXAME FÍSICO */}
                 <p className="subtitle">EXAME FÍSICO</p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>INSPEÇÃO:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '40px', border: 'none', padding: 0 }} value={avaliacaoData.inspecao} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, inspecao: e.target.value }))} placeholder="Estado geral, pele, deformidade, padrões patológicos" /></span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>FORÇA MUSCULAR:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.forcaMuscular} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, forcaMuscular: e.target.value }))} /></span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>EQUILÍBRIO:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.equilibrio} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, equilibrio: e.target.value }))} /></span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>POSTURA:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.postura} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, postura: e.target.value }))} /></span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>REFLEXOS:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.reflexos} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, reflexos: e.target.value }))} /></span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>PALPAÇÃO:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.palpacao} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, palpacao: e.target.value }))} placeholder="Tônus, trofismo, edema" /></span></p>
-                <p className="field-row"><span className="field-label">ADM MMSS:</span><span className="field-value">{avaliacaoData.admMmss || '__________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label">ADM MMII:</span><span className="field-value">{avaliacaoData.admMmii || '___________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>PADRÕES DE MOVIMENTO:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.padroesMovimento} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, padroesMovimento: e.target.value }))} placeholder="Habilidades e inabilidades" /></span></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INSPEÇÃO:</span><textarea className="form-input" rows={3} placeholder="Estado geral, pele, deformidade, padrões patológicos..." value={avaliacaoData.inspecao} onChange={e => setAvaliacaoData(p => ({ ...p, inspecao: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>FORÇA MUSCULAR:</span><textarea className="form-input" rows={2} placeholder="Avalie a força muscular..." value={avaliacaoData.forcaMuscular} onChange={e => setAvaliacaoData(p => ({ ...p, forcaMuscular: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>EQUILÍBRIO:</span><textarea className="form-input" rows={2} placeholder="Avalie o equilíbrio..." value={avaliacaoData.equilibrio} onChange={e => setAvaliacaoData(p => ({ ...p, equilibrio: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>POSTURA:</span><textarea className="form-input" rows={2} placeholder="Descreva a postura..." value={avaliacaoData.postura} onChange={e => setAvaliacaoData(p => ({ ...p, postura: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>REFLEXOS:</span><textarea className="form-input" rows={2} placeholder="Avalie os reflexos..." value={avaliacaoData.reflexos} onChange={e => setAvaliacaoData(p => ({ ...p, reflexos: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PALPAÇÃO:</span><textarea className="form-input" rows={2} placeholder="Tônus, trofismo, edema..." value={avaliacaoData.palpacao} onChange={e => setAvaliacaoData(p => ({ ...p, palpacao: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">ADM MMSS:</span><textarea className="form-input" rows={2} placeholder="Amplitude de movimento membros superiores..." value={avaliacaoData.admMmss} onChange={e => setAvaliacaoData(p => ({ ...p, admMmss: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">ADM MMII:</span><textarea className="form-input" rows={2} placeholder="Amplitude de movimento membros inferiores..." value={avaliacaoData.admMmii} onChange={e => setAvaliacaoData(p => ({ ...p, admMmii: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>PADRÕES DE MOVIMENTO:</span><textarea className="form-input" rows={2} placeholder="Habilidades e inabilidades observadas..." value={avaliacaoData.padroesMovimento} onChange={e => setAvaliacaoData(p => ({ ...p, padroesMovimento: e.target.value }))} /></p>
 
                 {/* AVALIAÇÃO FUNCIONAL */}
                 <p className="subtitle">AVALIAÇÃO FUNCIONAL</p>
-                <p className="checkbox-group"><label className="checkbox-item">SUSTENTA CABEÇA / ROLAR LATERAL: <input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Sim'} onChange={() => setAvaliacaoData(prev => ({ ...prev, sustentaCabeca: 'Sim' }))} /> SIM <input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Não'} onChange={() => setAvaliacaoData(prev => ({ ...prev, sustentaCabeca: 'Não' }))} /> NÃO <input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Às vezes'} onChange={() => setAvaliacaoData(prev => ({ ...prev, sustentaCabeca: 'Às vezes' }))} /> ÀS VEZES</label></p>
-                <p className="checkbox-group"><label className="checkbox-item">ROLAR PARA VENTRAL: <input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Sim'} onChange={() => setAvaliacaoData(prev => ({ ...prev, rolarVentral: 'Sim' }))} /> SIM <input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Não'} onChange={() => setAvaliacaoData(prev => ({ ...prev, rolarVentral: 'Não' }))} /> NÃO <input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Às vezes'} onChange={() => setAvaliacaoData(prev => ({ ...prev, rolarVentral: 'Às vezes' }))} /> ÀS VEZES</label></p>
-                <p className="field-row"><span className="field-label">SENTAR (COM/SEM APOIO):</span><span className="field-value">{avaliacaoData.sentar || '________________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label">ARRASTAR/ENGATINHAR:</span><span className="field-value">{avaliacaoData.arrastar || '________________________________________________________________________________'}</span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>MOBILIDADES:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.mobilidades} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, mobilidades: e.target.value }))} /></span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>TRANSFERÊNCIAS:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.transferencias} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, transferencias: e.target.value }))} /></span></p>
-                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '4px' }}>INDEPENDÊNCIA FUNCIONAL:</span><span className="field-value"><textarea className="text-area" style={{ minHeight: '30px', border: 'none', padding: 0 }} value={avaliacaoData.independenciaFuncional} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, independenciaFuncional: e.target.value }))} /></span></p>
+                <p className="field-row"><span className="field-label">SUSTENTA CABEÇA / ROLAR LATERAL:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Não' }))} /> NÃO</label><label className="checkbox-item"><input type="radio" name="cabeca" checked={avaliacaoData.sustentaCabeca === 'Às vezes'} onChange={() => setAvaliacaoData(p => ({ ...p, sustentaCabeca: 'Às vezes' }))} /> ÀS VEZES</label></div></p>
+                <p className="field-row"><span className="field-label">ROLAR PARA VENTRAL:</span><div className="checkbox-group" style={{ margin: 0 }}><label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Sim'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Sim' }))} /> SIM</label><label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Não'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Não' }))} /> NÃO</label><label className="checkbox-item"><input type="radio" name="rolarV" checked={avaliacaoData.rolarVentral === 'Às vezes'} onChange={() => setAvaliacaoData(p => ({ ...p, rolarVentral: 'Às vezes' }))} /> ÀS VEZES</label></div></p>
+                <p className="field-row"><span className="field-label">SENTAR (COM/SEM APOIO):</span><textarea className="form-input" rows={2} placeholder="Descreva a capacidade de sentar..." value={avaliacaoData.sentar} onChange={e => setAvaliacaoData(p => ({ ...p, sentar: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label">ARRASTAR/ENGATINHAR:</span><textarea className="form-input" rows={2} placeholder="Descreva a mobilidade..." value={avaliacaoData.arrastar} onChange={e => setAvaliacaoData(p => ({ ...p, arrastar: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>MOBILIDADES:</span><textarea className="form-input" rows={2} placeholder="Descreva as mobilidades..." value={avaliacaoData.mobilidades} onChange={e => setAvaliacaoData(p => ({ ...p, mobilidades: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>TRANSFERÊNCIAS:</span><textarea className="form-input" rows={2} placeholder="Descreva as transferências..." value={avaliacaoData.transferencias} onChange={e => setAvaliacaoData(p => ({ ...p, transferencias: e.target.value }))} /></p>
+                <p className="field-row"><span className="field-label" style={{ verticalAlign: 'top', paddingTop: '8px' }}>INDEPENDÊNCIA FUNCIONAL:</span><textarea className="form-input" rows={2} placeholder="Avalie a independência..." value={avaliacaoData.independenciaFuncional} onChange={e => setAvaliacaoData(p => ({ ...p, independenciaFuncional: e.target.value }))} /></p>
 
                 {/* DIAGNÓSTICO E PLANO */}
                 <p className="subtitle">DIAGNÓSTICO FISIOTERAPÊUTICO</p>
-                <p><textarea className="text-area" style={{ minHeight: '40px' }} value={avaliacaoData.diagnosticoFisio} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, diagnosticoFisio: e.target.value }))} /></p>
+                <textarea className="form-input" rows={3} placeholder="Elabore o diagnóstico fisioterapêutico..." value={avaliacaoData.diagnosticoFisio} onChange={e => setAvaliacaoData(p => ({ ...p, diagnosticoFisio: e.target.value }))} />
                 
                 <p className="subtitle">OBJETIVOS</p>
-                <p><textarea className="text-area" style={{ minHeight: '50px' }} value={avaliacaoData.objetivos} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, objetivos: e.target.value }))} /></p>
+                <textarea className="form-input" rows={3} placeholder="Liste os objetivos terapêuticos..." value={avaliacaoData.objetivos} onChange={e => setAvaliacaoData(p => ({ ...p, objetivos: e.target.value }))} />
                 
                 <p className="subtitle">PLANO DE TRATAMENTO</p>
-                <p><textarea className="text-area" style={{ minHeight: '50px' }} value={avaliacaoData.planoTratamento} onChange={(e) => setAvaliacaoData(prev => ({ ...prev, planoTratamento: e.target.value }))} /></p>
+                <textarea className="form-input" rows={4} placeholder="Descreva o plano de tratamento..." value={avaliacaoData.planoTratamento} onChange={e => setAvaliacaoData(p => ({ ...p, planoTratamento: e.target.value }))} />
 
                 {/* Local, Data e Assinatura */}
-                <p style={{ marginTop: '25px', textAlign: 'right', fontSize: '11px' }}>
-                  {localDate.city}, {day} de {monthCap} de {year}.
-                </p>
-
-                <div className="signature">
-                  <div className="line"></div>
-                  <div style={{ fontWeight: 'bold', fontSize: '11px' }}>{profName}</div>
-                  <div style={{ fontSize: '10px', color: '#555' }}>{profSpecialty} – {profCouncil}/{profRegistration}</div>
-                </div>
-
+                <p style={{ marginTop: '25px', textAlign: 'right', fontSize: '13px' }}>{localDate.city}, {day} de {monthCap} de {year}.</p>
+                <div className="signature"><div className="line"></div><div style={{ fontWeight: 'bold', fontSize: '12px' }}>{profName}</div><div style={{ fontSize: '11px', color: '#555' }}>{profSpecialty} – {profCouncil}/{profRegistration}</div></div>
               </div>
             </div>
           </div>
