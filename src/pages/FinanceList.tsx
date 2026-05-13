@@ -9,6 +9,14 @@ const monthLabels: Record<string,string> = {
   '07':'Julho','08':'Agosto','09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'
 };
 
+const categories = ['todos', 'Doação', 'Evento', 'Subvenção', 'Material', 'Serviços', 'Outros'];
+const types = ['todos', 'income', 'expense'];
+const typeLabels: Record<string,string> = {
+  'todos': 'Todos',
+  'income': 'Receitas',
+  'expense': 'Despesas'
+};
+
 export default function FinanceList() {
   const { finances, addFinance, updateFinance, deleteFinance } = useStore();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -18,6 +26,9 @@ export default function FinanceList() {
   // ✅ Padrão "todos" para mostrar todos os lançamentos inicialmente
   const [filterMonth, setFilterMonth] = useState('todos');
   const [filterYear, setFilterYear] = useState('todos');
+  // ✅ Novos filtros: categoria e tipo
+  const [filterCategory, setFilterCategory] = useState('todos');
+  const [filterType, setFilterType] = useState('todos');
   
   const [formData, setFormData] = useState({
     type: 'income', 
@@ -132,32 +143,34 @@ export default function FinanceList() {
     });
   };
 
-  // ✅ Filtragem com opção "todos"
+  // ✅ Filtragem com opção "todos" para mês, ano, categoria e tipo
   const filtered = useMemo(() => {
     return finances.filter(f => {
-      // Se filtro for "todos", não filtra por mês/ano
-      if (filterMonth === 'todos' && filterYear === 'todos') {
-        return true;
-      }
-      
-      // Se só mês for "todos", filtra só por ano
-      if (filterMonth === 'todos') {
-        const y = f.year || String(new Date(f.date).getFullYear());
-        return y === filterYear;
-      }
-      
-      // Se só ano for "todos", filtra só por mês
-      if (filterYear === 'todos') {
+      // Filtro por mês
+      if (filterMonth !== 'todos') {
         const m = f.month || String(new Date(f.date).getMonth()+1).padStart(2,'0');
-        return m === filterMonth;
+        if (m !== filterMonth) return false;
       }
       
-      // Filtra por mês E ano
-      const m = f.month || String(new Date(f.date).getMonth()+1).padStart(2,'0');
-      const y = f.year || String(new Date(f.date).getFullYear());
-      return m === filterMonth && y === filterYear;
+      // Filtro por ano
+      if (filterYear !== 'todos') {
+        const y = f.year || String(new Date(f.date).getFullYear());
+        if (y !== filterYear) return false;
+      }
+      
+      // Filtro por categoria
+      if (filterCategory !== 'todos') {
+        if (f.category !== filterCategory) return false;
+      }
+      
+      // Filtro por tipo (income/expense)
+      if (filterType !== 'todos') {
+        if (f.type !== filterType) return false;
+      }
+      
+      return true;
     });
-  }, [finances, filterMonth, filterYear]);
+  }, [finances, filterMonth, filterYear, filterCategory, filterType]);
 
   const totalIncome = filtered.filter(f => f.type === 'income').reduce((a, c) => a + (c.value || 0), 0);
   const totalExpense = filtered.filter(f => f.type === 'expense').reduce((a, c) => a + (c.value || 0), 0);
@@ -183,6 +196,14 @@ export default function FinanceList() {
           <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="border rounded-md p-2 text-sm">
             {years.map(y => <option key={y} value={y}>{y === 'todos' ? 'Todos' : y}</option>)}
           </select>
+          {/* ✅ Select de Categoria com opção "Todos" como padrão */}
+          <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)} className="border rounded-md p-2 text-sm">
+            {categories.map(c => <option key={c} value={c}>{c === 'todos' ? 'Todas' : c}</option>)}
+          </select>
+          {/* ✅ Select de Tipo com opção "Todos" como padrão */}
+          <select value={filterType} onChange={e => setFilterType(e.target.value)} className="border rounded-md p-2 text-sm">
+            {types.map(t => <option key={t} value={t}>{typeLabels[t]}</option>)}
+          </select>
           <button onClick={() => setIsFormOpen(true)} className="bg-yellow-400 hover:bg-yellow-500 text-gray-950 px-4 py-2 rounded-md flex items-center gap-2 font-semibold">
             <Plus size={20} /> Novo Lançamento
           </button>
@@ -190,14 +211,14 @@ export default function FinanceList() {
       </div>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-6">
-        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Receitas {filterMonth !== 'todos' || filterYear !== 'todos' ? `(${monthLabels[filterMonth] || ''}${filterYear !== 'todos' ? '/'+filterYear : ''})` : ''}</dt><dd className="mt-1 text-3xl font-semibold text-green-600">R$ {totalIncome.toFixed(2)}</dd></div></div>
-        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Despesas {filterMonth !== 'todos' || filterYear !== 'todos' ? `(${monthLabels[filterMonth] || ''}${filterYear !== 'todos' ? '/'+filterYear : ''})` : ''}</dt><dd className="mt-1 text-3xl font-semibold text-red-600">R$ {totalExpense.toFixed(2)}</dd></div></div>
-        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Saldo {filterMonth !== 'todos' || filterYear !== 'todos' ? `(${monthLabels[filterMonth] || ''}${filterYear !== 'todos' ? '/'+filterYear : ''})` : ''}</dt><dd className={`mt-1 text-3xl font-semibold ${saldo >= 0 ? 'text-blue-600' : 'text-red-600'}`}>R$ {saldo.toFixed(2)}</dd></div></div>
+        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Receitas</dt><dd className="mt-1 text-3xl font-semibold text-green-600">R$ {totalIncome.toFixed(2)}</dd></div></div>
+        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Despesas</dt><dd className="mt-1 text-3xl font-semibold text-red-600">R$ {totalExpense.toFixed(2)}</dd></div></div>
+        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Saldo</dt><dd className={`mt-1 text-3xl font-semibold ${saldo >= 0 ? 'text-blue-600' : 'text-red-600'}`}>R$ {saldo.toFixed(2)}</dd></div></div>
       </div>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200">
-          {filtered.length === 0 ? <li className="px-6 py-4 text-center text-gray-500">Nenhum lançamento {filterMonth !== 'todos' || filterYear !== 'todos' ? 'neste período' : 'cadastrado'}.</li> :
+          {filtered.length === 0 ? <li className="px-6 py-4 text-center text-gray-500">Nenhum lançamento encontrado com os filtros selecionados.</li> :
             filtered.map((fin) => (
               <li key={fin.id} className="px-6 py-4 flex justify-between items-center">
                 <div>
