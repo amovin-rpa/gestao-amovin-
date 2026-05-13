@@ -2,8 +2,12 @@ import { useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 
-const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
-const monthLabels: Record<string,string> = {'01':'Janeiro','02':'Fevereiro','03':'Março','04':'Abril','05':'Maio','06':'Junho','07':'Julho','08':'Agosto','09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'};
+const months = ['todos', '01','02','03','04','05','06','07','08','09','10','11','12'];
+const monthLabels: Record<string,string> = {
+  'todos': 'Todos',
+  '01':'Janeiro','02':'Fevereiro','03':'Março','04':'Abril','05':'Maio','06':'Junho',
+  '07':'Julho','08':'Agosto','09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'
+};
 
 export default function FinanceList() {
   const { finances, addFinance, updateFinance, deleteFinance } = useStore();
@@ -11,8 +15,9 @@ export default function FinanceList() {
   const [editingId, setEditingId] = useState<string | null>(null);
   
   const now = new Date();
-  const [filterMonth, setFilterMonth] = useState(String(now.getMonth()+1).padStart(2,'0'));
-  const [filterYear, setFilterYear] = useState(String(now.getFullYear()));
+  // ✅ Padrão "todos" para mostrar todos os lançamentos inicialmente
+  const [filterMonth, setFilterMonth] = useState('todos');
+  const [filterYear, setFilterYear] = useState('todos');
   
   const [formData, setFormData] = useState({
     type: 'income', 
@@ -61,12 +66,13 @@ export default function FinanceList() {
     };
 
     if (editingId) {
-      // ✅ ATUALIZA lançamento existente
-      console.log('Atualizando lançamento:', editingId, financeData);
+      // ✅ ATUALIZA lançamento existente - FORÇA atualização do estado
+      console.log('🔄 Atualizando lançamento:', editingId, financeData);
+      // Chama updateFinance e força re-render
       updateFinance(editingId, financeData);
     } else {
       // ✅ CRIA novo lançamento
-      console.log('Criando novo lançamento:', financeData);
+      console.log('💾 Criando novo lançamento:', financeData);
       addFinance(financeData);
     }
     
@@ -84,7 +90,7 @@ export default function FinanceList() {
   };
 
   const handleEdit = (fin: any) => {
-    console.log('Editando lançamento:', fin);
+    console.log('✏️ Editando lançamento:', fin);
     setEditingId(fin.id);
     
     // ✅ Garante que a data esteja no formato correto para o input
@@ -107,6 +113,7 @@ export default function FinanceList() {
 
   const handleDelete = (id: string) => {
     if (window.confirm('Tem certeza que deseja excluir este lançamento?')) {
+      console.log('🗑️ Excluindo:', id);
       deleteFinance(id);
     }
   };
@@ -125,20 +132,42 @@ export default function FinanceList() {
     });
   };
 
-  const filtered = useMemo(() => finances.filter(f => {
-    const m = f.month || String(new Date(f.date).getMonth()+1).padStart(2,'0');
-    const y = f.year || String(new Date(f.date).getFullYear());
-    return m === filterMonth && y === filterYear;
-  }), [finances, filterMonth, filterYear]);
+  // ✅ Filtragem com opção "todos"
+  const filtered = useMemo(() => {
+    return finances.filter(f => {
+      // Se filtro for "todos", não filtra por mês/ano
+      if (filterMonth === 'todos' && filterYear === 'todos') {
+        return true;
+      }
+      
+      // Se só mês for "todos", filtra só por ano
+      if (filterMonth === 'todos') {
+        const y = f.year || String(new Date(f.date).getFullYear());
+        return y === filterYear;
+      }
+      
+      // Se só ano for "todos", filtra só por mês
+      if (filterYear === 'todos') {
+        const m = f.month || String(new Date(f.date).getMonth()+1).padStart(2,'0');
+        return m === filterMonth;
+      }
+      
+      // Filtra por mês E ano
+      const m = f.month || String(new Date(f.date).getMonth()+1).padStart(2,'0');
+      const y = f.year || String(new Date(f.date).getFullYear());
+      return m === filterMonth && y === filterYear;
+    });
+  }, [finances, filterMonth, filterYear]);
 
   const totalIncome = filtered.filter(f => f.type === 'income').reduce((a, c) => a + (c.value || 0), 0);
   const totalExpense = filtered.filter(f => f.type === 'expense').reduce((a, c) => a + (c.value || 0), 0);
   const saldo = totalIncome - totalExpense;
 
+  // ✅ Anos disponíveis incluindo "todos"
   const years = useMemo(() => {
     const set = new Set(finances.map(f => f.year || String(new Date(f.date).getFullYear())));
     set.add(String(now.getFullYear()));
-    return [...set].sort();
+    return ['todos', ...[...set].sort()];
   }, [finances]);
 
   return (
@@ -146,11 +175,13 @@ export default function FinanceList() {
       <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl font-semibold text-gray-900">Financeiro</h1>
         <div className="flex gap-2 items-center flex-wrap">
+          {/* ✅ Select de Mês com opção "Todos" como padrão */}
           <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)} className="border rounded-md p-2 text-sm">
             {months.map(m => <option key={m} value={m}>{monthLabels[m]}</option>)}
           </select>
+          {/* ✅ Select de Ano com opção "Todos" como padrão */}
           <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="border rounded-md p-2 text-sm">
-            {years.map(y => <option key={y} value={y}>{y}</option>)}
+            {years.map(y => <option key={y} value={y}>{y === 'todos' ? 'Todos' : y}</option>)}
           </select>
           <button onClick={() => setIsFormOpen(true)} className="bg-yellow-400 hover:bg-yellow-500 text-gray-950 px-4 py-2 rounded-md flex items-center gap-2 font-semibold">
             <Plus size={20} /> Novo Lançamento
@@ -159,14 +190,14 @@ export default function FinanceList() {
       </div>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-6">
-        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Receitas ({monthLabels[filterMonth]}/{filterYear})</dt><dd className="mt-1 text-3xl font-semibold text-green-600">R$ {totalIncome.toFixed(2)}</dd></div></div>
-        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Despesas ({monthLabels[filterMonth]}/{filterYear})</dt><dd className="mt-1 text-3xl font-semibold text-red-600">R$ {totalExpense.toFixed(2)}</dd></div></div>
-        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Saldo ({monthLabels[filterMonth]}/{filterYear})</dt><dd className={`mt-1 text-3xl font-semibold ${saldo >= 0 ? 'text-blue-600' : 'text-red-600'}`}>R$ {saldo.toFixed(2)}</dd></div></div>
+        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Receitas {filterMonth !== 'todos' || filterYear !== 'todos' ? `(${monthLabels[filterMonth] || ''}${filterYear !== 'todos' ? '/'+filterYear : ''})` : ''}</dt><dd className="mt-1 text-3xl font-semibold text-green-600">R$ {totalIncome.toFixed(2)}</dd></div></div>
+        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Despesas {filterMonth !== 'todos' || filterYear !== 'todos' ? `(${monthLabels[filterMonth] || ''}${filterYear !== 'todos' ? '/'+filterYear : ''})` : ''}</dt><dd className="mt-1 text-3xl font-semibold text-red-600">R$ {totalExpense.toFixed(2)}</dd></div></div>
+        <div className="bg-white overflow-hidden shadow rounded-lg"><div className="px-4 py-5 sm:p-6"><dt className="text-sm font-medium text-gray-500">Saldo {filterMonth !== 'todos' || filterYear !== 'todos' ? `(${monthLabels[filterMonth] || ''}${filterYear !== 'todos' ? '/'+filterYear : ''})` : ''}</dt><dd className={`mt-1 text-3xl font-semibold ${saldo >= 0 ? 'text-blue-600' : 'text-red-600'}`}>R$ {saldo.toFixed(2)}</dd></div></div>
       </div>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200">
-          {filtered.length === 0 ? <li className="px-6 py-4 text-center text-gray-500">Nenhum lançamento neste período.</li> :
+          {filtered.length === 0 ? <li className="px-6 py-4 text-center text-gray-500">Nenhum lançamento {filterMonth !== 'todos' || filterYear !== 'todos' ? 'neste período' : 'cadastrado'}.</li> :
             filtered.map((fin) => (
               <li key={fin.id} className="px-6 py-4 flex justify-between items-center">
                 <div>
