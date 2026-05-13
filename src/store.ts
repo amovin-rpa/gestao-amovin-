@@ -197,6 +197,8 @@ interface AppState {
   deleteVolunteer: (id: string) => void;
 
   addFinance: (f: Omit<FinanceRecord, 'id'>) => void;
+  updateFinance: (id: string, f: Partial<FinanceRecord>) => void; // ✅ ADICIONADO
+  deleteFinance: (id: string) => void; // ✅ ADICIONADO
   
   addConsultation: (c: Omit<Consultation, 'id'>) => void;
   addChatMessage: (message: Omit<ChatMessage, 'id' | 'createdAt'>) => void;
@@ -282,6 +284,22 @@ export const useStore = create<AppState>()(
         const newItem = { ...f, id: uuidv4() };
         set((state) => ({ finances: [...state.finances, newItem] }));
         saveToFirebase('finances', newItem as unknown as Record<string, unknown>);
+      },
+      
+      // ✅ FUNÇÃO ADICIONADA: updateFinance
+      updateFinance: (id, f) => {
+        set((state) => {
+          const updated = state.finances.map((item) => item.id === id ? { ...item, ...f } : item);
+          const found = updated.find(item => item.id === id);
+          if (found) saveToFirebase('finances', found as unknown as Record<string, unknown>);
+          return { finances: updated };
+        });
+      },
+      
+      // ✅ FUNÇÃO ADICIONADA: deleteFinance
+      deleteFinance: (id) => {
+        set((state) => ({ finances: state.finances.filter((item) => item.id !== id) }));
+        deleteFromFirebase('finances', id);
       },
 
       addConsultation: (c) => {
