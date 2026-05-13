@@ -26,7 +26,6 @@ export default function FinanceList() {
   // ✅ Função para formatar data sem problema de fuso horário
   const formatDateLocal = (dateString: string): string => {
     if (!dateString) return '';
-    // Garante que a data seja interpretada como local, não UTC
     const [year, month, day] = dateString.split('-');
     return `${year}-${month}-${day}`;
   };
@@ -55,14 +54,16 @@ export default function FinanceList() {
     };
 
     if (editingId) {
-      // ✅ Atualiza lançamento existente
+      // ✅ ATUALIZA lançamento existente
+      console.log('Atualizando lançamento:', editingId, financeData);
       updateFinance(editingId, financeData);
     } else {
-      // ✅ Cria novo lançamento
+      // ✅ CRIA novo lançamento
+      console.log('Criando novo lançamento:', financeData);
       addFinance(financeData);
     }
     
-    // Reseta formulário
+    // ✅ Reseta formulário e fecha modal SEMPRE após salvar
     setFormData({ 
       type: 'income', 
       value: '', 
@@ -72,10 +73,11 @@ export default function FinanceList() {
       eventDate: '' 
     });
     setEditingId(null);
-    setIsFormOpen(false);
+    setIsFormOpen(false); // ✅ Fecha o modal
   };
 
   const handleEdit = (fin: any) => {
+    console.log('Editando lançamento:', fin);
     setEditingId(fin.id);
     setFormData({
       type: fin.type,
@@ -95,6 +97,7 @@ export default function FinanceList() {
   };
 
   const handleCloseForm = () => {
+    console.log('Fechando formulário');
     setIsFormOpen(false);
     setEditingId(null);
     setFormData({ 
