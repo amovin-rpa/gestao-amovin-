@@ -23,14 +23,14 @@ export default function FinanceList() {
     eventDate: ''
   });
 
-  // ✅ Função para formatar data sem problema de fuso horário
+  // ✅ Função para formatar data sem problema de fuso horário (mantida original)
   const formatDateLocal = (dateString: string): string => {
     if (!dateString) return '';
     const [year, month, day] = dateString.split('-');
     return `${year}-${month}-${day}`;
   };
 
-  // ✅ Função para extrair data no formato YYYY-MM-DD de um objeto Date local
+  // ✅ Função para extrair data no formato YYYY-MM-DD de um objeto Date local (mantida original)
   const getDateLocal = (date: Date): string => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -38,10 +38,17 @@ export default function FinanceList() {
     return `${year}-${month}-${day}`;
   };
 
+  // ✅ Nova função para exibir data DD/MM/AAAA sem bug de fuso
+  const formatDateDisplay = (dateString: string): string => {
+    if (!dateString) return '';
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // ✅ Corrige a data para evitar problema de fuso horário
+    // ✅ Corrige a data para evitar problema de fuso horário - mantém sua lógica original
     const dateParts = formData.date.split('-');
     const localDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
     
@@ -79,10 +86,18 @@ export default function FinanceList() {
   const handleEdit = (fin: any) => {
     console.log('Editando lançamento:', fin);
     setEditingId(fin.id);
+    
+    // ✅ Garante que a data esteja no formato correto para o input
+    let dateValue = fin.date || '';
+    if (dateValue && typeof dateValue === 'string' && dateValue.includes('T')) {
+      // Se vier como ISO string, pega só a parte da data
+      dateValue = dateValue.split('T')[0];
+    }
+    
     setFormData({
       type: fin.type,
       value: String(fin.value),
-      date: formatDateLocal(fin.date),
+      date: formatDateLocal(dateValue),
       category: fin.category,
       description: fin.description || '',
       eventDate: fin.eventDate || ''
@@ -156,7 +171,8 @@ export default function FinanceList() {
               <li key={fin.id} className="px-6 py-4 flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-900">{fin.category}</p>
-                  <p className="text-sm text-gray-500">{new Date(fin.date).toLocaleDateString()} {fin.description ? `- ${fin.description}` : ''}</p>
+                  {/* ✅ Usa formatDateDisplay para evitar bug de fuso na exibição */}
+                  <p className="text-sm text-gray-500">{formatDateDisplay(fin.date)} {fin.description ? `- ${fin.description}` : ''}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`font-semibold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
