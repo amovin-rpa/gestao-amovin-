@@ -58,7 +58,7 @@ export default function Layout() {
       { name: S.beneficiarios + ' (FRB)', icon: Users, path: '/beneficiarios' },
       { name: S.profissionais, icon: User, path: '/profissionais' },
       { name: S.voluntarios, icon: Briefcase, path: '/voluntarios' },
-      // ✅ REMOVIDO: Financeiro (já tem menu próprio)
+      { name: S.financeiro, icon: Activity, path: '/financeiro' }, // ✅ ADICIONADO: Financeiro no menu lateral
       { name: S.relatorios, icon: FileText, path: '/relatorios' },
       { name: 'Chat', icon: MessageCircle, path: '/chat' },
     ],
