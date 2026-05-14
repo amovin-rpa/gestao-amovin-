@@ -5,7 +5,7 @@ import {
   Plus, Edit2, Trash2, Download, Filter, Calendar, 
   TrendingUp, TrendingDown, DollarSign, Wallet, 
   PieChart, BarChart3, Activity, AlertCircle, CheckCircle, X,
-  Printer, FileSpreadsheet, FileText, ChevronDown, ChevronUp, Building2, User
+  Printer, FileSpreadsheet, FileText, ChevronDown, ChevronUp, Building2
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -135,7 +135,8 @@ export default function FinanceDashboard() {
     description: '',
     status: 'Pendente',
     empresaPessoaFisica: '',
-    eventDate: ''
+    eventDate: '',
+    eventName: '' // ✅ NOVO: Nome do Evento
   });
 
   // ✅ Lista única de empresas/pessoas para filtro
@@ -267,8 +268,9 @@ export default function FinanceDashboard() {
       value: parseFloat(String(formData.value)) || 0,
       month: formData.date?.split('-')[1] || '',
       year: formData.date?.split('-')[0] || '',
-      // Limpar eventDate se não for Evento
+      // Limpar eventDate/Name se não for Evento
       eventDate: formData.category === 'Evento' ? formData.eventDate : undefined,
+      eventName: formData.category === 'Evento' ? formData.eventName : undefined,
     } as FinanceRecord;
 
     if (editingId) {
@@ -277,7 +279,7 @@ export default function FinanceDashboard() {
       addFinance({ ...financeData, id: crypto.randomUUID() });
     }
     
-    setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente', empresaPessoaFisica: '', eventDate: '' });
+    setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente', empresaPessoaFisica: '', eventDate: '', eventName: '' });
     setEditingId(null);
     setIsFormOpen(false);
   };
@@ -286,8 +288,8 @@ export default function FinanceDashboard() {
     setEditingId(fin.id);
     setFormData({
       ...fin,
-      // Garantir que eventDate seja string vazia se não for Evento
-      eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : ''
+      eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : '',
+      eventName: fin.category === 'Evento' ? (fin.eventName || '') : ''
     });
     setIsFormOpen(true);
   };
@@ -324,14 +326,15 @@ export default function FinanceDashboard() {
 
   // ✅ Exportação para CSV
   const handleExportCSV = () => {
-    const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Descrição', 'Data Evento', 'Valor', 'Status'];
+    const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Nome Evento', 'Data Evento', 'Descrição', 'Valor', 'Status'];
     const rows = filteredFinances.map(f => [
       f.date ? new Date(f.date).toLocaleDateString('pt-BR') : '',
       f.type === 'income' ? 'Receita' : 'Despesa',
       f.category || '',
       f.empresaPessoaFisica || '',
-      `"${(f.description || '').replace(/"/g, '""')}"`,
+      f.eventName || '',
       f.eventDate ? new Date(f.eventDate).toLocaleDateString('pt-BR') : '',
+      `"${(f.description || '').replace(/"/g, '""')}"`,
       formatCurrency(f.value).replace('R$', '').trim(),
       f.status || ''
     ]);
@@ -398,7 +401,22 @@ export default function FinanceDashboard() {
                 <FileSpreadsheet size={18} /> Excel
               </button>
               <button
-                onClick={() => setIsFormOpen(true)}
+                onClick={() => {
+                  // ✅ ABRE FORMULÁRIO EM BRANCO PARA NOVO LANÇAMENTO
+                  setEditingId(null);
+                  setFormData({
+                    type: 'income',
+                    value: 0,
+                    date: new Date().toISOString().split('T')[0],
+                    category: '',
+                    description: '',
+                    status: 'Pendente',
+                    empresaPessoaFisica: '',
+                    eventDate: '',
+                    eventName: ''
+                  });
+                  setIsFormOpen(true);
+                }}
                 className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
               >
                 <Plus size={18} /> Novo Lançamento
@@ -702,7 +720,7 @@ export default function FinanceDashboard() {
         </div>
       </main>
 
-      {/* 📝 Modal de Lançamento */}
+      {/* 📝 Modal de Lançamento CORRIGIDO */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -793,6 +811,31 @@ export default function FinanceDashboard() {
                 </div>
               </div>
 
+              {/* ✅ CAMPOS DE EVENTO (Nome e Data) */}
+              {formData.category === 'Evento' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Nome do Evento</label>
+                    <input
+                      type="text"
+                      value={formData.eventName}
+                      onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Ex: Bazar de Inverno"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Evento</label>
+                    <input
+                      type="date"
+                      value={formData.eventDate}
+                      onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </>
+              )}
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Descrição</label>
                 <input
@@ -804,22 +847,6 @@ export default function FinanceDashboard() {
                   placeholder="Ex: Doação Campanha Winter"
                 />
               </div>
-
-              {/* ✅ CAMPO DATA DO EVENTO (apenas para categoria Evento) */}
-              {formData.category === 'Evento' && (
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Evento</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                    <input
-                      type="date"
-                      value={formData.eventDate}
-                      onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
-                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                </div>
-              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -834,15 +861,16 @@ export default function FinanceDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
+                  {/* ✅ FORMATAÇÃO COM 2 CASAS DECIMAIS */}
                   <input
                     required
                     type="number"
                     step="0.01"
                     min="0"
-                    value={formData.value}
+                    value={formData.value === 0 && formData.value !== '' ? '0.00' : (formData.value !== undefined && formData.value !== null ? Number(formData.value).toFixed(2) : '')}
                     onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="0,00"
+                    placeholder="0.00"
                   />
                 </div>
               </div>
