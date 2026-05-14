@@ -6,7 +6,8 @@ import { isThisWeek, parseISO } from 'date-fns';
 const ML: Record<string,string> = {'01':'Jan','02':'Fev','03':'Mar','04':'Abr','05':'Mai','06':'Jun','07':'Jul','08':'Ago','09':'Set','10':'Out','11':'Nov','12':'Dez'};
 const MONTHS = ['01','02','03','04','05','06','07','08','09','10','11','12'];
 
-type Tab = 'financeiro' | 'profissionais' | 'beneficiarios' | 'faltas' | 'voluntarios';
+// ✅ REMOVIDO 'financeiro' da lista de tabs
+type Tab = 'profissionais' | 'beneficiarios' | 'faltas' | 'voluntarios';
 
 export default function Reports() {
   const store = useStore();
@@ -17,6 +18,7 @@ export default function Reports() {
 
   const reportRef = useRef<HTMLDivElement>(null);
   const now = new Date();
+  // ✅ Definir tab padrão como 'beneficiarios' (já que financeiro foi removido)
   const [tab, setTab] = useState<Tab>('beneficiarios');
   const [yr, setYr] = useState(String(now.getFullYear()));
   const [mo, setMo] = useState(String(now.getMonth()+1).padStart(2,'0'));
@@ -66,20 +68,8 @@ export default function Reports() {
   const faltaRanking = useMemo(() => Object.entries(faltasByBen).map(([id, count]) => ({ id, name: beneficiaries.find(b => b.id === id)?.fullName || 'N/A', count })).sort((a,b) => b.count - a.count).slice(0, 10), [faltasByBen, beneficiaries]);
   const maxFalta = Math.max(...faltaRanking.map(f => f.count), 1);
 
-  // Finance
-  const monthlyFinance = useMemo(() => MONTHS.map(m => {
-    const mf = finances.filter(f => {
-      const fy = f.year || String(new Date(f.date).getFullYear());
-      const fm = f.month || String(new Date(f.date).getMonth()+1).padStart(2,'0');
-      return fy === yr && fm === m;
-    });
-    return { month: m, income: mf.filter(f => f.type === 'income').reduce((a,c) => a + (c.value||0), 0), expense: mf.filter(f => f.type === 'expense').reduce((a,c) => a + (c.value||0), 0) };
-  }), [finances, yr, key]);
-  const maxFinVal = Math.max(...monthlyFinance.map(m => Math.max(m.income, m.expense)), 1);
-
-  const filteredFinances = useMemo(() => finances.filter(f => matchPeriod(f.date)), [finances, period, yr, mo, key]);
-  const fIncome = filteredFinances.filter(f => f.type === 'income').reduce((a,c) => a + (c.value||0), 0);
-  const fExpense = filteredFinances.filter(f => f.type === 'expense').reduce((a,c) => a + (c.value||0), 0);
+  // ✅ REMOVIDO: Cálculos financeiros não são mais necessários nesta página
+  // (O financeiro agora tem página dedicada: /financeiro)
 
   const handlePrint = () => {
     if (!reportRef.current) return;
@@ -89,9 +79,10 @@ export default function Reports() {
     win.document.close();
   };
 
+  // ✅ REMOVIDO 'financeiro' da lista de tabs
   const tabs: { key: Tab; label: string }[] = isConsulta
     ? [{ key: 'beneficiarios', label: 'Atendimentos' }, { key: 'faltas', label: 'Faltas' }]
-    : [{ key: 'financeiro', label: 'Financeiro' }, { key: 'profissionais', label: 'Profissionais' }, { key: 'beneficiarios', label: 'Beneficiarios' }, { key: 'faltas', label: 'Faltas' }, { key: 'voluntarios', label: 'Voluntarios' }];
+    : [{ key: 'profissionais', label: 'Profissionais' }, { key: 'beneficiarios', label: 'Beneficiarios' }, { key: 'faltas', label: 'Faltas' }, { key: 'voluntarios', label: 'Voluntarios' }];
 
   return (
     <div className="space-y-6">
@@ -111,17 +102,8 @@ export default function Reports() {
       <div className="flex gap-2 flex-wrap">{tabs.map(t => <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 rounded-lg text-sm font-medium ${tab === t.key ? 'bg-gray-950 text-yellow-300' : 'bg-white border text-gray-600 hover:bg-gray-50'}`}>{t.label}</button>)}</div>
 
       <div ref={reportRef} className="bg-white p-6 shadow rounded-xl overflow-x-auto">
-        {tab === 'financeiro' && <div>
-          <h2 className="text-xl font-bold mb-4 border-b pb-2">Financeiro - {periodLabel}</h2>
-          <div className="summary bg-gray-50 p-4 rounded-lg border mb-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', textAlign: 'center' }}>
-            <div><p className="text-sm text-gray-500">Receitas</p><p className="text-2xl font-bold text-green-600">R$ {fIncome.toFixed(2)}</p></div>
-            <div><p className="text-sm text-gray-500">Despesas</p><p className="text-2xl font-bold text-red-600">R$ {fExpense.toFixed(2)}</p></div>
-            <div><p className="text-sm text-gray-500">Saldo</p><p className={`text-2xl font-bold ${(fIncome-fExpense)>=0?'text-blue-600':'text-red-600'}`}>R$ {(fIncome-fExpense).toFixed(2)}</p></div>
-          </div>
-          {period !== 'semana' && <><h3 className="font-semibold mb-3">Comparativo Mensal - {yr}</h3><div className="space-y-2 mb-6">{monthlyFinance.map(m=><div key={m.month}><p className="text-xs font-medium text-gray-600 mb-1">{ML[m.month]}</p><div className="flex items-center gap-2"><span className="bar" style={{width:`${Math.max((m.income/maxFinVal)*100,1)}%`,background:'#22c55e'}}>&nbsp;</span><span className="text-xs text-green-700">R$ {m.income.toFixed(0)}</span></div><div className="flex items-center gap-2"><span className="bar" style={{width:`${Math.max((m.expense/maxFinVal)*100,1)}%`,background:'#ef4444'}}>&nbsp;</span><span className="text-xs text-red-700">R$ {m.expense.toFixed(0)}</span></div></div>)}</div></>}
-          <table className="min-w-full divide-y divide-gray-200"><thead className="bg-gray-50"><tr><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Data</th><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Categoria</th><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Descricao</th><th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Valor</th></tr></thead><tbody className="divide-y divide-gray-200">{filteredFinances.map(f=><tr key={f.id}><td className="px-3 py-2 text-sm">{new Date(f.date).toLocaleDateString()}</td><td className="px-3 py-2 text-sm">{f.type==='income'?'Receita':'Despesa'}</td><td className="px-3 py-2 text-sm text-gray-500">{f.category}</td><td className="px-3 py-2 text-sm text-gray-500">{f.description||'-'}</td><td className={`px-3 py-2 text-sm text-right font-semibold ${f.type==='income'?'text-green-600':'text-red-600'}`}>{f.type==='income'?'+':'-'} R$ {(f.value||0).toFixed(2)}</td></tr>)}</tbody></table>
-        </div>}
-
+        {/* ✅ REMOVIDO: Bloco inteiro da aba 'financeiro' */}
+        
         {tab === 'beneficiarios' && <div>
           <h2 className="text-xl font-bold mb-4 border-b pb-2">{isConsulta ? 'Meus Atendimentos' : 'Beneficiarios'} - {periodLabel}</h2>
           <table className="min-w-full divide-y divide-gray-200"><thead className="bg-gray-50"><tr><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nome</th><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nasc.</th><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Condicao/CID</th><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Responsavel</th><th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th></tr></thead><tbody className="divide-y divide-gray-200">
