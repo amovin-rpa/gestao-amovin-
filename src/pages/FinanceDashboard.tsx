@@ -4,7 +4,7 @@ import { useStore, FinanceRecord } from '../store';
 import { 
   Plus, Edit2, Trash2, Download, Filter, Calendar, 
   TrendingUp, TrendingDown, DollarSign, Wallet, 
-  PieChart, BarChart3, Activity, AlertCircle, CheckCircle 
+  PieChart, BarChart3, Activity, AlertCircle, CheckCircle, X
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -16,13 +16,13 @@ import { S } from '../utils/strings';
 
 // ✅ Cores Institucionais AMOVIN
 const COLORS = {
-  primary: '#1E40AF',      // Azul institucional
+  primary: '#1E40AF',
   primaryLight: '#3B82F6',
-  secondary: '#F59E0B',    // Amarelo destaque
-  income: '#10B981',       // Verde receitas
-  expense: '#EF4444',      // Vermelho despesas
-  balance: '#3B82F6',      // Azul saldo
-  deficit: '#F97316',      // Laranja déficit
+  secondary: '#F59E0B',
+  income: '#10B981',
+  expense: '#EF4444',
+  balance: '#3B82F6',
+  deficit: '#F97316',
   background: '#F9FAFB',
   card: '#FFFFFF',
   text: '#111827',
@@ -30,7 +30,6 @@ const COLORS = {
   border: '#E5E7EB',
 };
 
-// ✅ Categorias e Filtros
 const CATEGORIES = ['todos', 'Doação', 'Evento', 'Subvenção', 'Material', 'Serviços', 'Outros'];
 const TYPES = ['todos', 'income', 'expense'];
 const STATUS = ['todos', 'Pago', 'Pendente'];
@@ -118,19 +117,48 @@ export default function FinanceDashboard() {
     status: 'Pendente'
   });
 
-  // ✅ Filtragem Inteligente
+  // ✅ Filtragem Inteligente - CORRIGIDA
   const filteredFinances = useMemo(() => {
-    return finances.filter(f => {
-      if (filterMonth !== 'todos' && f.month !== filterMonth) return false;
-      if (filterYear !== 'todos' && f.year !== filterYear) return false;
-      if (filterCategory !== 'todos' && f.category !== filterCategory) return false;
-      if (filterType !== 'todos' && f.type !== filterType) return false;
-      if (filterStatus !== 'todos' && f.status !== filterStatus) return false;
+    console.log('📊 Total de registros no sistema:', finances.length);
+    console.log('Filtros atuais:', { filterMonth, filterYear, filterCategory, filterType, filterStatus });
+    
+    const filtered = finances.filter(f => {
+      // Filtro por mês
+      if (filterMonth !== 'todos') {
+        const recordMonth = f.month || String(new Date(f.date).getMonth() + 1).padStart(2, '0');
+        if (recordMonth !== filterMonth) return false;
+      }
+      
+      // Filtro por ano
+      if (filterYear !== 'todos') {
+        const recordYear = f.year || String(new Date(f.date).getFullYear());
+        if (recordYear !== filterYear) return false;
+      }
+      
+      // Filtro por categoria
+      if (filterCategory !== 'todos') {
+        if (f.category !== filterCategory) return false;
+      }
+      
+      // Filtro por tipo
+      if (filterType !== 'todos') {
+        if (f.type !== filterType) return false;
+      }
+      
+      // Filtro por status
+      if (filterStatus !== 'todos') {
+        if (f.status !== filterStatus) return false;
+      }
+      
       return true;
     });
+    
+    console.log('✅ Registros filtrados:', filtered.length);
+    console.log('Dados filtrados:', filtered);
+    return filtered;
   }, [finances, filterMonth, filterYear, filterCategory, filterType, filterStatus]);
 
-  // ✅ Cálculos de KPIs
+  // ✅ Cálculos de KPIs - CORRIGIDO
   const kpis = useMemo(() => {
     const totalIncome = filteredFinances
       .filter(f => f.type === 'income' && f.status === 'Pago')
@@ -158,12 +186,12 @@ export default function FinanceDashboard() {
     };
   }, [filteredFinances]);
 
-  // ✅ Dados para Gráficos
+  // ✅ Dados para Gráficos - CORRIGIDO
   const chartData = useMemo(() => {
     // Receitas x Despesas por Mês
     const monthlyData: Record<string, { income: number; expense: number }> = {};
     filteredFinances.forEach(f => {
-      const key = `${f.month}/${f.year}`;
+      const key = `${f.month || '00'}/${f.year || '0000'}`;
       if (!monthlyData[key]) monthlyData[key] = { income: 0, expense: 0 };
       if (f.status === 'Pago') {
         monthlyData[key][f.type === 'income' ? 'income' : 'expense'] += f.value || 0;
@@ -241,30 +269,42 @@ export default function FinanceDashboard() {
     }
   };
 
+  // ✅ Exportação para CSV - MELHORADA
   const handleExport = () => {
-    // Exportar para CSV
+    // Cabeçalhos
     const headers = ['Data', 'Tipo', 'Categoria', 'Descrição', 'Valor', 'Status'];
+    
+    // Dados formatados corretamente
     const rows = filteredFinances.map(f => [
-      f.date,
+      f.date || '',
       f.type === 'income' ? 'Receita' : 'Despesa',
-      f.category,
-      f.description,
-      f.value?.toFixed(2),
-      f.status
+      f.category || '',
+      `"${(f.description || '').replace(/"/g, '""')}"`, // Escapa aspas e envolve em aspas
+      f.value?.toFixed(2).replace('.', ',') || '0,00', // Formato brasileiro
+      f.status || ''
     ]);
     
-    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
+    // Junta com ponto e vírgula (melhor para Excel em português)
+    const csvContent = [
+      headers.join(';'),
+      ...rows.map(r => r.join(';'))
+    ].join('\n');
+    
+    // Adiciona BOM para Excel reconhecer UTF-8
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `amovin_financeiro_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `amovin_financeiro_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // ✅ Anos disponíveis para filtro
   const years = useMemo(() => {
-    const set = new Set(finances.map(f => f.year));
+    const set = new Set(finances.map(f => f.year || String(new Date(f.date).getFullYear())));
     set.add(String(new Date().getFullYear()));
     return ['todos', ...[...set].sort().reverse()];
   }, [finances]);
@@ -346,7 +386,7 @@ export default function FinanceDashboard() {
                 setFilterMonth('todos'); setFilterYear('todos');
                 setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos');
               }}
-              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1 mb-1"
             >
               <Filter size={14} /> Limpar
             </button>
@@ -388,64 +428,56 @@ export default function FinanceDashboard() {
           {/* Gráfico: Receitas x Despesas */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Receitas x Despesas por Mês</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData.monthlyChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `R$ ${v/1000}k`} />
-                <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
-                <Legend />
-                <Bar dataKey="Receitas" fill={COLORS.income} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Despesas" fill={COLORS.expense} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            {chartData.monthlyChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData.monthlyChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `R$ ${v/1000}k`} />
+                  <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+                  <Legend />
+                  <Bar dataKey="Receitas" fill={COLORS.income} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Despesas" fill={COLORS.expense} radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-64 text-gray-400">
+                <p>Sem dados para exibir</p>
+              </div>
+            )}
           </div>
 
           {/* Gráfico: Despesas por Categoria */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Despesas por Categoria</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsPie>
-                <Pie
-                  data={chartData.categoryChartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={2}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  labelLine={false}
-                >
-                  {chartData.categoryChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={[COLORS.primary, COLORS.primaryLight, COLORS.secondary, '#8B5CF6', '#EC4899', '#14B8A6'][index % 6]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
-                <Legend />
-              </RechartsPie>
-            </ResponsiveContainer>
+            {chartData.categoryChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <RechartsPie>
+                  <Pie
+                    data={chartData.categoryChartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={2}
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    labelLine={false}
+                  >
+                    {chartData.categoryChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={[COLORS.primary, COLORS.primaryLight, COLORS.secondary, '#8B5CF6', '#EC4899', '#14B8A6'][index % 6]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+                  <Legend />
+                </RechartsPie>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-64 text-gray-400">
+                <p>Sem dados para exibir</p>
+              </div>
+            )}
           </div>
-        </div>
-
-        {/* 📊 Gráfico de Evolução do Saldo */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Evolução do Saldo</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={chartData.balanceData}>
-              <defs>
-                <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-              <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `R$ ${v/1000}k`} />
-              <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
-              <Area type="monotone" dataKey="balance" stroke={COLORS.primary} fill="url(#balanceGradient)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
         </div>
 
         {/* 📋 Últimos Lançamentos */}
@@ -454,58 +486,74 @@ export default function FinanceDashboard() {
             <h3 className="text-lg font-semibold text-gray-900">Últimos Lançamentos</h3>
             <span className="text-sm text-gray-500">{filteredFinances.length} registros</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Data</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Descrição</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Categoria</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Valor</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredFinances.slice(0, 10).map((fin) => (
-                  <tr key={fin.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {new Date(fin.date).toLocaleDateString('pt-BR')}
-                    </td>
-                    <td className="px-5 py-4 text-sm text-gray-900">
-                      <div className="font-medium">{fin.description}</div>
-                      <div className="text-xs text-gray-500">{fin.category}</div>
-                    </td>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
-                        {fin.category}
-                      </span>
-                    </td>
-                    <td className={`px-5 py-4 whitespace-nowrap text-sm font-semibold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                      {fin.type === 'income' ? '+' : '-'} R$ {(fin.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        fin.status === 'Pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                      }`}>
-                        {fin.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 whitespace-nowrap text-right text-sm">
-                      <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => handleEdit(fin)} className="p-1 text-blue-600 hover:bg-blue-50 rounded" title="Editar">
-                          <Edit2 size={14} />
-                        </button>
-                        <button onClick={() => handleDelete(fin.id)} className="p-1 text-red-600 hover:bg-red-50 rounded" title="Excluir">
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
+          {filteredFinances.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Data</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Descrição</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Categoria</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Valor</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredFinances.slice(0, 10).map((fin) => (
+                    <tr key={fin.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {fin.date ? new Date(fin.date).toLocaleDateString('pt-BR') : '-'}
+                      </td>
+                      <td className="px-5 py-4 text-sm text-gray-900">
+                        <div className="font-medium">{fin.description || '-'}</div>
+                        <div className="text-xs text-gray-500">{fin.category}</div>
+                      </td>
+                      <td className="px-5 py-4 whitespace-nowrap">
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                          {fin.category}
+                        </span>
+                      </td>
+                      <td className={`px-5 py-4 whitespace-nowrap text-sm font-semibold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                        {fin.type === 'income' ? '+' : '-'} R$ {(fin.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-5 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          fin.status === 'Pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {fin.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 whitespace-nowrap text-right text-sm">
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => handleEdit(fin)} className="p-1 text-blue-600 hover:bg-blue-50 rounded" title="Editar">
+                            <Edit2 size={14} />
+                          </button>
+                          <button onClick={() => handleDelete(fin.id)} className="p-1 text-red-600 hover:bg-red-50 rounded" title="Excluir">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-8 text-center text-gray-500">
+              <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-2" />
+              <p>Nenhum lançamento encontrado com os filtros selecionados.</p>
+              <button
+                onClick={() => {
+                  setFilterMonth('todos'); setFilterYear('todos');
+                  setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos');
+                }}
+                className="mt-2 text-blue-600 hover:text-blue-700 text-sm"
+              >
+                Limpar filtros
+              </button>
+            </div>
+          )}
         </div>
       </main>
 
