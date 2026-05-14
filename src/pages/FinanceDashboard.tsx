@@ -127,7 +127,17 @@ export default function FinanceDashboard() {
   // Estado do Formulário
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Partial<FinanceRecord>>({
+  const [formData, setFormData] = useState<{
+    type: 'income' | 'expense';
+    value: number | '';
+    date: string;
+    category: string;
+    description: string;
+    status: 'Pago' | 'Pendente';
+    empresaPessoaFisica: string;
+    eventDate: string;
+    eventName: string;
+  }>({
     type: 'income',
     value: 0,
     date: new Date().toISOString().split('T')[0],
@@ -136,7 +146,7 @@ export default function FinanceDashboard() {
     status: 'Pendente',
     empresaPessoaFisica: '',
     eventDate: '',
-    eventName: '' // ✅ NOVO: Nome do Evento
+    eventName: ''
   });
 
   // ✅ Lista única de empresas/pessoas para filtro
@@ -259,35 +269,59 @@ export default function FinanceDashboard() {
     return { monthlyChartData, categoryChartData, balanceData };
   }, [filteredFinances]);
 
-  // ✅ Handlers
+  // ✅ Handlers CORRIGIDOS PARA SALVAR EMPRESA/NOME DO EVENTO
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    const financeData = {
-      ...formData,
-      type: formData.type as 'income' | 'expense',
-      value: parseFloat(String(formData.value)) || 0,
+    
+    // Construção explícita do objeto para garantir que todos os campos sejam salvos
+    const financeData: Partial<FinanceRecord> & { eventName?: string } = {
+      id: editingId || crypto.randomUUID(),
+      type: formData.type,
+      value: typeof formData.value === 'number' ? formData.value : parseFloat(String(formData.value)) || 0,
+      date: formData.date,
       month: formData.date?.split('-')[1] || '',
       year: formData.date?.split('-')[0] || '',
-      // Limpar eventDate/Name se não for Evento
-      eventDate: formData.category === 'Evento' ? formData.eventDate : undefined,
-      eventName: formData.category === 'Evento' ? formData.eventName : undefined,
-    } as FinanceRecord;
+      category: formData.category,
+      description: formData.description,
+      status: formData.status,
+      empresaPessoaFisica: formData.empresaPessoaFisica || '',
+      eventDate: formData.category === 'Evento' ? (formData.eventDate || undefined) : undefined,
+      eventName: formData.category === 'Evento' ? (formData.eventName || undefined) : undefined,
+    };
 
     if (editingId) {
       updateFinance(editingId, financeData);
     } else {
-      addFinance({ ...financeData, id: crypto.randomUUID() });
+      addFinance(financeData as Omit<FinanceRecord, 'id'>);
     }
     
-    setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente', empresaPessoaFisica: '', eventDate: '', eventName: '' });
+    // Reseta formulário para estado inicial limpo
+    setFormData({
+      type: 'income',
+      value: 0,
+      date: new Date().toISOString().split('T')[0],
+      category: '',
+      description: '',
+      status: 'Pendente',
+      empresaPessoaFisica: '',
+      eventDate: '',
+      eventName: ''
+    });
     setEditingId(null);
     setIsFormOpen(false);
   };
 
-  const handleEdit = (fin: FinanceRecord) => {
+  const handleEdit = (fin: any) => {
     setEditingId(fin.id);
+    // Mapeamento explícito para evitar perda de dados e warnings de controlled input
     setFormData({
-      ...fin,
+      type: fin.type || 'income',
+      value: fin.value !== undefined && fin.value !== null ? fin.value : 0,
+      date: fin.date || new Date().toISOString().split('T')[0],
+      category: fin.category || '',
+      description: fin.description || '',
+      status: fin.status || 'Pendente',
+      empresaPessoaFisica: fin.empresaPessoaFisica || '',
       eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : '',
       eventName: fin.category === 'Evento' ? (fin.eventName || '') : ''
     });
@@ -402,7 +436,6 @@ export default function FinanceDashboard() {
               </button>
               <button
                 onClick={() => {
-                  // ✅ ABRE FORMULÁRIO EM BRANCO PARA NOVO LANÇAMENTO
                   setEditingId(null);
                   setFormData({
                     type: 'income',
@@ -788,7 +821,7 @@ export default function FinanceDashboard() {
                 </select>
               </div>
 
-              {/* ✅ CAMPO EMPRESA/PESSOA FÍSICA */}
+              {/* ✅ CAMPO EMPRESA/PESSOA FÍSICA - CORREÇÃO DE SALVAMENTO */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   {formData.type === 'income' ? 'Doador/Empresa' : 'Fornecedor/Empresa'}
@@ -797,7 +830,7 @@ export default function FinanceDashboard() {
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                   <input
                     type="text"
-                    value={formData.empresaPessoaFisica}
+                    value={formData.empresaPessoaFisica || ''}
                     onChange={(e) => setFormData({ ...formData, empresaPessoaFisica: e.target.value })}
                     className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Ex: Empresa XYZ ou João Silva"
@@ -818,7 +851,7 @@ export default function FinanceDashboard() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Nome do Evento</label>
                     <input
                       type="text"
-                      value={formData.eventName}
+                      value={formData.eventName || ''}
                       onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Ex: Bazar de Inverno"
@@ -828,7 +861,7 @@ export default function FinanceDashboard() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Evento</label>
                     <input
                       type="date"
-                      value={formData.eventDate}
+                      value={formData.eventDate || ''}
                       onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
@@ -841,7 +874,7 @@ export default function FinanceDashboard() {
                 <input
                   required
                   type="text"
-                  value={formData.description}
+                  value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Ex: Doação Campanha Winter"
@@ -854,21 +887,20 @@ export default function FinanceDashboard() {
                   <input
                     required
                     type="date"
-                    value={formData.date}
+                    value={formData.date || ''}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
-                  {/* ✅ FORMATAÇÃO COM 2 CASAS DECIMAIS */}
                   <input
                     required
                     type="number"
                     step="0.01"
                     min="0"
-                    value={formData.value === 0 && formData.value !== '' ? '0.00' : (formData.value !== undefined && formData.value !== null ? Number(formData.value).toFixed(2) : '')}
-                    onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
+                    value={formData.value === '' ? '' : Number(formData.value).toFixed(2)}
+                    onChange={(e) => setFormData({ ...formData, value: e.target.value === '' ? '' : parseFloat(e.target.value) })}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="0.00"
                   />
