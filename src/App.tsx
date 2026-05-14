@@ -9,7 +9,7 @@ import BeneficiariesList from './pages/BeneficiariesList';
 import ProfessionalsList from './pages/ProfessionalsList';
 import VolunteersList from './pages/VolunteersList';
 import FinanceList from './pages/FinanceList';
-import FinanceDashboard from './pages/FinanceDashboard'; // ✅ ADICIONADO
+import FinanceDashboard from './pages/FinanceDashboard';
 import Reports from './pages/Reports';
 import PatientsList from './pages/PatientsList';
 import Chat from './pages/Chat';
@@ -35,8 +35,7 @@ function App() {
           <Route path="beneficiarios" element={<BeneficiariesList />} />
           <Route path="profissionais" element={<ProfessionalsList />} />
           <Route path="voluntarios" element={<VolunteersList />} />
-          <Route path="financeiro" element={<FinanceList />} />
-          <Route path="financeiro-dashboard" element={<FinanceDashboard />} /> // ✅ ADICIONADO
+          <Route path="financeiro" element={<FinanceDashboard />} />
           <Route path="relatorios" element={<Reports />} />
           <Route path="pacientes" element={<PatientsList />} />
           <Route path="chat" element={<Chat />} />
