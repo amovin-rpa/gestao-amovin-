@@ -12,8 +12,6 @@ import {
 } from 'recharts';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { S } from '../utils/strings';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 
 // ✅ Cores Institucionais AMOVIN
 const COLORS = {
@@ -44,22 +42,22 @@ const KPICard: React.FC<{
   trend?: number;
   suffix?: string;
 }> = ({ title, value, subtitle, icon, color, trend, suffix = '' }) => (
-  <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-all duration-300">
+  <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-all duration-300 print:shadow-none print:border print:border-gray-200">
     <div className="flex items-start justify-between">
       <div className="flex-1">
         <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{title}</p>
-        <p className="text-2xl font-bold text-gray-900 mt-2">
+        <p className="text-2xl font-bold text-gray-900 mt-2 print:text-xl">
           {typeof value === 'number' ? value.toLocaleString('pt-BR') : value}{suffix}
         </p>
-        {subtitle && <p className="text-xs text-gray-400 mt-2 leading-relaxed">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-gray-400 mt-2 leading-relaxed print:hidden">{subtitle}</p>}
         {trend !== undefined && (
-          <div className={`flex items-center gap-1 mt-3 text-sm font-medium ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`flex items-center gap-1 mt-3 text-sm font-medium print:hidden ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {trend >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
             <span>{Math.abs(trend).toFixed(1)}% vs período anterior</span>
           </div>
         )}
       </div>
-      <div className={`p-3 rounded-lg ${color} bg-opacity-10 shadow-sm`}>
+      <div className={`p-3 rounded-lg ${color} bg-opacity-10 shadow-sm print:hidden`}>
         <div className={color.replace('bg-', 'text-')}>{icon}</div>
       </div>
     </div>
@@ -74,7 +72,7 @@ const FilterSelect: React.FC<{
   options: Array<{ value: string; label: string }>;
   className?: string;
 }> = ({ label, value, onChange, options, className = '' }) => (
-  <div className={`flex flex-col gap-1.5 ${className}`}>
+  <div className={`flex flex-col gap-1.5 ${className} print:hidden`}>
     <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{label}</label>
     <select
       value={value}
@@ -220,7 +218,6 @@ export default function Reports() {
     const data: Record<string, { presente: number; falta: number; justificada: number; cancelado: number }> = {};
     
     if (period === 'ano') {
-      // Agrupar por mês
       for (let m = 1; m <= 12; m++) {
         const key = ML[String(m).padStart(2, '0')];
         data[key] = { presente: 0, falta: 0, justificada: 0, cancelado: 0 };
@@ -236,7 +233,6 @@ export default function Reports() {
         }
       });
     } else {
-      // Agrupar por semana ou dia
       filteredConsultations.forEach(c => {
         const d = new Date(c.date);
         const key = period === 'semana' ? 
@@ -270,73 +266,152 @@ export default function Reports() {
     }));
   }, [filteredProfessionals, professionalKPIs]);
 
-  // ✅ Exportação para PDF com marca d'água, logo, cabeçalho e rodapé
-  const handleExportPDF = async () => {
+  // ✅ IMPRESSÃO ULTRA-PREMIUM
+  const handlePrint = () => {
     if (!reportRef.current) return;
+
+    const tabTitle = activeTab === 'beneficiarios' ? 'Relatório de Beneficiários' : 
+                     activeTab === 'faltas' ? 'Relatório de Frequência e Presenças' : 'Relatório de Profissionais';
     
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const canvas = await html2canvas(reportRef.current, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: '#FFFFFF'
-    });
-    
-    const imgData = canvas.toDataURL('image/png');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    
-    // Adicionar marca d'água
-    pdf.setFillColor(249, 250, 251);
-    pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
-    
-    // Adicionar logo como marca d'água (opacidade baixa)
-    pdf.setGState({ opacity: 0.05 });
-    // Nota: Para marca d'água com imagem real, seria necessário carregar a logo como base64
-    
-    // Resetar opacidade
-    pdf.setGState({ opacity: 1 });
-    
-    // Adicionar conteúdo principal
-    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 20, pdfWidth, imgHeight);
-    
-    // Adicionar cabeçalho
-    pdf.setFontSize(10);
-    pdf.setTextColor(30, 64, 175);
-    pdf.text('AMOVIN – Associação e Movimento pela Inclusão', pdfWidth / 2, 12, { align: 'center' });
-    pdf.setFontSize(8);
-    pdf.setTextColor(107, 114, 128);
-    pdf.text(`Relatório: ${activeTab === 'beneficiarios' ? 'Beneficiários' : activeTab === 'faltas' ? 'Frequência' : 'Profissionais'} | Período: ${periodLabel}`, pdfWidth / 2, 17, { align: 'center' });
-    
-    // Adicionar rodapé
-    pdf.setFontSize(8);
-    pdf.setTextColor(107, 114, 128);
-    pdf.text(`Gerado em ${new Date().toLocaleString('pt-BR')} | Página `, pdfWidth / 2, pdfHeight - 8, { align: 'center' });
-    pdf.text(String(pdf.internal.getNumberOfPages()), pdfWidth / 2 + 35, pdfHeight - 8);
-    
-    pdf.save(`AMOVIN_Relatorio_${activeTab}_${new Date().toISOString().split('T')[0]}.pdf`);
+    const printContent = reportRef.current.innerHTML;
+    const printStyles = `
+      @page { size: A4 portrait; margin: 12mm; }
+      body { font-family: 'Segoe UI', Arial, sans-serif; color: #111; font-size: 10pt; line-height: 1.3; background: #fff; }
+      .print-header { text-align: center; border-bottom: 2px solid #1E40AF; padding-bottom: 12px; margin-bottom: 20px; page-break-after: avoid; }
+      .print-header img { height: 45px; margin-bottom: 8px; }
+      .print-header h1 { margin: 4px 0 2px; color: #1E40AF; font-size: 16pt; font-weight: 700; }
+      .print-header p { margin: 0; color: #555; font-size: 9pt; }
+      .print-kpis { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 10px; page-break-after: avoid; }
+      .print-kpi { flex: 1; text-align: center; padding: 12px 8px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+      .print-kpi-value { font-size: 16pt; font-weight: bold; color: #111; margin-bottom: 2px; }
+      .print-kpi-label { font-size: 8pt; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+      table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: auto; }
+      tr { page-break-inside: avoid; }
+      th { background: #f8f9fa; color: #1E40AF; text-align: left; padding: 8px 6px; font-size: 9pt; border-bottom: 2px solid #1E40AF; font-weight: 600; }
+      td { padding: 7px 6px; border-bottom: 1px solid #eee; font-size: 9pt; }
+      tr:nth-child(even) { background: #fafafa; }
+      .print-footer { margin-top: 25px; border-top: 1px solid #ccc; padding-top: 10px; text-align: center; font-size: 8pt; color: #777; page-break-inside: avoid; }
+      .no-print { display: none !important; }
+      .chart-placeholder { display: none; }
+      h3 { color: #1E40AF; font-size: 12pt; border-bottom: 1px solid #eee; padding-bottom: 6px; margin: 20px 0 10px; }
+      .badge { display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 8pt; font-weight: 600; }
+      .badge-green { background: #dcfce7; color: #166534; }
+      .badge-red { background: #fee2e2; color: #991b1b; }
+      .badge-yellow { background: #fef3c7; color: #92400e; }
+      .badge-blue { background: #dbeafe; color: #1e40af; }
+      .alert-box { background: #fff1f2; border-left: 4px solid #e11d48; padding: 10px; margin-bottom: 15px; font-size: 9pt; }
+    `;
+
+    const win = window.open('', '_blank');
+    if (!win) return;
+
+    win.document.write(`
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8">
+        <title>AMOVIN - ${tabTitle}</title>
+        <style>${printStyles}</style>
+      </head>
+      <body>
+        <div class="print-header">
+          <img src="${AMOVIN_LOGO_SRC}" alt="AMOVIN Logo">
+          <h1>${tabTitle}</h1>
+          <p>Associação e Movimento pela Inclusão em Rio Paranaíba • CNPJ: 55.880.046/0001-34</p>
+          <p>Período: ${periodLabel} | Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+        </div>
+        ${printContent}
+        <div class="print-footer">
+          <p>AMOVIN – Associação e Movimento pela Inclusão • Rio Paranaíba/MG • (34) 99821-0513 • contato@amovin.org.br</p>
+          <p>Documento confidencial • Impresso em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
+        </div>
+        <script>
+          window.onload = function() { 
+            window.print(); 
+            window.onafterprint = function() { window.close(); };
+          };
+        </script>
+      </body>
+      </html>
+    `);
+    win.document.close();
   };
 
-  // ✅ Exportação para CSV
-  const handleExportCSV = (data: any[], filename: string) => {
-    if (data.length === 0) return;
+  // ✅ EXPORTAÇÃO EXCEL/CSV ULTRA-PREMIUM
+  const handleExportCSV = () => {
+    const tabTitle = activeTab === 'beneficiarios' ? 'Relatorio_Beneficiarios' : 
+                     activeTab === 'faltas' ? 'Relatorio_Frequencia' : 'Relatorio_Profissionais';
     
-    const headers = Object.keys(data[0]);
-    const csvContent = [
-      headers.join(';'),
-      ...data.map(row => headers.map(h => {
-        const val = row[h];
-        return typeof val === 'string' && val.includes(',') ? `"${val}"` : val;
-      }).join(';'))
-    ].join('\n');
-    
+    let headers: string[] = [];
+    let rows: string[][] = [];
+    let data: any[] = [];
+
+    if (activeTab === 'beneficiarios') {
+      headers = ['Nome Completo', 'Data Nascimento', 'CPF', 'Diagnóstico', 'CID', 'Nível Suporte', 'Responsável', 'Telefone Responsável', 'Endereço', 'Estudante', 'Comorbidades', 'Alergias'];
+      data = filteredBeneficiaries.map(b => [
+        b.fullName,
+        b.birthDate ? new Date(b.birthDate).toLocaleDateString('pt-BR') : '',
+        b.cpf,
+        b.diagnosis,
+        b.cid,
+        b.supportLevel,
+        b.respName,
+        b.respPhone,
+        b.respAddress,
+        b.isStudent,
+        b.hasComorbidities,
+        b.hasAllergies
+      ]);
+    } else if (activeTab === 'faltas') {
+      headers = ['Data', 'Horário', 'Paciente', 'Profissional', 'Status', 'Observações'];
+      data = filteredConsultations.map(c => {
+        const ben = beneficiaries.find(b => b.id === c.beneficiaryId);
+        const prof = professionals.find(p => p.id === c.professionalId);
+        return [
+          c.date ? new Date(c.date).toLocaleDateString('pt-BR') : '',
+          c.time || '',
+          ben?.fullName || 'N/A',
+          prof?.name || c.professionalId,
+          c.attendance === 'presente' ? 'Presente' : 
+          c.attendance === 'falta' ? 'Falta' : 
+          c.attendance === 'falta_justificada' ? 'Falta Justificada' : 'Cancelado',
+          c.notes || ''
+        ];
+      });
+    } else {
+      headers = ['Nome', 'Especialidade', 'CPF', 'Registro Profissional', 'Vínculo', 'Telefone', 'Login', 'Total Consultas'];
+      data = filteredProfessionals.map(p => [
+        p.name,
+        p.specialty,
+        p.cpf || '',
+        p.hasRegistration === 'Sim' ? (p.registration || '') : 'Não registrado',
+        p.bondType || '-',
+        p.phone,
+        p.login,
+        professionalKPIs.consultationsByProf[p.id] || 0
+      ]);
+    }
+
+    // Monta o conteúdo CSV premium
+    const csvLines: string[] = [];
+    csvLines.push(`AMOVIN - Associação e Movimento pela Inclusão`);
+    csvLines.push(`${tabTitle.replace(/_/g, ' ')} | Período: ${periodLabel} | Gerado em: ${new Date().toLocaleString('pt-BR')}`);
+    csvLines.push(''); // Linha em branco
+    csvLines.push(headers.join(';'));
+    data.forEach(row => {
+      const safeRow = row.map(val => {
+        const str = String(val ?? '');
+        return str.includes(';') || str.includes('"') ? `"${str.replace(/"/g, '""')}"` : str;
+      });
+      csvLines.push(safeRow.join(';'));
+    });
+
     const BOM = '\uFEFF';
-    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([BOM + csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `${tabTitle}_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -369,7 +444,7 @@ export default function Reports() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 🎨 Header Premium */}
-      <header className="bg-white border-b-4 border-blue-900 shadow-lg sticky top-0 z-40">
+      <header className="bg-white border-b-4 border-blue-900 shadow-lg sticky top-0 z-40 print:hidden">
         <div className="max-w-7xl mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-5">
@@ -381,17 +456,13 @@ export default function Reports() {
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={handleExportPDF}
+                onClick={handlePrint}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-all shadow-sm"
               >
-                <FileText size={16} /> PDF
+                <Printer size={16} /> Imprimir
               </button>
               <button
-                onClick={() => {
-                  if (activeTab === 'beneficiarios') handleExportCSV(filteredBeneficiaries, 'Beneficiarios');
-                  else if (activeTab === 'faltas') handleExportCSV(filteredConsultations, 'Frequencia');
-                  else handleExportCSV(filteredProfessionals, 'Profissionais');
-                }}
+                onClick={handleExportCSV}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-all shadow-sm"
               >
                 <Download size={16} /> Excel
@@ -403,7 +474,7 @@ export default function Reports() {
 
       <main className="max-w-7xl mx-auto px-6 py-6" ref={reportRef}>
         {/* 🔍 Barra de Filtros Premium */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5 mb-6">
+        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-5 mb-6 print:hidden">
           <div className="flex flex-wrap items-end gap-4">
             {/* Busca */}
             <div className="flex-1 min-w-[200px]">
@@ -494,7 +565,7 @@ export default function Reports() {
         </div>
 
         {/* 📑 Tabs de Navegação */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 print:hidden">
           {tabs.map(tab => {
             const Icon = tab.icon;
             return (
@@ -552,7 +623,7 @@ export default function Reports() {
             </div>
 
             {/* Gráficos */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:hidden">
               {/* Distribuição por Suporte */}
               <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
@@ -623,20 +694,20 @@ export default function Reports() {
 
             {/* Tabela de Beneficiários */}
             <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-                <h3 className="text-lg font-bold text-gray-900">Lista de Beneficiários</h3>
-                <span className="text-sm text-gray-500">{filteredBeneficiaries.length} registros</span>
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50 print:bg-white print:border-b-2 print:border-blue-900">
+                <h3 className="text-lg font-bold text-gray-900 print:text-blue-900 print:text-xl">Lista de Beneficiários</h3>
+                <span className="text-sm text-gray-500 print:hidden">{filteredBeneficiaries.length} registros</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-50 print:bg-gray-100">
                     <tr>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Nome</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Nascimento</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Diagnóstico/CID</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Responsável</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Telefone</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Suporte</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Nome</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Nascimento</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Diagnóstico/CID</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Responsável</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Telefone</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Suporte</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -659,7 +730,7 @@ export default function Reports() {
                         </td>
                         <td className="px-5 py-4 text-sm text-gray-700">{b.respPhone}</td>
                         <td className="px-5 py-4">
-                          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 print:bg-blue-50 print:text-blue-800 print:border print:border-blue-200">
                             {b.supportLevel}
                           </span>
                         </td>
@@ -718,12 +789,12 @@ export default function Reports() {
 
             {/* Alerta de beneficiários com muitas faltas */}
             {attendanceKPIs.faltaRanking.filter(f => f.count >= 3).length > 0 && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg print:bg-red-50 print:border-red-400 print:p-3">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="text-red-600 mt-0.5" size={20} />
+                  <AlertTriangle className="text-red-600 mt-0.5 print:hidden" size={20} />
                   <div>
-                    <p className="font-semibold text-red-800">⚠️ Atenção: Beneficiários com 3+ faltas</p>
-                    <ul className="mt-2 text-sm text-red-700 space-y-1">
+                    <p className="font-semibold text-red-800 print:text-red-700 print:text-sm">⚠️ Atenção: Beneficiários com 3+ faltas</p>
+                    <ul className="mt-2 text-sm text-red-700 space-y-1 print:mt-1 print:text-xs">
                       {attendanceKPIs.faltaRanking.filter(f => f.count >= 3).map(f => (
                         <li key={f.id}>• {f.name} - {f.count} faltas</li>
                       ))}
@@ -734,7 +805,7 @@ export default function Reports() {
             )}
 
             {/* Gráficos */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:hidden">
               {/* Evolução de Presenças */}
               <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
@@ -788,19 +859,19 @@ export default function Reports() {
 
             {/* Tabela de Consultas */}
             <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-                <h3 className="text-lg font-bold text-gray-900">Histórico de Consultas</h3>
-                <span className="text-sm text-gray-500">{filteredConsultations.length} registros</span>
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50 print:bg-white print:border-b-2 print:border-blue-900">
+                <h3 className="text-lg font-bold text-gray-900 print:text-blue-900 print:text-xl">Histórico de Consultas</h3>
+                <span className="text-sm text-gray-500 print:hidden">{filteredConsultations.length} registros</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-50 print:bg-gray-100">
                     <tr>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Data/Hora</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Paciente</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Profissional</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Observações</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Data/Hora</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Paciente</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Profissional</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Status</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Observações</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -809,8 +880,8 @@ export default function Reports() {
                       const prof = professionals.find(p => p.id === c.professionalId);
                       return (
                         <tr key={c.id} className={`hover:bg-gray-50 transition-colors ${
-                          c.attendance === 'falta' ? 'bg-red-50' : 
-                          c.attendance === 'falta_justificada' ? 'bg-yellow-50' : ''
+                          c.attendance === 'falta' ? 'bg-red-50 print:bg-red-50' : 
+                          c.attendance === 'falta_justificada' ? 'bg-yellow-50 print:bg-yellow-50' : ''
                         }`}>
                           <td className="px-5 py-4">
                             <div className="text-sm font-medium text-gray-900">
@@ -825,14 +896,14 @@ export default function Reports() {
                           <td className="px-5 py-4 text-sm text-gray-700">{prof?.name || c.professionalId}</td>
                           <td className="px-5 py-4">
                             <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                              c.attendance === 'presente' ? 'bg-green-100 text-green-700' :
-                              c.attendance === 'falta' ? 'bg-red-100 text-red-700' :
-                              c.attendance === 'falta_justificada' ? 'bg-yellow-100 text-yellow-700' :
-                              'bg-purple-100 text-purple-700'
+                              c.attendance === 'presente' ? 'bg-green-100 text-green-700 print:bg-green-50 print:text-green-800' :
+                              c.attendance === 'falta' ? 'bg-red-100 text-red-700 print:bg-red-50 print:text-red-800' :
+                              c.attendance === 'falta_justificada' ? 'bg-yellow-100 text-yellow-700 print:bg-yellow-50 print:text-yellow-800' :
+                              'bg-purple-100 text-purple-700 print:bg-purple-50 print:text-purple-800'
                             }`}>
-                              {c.attendance === 'presente' ? '✅ Presente' :
-                               c.attendance === 'falta' ? '❌ Falta' :
-                               c.attendance === 'falta_justificada' ? '📝 Justificada' : '🚫 Cancelado'}
+                              {c.attendance === 'presente' ? 'Presente' :
+                               c.attendance === 'falta' ? 'Falta' :
+                               c.attendance === 'falta_justificada' ? 'Justificada' : 'Cancelado'}
                             </span>
                           </td>
                           <td className="px-5 py-4 text-sm text-gray-500">{c.notes || '-'}</td>
@@ -882,7 +953,7 @@ export default function Reports() {
             </div>
 
             {/* Gráficos */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:hidden">
               {/* Consultas por Profissional */}
               <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
@@ -942,20 +1013,20 @@ export default function Reports() {
 
             {/* Tabela de Profissionais */}
             <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-                <h3 className="text-lg font-bold text-gray-900">Equipe de Profissionais</h3>
-                <span className="text-sm text-gray-500">{filteredProfessionals.length} registros</span>
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50 print:bg-white print:border-b-2 print:border-blue-900">
+                <h3 className="text-lg font-bold text-gray-900 print:text-blue-900 print:text-xl">Equipe de Profissionais</h3>
+                <span className="text-sm text-gray-500 print:hidden">{filteredProfessionals.length} registros</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-50 print:bg-gray-100">
                     <tr>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Nome</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Especialidade</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Registro</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Vínculo</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Contato</th>
-                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase">Consultas</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Nome</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Especialidade</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Registro</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Vínculo</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Contato</th>
+                      <th className="px-5 py-3 text-left text-xs font-bold text-gray-600 uppercase print:text-blue-900">Consultas</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -966,30 +1037,30 @@ export default function Reports() {
                           <div className="text-xs text-gray-500">Login: {p.login}</div>
                         </td>
                         <td className="px-5 py-4">
-                          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 print:bg-blue-50 print:text-blue-800 print:border print:border-blue-200">
                             {p.specialty}
                           </span>
                         </td>
                         <td className="px-5 py-4 text-sm text-gray-700">
                           {p.hasRegistration === 'Sim' ? (
-                            <span className="text-green-600 font-medium">{p.registration}</span>
+                            <span className="text-green-600 font-medium print:text-green-700">{p.registration}</span>
                           ) : (
-                            <span className="text-gray-400">Não registrado</span>
+                            <span className="text-gray-400 print:text-gray-500">Não registrado</span>
                           )}
                         </td>
                         <td className="px-5 py-4">
                           <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                            p.bondType === 'Efetivo' ? 'bg-green-100 text-green-700' :
-                            p.bondType === 'Voluntário' ? 'bg-blue-100 text-blue-700' :
-                            p.bondType === 'Parceiro' ? 'bg-purple-100 text-purple-700' :
-                            'bg-gray-100 text-gray-700'
+                            p.bondType === 'Efetivo' ? 'bg-green-100 text-green-700 print:bg-green-50 print:text-green-800' :
+                            p.bondType === 'Voluntário' ? 'bg-blue-100 text-blue-700 print:bg-blue-50 print:text-blue-800' :
+                            p.bondType === 'Parceiro' ? 'bg-purple-100 text-purple-700 print:bg-purple-50 print:text-purple-800' :
+                            'bg-gray-100 text-gray-700 print:bg-gray-50 print:text-gray-800'
                           }`}>
                             {p.bondType || '-'}
                           </span>
                         </td>
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-2 text-sm text-gray-700">
-                            <Phone size={14} className="text-gray-400" />
+                            <Phone size={14} className="text-gray-400 print:hidden" />
                             {p.phone}
                           </div>
                         </td>
@@ -1006,25 +1077,25 @@ export default function Reports() {
         )}
 
         {/* 📄 Rodapé Premium do Relatório */}
-        <div className="mt-10 pt-8 border-t-2 border-gray-200 text-center">
+        <div className="mt-10 pt-8 border-t-2 border-gray-200 text-center print:border-t-2 print:border-blue-900 print:mt-12 print:pt-6">
           <div className="flex items-center justify-center gap-3 mb-3">
-            <img src={AMOVIN_LOGO_SRC} alt="AMOVIN" className="h-10 w-auto opacity-80" />
+            <img src={AMOVIN_LOGO_SRC} alt="AMOVIN" className="h-10 w-auto opacity-80 print:h-12 print:opacity-100" />
             <div className="text-left">
-              <p className="font-bold text-gray-800">AMOVIN – Associação e Movimento pela Inclusão</p>
-              <p className="text-xs text-gray-500">CNPJ: 55.880.046/0001-34</p>
+              <p className="font-bold text-gray-800 print:text-blue-900 print:text-lg">AMOVIN – Associação e Movimento pela Inclusão</p>
+              <p className="text-xs text-gray-500 print:text-gray-600 print:text-sm">CNPJ: 55.880.046/0001-34</p>
             </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-6 text-xs text-gray-500 mb-4">
-            <span className="flex items-center gap-1"><MapPin size={12} /> Rio Paranaíba - MG</span>
-            <span className="flex items-center gap-1"><Phone size={12} /> (34) 99821-0513</span>
-            <span className="flex items-center gap-1"><Mail size={12} /> contato@amovin.org.br</span>
+          <div className="flex flex-wrap justify-center gap-6 text-xs text-gray-500 mb-4 print:text-gray-600 print:text-sm print:gap-8">
+            <span className="flex items-center gap-1"><MapPin size={12} className="print:hidden" /> Rio Paranaíba - MG</span>
+            <span className="flex items-center gap-1"><Phone size={12} className="print:hidden" /> (34) 99821-0513</span>
+            <span className="flex items-center gap-1"><Mail size={12} className="print:hidden" /> contato@amovin.org.br</span>
           </div>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 print:text-gray-500 print:text-sm print:font-medium">
             Relatório gerado em {new Date().toLocaleString('pt-BR')} • Documento confidencial • 
             Impresso em {new Date().toLocaleDateString('pt-BR')}
           </p>
-          {/* Marca d'água visual */}
-          <div className="mt-6 opacity-5 pointer-events-none select-none">
+          {/* Marca d'água visual para tela */}
+          <div className="mt-6 opacity-5 pointer-events-none select-none print:hidden">
             <img src={AMOVIN_LOGO_SRC} alt="Watermark" className="h-32 w-auto mx-auto" />
             <p className="text-4xl font-bold text-gray-300 mt-2">AMOVIN</p>
           </div>
