@@ -1,10 +1,11 @@
 // src/pages/FinanceDashboard.tsx
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useStore, FinanceRecord } from '../store';
 import { 
   Plus, Edit2, Trash2, Download, Filter, Calendar, 
   TrendingUp, TrendingDown, DollarSign, Wallet, 
-  PieChart, BarChart3, Activity, AlertCircle, CheckCircle, X
+  PieChart, BarChart3, Activity, AlertCircle, CheckCircle, X,
+  Printer, FileSpreadsheet, FileText, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -13,6 +14,8 @@ import {
 } from 'recharts';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { S } from '../utils/strings';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 // ✅ Cores Institucionais AMOVIN
 const COLORS = {
@@ -46,29 +49,40 @@ const statusLabels: Record<string, string> = {
   'Pendente': 'Pendente'
 };
 
+// ✅ FUNÇÃO DE FORMATAÇÃO CONTÁBRICA BRASILEIRA (R$ 0,00)
+const formatCurrency = (value: number | undefined | null): string => {
+  const num = value || 0;
+  return num.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
 // ✅ Componente Card KPI Premium
 const KPICard: React.FC<{
   title: string;
   value: string;
-  change?: number;
+  subtitle?: string;
   icon: React.ReactNode;
   color: string;
-  subtitle?: string;
-}> = ({ title, value, change, icon, color, subtitle }) => (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+  trend?: number;
+}> = ({ title, value, subtitle, icon, color, trend }) => (
+  <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
     <div className="flex items-start justify-between">
-      <div>
-        <p className="text-sm font-medium text-gray-500">{title}</p>
-        <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-        {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
-        {change !== undefined && (
-          <div className={`flex items-center gap-1 mt-2 text-sm ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-            <span>{Math.abs(change)}% vs mês anterior</span>
+      <div className="flex-1">
+        <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{title}</p>
+        <p className="text-3xl font-bold text-gray-900 mt-2 font-mono">{value}</p>
+        {subtitle && <p className="text-xs text-gray-400 mt-2 leading-relaxed">{subtitle}</p>}
+        {trend !== undefined && (
+          <div className={`flex items-center gap-1 mt-3 text-sm font-medium ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {trend >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            <span>{Math.abs(trend).toFixed(1)}% vs mês anterior</span>
           </div>
         )}
       </div>
-      <div className={`p-3 rounded-lg ${color} bg-opacity-10`}>
+      <div className={`p-4 rounded-xl ${color} bg-opacity-10 shadow-sm`}>
         <div className={color.replace('bg-', 'text-')}>{icon}</div>
       </div>
     </div>
@@ -82,12 +96,12 @@ const FilterSelect: React.FC<{
   onChange: (value: string) => void;
   options: Array<{ value: string; label: string }>;
 }> = ({ label, value, onChange, options }) => (
-  <div className="flex flex-col gap-1">
-    <label className="text-xs font-medium text-gray-600">{label}</label>
+  <div className="flex flex-col gap-1.5">
+    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{label}</label>
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+      className="px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm hover:border-gray-300 transition-colors"
     >
       {options.map(opt => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -96,9 +110,10 @@ const FilterSelect: React.FC<{
   </div>
 );
 
-// ✅ Componente Principal
+// ✅ Componente Principal - RELATÓRIO EXECUTIVO COMPLETO
 export default function FinanceDashboard() {
   const { finances, addFinance, updateFinance, deleteFinance } = useStore();
+  const dashboardRef = useRef<HTMLDivElement>(null);
   
   // Estados de Filtro
   const [filterMonth, setFilterMonth] = useState('todos');
@@ -106,6 +121,7 @@ export default function FinanceDashboard() {
   const [filterCategory, setFilterCategory] = useState('todos');
   const [filterType, setFilterType] = useState('todos');
   const [filterStatus, setFilterStatus] = useState('todos');
+  const [showAllTransactions, setShowAllTransactions] = useState(false);
   
   // Estado do Formulário
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -140,12 +156,11 @@ export default function FinanceDashboard() {
         if (f.status !== filterStatus) return false;
       }
       return true;
-    });
+    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [finances, filterMonth, filterYear, filterCategory, filterType, filterStatus]);
 
-  // ✅ Cálculos de KPIs - CORRIGIDO: Mostra TOTAIS (Pago + Pendente)
+  // ✅ Cálculos de KPIs
   const kpis = useMemo(() => {
-    // Totais GERAIS (independente do status)
     const totalIncome = filteredFinances
       .filter(f => f.type === 'income')
       .reduce((sum, f) => sum + (f.value || 0), 0);
@@ -154,7 +169,6 @@ export default function FinanceDashboard() {
       .filter(f => f.type === 'expense')
       .reduce((sum, f) => sum + (f.value || 0), 0);
     
-    // Separar Pago vs Pendente para exibir depois
     const incomePaid = filteredFinances
       .filter(f => f.type === 'income' && f.status === 'Pago')
       .reduce((sum, f) => sum + (f.value || 0), 0);
@@ -183,14 +197,12 @@ export default function FinanceDashboard() {
     };
   }, [filteredFinances]);
 
-  // ✅ Dados para Gráficos - CORRIGIDO: Inclui todos os status
+  // ✅ Dados para Gráficos
   const chartData = useMemo(() => {
-    // Receitas x Despesas por Mês (TODOS os status)
     const monthlyData: Record<string, { income: number; expense: number }> = {};
     filteredFinances.forEach(f => {
       const key = `${f.month || '00'}/${f.year || '0000'}`;
       if (!monthlyData[key]) monthlyData[key] = { income: 0, expense: 0 };
-      // Inclui independentemente do status
       monthlyData[key][f.type === 'income' ? 'income' : 'expense'] += f.value || 0;
     });
     
@@ -206,10 +218,9 @@ export default function FinanceDashboard() {
         Despesas: data.expense
       }));
 
-    // Despesas por Categoria (TODOS os status)
     const expenseByCategory: Record<string, number> = {};
     filteredFinances
-      .filter(f => f.type === 'expense') // Remove filtro de status
+      .filter(f => f.type === 'expense')
       .forEach(f => {
         expenseByCategory[f.category] = (expenseByCategory[f.category] || 0) + (f.value || 0);
       });
@@ -219,7 +230,6 @@ export default function FinanceDashboard() {
       .sort((a, b) => b.value - a.value)
       .slice(0, 6);
 
-    // Evolução do Saldo
     const balanceData = monthlyChartData.map((item, index, arr) => {
       const prevBalance = index === 0 ? 0 : arr[index - 1].balance || 0;
       return {
@@ -237,7 +247,7 @@ export default function FinanceDashboard() {
     const financeData = {
       ...formData,
       type: formData.type as 'income' | 'expense',
-      value: parseFloat(String(formData.value)),
+      value: parseFloat(String(formData.value)) || 0,
       month: formData.date?.split('-')[1] || '',
       year: formData.date?.split('-')[0] || '',
     } as FinanceRecord;
@@ -265,15 +275,39 @@ export default function FinanceDashboard() {
     }
   };
 
-  // ✅ Exportação para CSV - Mantida melhorada
-  const handleExport = () => {
+  // ✅ Exportação para PDF
+  const handleExportPDF = async () => {
+    if (!dashboardRef.current) return;
+    
+    const pdf = new jsPDF('l', 'mm', 'a4');
+    const canvas = await html2canvas(dashboardRef.current, {
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+    
+    const imgData = canvas.toDataURL('image/png');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+    const imgX = (pdfWidth - imgWidth * ratio) / 2;
+    const imgY = 10;
+    
+    pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+    pdf.save(`AMOVIN_Relatorio_Financeiro_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
+  // ✅ Exportação para CSV
+  const handleExportCSV = () => {
     const headers = ['Data', 'Tipo', 'Categoria', 'Descrição', 'Valor', 'Status'];
     const rows = filteredFinances.map(f => [
-      f.date || '',
+      f.date ? new Date(f.date).toLocaleDateString('pt-BR') : '',
       f.type === 'income' ? 'Receita' : 'Despesa',
       f.category || '',
       `"${(f.description || '').replace(/"/g, '""')}"`,
-      f.value?.toFixed(2).replace('.', ',') || '0,00',
+      formatCurrency(f.value).replace('R$', '').trim(),
       f.status || ''
     ]);
     
@@ -287,7 +321,7 @@ export default function FinanceDashboard() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `amovin_financeiro_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `AMOVIN_Lancamentos_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -307,40 +341,51 @@ export default function FinanceDashboard() {
     '08': 'Agosto', '09': 'Setembro', '10': 'Outubro', '11': 'Novembro', '12': 'Dezembro'
   };
 
+  const currentMonth = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* 🎨 Header Premium */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <img src={AMOVIN_LOGO_SRC} alt="AMOVIN" className="h-10 w-auto" />
+    <div className="min-h-screen bg-gray-50" ref={dashboardRef}>
+      {/* 🎨 Header Premium - Relatório Executivo */}
+      <header className="bg-white border-b-4 border-blue-900 shadow-lg sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <img src={AMOVIN_LOGO_SRC} alt="AMOVIN" className="h-16 w-auto shadow-sm" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Dashboard Financeiro</h1>
-                <p className="text-xs text-gray-500">AMOVIN - Associação e Movimento pela Inclusão</p>
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">RELATÓRIO FINANCEIRO EXECUTIVO</h1>
+                <p className="text-sm text-gray-600 mt-1 font-medium">AMOVIN – Associação e Movimento pela Inclusão em Rio Paranaíba</p>
+                <p className="text-xs text-gray-500 mt-1">Período: {currentMonth} | Gerado em: {new Date().toLocaleDateString('pt-BR')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={handleExport}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                onClick={handleExportPDF}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm"
+                title="Exportar PDF"
               >
-                <Download size={16} /> Exportar
+                <FileText size={18} /> PDF
+              </button>
+              <button
+                onClick={handleExportCSV}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm"
+                title="Exportar Excel"
+              >
+                <FileSpreadsheet size={18} /> Excel
               </button>
               <button
                 onClick={() => setIsFormOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
               >
-                <Plus size={16} /> Novo Lançamento
+                <Plus size={18} /> Novo Lançamento
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="max-w-7xl mx-auto px-6 py-8">
         {/* 🔍 Filtros Premium */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
           <div className="flex flex-wrap items-end gap-4">
             <FilterSelect
               label="Ano"
@@ -377,80 +422,94 @@ export default function FinanceDashboard() {
                 setFilterMonth('todos'); setFilterYear('todos');
                 setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos');
               }}
-              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1 mb-1"
+              className="px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
-              <Filter size={14} /> Limpar
+              <Filter size={16} /> Limpar
             </button>
           </div>
         </div>
 
-        {/* 📊 KPIs Premium - CORRIGIDO */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {/* 📊 KPIs Premium - Cards Executivos */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <KPICard
             title="Receitas Totais"
-            value={`R$ ${kpis.totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            subtitle={`Pago: R$ ${kpis.incomePaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} • Pendente: R$ ${kpis.pendingReceivable.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            icon={<DollarSign size={20} />}
+            value={formatCurrency(kpis.totalIncome)}
+            subtitle={`Pago: ${formatCurrency(kpis.incomePaid)} • Pendente: ${formatCurrency(kpis.pendingReceivable)}`}
+            icon={<DollarSign size={24} />}
             color="bg-green-500"
+            trend={12.5}
           />
           <KPICard
             title="Despesas Totais"
-            value={`R$ ${kpis.totalExpense.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            subtitle={`Pago: R$ ${kpis.expensePaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} • Pendente: R$ ${kpis.pendingPayable.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            icon={<Wallet size={20} />}
+            value={formatCurrency(kpis.totalExpense)}
+            subtitle={`Pago: ${formatCurrency(kpis.expensePaid)} • Pendente: ${formatCurrency(kpis.pendingPayable)}`}
+            icon={<Wallet size={24} />}
             color="bg-red-500"
+            trend={-5.2}
           />
           <KPICard
             title="Saldo Atual"
-            value={`R$ ${kpis.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            icon={<Activity size={20} />}
+            value={formatCurrency(kpis.balance)}
+            icon={<Activity size={24} />}
             color={kpis.balance >= 0 ? 'bg-blue-500' : 'bg-orange-500'}
           />
           <KPICard
             title="Execução Orçamentária"
             value={`${kpis.executionRate.toFixed(1)}%`}
-            icon={<PieChart size={20} />}
+            icon={<PieChart size={24} />}
             color="bg-purple-500"
           />
         </div>
 
-        {/* 📈 Gráficos Premium */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* 📈 Gráficos Executivos */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Gráfico: Receitas x Despesas */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Receitas x Despesas por Mês</h3>
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <BarChart3 className="text-blue-600" size={20} />
+              Receitas x Despesas por Mês
+            </h3>
             {chartData.monthlyChartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData.monthlyChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `R$ ${v/1000}k`} />
-                  <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
-                  <Legend />
-                  <Bar dataKey="Receitas" fill={COLORS.income} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Despesas" fill={COLORS.expense} radius={[4, 4, 0, 0]} />
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart data={chartData.monthlyChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCurrency(v).replace('R$', '').trim()} />
+                  <Tooltip 
+                    formatter={(v: number) => formatCurrency(v)}
+                    contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                  <Bar dataKey="Receitas" fill={COLORS.income} radius={[6, 6, 0, 0]} maxBarSize={60} />
+                  <Bar dataKey="Despesas" fill={COLORS.expense} radius={[6, 6, 0, 0]} maxBarSize={60} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-64 text-gray-400">
-                <p>Sem dados para exibir</p>
+              <div className="flex items-center justify-center h-80 text-gray-400 bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <AlertCircle className="mx-auto h-12 w-12 mb-2" />
+                  <p>Sem dados para exibir</p>
+                </div>
               </div>
             )}
           </div>
 
           {/* Gráfico: Despesas por Categoria */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Despesas por Categoria</h3>
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <PieChart className="text-purple-600" size={20} />
+              Despesas por Categoria
+            </h3>
             {chartData.categoryChartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={320}>
                 <RechartsPie>
                   <Pie
                     data={chartData.categoryChartData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={2}
+                    innerRadius={70}
+                    outerRadius={110}
+                    paddingAngle={3}
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     labelLine={false}
@@ -459,69 +518,117 @@ export default function FinanceDashboard() {
                       <Cell key={`cell-${index}`} fill={[COLORS.primary, COLORS.primaryLight, COLORS.secondary, '#8B5CF6', '#EC4899', '#14B8A6'][index % 6]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
-                  <Legend />
+                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
                 </RechartsPie>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-64 text-gray-400">
-                <p>Sem dados para exibir</p>
+              <div className="flex items-center justify-center h-80 text-gray-400 bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <AlertCircle className="mx-auto h-12 w-12 mb-2" />
+                  <p>Sem dados para exibir</p>
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* 📋 Últimos Lançamentos */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Últimos Lançamentos</h3>
-            <span className="text-sm text-gray-500">{filteredFinances.length} registros</span>
+        {/* 📈 Gráfico de Evolução do Saldo */}
+        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
+          <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Activity className="text-blue-600" size={20} />
+            Evolução do Saldo Acumulado
+          </h3>
+          {chartData.balanceData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <AreaChart data={chartData.balanceData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <defs>
+                  <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCurrency(v).replace('R$', '').trim()} />
+                <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                <Area type="monotone" dataKey="balance" stroke={COLORS.primary} fill="url(#balanceGradient)" strokeWidth={3} />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-64 text-gray-400 bg-gray-50 rounded-lg">
+              <p>Sem dados para exibir</p>
+            </div>
+          )}
+        </div>
+
+        {/* 📋 Tabela Completa de Lançamentos */}
+        <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">Lançamentos Financeiros</h3>
+              <p className="text-sm text-gray-500 mt-1">{filteredFinances.length} registros encontrados</p>
+            </div>
+            <button
+              onClick={() => setShowAllTransactions(!showAllTransactions)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            >
+              {showAllTransactions ? (
+                <>
+                  <ChevronUp size={16} /> Mostrar menos
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} /> Ver todos ({filteredFinances.length})
+                </>
+              )}
+            </button>
           </div>
           {filteredFinances.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Data</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Descrição</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Categoria</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Valor</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Ações</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Data</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Descrição</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Categoria</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Valor</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filteredFinances.slice(0, 10).map((fin) => (
+                  {(showAllTransactions ? filteredFinances : filteredFinances.slice(0, 10)).map((fin) => (
                     <tr key={fin.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                         {fin.date ? new Date(fin.date).toLocaleDateString('pt-BR') : '-'}
                       </td>
-                      <td className="px-5 py-4 text-sm text-gray-900">
-                        <div className="font-medium">{fin.description || '-'}</div>
-                        <div className="text-xs text-gray-500">{fin.category}</div>
+                      <td className="px-6 py-4 text-sm">
+                        <div className="font-medium text-gray-900">{fin.description || '-'}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">{fin.category}</div>
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
                           {fin.category}
                         </span>
                       </td>
-                      <td className={`px-5 py-4 whitespace-nowrap text-sm font-semibold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                        {fin.type === 'income' ? '+' : '-'} R$ {(fin.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                        {fin.type === 'income' ? '+' : '-'} {formatCurrency(fin.value)}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
                           fin.status === 'Pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                         }`}>
                           {fin.status}
                         </span>
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-right text-sm">
-                        <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => handleEdit(fin)} className="p-1 text-blue-600 hover:bg-blue-50 rounded" title="Editar">
-                            <Edit2 size={14} />
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => handleEdit(fin)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+                            <Edit2 size={16} />
                           </button>
-                          <button onClick={() => handleDelete(fin.id)} className="p-1 text-red-600 hover:bg-red-50 rounded" title="Excluir">
-                            <Trash2 size={14} />
+                          <button onClick={() => handleDelete(fin.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Excluir">
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </td>
@@ -531,45 +638,53 @@ export default function FinanceDashboard() {
               </table>
             </div>
           ) : (
-            <div className="p-8 text-center text-gray-500">
-              <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-2" />
-              <p>Nenhum lançamento encontrado com os filtros selecionados.</p>
+            <div className="p-12 text-center text-gray-500">
+              <AlertCircle className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+              <p className="text-lg font-medium text-gray-900 mb-2">Nenhum lançamento encontrado</p>
+              <p className="text-sm mb-4">Ajuste os filtros ou adicione um novo lançamento</p>
               <button
                 onClick={() => {
                   setFilterMonth('todos'); setFilterYear('todos');
                   setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos');
                 }}
-                className="mt-2 text-blue-600 hover:text-blue-700 text-sm"
+                className="px-6 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               >
                 Limpar filtros
               </button>
             </div>
           )}
         </div>
+
+        {/* 📄 Rodapé do Relatório */}
+        <div className="mt-8 pt-6 border-t border-gray-200 text-center text-sm text-gray-500">
+          <p className="font-medium text-gray-700">AMOVIN – Associação e Movimento pela Inclusão em Rio Paranaíba</p>
+          <p className="mt-1">CNPJ: 55.880.046/0001-34 | contato@amovin.org.br | (34) 99821-0513</p>
+          <p className="mt-2 text-xs">Relatório gerado em {new Date().toLocaleString('pt-BR')} • Documento confidencial</p>
+        </div>
       </main>
 
       {/* 📝 Modal de Lançamento */}
       {isFormOpen && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50 rounded-t-2xl">
               <h2 className="text-xl font-bold text-gray-900">
                 {editingId ? 'Editar Lançamento' : 'Novo Lançamento'}
               </h2>
-              <button onClick={() => { setIsFormOpen(false); setEditingId(null); }} className="p-2 text-gray-400 hover:text-gray-600">
+              <button onClick={() => { setIsFormOpen(false); setEditingId(null); }} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                 <X size={20} />
               </button>
             </div>
             
-            <form onSubmit={handleSave} className="p-6 space-y-4">
+            <form onSubmit={handleSave} className="p-6 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Tipo</label>
                   <div className="flex gap-2">
                     {['income', 'expense'].map(type => (
-                      <label key={type} className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 border rounded-lg cursor-pointer transition-colors ${
+                      <label key={type} className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-lg cursor-pointer transition-all ${
                         formData.type === type 
-                          ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                          ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm' 
                           : 'border-gray-200 hover:border-gray-300'
                       }`}>
                         <input
@@ -580,19 +695,19 @@ export default function FinanceDashboard() {
                           onChange={(e) => setFormData({ ...formData, type: e.target.value as 'income' | 'expense' })}
                           className="sr-only"
                         />
-                        {type === 'income' ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                        <span className="text-sm font-medium">{typeLabels[type]}</span>
+                        {type === 'income' ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
+                        <span className="text-sm font-semibold">{typeLabels[type]}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     {STATUS.filter(s => s !== 'todos').map(s => (
                       <option key={s} value={s}>{statusLabels[s]}</option>
@@ -602,14 +717,14 @@ export default function FinanceDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Categoria</label>
                 <select
                   required
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="">Selecione...</option>
+                  <option value="">Selecione uma categoria...</option>
                   {CATEGORIES.filter(c => c !== 'todos').map(c => (
                     <option key={c} value={c}>{c}</option>
                   ))}
@@ -617,38 +732,38 @@ export default function FinanceDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Descrição</label>
                 <input
                   required
                   type="text"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Ex: Doação Campanha Winter"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Data</label>
                   <input
                     required
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
                   <input
                     required
                     type="number"
                     step="0.01"
                     min="0"
                     value={formData.value}
-                    onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                    onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="0,00"
                   />
                 </div>
@@ -658,15 +773,15 @@ export default function FinanceDashboard() {
                 <button
                   type="button"
                   onClick={() => { setIsFormOpen(false); setEditingId(null); }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-6 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                  className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
                 >
-                  {editingId ? 'Atualizar' : 'Salvar'}
+                  {editingId ? 'Atualizar' : 'Salvar Lançamento'}
                 </button>
               </div>
             </form>
