@@ -53,12 +53,14 @@ const KPICard: React.FC<{
   change?: number;
   icon: React.ReactNode;
   color: string;
-}> = ({ title, value, change, icon, color }) => (
+  subtitle?: string;
+}> = ({ title, value, change, icon, color, subtitle }) => (
   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
     <div className="flex items-start justify-between">
       <div>
         <p className="text-sm font-medium text-gray-500">{title}</p>
         <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+        {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
         {change !== undefined && (
           <div className={`flex items-center gap-1 mt-2 text-sm ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
@@ -117,63 +119,56 @@ export default function FinanceDashboard() {
     status: 'Pendente'
   });
 
-  // ✅ Filtragem Inteligente - CORRIGIDA
+  // ✅ Filtragem Inteligente
   const filteredFinances = useMemo(() => {
-    console.log('📊 Total de registros no sistema:', finances.length);
-    console.log('Filtros atuais:', { filterMonth, filterYear, filterCategory, filterType, filterStatus });
-    
-    const filtered = finances.filter(f => {
-      // Filtro por mês
+    return finances.filter(f => {
       if (filterMonth !== 'todos') {
         const recordMonth = f.month || String(new Date(f.date).getMonth() + 1).padStart(2, '0');
         if (recordMonth !== filterMonth) return false;
       }
-      
-      // Filtro por ano
       if (filterYear !== 'todos') {
         const recordYear = f.year || String(new Date(f.date).getFullYear());
         if (recordYear !== filterYear) return false;
       }
-      
-      // Filtro por categoria
       if (filterCategory !== 'todos') {
         if (f.category !== filterCategory) return false;
       }
-      
-      // Filtro por tipo
       if (filterType !== 'todos') {
         if (f.type !== filterType) return false;
       }
-      
-      // Filtro por status
       if (filterStatus !== 'todos') {
         if (f.status !== filterStatus) return false;
       }
-      
       return true;
     });
-    
-    console.log('✅ Registros filtrados:', filtered.length);
-    console.log('Dados filtrados:', filtered);
-    return filtered;
   }, [finances, filterMonth, filterYear, filterCategory, filterType, filterStatus]);
 
-  // ✅ Cálculos de KPIs - CORRIGIDO
+  // ✅ Cálculos de KPIs - CORRIGIDO: Mostra TOTAIS (Pago + Pendente)
   const kpis = useMemo(() => {
+    // Totais GERAIS (independente do status)
     const totalIncome = filteredFinances
-      .filter(f => f.type === 'income' && f.status === 'Pago')
+      .filter(f => f.type === 'income')
       .reduce((sum, f) => sum + (f.value || 0), 0);
     
     const totalExpense = filteredFinances
-      .filter(f => f.type === 'expense' && f.status === 'Pago')
+      .filter(f => f.type === 'expense')
       .reduce((sum, f) => sum + (f.value || 0), 0);
     
-    const pendingPayable = filteredFinances
-      .filter(f => f.type === 'expense' && f.status === 'Pendente')
+    // Separar Pago vs Pendente para exibir depois
+    const incomePaid = filteredFinances
+      .filter(f => f.type === 'income' && f.status === 'Pago')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
+    
+    const expensePaid = filteredFinances
+      .filter(f => f.type === 'expense' && f.status === 'Pago')
       .reduce((sum, f) => sum + (f.value || 0), 0);
     
     const pendingReceivable = filteredFinances
       .filter(f => f.type === 'income' && f.status === 'Pendente')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
+    
+    const pendingPayable = filteredFinances
+      .filter(f => f.type === 'expense' && f.status === 'Pendente')
       .reduce((sum, f) => sum + (f.value || 0), 0);
 
     return {
@@ -182,20 +177,21 @@ export default function FinanceDashboard() {
       balance: totalIncome - totalExpense,
       pendingPayable,
       pendingReceivable,
+      incomePaid,
+      expensePaid,
       executionRate: totalIncome > 0 ? (totalExpense / totalIncome) * 100 : 0
     };
   }, [filteredFinances]);
 
-  // ✅ Dados para Gráficos - CORRIGIDO
+  // ✅ Dados para Gráficos - CORRIGIDO: Inclui todos os status
   const chartData = useMemo(() => {
-    // Receitas x Despesas por Mês
+    // Receitas x Despesas por Mês (TODOS os status)
     const monthlyData: Record<string, { income: number; expense: number }> = {};
     filteredFinances.forEach(f => {
       const key = `${f.month || '00'}/${f.year || '0000'}`;
       if (!monthlyData[key]) monthlyData[key] = { income: 0, expense: 0 };
-      if (f.status === 'Pago') {
-        monthlyData[key][f.type === 'income' ? 'income' : 'expense'] += f.value || 0;
-      }
+      // Inclui independentemente do status
+      monthlyData[key][f.type === 'income' ? 'income' : 'expense'] += f.value || 0;
     });
     
     const monthlyChartData = Object.entries(monthlyData)
@@ -210,10 +206,10 @@ export default function FinanceDashboard() {
         Despesas: data.expense
       }));
 
-    // Despesas por Categoria
+    // Despesas por Categoria (TODOS os status)
     const expenseByCategory: Record<string, number> = {};
     filteredFinances
-      .filter(f => f.type === 'expense' && f.status === 'Pago')
+      .filter(f => f.type === 'expense') // Remove filtro de status
       .forEach(f => {
         expenseByCategory[f.category] = (expenseByCategory[f.category] || 0) + (f.value || 0);
       });
@@ -269,28 +265,23 @@ export default function FinanceDashboard() {
     }
   };
 
-  // ✅ Exportação para CSV - MELHORADA
+  // ✅ Exportação para CSV - Mantida melhorada
   const handleExport = () => {
-    // Cabeçalhos
     const headers = ['Data', 'Tipo', 'Categoria', 'Descrição', 'Valor', 'Status'];
-    
-    // Dados formatados corretamente
     const rows = filteredFinances.map(f => [
       f.date || '',
       f.type === 'income' ? 'Receita' : 'Despesa',
       f.category || '',
-      `"${(f.description || '').replace(/"/g, '""')}"`, // Escapa aspas e envolve em aspas
-      f.value?.toFixed(2).replace('.', ',') || '0,00', // Formato brasileiro
+      `"${(f.description || '').replace(/"/g, '""')}"`,
+      f.value?.toFixed(2).replace('.', ',') || '0,00',
       f.status || ''
     ]);
     
-    // Junta com ponto e vírgula (melhor para Excel em português)
     const csvContent = [
       headers.join(';'),
       ...rows.map(r => r.join(';'))
     ].join('\n');
     
-    // Adiciona BOM para Excel reconhecer UTF-8
     const BOM = '\uFEFF';
     const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -393,19 +384,19 @@ export default function FinanceDashboard() {
           </div>
         </div>
 
-        {/* 📊 KPIs Premium */}
+        {/* 📊 KPIs Premium - CORRIGIDO */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <KPICard
             title="Receitas Totais"
             value={`R$ ${kpis.totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            change={12.5}
+            subtitle={`Pago: R$ ${kpis.incomePaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} • Pendente: R$ ${kpis.pendingReceivable.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             icon={<DollarSign size={20} />}
             color="bg-green-500"
           />
           <KPICard
             title="Despesas Totais"
             value={`R$ ${kpis.totalExpense.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            change={-5.2}
+            subtitle={`Pago: R$ ${kpis.expensePaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} • Pendente: R$ ${kpis.pendingPayable.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             icon={<Wallet size={20} />}
             color="bg-red-500"
           />
