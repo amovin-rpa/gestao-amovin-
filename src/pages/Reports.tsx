@@ -1,32 +1,45 @@
 import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
-import { Printer, AlertTriangle } from 'lucide-react';
+import { Printer, AlertTriangle, Filter } from 'lucide-react';
 import { isThisWeek, parseISO } from 'date-fns';
 
 const ML: Record<string,string> = {'01':'Jan','02':'Fev','03':'Mar','04':'Abr','05':'Mai','06':'Jun','07':'Jul','08':'Ago','09':'Set','10':'Out','11':'Nov','12':'Dez'};
 const MONTHS = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+const CATEGORIES = ['todos', 'Doação', 'Evento', 'Subvenção', 'Material', 'Serviços', 'Outros'];
 
-// ✅ REMOVIDO 'financeiro' da lista de tabs
 type Tab = 'profissionais' | 'beneficiarios' | 'faltas' | 'voluntarios';
 
 export default function Reports() {
   const store = useStore();
   const { beneficiaries, volunteers, professionals, finances } = store;
-  // Read consultations fresh each render
   const consultations = useStore(s => s.consultations);
   const currentUser = useStore(s => s.currentUser);
 
   const reportRef = useRef<HTMLDivElement>(null);
   const now = new Date();
-  // ✅ Definir tab padrão como 'beneficiarios' (já que financeiro foi removido)
   const [tab, setTab] = useState<Tab>('beneficiarios');
   const [yr, setYr] = useState(String(now.getFullYear()));
   const [mo, setMo] = useState(String(now.getMonth()+1).padStart(2,'0'));
   const [period, setPeriod] = useState<'semana' | 'mes' | 'ano'>('mes');
   const [key, setKey] = useState(0);
+  
+  // ✅ NOVOS FILTROS
+  const [filterCategory, setFilterCategory] = useState('todos');
+  const [filterEmpresa, setFilterEmpresa] = useState('todos');
 
   const isConsulta = currentUser?.role === 'consulta';
   const profId = currentUser?.professionalId || currentUser?.name || '';
+
+  // ✅ Lista única de empresas para filtro
+  const empresasList = useMemo(() => {
+    const set = new Set<string>();
+    finances.forEach(f => {
+      if (f.empresaPessoaFisica && f.empresaPessoaFisica.trim() !== '') {
+        set.add(f.empresaPessoaFisica);
+      }
+    });
+    return ['todos', ...Array.from(set).sort()];
+  }, [finances, key]);
 
   const years = useMemo(() => {
     const s = new Set<string>();
@@ -51,6 +64,19 @@ export default function Reports() {
 
   const periodLabel = period === 'semana' ? 'Esta Semana' : period === 'mes' ? `${ML[mo]}/${yr}` : yr;
 
+  // ✅ Filtragem financeira com categoria e empresa
+  const filteredFinances = useMemo(() => {
+    return finances.filter(f => {
+      if (!matchPeriod(f.date)) return false;
+      if (filterCategory !== 'todos' && f.category !== filterCategory) return false;
+      if (filterEmpresa !== 'todos' && f.empresaPessoaFisica !== filterEmpresa) return false;
+      return true;
+    });
+  }, [finances, period, yr, mo, filterCategory, filterEmpresa, key]);
+
+  const fIncome = filteredFinances.filter(f => f.type === 'income').reduce((a,c) => a + (c.value||0), 0);
+  const fExpense = filteredFinances.filter(f => f.type === 'expense').reduce((a,c) => a + (c.value||0), 0);
+
   // Consultations filtered
   const allConsultations = useMemo(() => {
     let list = consultations;
@@ -68,8 +94,16 @@ export default function Reports() {
   const faltaRanking = useMemo(() => Object.entries(faltasByBen).map(([id, count]) => ({ id, name: beneficiaries.find(b => b.id === id)?.fullName || 'N/A', count })).sort((a,b) => b.count - a.count).slice(0, 10), [faltasByBen, beneficiaries]);
   const maxFalta = Math.max(...faltaRanking.map(f => f.count), 1);
 
-  // ✅ REMOVIDO: Cálculos financeiros não são mais necessários nesta página
-  // (O financeiro agora tem página dedicada: /financeiro)
+  // Finance - Comparativo Mensal filtrado
+  const monthlyFinance = useMemo(() => MONTHS.map(m => {
+    const mf = filteredFinances.filter(f => {
+      const fy = f.year || String(new Date(f.date).getFullYear());
+      const fm = f.month || String(new Date(f.date).getMonth()+1).padStart(2,'0');
+      return fy === yr && fm === m;
+    });
+    return { month: m, income: mf.filter(f => f.type === 'income').reduce((a,c) => a + (c.value||0), 0), expense: mf.filter(f => f.type === 'expense').reduce((a,c) => a + (c.value||0), 0) };
+  }), [filteredFinances, yr, key]);
+  const maxFinVal = Math.max(...monthlyFinance.map(m => Math.max(m.income, m.expense)), 1);
 
   const handlePrint = () => {
     if (!reportRef.current) return;
@@ -79,7 +113,6 @@ export default function Reports() {
     win.document.close();
   };
 
-  // ✅ REMOVIDO 'financeiro' da lista de tabs
   const tabs: { key: Tab; label: string }[] = isConsulta
     ? [{ key: 'beneficiarios', label: 'Atendimentos' }, { key: 'faltas', label: 'Faltas' }]
     : [{ key: 'profissionais', label: 'Profissionais' }, { key: 'beneficiarios', label: 'Beneficiarios' }, { key: 'faltas', label: 'Faltas' }, { key: 'voluntarios', label: 'Voluntarios' }];
@@ -94,6 +127,16 @@ export default function Reports() {
           </select>
           {period === 'mes' && <select value={mo} onChange={e => setMo(e.target.value)} className="border rounded-md p-2 text-sm">{MONTHS.map(m => <option key={m} value={m}>{ML[m]}</option>)}</select>}
           {period !== 'semana' && <select value={yr} onChange={e => setYr(e.target.value)} className="border rounded-md p-2 text-sm">{years.map(y => <option key={y}>{y}</option>)}</select>}
+          
+          {/* ✅ NOVOS FILTROS: Categoria e Empresa */}
+          <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)} className="border rounded-md p-2 text-sm">
+            {CATEGORIES.map(c => <option key={c} value={c}>{c === 'todos' ? 'Todas Categorias' : c}</option>)}
+          </select>
+          <select value={filterEmpresa} onChange={e => setFilterEmpresa(e.target.value)} className="border rounded-md p-2 text-sm max-w-[200px]">
+            {empresasList.map(e => <option key={e} value={e}>{e === 'todos' ? 'Todas Empresas' : e}</option>)}
+          </select>
+          
+          <button onClick={() => { setFilterCategory('todos'); setFilterEmpresa('todos'); setKey(k => k + 1); }} className="bg-white border text-gray-700 px-3 py-2 rounded-md text-sm hover:bg-gray-50 flex items-center gap-1"><Filter size={14}/> Limpar Filtros</button>
           <button onClick={() => setKey(k => k + 1)} className="bg-white border text-gray-700 px-3 py-2 rounded-md text-sm hover:bg-gray-50">Atualizar</button>
           <button onClick={handlePrint} className="bg-yellow-400 text-gray-950 px-3 py-2 rounded-md flex items-center gap-2 hover:bg-yellow-500 font-semibold text-sm"><Printer size={16} /> Imprimir</button>
         </div>
@@ -102,7 +145,6 @@ export default function Reports() {
       <div className="flex gap-2 flex-wrap">{tabs.map(t => <button key={t.key} onClick={() => setTab(t.key)} className={`px-4 py-2 rounded-lg text-sm font-medium ${tab === t.key ? 'bg-gray-950 text-yellow-300' : 'bg-white border text-gray-600 hover:bg-gray-50'}`}>{t.label}</button>)}</div>
 
       <div ref={reportRef} className="bg-white p-6 shadow rounded-xl overflow-x-auto">
-        {/* ✅ REMOVIDO: Bloco inteiro da aba 'financeiro' */}
         
         {tab === 'beneficiarios' && <div>
           <h2 className="text-xl font-bold mb-4 border-b pb-2">{isConsulta ? 'Meus Atendimentos' : 'Beneficiarios'} - {periodLabel}</h2>
