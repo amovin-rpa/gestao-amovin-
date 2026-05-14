@@ -269,11 +269,12 @@ export default function FinanceDashboard() {
     return { monthlyChartData, categoryChartData, balanceData };
   }, [filteredFinances]);
 
-  // ✅ Handlers CORRIGIDOS PARA SALVAR EMPRESA/NOME DO EVENTO
+  // ✅ Handlers CORRIGIDOS PARA SALVAR NO FIREBASE (SEM UNDEFINED)
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Construção explícita do objeto para garantir que todos os campos sejam salvos
+    // IMPORTANTE: Usamos '' (string vazia) em vez de undefined para evitar erro no Firebase
     const financeData: Partial<FinanceRecord> & { eventName?: string } = {
       id: editingId || crypto.randomUUID(),
       type: formData.type,
@@ -285,8 +286,9 @@ export default function FinanceDashboard() {
       description: formData.description,
       status: formData.status,
       empresaPessoaFisica: formData.empresaPessoaFisica || '',
-      eventDate: formData.category === 'Evento' ? (formData.eventDate || undefined) : undefined,
-      eventName: formData.category === 'Evento' ? (formData.eventName || undefined) : undefined,
+      // FIX: Se não for Evento ou estiver vazio, salva '' (vazio), NUNCA undefined
+      eventDate: formData.category === 'Evento' ? (formData.eventDate || '') : '',
+      eventName: formData.category === 'Evento' ? (formData.eventName || '') : '',
     };
 
     if (editingId) {
