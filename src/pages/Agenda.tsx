@@ -259,12 +259,16 @@ export default function Agenda() {
     const prof = professionals.find((p) => p.id === finalProfessionalId);
     const specialty = prof?.specialty || currentUser?.specialty || 'Consulta';
 
+    // ✅ ADICIONADO: Quem agendou (nome do usuário logado)
+    const agendadoPor = currentUser?.name || 'Sistema';
+
     if (editingItem) {
       updateScheduleItem(editingItem.id, {
         date: form.selectedDays[0],
         time: form.time,
         notes: form.notes,
         type: specialty,
+        agendadoPor, // ✅ Salva quem editou
       });
     } else {
       form.selectedDays.forEach(date => {
@@ -276,6 +280,7 @@ export default function Agenda() {
           type: specialty,
           notes: form.notes,
           status: 'agendado',
+          agendadoPor, // ✅ Salva quem agendou
         });
       });
     }
@@ -347,6 +352,14 @@ export default function Agenda() {
                       <p className="text-sm text-gray-600 font-medium">{item.type}</p>
                       <p className="text-sm text-gray-500">{ben?.fullName || 'Beneficiário'} | {prof?.name || 'Profissional'}</p>
                       {item.notes && <p className="text-xs text-gray-400 mt-0.5">📝 {item.notes}</p>}
+                      
+                      {/* ✅ NOME DE QUEM AGENDOU - BEM PEQUENO */}
+                      {item.agendadoPor && (
+                        <p className="text-[10px] text-gray-400 mt-0.5 italic">
+                          Agendado por: {item.agendadoPor}
+                        </p>
+                      )}
+                      
                       <span className={`mt-1 inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${statusColors[st]}`}>{statusLabels[st]}</span>
                     </div>
 
@@ -440,7 +453,7 @@ export default function Agenda() {
                             key={a.id}
                             onClick={() => openEditForm(a)}
                             className={`w-full text-left text-[10px] leading-tight px-1 py-0.5 rounded text-white truncate ${statusBarColors[st]} hover:opacity-90`}
-                            title={`${a.time} - ${ben?.fullName || ''} - ${prof?.name || ''} - ${statusLabels[st]}`}
+                            title={`${a.time} - ${ben?.fullName || ''} - ${prof?.name || ''} - ${statusLabels[st]}${a.agendadoPor ? ` - Agendado por: ${a.agendadoPor}` : ''}`}
                           >
                             {a.time} {ben?.fullName?.split(' ')[0] || ''}
                           </button>
