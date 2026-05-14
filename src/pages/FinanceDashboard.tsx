@@ -5,7 +5,7 @@ import {
   Plus, Edit2, Trash2, Download, Filter, Calendar, 
   TrendingUp, TrendingDown, DollarSign, Wallet, 
   PieChart, BarChart3, Activity, AlertCircle, CheckCircle, X,
-  Printer, FileSpreadsheet, FileText, ChevronDown, ChevronUp
+  Printer, FileSpreadsheet, FileText, ChevronDown, ChevronUp, Building2, User
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -121,6 +121,7 @@ export default function FinanceDashboard() {
   const [filterCategory, setFilterCategory] = useState('todos');
   const [filterType, setFilterType] = useState('todos');
   const [filterStatus, setFilterStatus] = useState('todos');
+  const [filterEmpresa, setFilterEmpresa] = useState('todos');
   const [showAllTransactions, setShowAllTransactions] = useState(false);
   
   // Estado do Formulário
@@ -132,8 +133,21 @@ export default function FinanceDashboard() {
     date: new Date().toISOString().split('T')[0],
     category: '',
     description: '',
-    status: 'Pendente'
+    status: 'Pendente',
+    empresaPessoaFisica: '',
+    eventDate: ''
   });
+
+  // ✅ Lista única de empresas/pessoas para filtro
+  const empresasList = useMemo(() => {
+    const set = new Set<string>();
+    finances.forEach(f => {
+      if (f.empresaPessoaFisica && f.empresaPessoaFisica.trim() !== '') {
+        set.add(f.empresaPessoaFisica);
+      }
+    });
+    return ['todos', ...Array.from(set).sort()];
+  }, [finances]);
 
   // ✅ Filtragem Inteligente
   const filteredFinances = useMemo(() => {
@@ -155,9 +169,12 @@ export default function FinanceDashboard() {
       if (filterStatus !== 'todos') {
         if (f.status !== filterStatus) return false;
       }
+      if (filterEmpresa !== 'todos') {
+        if (f.empresaPessoaFisica !== filterEmpresa) return false;
+      }
       return true;
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [finances, filterMonth, filterYear, filterCategory, filterType, filterStatus]);
+  }, [finances, filterMonth, filterYear, filterCategory, filterType, filterStatus, filterEmpresa]);
 
   // ✅ Cálculos de KPIs
   const kpis = useMemo(() => {
@@ -250,6 +267,8 @@ export default function FinanceDashboard() {
       value: parseFloat(String(formData.value)) || 0,
       month: formData.date?.split('-')[1] || '',
       year: formData.date?.split('-')[0] || '',
+      // Limpar eventDate se não for Evento
+      eventDate: formData.category === 'Evento' ? formData.eventDate : undefined,
     } as FinanceRecord;
 
     if (editingId) {
@@ -258,14 +277,18 @@ export default function FinanceDashboard() {
       addFinance({ ...financeData, id: crypto.randomUUID() });
     }
     
-    setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente' });
+    setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente', empresaPessoaFisica: '', eventDate: '' });
     setEditingId(null);
     setIsFormOpen(false);
   };
 
   const handleEdit = (fin: FinanceRecord) => {
     setEditingId(fin.id);
-    setFormData(fin);
+    setFormData({
+      ...fin,
+      // Garantir que eventDate seja string vazia se não for Evento
+      eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : ''
+    });
     setIsFormOpen(true);
   };
 
@@ -301,12 +324,14 @@ export default function FinanceDashboard() {
 
   // ✅ Exportação para CSV
   const handleExportCSV = () => {
-    const headers = ['Data', 'Tipo', 'Categoria', 'Descrição', 'Valor', 'Status'];
+    const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Descrição', 'Data Evento', 'Valor', 'Status'];
     const rows = filteredFinances.map(f => [
       f.date ? new Date(f.date).toLocaleDateString('pt-BR') : '',
       f.type === 'income' ? 'Receita' : 'Despesa',
       f.category || '',
+      f.empresaPessoaFisica || '',
       `"${(f.description || '').replace(/"/g, '""')}"`,
+      f.eventDate ? new Date(f.eventDate).toLocaleDateString('pt-BR') : '',
       formatCurrency(f.value).replace('R$', '').trim(),
       f.status || ''
     ]);
@@ -417,10 +442,16 @@ export default function FinanceDashboard() {
               onChange={setFilterStatus}
               options={STATUS.map(s => ({ value: s, label: statusLabels[s] }))}
             />
+            <FilterSelect
+              label="Empresa/Pessoa"
+              value={filterEmpresa}
+              onChange={setFilterEmpresa}
+              options={empresasList.map(e => ({ value: e, label: e === 'todos' ? 'Todas' : e }))}
+            />
             <button
               onClick={() => {
                 setFilterMonth('todos'); setFilterYear('todos');
-                setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos');
+                setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
               }}
               className="px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
@@ -592,6 +623,8 @@ export default function FinanceDashboard() {
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Data</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Descrição</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Categoria</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Empresa/Pessoa</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Data Evento</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Valor</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
                     <th className="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Ações</th>
@@ -611,6 +644,12 @@ export default function FinanceDashboard() {
                         <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
                           {fin.category}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {fin.empresaPessoaFisica || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {fin.eventDate ? new Date(fin.eventDate).toLocaleDateString('pt-BR') : '-'}
                       </td>
                       <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                         {fin.type === 'income' ? '+' : '-'} {formatCurrency(fin.value)}
@@ -645,7 +684,7 @@ export default function FinanceDashboard() {
               <button
                 onClick={() => {
                   setFilterMonth('todos'); setFilterYear('todos');
-                  setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos');
+                  setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
                 }}
                 className="px-6 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               >
@@ -731,6 +770,29 @@ export default function FinanceDashboard() {
                 </select>
               </div>
 
+              {/* ✅ CAMPO EMPRESA/PESSOA FÍSICA */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {formData.type === 'income' ? 'Doador/Empresa' : 'Fornecedor/Empresa'}
+                </label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                  <input
+                    type="text"
+                    value={formData.empresaPessoaFisica}
+                    onChange={(e) => setFormData({ ...formData, empresaPessoaFisica: e.target.value })}
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Ex: Empresa XYZ ou João Silva"
+                    list="empresas-suggestions"
+                  />
+                  <datalist id="empresas-suggestions">
+                    {empresasList.filter(e => e !== 'todos').map(e => (
+                      <option key={e} value={e} />
+                    ))}
+                  </datalist>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Descrição</label>
                 <input
@@ -743,9 +805,25 @@ export default function FinanceDashboard() {
                 />
               </div>
 
+              {/* ✅ CAMPO DATA DO EVENTO (apenas para categoria Evento) */}
+              {formData.category === 'Evento' && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Evento</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <input
+                      type="date"
+                      value={formData.eventDate}
+                      onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Data</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Lançamento</label>
                   <input
                     required
                     type="date"
