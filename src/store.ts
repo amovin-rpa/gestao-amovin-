@@ -88,7 +88,9 @@ export interface FinanceRecord {
   year: string;
   category: string;
   description?: string;
-  eventDate?: string;
+  eventDate?: string;              // ✅ JÁ EXISTIA: Data do evento (para categoria Evento)
+  empresaPessoaFisica?: string;    // ✅ NOVO: Empresa ou Pessoa Física
+  status: 'Pago' | 'Pendente';     // ✅ NOVO: Status do lançamento
 }
 
 export interface Consultation {
@@ -197,8 +199,8 @@ interface AppState {
   deleteVolunteer: (id: string) => void;
 
   addFinance: (f: Omit<FinanceRecord, 'id'>) => void;
-  updateFinance: (id: string, f: Partial<FinanceRecord>) => void; // ✅ ADICIONADO
-  deleteFinance: (id: string) => void; // ✅ ADICIONADO
+  updateFinance: (id: string, f: Partial<FinanceRecord>) => void;
+  deleteFinance: (id: string) => void;
   
   addConsultation: (c: Omit<Consultation, 'id'>) => void;
   addChatMessage: (message: Omit<ChatMessage, 'id' | 'createdAt'>) => void;
@@ -281,12 +283,16 @@ export const useStore = create<AppState>()(
       },
 
       addFinance: (f) => {
-        const newItem = { ...f, id: uuidv4() };
+        // ✅ Define valor padrão para status se não fornecido
+        const newItem = { 
+          ...f, 
+          id: uuidv4(),
+          status: f.status || 'Pendente' // ✅ Default: Pendente
+        };
         set((state) => ({ finances: [...state.finances, newItem] }));
         saveToFirebase('finances', newItem as unknown as Record<string, unknown>);
       },
       
-      // ✅ FUNÇÃO ADICIONADA: updateFinance
       updateFinance: (id, f) => {
         set((state) => {
           const updated = state.finances.map((item) => item.id === id ? { ...item, ...f } : item);
@@ -296,7 +302,6 @@ export const useStore = create<AppState>()(
         });
       },
       
-      // ✅ FUNÇÃO ADICIONADA: deleteFinance
       deleteFinance: (id) => {
         set((state) => ({ finances: state.finances.filter((item) => item.id !== id) }));
         deleteFromFirebase('finances', id);
