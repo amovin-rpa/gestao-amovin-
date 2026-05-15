@@ -60,17 +60,19 @@ const formatCurrency = (value: number | undefined | null): string => {
   });
 };
 
-// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - FORMATA ENQUANTO DIGITA
+// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - ACEITA VALORES DIRETOS (CORRIGIDA)
 const formatCurrencyInput = (value: string): string => {
-  // Remove tudo que não é dígito
-  const digits = value.replace(/\D/g, '');
+  // Remove formatação existente: "1.000,00" → "1000.00"
+  const cleaned = value
+    .replace(/\./g, '')      // Remove pontos de milhar
+    .replace(',', '.');      // Troca vírgula decimal por ponto
   
-  // Converte para centavos (ex: "12345" → 123.45)
-  const numberValue = parseInt(digits, 10) / 100;
+  // Tenta parsear como número decimal direto
+  const numberValue = parseFloat(cleaned);
   
-  if (isNaN(numberValue)) return '0,00';
+  if (isNaN(numberValue) || numberValue < 0) return '0,00';
   
-  // Formata como moeda brasileira
+  // Formata como moeda brasileira com 2 casas decimais
   return numberValue.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -380,7 +382,7 @@ export default function FinanceDashboard() {
     const financeData: Partial<FinanceRecord> & { eventName?: string } = {
       id: editingId || crypto.randomUUID(),
       type: formData.type,
-      value: formData.value, // ✅ Já é número, não precisa converter
+      value: formData.value,
       date: formData.date,
       month: formData.date?.split('-')[1] || '',
       year: formData.date?.split('-')[0] || '',
@@ -410,7 +412,7 @@ export default function FinanceDashboard() {
       eventDate: '',
       eventName: ''
     });
-    setFormattedValue('0,00'); // ✅ Reset do valor formatado
+    setFormattedValue('0,00');
     setEditingId(null);
     setIsFormOpen(false);
   };
@@ -428,7 +430,6 @@ export default function FinanceDashboard() {
       eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : '',
       eventName: fin.category === 'Evento' ? (fin.eventName || '') : ''
     });
-    // ✅ Formata o valor para exibição no input
     setFormattedValue(formatCurrencyInput(String(fin.value || 0)));
     setIsFormOpen(true);
   };
@@ -553,7 +554,7 @@ export default function FinanceDashboard() {
                     eventDate: '',
                     eventName: ''
                   });
-                  setFormattedValue('0,00'); // ✅ Reset do valor formatado
+                  setFormattedValue('0,00');
                   setIsFormOpen(true);
                 }}
                 className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
@@ -1046,13 +1047,13 @@ export default function FinanceDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
-                  {/* ✅ CAMPO VALOR CORRIGIDO COM MÁSCARA */}
+                  {/* ✅ CAMPO VALOR CORRIGIDO COM MÁSCARA MELHORADA */}
                   <input
                     required
                     type="text"
                     value={formattedValue}
                     onChange={(e) => {
-                      // Formata enquanto digita
+                      // Formata enquanto digita usando a nova lógica
                       const formatted = formatCurrencyInput(e.target.value);
                       setFormattedValue(formatted);
                       // Converte para número e salva no formData
