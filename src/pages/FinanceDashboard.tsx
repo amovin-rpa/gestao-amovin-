@@ -49,7 +49,7 @@ const statusLabels: Record<string, string> = {
   'Pendente': 'Pendente'
 };
 
-// ✅ FUNÇÃO DE FORMATAÇÃO CONTÁBRICA BRASILEIRA (R$ 0,00)
+// ✅ FUNÇÃO DE FORMATAÇÃO CONTÁBRICA BRASILEIRA (R$ 0,00) - PARA EXIBIÇÃO
 const formatCurrency = (value: number | undefined | null): string => {
   const num = value || 0;
   return num.toLocaleString('pt-BR', {
@@ -60,10 +60,38 @@ const formatCurrency = (value: number | undefined | null): string => {
   });
 };
 
+// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - FORMATA ENQUANTO DIGITA
+const formatCurrencyInput = (value: string): string => {
+  // Remove tudo que não é dígito
+  const digits = value.replace(/\D/g, '');
+  
+  // Converte para centavos (ex: "12345" → 123.45)
+  const numberValue = parseInt(digits, 10) / 100;
+  
+  if (isNaN(numberValue)) return '0,00';
+  
+  // Formata como moeda brasileira
+  return numberValue.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
+// ✅ FUNÇÃO PARA CONVERTER VALOR FORMATADO PARA NÚMERO
+const parseCurrencyInput = (formattedValue: string): number => {
+  // Remove formatação: "1.000,00" → "1000.00"
+  const cleaned = formattedValue
+    .replace(/\./g, '')      // Remove pontos de milhar
+    .replace(',', '.')       // Troca vírgula decimal por ponto
+    .replace(/[^\d.-]/g, ''); // Remove tudo que não é número, ponto ou menos
+  
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
 // ✅ FUNÇÃO PARA FORMATAR DATA SEM BUG DE FUSO (YYYY-MM-DD → DD/MM/YYYY)
 const formatDateDisplay = (dateString: string | undefined | null): string => {
   if (!dateString) return '-';
-  // Split manual para evitar new Date() e problemas de fuso horário
   const [year, month, day] = dateString.split('-');
   return `${day}/${month}/${year}`;
 };
@@ -150,7 +178,6 @@ export default function FinanceDashboard() {
   const [filterType, setFilterType] = useState('todos');
   const [filterStatus, setFilterStatus] = useState('todos');
   const [filterEmpresa, setFilterEmpresa] = useState('todos');
-  // ✅ NOVOS FILTROS ADICIONADOS
   const [filterEventName, setFilterEventName] = useState('');
   const [filterDateStart, setFilterDateStart] = useState('');
   const [filterDateEnd, setFilterDateEnd] = useState('');
@@ -162,9 +189,13 @@ export default function FinanceDashboard() {
   // Estado do Formulário
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  
+  // ✅ Estado separado para o valor formatado do input
+  const [formattedValue, setFormattedValue] = useState('0,00');
+  
   const [formData, setFormData] = useState<{
     type: 'income' | 'expense';
-    value: number | '';
+    value: number;
     date: string;
     category: string;
     description: string;
@@ -183,6 +214,11 @@ export default function FinanceDashboard() {
     eventDate: '',
     eventName: ''
   });
+
+  // ✅ Atualiza formattedValue quando formData.value muda (para edição)
+  React.useEffect(() => {
+    setFormattedValue(formatCurrencyInput(String(formData.value)));
+  }, [formData.value]);
 
   // ✅ Lista única de empresas/pessoas para filtro
   const empresasList = useMemo(() => {
@@ -206,55 +242,44 @@ export default function FinanceDashboard() {
     return Array.from(set).sort();
   }, [finances]);
 
-  // ✅ Filtragem Inteligente - COM TODOS OS NOVOS FILTROS
+  // ✅ Filtragem Inteligente
   const filteredFinances = useMemo(() => {
     return finances.filter(f => {
-      // Filtro por mês
       if (filterMonth !== 'todos') {
         const recordMonth = f.month || String(new Date(f.date).getMonth() + 1).padStart(2, '0');
         if (recordMonth !== filterMonth) return false;
       }
-      // Filtro por ano
       if (filterYear !== 'todos') {
         const recordYear = f.year || String(new Date(f.date).getFullYear());
         if (recordYear !== filterYear) return false;
       }
-      // Filtro por categoria
       if (filterCategory !== 'todos') {
         if (f.category !== filterCategory) return false;
       }
-      // Filtro por tipo
       if (filterType !== 'todos') {
         if (f.type !== filterType) return false;
       }
-      // Filtro por status
       if (filterStatus !== 'todos') {
         if (f.status !== filterStatus) return false;
       }
-      // Filtro por empresa/pessoa
       if (filterEmpresa !== 'todos') {
         if (f.empresaPessoaFisica !== filterEmpresa) return false;
       }
-      // ✅ Filtro por nome do evento (busca parcial, case-insensitive)
       if (filterEventName && filterEventName.trim() !== '') {
         if (!f.eventName || !f.eventName.toLowerCase().includes(filterEventName.toLowerCase())) {
           return false;
         }
       }
-      // ✅ Filtro por data inicial
       if (filterDateStart) {
         if (f.date < filterDateStart) return false;
       }
-      // ✅ Filtro por data final
       if (filterDateEnd) {
         if (f.date > filterDateEnd) return false;
       }
-      // ✅ Filtro por valor mínimo
       if (filterValueMin && filterValueMin.trim() !== '') {
         const minVal = parseFloat(filterValueMin);
         if (f.value === undefined || f.value === null || f.value < minVal) return false;
       }
-      // ✅ Filtro por valor máximo
       if (filterValueMax && filterValueMax.trim() !== '') {
         const maxVal = parseFloat(filterValueMax);
         if (f.value === undefined || f.value === null || f.value > maxVal) return false;
@@ -348,16 +373,14 @@ export default function FinanceDashboard() {
     return { monthlyChartData, categoryChartData, balanceData };
   }, [filteredFinances]);
 
-  // ✅ Handlers CORRIGIDOS PARA SALVAR NO FIREBASE (SEM UNDEFINED)
+  // ✅ Handlers CORRIGIDOS
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Construção explícita do objeto para garantir que todos os campos sejam salvos
-    // IMPORTANTE: Usamos '' (string vazia) em vez de undefined para evitar erro no Firebase
     const financeData: Partial<FinanceRecord> & { eventName?: string } = {
       id: editingId || crypto.randomUUID(),
       type: formData.type,
-      value: typeof formData.value === 'number' ? formData.value : parseFloat(String(formData.value)) || 0,
+      value: formData.value, // ✅ Já é número, não precisa converter
       date: formData.date,
       month: formData.date?.split('-')[1] || '',
       year: formData.date?.split('-')[0] || '',
@@ -365,7 +388,6 @@ export default function FinanceDashboard() {
       description: formData.description,
       status: formData.status,
       empresaPessoaFisica: formData.empresaPessoaFisica || '',
-      // FIX: Se não for Evento ou estiver vazio, salva '' (vazio), NUNCA undefined
       eventDate: formData.category === 'Evento' ? (formData.eventDate || '') : '',
       eventName: formData.category === 'Evento' ? (formData.eventName || '') : '',
     };
@@ -376,7 +398,7 @@ export default function FinanceDashboard() {
       addFinance(financeData as Omit<FinanceRecord, 'id'>);
     }
     
-    // Reseta formulário para estado inicial limpo
+    // Reseta formulário
     setFormData({
       type: 'income',
       value: 0,
@@ -388,13 +410,13 @@ export default function FinanceDashboard() {
       eventDate: '',
       eventName: ''
     });
+    setFormattedValue('0,00'); // ✅ Reset do valor formatado
     setEditingId(null);
     setIsFormOpen(false);
   };
 
   const handleEdit = (fin: any) => {
     setEditingId(fin.id);
-    // Mapeamento explícito para evitar perda de dados e warnings de controlled input
     setFormData({
       type: fin.type || 'income',
       value: fin.value !== undefined && fin.value !== null ? fin.value : 0,
@@ -406,6 +428,8 @@ export default function FinanceDashboard() {
       eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : '',
       eventName: fin.category === 'Evento' ? (fin.eventName || '') : ''
     });
+    // ✅ Formata o valor para exibição no input
+    setFormattedValue(formatCurrencyInput(String(fin.value || 0)));
     setIsFormOpen(true);
   };
 
@@ -488,7 +512,7 @@ export default function FinanceDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50" ref={dashboardRef}>
-      {/* 🎨 Header Premium - Relatório Executivo */}
+      {/* 🎨 Header Premium */}
       <header className="bg-white border-b-4 border-blue-900 shadow-lg sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
@@ -529,6 +553,7 @@ export default function FinanceDashboard() {
                     eventDate: '',
                     eventName: ''
                   });
+                  setFormattedValue('0,00'); // ✅ Reset do valor formatado
                   setIsFormOpen(true);
                 }}
                 className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
@@ -541,7 +566,7 @@ export default function FinanceDashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* 🔍 Filtros Premium - COM NOVOS CAMPOS */}
+        {/* 🔍 Filtros Premium */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
           <div className="flex flex-wrap items-end gap-4">
             <FilterSelect
@@ -580,16 +605,12 @@ export default function FinanceDashboard() {
               onChange={setFilterEmpresa}
               options={empresasList.map(e => ({ value: e, label: e === 'todos' ? 'Todas' : e }))}
             />
-            
-            {/* ✅ NOVO: Filtro por Nome do Evento */}
             <FilterInput
               label="Nome do Evento"
               value={filterEventName}
               onChange={setFilterEventName}
               placeholder="Digite para buscar..."
             />
-            
-            {/* ✅ NOVO: Filtro por Período de Data */}
             <FilterInput
               label="Data Inicial"
               value={filterDateStart}
@@ -602,8 +623,6 @@ export default function FinanceDashboard() {
               onChange={setFilterDateEnd}
               type="date"
             />
-            
-            {/* ✅ NOVO: Filtro por Valor */}
             <FilterInput
               label="Valor Mínimo"
               value={filterValueMin}
@@ -618,7 +637,6 @@ export default function FinanceDashboard() {
               type="number"
               placeholder="0,00"
             />
-            
             <button
               onClick={() => {
                 setFilterMonth('todos'); setFilterYear('todos');
@@ -633,7 +651,7 @@ export default function FinanceDashboard() {
           </div>
         </div>
 
-        {/* 📊 KPIs Premium - Cards Executivos */}
+        {/* 📊 KPIs Premium */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <KPICard
             title="Receitas Totais"
@@ -881,7 +899,7 @@ export default function FinanceDashboard() {
         </div>
       </main>
 
-      {/* 📝 Modal de Lançamento CORRIGIDO */}
+      {/* 📝 Modal de Lançamento - CAMPO VALOR CORRIGIDO */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -972,7 +990,7 @@ export default function FinanceDashboard() {
                 </div>
               </div>
 
-              {/* ✅ CAMPOS DE EVENTO (Nome e Data) */}
+              {/* ✅ CAMPOS DE EVENTO */}
               {formData.category === 'Evento' && (
                 <>
                   <div>
@@ -1028,15 +1046,26 @@ export default function FinanceDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
+                  {/* ✅ CAMPO VALOR CORRIGIDO COM MÁSCARA */}
                   <input
                     required
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.value === '' ? '' : Number(formData.value).toFixed(2)}
-                    onChange={(e) => setFormData({ ...formData, value: e.target.value === '' ? '' : parseFloat(e.target.value) })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="0.00"
+                    type="text"
+                    value={formattedValue}
+                    onChange={(e) => {
+                      // Formata enquanto digita
+                      const formatted = formatCurrencyInput(e.target.value);
+                      setFormattedValue(formatted);
+                      // Converte para número e salva no formData
+                      setFormData({ ...formData, value: parseCurrencyInput(formatted) });
+                    }}
+                    onBlur={(e) => {
+                      // Garante formatação correta ao perder o foco
+                      const finalFormatted = formatCurrencyInput(e.target.value);
+                      setFormattedValue(finalFormatted);
+                      setFormData({ ...formData, value: parseCurrencyInput(finalFormatted) });
+                    }}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right font-mono"
+                    placeholder="0,00"
                   />
                 </div>
               </div>
