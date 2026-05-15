@@ -118,6 +118,26 @@ const FilterSelect: React.FC<{
   </div>
 );
 
+// ✅ Componente Input de Filtro Premium
+const FilterInput: React.FC<{
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  type?: string;
+}> = ({ label, value, onChange, placeholder, type = 'text' }) => (
+  <div className="flex flex-col gap-1.5">
+    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{label}</label>
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm hover:border-gray-300 transition-colors"
+    />
+  </div>
+);
+
 // ✅ Componente Principal - RELATÓRIO EXECUTIVO COMPLETO
 export default function FinanceDashboard() {
   const { finances, addFinance, updateFinance, deleteFinance } = useStore();
@@ -130,6 +150,13 @@ export default function FinanceDashboard() {
   const [filterType, setFilterType] = useState('todos');
   const [filterStatus, setFilterStatus] = useState('todos');
   const [filterEmpresa, setFilterEmpresa] = useState('todos');
+  // ✅ NOVOS FILTROS ADICIONADOS
+  const [filterEventName, setFilterEventName] = useState('');
+  const [filterDateStart, setFilterDateStart] = useState('');
+  const [filterDateEnd, setFilterDateEnd] = useState('');
+  const [filterValueMin, setFilterValueMin] = useState('');
+  const [filterValueMax, setFilterValueMax] = useState('');
+  
   const [showAllTransactions, setShowAllTransactions] = useState(false);
   
   // Estado do Formulário
@@ -168,32 +195,76 @@ export default function FinanceDashboard() {
     return ['todos', ...Array.from(set).sort()];
   }, [finances]);
 
-  // ✅ Filtragem Inteligente
+  // ✅ Lista única de nomes de evento para filtro
+  const eventNamesList = useMemo(() => {
+    const set = new Set<string>();
+    finances.forEach(f => {
+      if (f.eventName && f.eventName.trim() !== '') {
+        set.add(f.eventName);
+      }
+    });
+    return Array.from(set).sort();
+  }, [finances]);
+
+  // ✅ Filtragem Inteligente - COM TODOS OS NOVOS FILTROS
   const filteredFinances = useMemo(() => {
     return finances.filter(f => {
+      // Filtro por mês
       if (filterMonth !== 'todos') {
         const recordMonth = f.month || String(new Date(f.date).getMonth() + 1).padStart(2, '0');
         if (recordMonth !== filterMonth) return false;
       }
+      // Filtro por ano
       if (filterYear !== 'todos') {
         const recordYear = f.year || String(new Date(f.date).getFullYear());
         if (recordYear !== filterYear) return false;
       }
+      // Filtro por categoria
       if (filterCategory !== 'todos') {
         if (f.category !== filterCategory) return false;
       }
+      // Filtro por tipo
       if (filterType !== 'todos') {
         if (f.type !== filterType) return false;
       }
+      // Filtro por status
       if (filterStatus !== 'todos') {
         if (f.status !== filterStatus) return false;
       }
+      // Filtro por empresa/pessoa
       if (filterEmpresa !== 'todos') {
         if (f.empresaPessoaFisica !== filterEmpresa) return false;
       }
+      // ✅ Filtro por nome do evento (busca parcial, case-insensitive)
+      if (filterEventName && filterEventName.trim() !== '') {
+        if (!f.eventName || !f.eventName.toLowerCase().includes(filterEventName.toLowerCase())) {
+          return false;
+        }
+      }
+      // ✅ Filtro por data inicial
+      if (filterDateStart) {
+        if (f.date < filterDateStart) return false;
+      }
+      // ✅ Filtro por data final
+      if (filterDateEnd) {
+        if (f.date > filterDateEnd) return false;
+      }
+      // ✅ Filtro por valor mínimo
+      if (filterValueMin && filterValueMin.trim() !== '') {
+        const minVal = parseFloat(filterValueMin);
+        if (f.value === undefined || f.value === null || f.value < minVal) return false;
+      }
+      // ✅ Filtro por valor máximo
+      if (filterValueMax && filterValueMax.trim() !== '') {
+        const maxVal = parseFloat(filterValueMax);
+        if (f.value === undefined || f.value === null || f.value > maxVal) return false;
+      }
       return true;
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [finances, filterMonth, filterYear, filterCategory, filterType, filterStatus, filterEmpresa]);
+  }, [
+    finances, filterMonth, filterYear, filterCategory, filterType, filterStatus, filterEmpresa,
+    filterEventName, filterDateStart, filterDateEnd, filterValueMin, filterValueMax
+  ]);
 
   // ✅ Cálculos de KPIs
   const kpis = useMemo(() => {
@@ -470,7 +541,7 @@ export default function FinanceDashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* 🔍 Filtros Premium */}
+        {/* 🔍 Filtros Premium - COM NOVOS CAMPOS */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
           <div className="flex flex-wrap items-end gap-4">
             <FilterSelect
@@ -509,10 +580,51 @@ export default function FinanceDashboard() {
               onChange={setFilterEmpresa}
               options={empresasList.map(e => ({ value: e, label: e === 'todos' ? 'Todas' : e }))}
             />
+            
+            {/* ✅ NOVO: Filtro por Nome do Evento */}
+            <FilterInput
+              label="Nome do Evento"
+              value={filterEventName}
+              onChange={setFilterEventName}
+              placeholder="Digite para buscar..."
+            />
+            
+            {/* ✅ NOVO: Filtro por Período de Data */}
+            <FilterInput
+              label="Data Inicial"
+              value={filterDateStart}
+              onChange={setFilterDateStart}
+              type="date"
+            />
+            <FilterInput
+              label="Data Final"
+              value={filterDateEnd}
+              onChange={setFilterDateEnd}
+              type="date"
+            />
+            
+            {/* ✅ NOVO: Filtro por Valor */}
+            <FilterInput
+              label="Valor Mínimo"
+              value={filterValueMin}
+              onChange={setFilterValueMin}
+              type="number"
+              placeholder="0,00"
+            />
+            <FilterInput
+              label="Valor Máximo"
+              value={filterValueMax}
+              onChange={setFilterValueMax}
+              type="number"
+              placeholder="0,00"
+            />
+            
             <button
               onClick={() => {
                 setFilterMonth('todos'); setFilterYear('todos');
                 setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
+                setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd('');
+                setFilterValueMin(''); setFilterValueMax('');
               }}
               className="px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
@@ -685,6 +797,7 @@ export default function FinanceDashboard() {
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Descrição</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Categoria</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Empresa/Pessoa</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Nome Evento</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Data Evento</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Valor</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
@@ -695,7 +808,6 @@ export default function FinanceDashboard() {
                   {(showAllTransactions ? filteredFinances : filteredFinances.slice(0, 10)).map((fin) => (
                     <tr key={fin.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                        {/* ✅ CORREÇÃO: Usa formatDateDisplay para evitar bug de fuso */}
                         {formatDateDisplay(fin.date)}
                       </td>
                       <td className="px-6 py-4 text-sm">
@@ -710,8 +822,10 @@ export default function FinanceDashboard() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                         {fin.empresaPessoaFisica || '-'}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {fin.eventName || '-'}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {/* ✅ CORREÇÃO: Usa formatDateDisplay para evitar bug de fuso */}
                         {formatDateDisplay(fin.eventDate)}
                       </td>
                       <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
@@ -748,6 +862,8 @@ export default function FinanceDashboard() {
                 onClick={() => {
                   setFilterMonth('todos'); setFilterYear('todos');
                   setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
+                  setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd('');
+                  setFilterValueMin(''); setFilterValueMax('');
                 }}
                 className="px-6 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               >
@@ -833,7 +949,7 @@ export default function FinanceDashboard() {
                 </select>
               </div>
 
-              {/* ✅ CAMPO EMPRESA/PESSOA FÍSICA - CORREÇÃO DE SALVAMENTO */}
+              {/* ✅ CAMPO EMPRESA/PESSOA FÍSICA */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   {formData.type === 'income' ? 'Doador/Empresa' : 'Fornecedor/Empresa'}
@@ -867,7 +983,13 @@ export default function FinanceDashboard() {
                       onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Ex: Bazar de Inverno"
+                      list="eventos-suggestions"
                     />
+                    <datalist id="eventos-suggestions">
+                      {eventNamesList.map(name => (
+                        <option key={name} value={name} />
+                      ))}
+                    </datalist>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Evento</label>
