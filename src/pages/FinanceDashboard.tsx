@@ -60,6 +60,14 @@ const formatCurrency = (value: number | undefined | null): string => {
   });
 };
 
+// ✅ FUNÇÃO PARA FORMATAR DATA SEM BUG DE FUSO (YYYY-MM-DD → DD/MM/YYYY)
+const formatDateDisplay = (dateString: string | undefined | null): string => {
+  if (!dateString) return '-';
+  // Split manual para evitar new Date() e problemas de fuso horário
+  const [year, month, day] = dateString.split('-');
+  return `${day}/${month}/${year}`;
+};
+
 // ✅ Componente Card KPI Premium
 const KPICard: React.FC<{
   title: string;
@@ -364,12 +372,12 @@ export default function FinanceDashboard() {
   const handleExportCSV = () => {
     const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Nome Evento', 'Data Evento', 'Descrição', 'Valor', 'Status'];
     const rows = filteredFinances.map(f => [
-      f.date ? new Date(f.date).toLocaleDateString('pt-BR') : '',
+      f.date ? formatDateDisplay(f.date) : '',
       f.type === 'income' ? 'Receita' : 'Despesa',
       f.category || '',
       f.empresaPessoaFisica || '',
       f.eventName || '',
-      f.eventDate ? new Date(f.eventDate).toLocaleDateString('pt-BR') : '',
+      f.eventDate ? formatDateDisplay(f.eventDate) : '',
       `"${(f.description || '').replace(/"/g, '""')}"`,
       formatCurrency(f.value).replace('R$', '').trim(),
       f.status || ''
@@ -687,7 +695,8 @@ export default function FinanceDashboard() {
                   {(showAllTransactions ? filteredFinances : filteredFinances.slice(0, 10)).map((fin) => (
                     <tr key={fin.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                        {fin.date ? new Date(fin.date).toLocaleDateString('pt-BR') : '-'}
+                        {/* ✅ CORREÇÃO: Usa formatDateDisplay para evitar bug de fuso */}
+                        {formatDateDisplay(fin.date)}
                       </td>
                       <td className="px-6 py-4 text-sm">
                         <div className="font-medium text-gray-900">{fin.description || '-'}</div>
@@ -702,7 +711,8 @@ export default function FinanceDashboard() {
                         {fin.empresaPessoaFisica || '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {fin.eventDate ? new Date(fin.eventDate).toLocaleDateString('pt-BR') : '-'}
+                        {/* ✅ CORREÇÃO: Usa formatDateDisplay para evitar bug de fuso */}
+                        {formatDateDisplay(fin.eventDate)}
                       </td>
                       <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                         {fin.type === 'income' ? '+' : '-'} {formatCurrency(fin.value)}
