@@ -60,31 +60,20 @@ const formatCurrency = (value: number | undefined | null): string => {
   });
 };
 
-// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - ACEITA CENTAVOS CORRETAMENTE
+// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - ACEITA VALORES DIRETOS (CORRIGIDA)
 const formatCurrencyInput = (value: string): string => {
-  // Remove tudo que não é dígito, vírgula ou ponto
-  let cleaned = value.replace(/[^\d,.]/g, '');
+  // Remove formatação existente: "1.000,00" → "1000.00"
+  const cleaned = value
+    .replace(/\./g, '')      // Remove pontos de milhar
+    .replace(',', '.');      // Troca vírgula decimal por ponto
   
-  // Se vazio, retorna 0,00
-  if (!cleaned) return '0,00';
+  // Tenta parsear como número decimal direto
+  const numberValue = parseFloat(cleaned);
   
-  // Divide por vírgula para separar parte inteira e decimal
-  const parts = cleaned.split(',');
-  let integerPart = parts[0].replace(/\./g, '');
-  let decimalPart = parts[1] || '';
+  if (isNaN(numberValue) || numberValue < 0) return '0,00';
   
-  // Limita parte decimal a 2 dígitos
-  if (decimalPart.length > 2) {
-    decimalPart = decimalPart.substring(0, 2);
-  }
-  
-  // Converte para número
-  const numberValue = integerPart ? parseFloat(integerPart) : 0;
-  const decimalValue = decimalPart ? parseFloat('0.' + decimalPart) : 0;
-  const totalValue = numberValue + decimalValue;
-  
-  // Formata como moeda brasileira
-  return totalValue.toLocaleString('pt-BR', {
+  // Formata como moeda brasileira com 2 casas decimais
+  return numberValue.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
@@ -92,16 +81,17 @@ const formatCurrencyInput = (value: string): string => {
 
 // ✅ FUNÇÃO PARA CONVERTER VALOR FORMATADO PARA NÚMERO
 const parseCurrencyInput = (formattedValue: string): number => {
+  // Remove formatação: "1.000,00" → "1000.00"
   const cleaned = formattedValue
-    .replace(/\./g, '')
-    .replace(',', '.')
-    .replace(/[^\d.-]/g, '');
+    .replace(/\./g, '')      // Remove pontos de milhar
+    .replace(',', '.')       // Troca vírgula decimal por ponto
+    .replace(/[^\d.-]/g, ''); // Remove tudo que não é número, ponto ou menos
   
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? 0 : parsed;
 };
 
-// ✅ FUNÇÃO PARA FORMATAR DATA SEM BUG DE FUSO
+// ✅ FUNÇÃO PARA FORMATAR DATA SEM BUG DE FUSO (YYYY-MM-DD → DD/MM/YYYY)
 const formatDateDisplay = (dateString: string | undefined | null): string => {
   if (!dateString) return '-';
   const [year, month, day] = dateString.split('-');
@@ -178,7 +168,7 @@ const FilterInput: React.FC<{
   </div>
 );
 
-// ✅ Componente Principal
+// ✅ Componente Principal - RELATÓRIO EXECUTIVO COMPLETO
 export default function FinanceDashboard() {
   const { finances, addFinance, updateFinance, deleteFinance } = useStore();
   const dashboardRef = useRef<HTMLDivElement>(null);
@@ -201,6 +191,8 @@ export default function FinanceDashboard() {
   // Estado do Formulário
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  
+  // ✅ Estado separado para o valor formatado do input
   const [formattedValue, setFormattedValue] = useState('0,00');
   
   const [formData, setFormData] = useState<{
@@ -225,10 +217,12 @@ export default function FinanceDashboard() {
     eventName: ''
   });
 
+  // ✅ Atualiza formattedValue quando formData.value muda (para edição)
   React.useEffect(() => {
     setFormattedValue(formatCurrencyInput(String(formData.value)));
   }, [formData.value]);
 
+  // ✅ Lista única de empresas/pessoas para filtro
   const empresasList = useMemo(() => {
     const set = new Set<string>();
     finances.forEach(f => {
@@ -239,6 +233,7 @@ export default function FinanceDashboard() {
     return ['todos', ...Array.from(set).sort()];
   }, [finances]);
 
+  // ✅ Lista única de nomes de evento para filtro
   const eventNamesList = useMemo(() => {
     const set = new Set<string>();
     finances.forEach(f => {
@@ -249,6 +244,7 @@ export default function FinanceDashboard() {
     return Array.from(set).sort();
   }, [finances]);
 
+  // ✅ Filtragem Inteligente
   const filteredFinances = useMemo(() => {
     return finances.filter(f => {
       if (filterMonth !== 'todos') {
@@ -276,8 +272,12 @@ export default function FinanceDashboard() {
           return false;
         }
       }
-      if (filterDateStart && f.date < filterDateStart) return false;
-      if (filterDateEnd && f.date > filterDateEnd) return false;
+      if (filterDateStart) {
+        if (f.date < filterDateStart) return false;
+      }
+      if (filterDateEnd) {
+        if (f.date > filterDateEnd) return false;
+      }
       if (filterValueMin && filterValueMin.trim() !== '') {
         const minVal = parseFloat(filterValueMin);
         if (f.value === undefined || f.value === null || f.value < minVal) return false;
@@ -293,21 +293,45 @@ export default function FinanceDashboard() {
     filterEventName, filterDateStart, filterDateEnd, filterValueMin, filterValueMax
   ]);
 
+  // ✅ Cálculos de KPIs
   const kpis = useMemo(() => {
-    const totalIncome = filteredFinances.filter(f => f.type === 'income').reduce((sum, f) => sum + (f.value || 0), 0);
-    const totalExpense = filteredFinances.filter(f => f.type === 'expense').reduce((sum, f) => sum + (f.value || 0), 0);
-    const incomePaid = filteredFinances.filter(f => f.type === 'income' && f.status === 'Pago').reduce((sum, f) => sum + (f.value || 0), 0);
-    const expensePaid = filteredFinances.filter(f => f.type === 'expense' && f.status === 'Pago').reduce((sum, f) => sum + (f.value || 0), 0);
-    const pendingReceivable = filteredFinances.filter(f => f.type === 'income' && f.status === 'Pendente').reduce((sum, f) => sum + (f.value || 0), 0);
-    const pendingPayable = filteredFinances.filter(f => f.type === 'expense' && f.status === 'Pendente').reduce((sum, f) => sum + (f.value || 0), 0);
+    const totalIncome = filteredFinances
+      .filter(f => f.type === 'income')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
+    
+    const totalExpense = filteredFinances
+      .filter(f => f.type === 'expense')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
+    
+    const incomePaid = filteredFinances
+      .filter(f => f.type === 'income' && f.status === 'Pago')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
+    
+    const expensePaid = filteredFinances
+      .filter(f => f.type === 'expense' && f.status === 'Pago')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
+    
+    const pendingReceivable = filteredFinances
+      .filter(f => f.type === 'income' && f.status === 'Pendente')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
+    
+    const pendingPayable = filteredFinances
+      .filter(f => f.type === 'expense' && f.status === 'Pendente')
+      .reduce((sum, f) => sum + (f.value || 0), 0);
 
     return {
-      totalIncome, totalExpense, balance: totalIncome - totalExpense,
-      pendingPayable, pendingReceivable, incomePaid, expensePaid,
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense,
+      pendingPayable,
+      pendingReceivable,
+      incomePaid,
+      expensePaid,
       executionRate: totalIncome > 0 ? (totalExpense / totalIncome) * 100 : 0
     };
   }, [filteredFinances]);
 
+  // ✅ Dados para Gráficos
   const chartData = useMemo(() => {
     const monthlyData: Record<string, { income: number; expense: number }> = {};
     filteredFinances.forEach(f => {
@@ -322,12 +346,18 @@ export default function FinanceDashboard() {
         const [mb, yb] = b.split('/');
         return new Date(parseInt(ya), parseInt(ma) - 1).getTime() - new Date(parseInt(yb), parseInt(mb) - 1).getTime();
       })
-      .map(([label, data]) => ({ month: label, Receitas: data.income, Despesas: data.expense }));
+      .map(([label, data]) => ({
+        month: label,
+        Receitas: data.income,
+        Despesas: data.expense
+      }));
 
     const expenseByCategory: Record<string, number> = {};
-    filteredFinances.filter(f => f.type === 'expense').forEach(f => {
-      expenseByCategory[f.category] = (expenseByCategory[f.category] || 0) + (f.value || 0);
-    });
+    filteredFinances
+      .filter(f => f.type === 'expense')
+      .forEach(f => {
+        expenseByCategory[f.category] = (expenseByCategory[f.category] || 0) + (f.value || 0);
+      });
     
     const categoryChartData = Object.entries(expenseByCategory)
       .map(([name, value]) => ({ name, value }))
@@ -336,14 +366,19 @@ export default function FinanceDashboard() {
 
     const balanceData = monthlyChartData.map((item, index, arr) => {
       const prevBalance = index === 0 ? 0 : arr[index - 1].balance || 0;
-      return { ...item, balance: prevBalance + (item.Receitas - item.Despesas) };
+      return {
+        ...item,
+        balance: prevBalance + (item.Receitas - item.Despesas)
+      };
     });
 
     return { monthlyChartData, categoryChartData, balanceData };
   }, [filteredFinances]);
 
+  // ✅ Handlers CORRIGIDOS
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    
     const financeData: Partial<FinanceRecord> & { eventName?: string } = {
       id: editingId || crypto.randomUUID(),
       type: formData.type,
@@ -365,10 +400,17 @@ export default function FinanceDashboard() {
       addFinance(financeData as Omit<FinanceRecord, 'id'>);
     }
     
+    // Reseta formulário
     setFormData({
-      type: 'income', value: 0, date: new Date().toISOString().split('T')[0],
-      category: '', description: '', status: 'Pendente',
-      empresaPessoaFisica: '', eventDate: '', eventName: ''
+      type: 'income',
+      value: 0,
+      date: new Date().toISOString().split('T')[0],
+      category: '',
+      description: '',
+      status: 'Pendente',
+      empresaPessoaFisica: '',
+      eventDate: '',
+      eventName: ''
     });
     setFormattedValue('0,00');
     setEditingId(null);
@@ -398,10 +440,17 @@ export default function FinanceDashboard() {
     }
   };
 
+  // ✅ Exportação para PDF
   const handleExportPDF = async () => {
     if (!dashboardRef.current) return;
+    
     const pdf = new jsPDF('l', 'mm', 'a4');
-    const canvas = await html2canvas(dashboardRef.current, { scale: 2, useCORS: true, logging: false });
+    const canvas = await html2canvas(dashboardRef.current, {
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+    
     const imgData = canvas.toDataURL('image/png');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -410,10 +459,12 @@ export default function FinanceDashboard() {
     const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
     const imgX = (pdfWidth - imgWidth * ratio) / 2;
     const imgY = 10;
+    
     pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
     pdf.save(`AMOVIN_Relatorio_Financeiro_${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
+  // ✅ Exportação para CSV
   const handleExportCSV = () => {
     const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Nome Evento', 'Data Evento', 'Descrição', 'Valor', 'Status'];
     const rows = filteredFinances.map(f => [
@@ -427,7 +478,12 @@ export default function FinanceDashboard() {
       formatCurrency(f.value).replace('R$', '').trim(),
       f.status || ''
     ]);
-    const csvContent = [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n');
+    
+    const csvContent = [
+      headers.join(';'),
+      ...rows.map(r => r.join(';'))
+    ].join('\n');
+    
     const BOM = '\uFEFF';
     const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -439,6 +495,7 @@ export default function FinanceDashboard() {
     document.body.removeChild(link);
   };
 
+  // ✅ Anos disponíveis para filtro
   const years = useMemo(() => {
     const set = new Set(finances.map(f => f.year || String(new Date(f.date).getFullYear())));
     set.add(String(new Date().getFullYear()));
@@ -469,18 +526,39 @@ export default function FinanceDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button onClick={handleExportPDF} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm" title="Exportar PDF">
+              <button
+                onClick={handleExportPDF}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm"
+                title="Exportar PDF"
+              >
                 <FileText size={18} /> PDF
               </button>
-              <button onClick={handleExportCSV} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm" title="Exportar Excel">
+              <button
+                onClick={handleExportCSV}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm"
+                title="Exportar Excel"
+              >
                 <FileSpreadsheet size={18} /> Excel
               </button>
-              <button onClick={() => {
-                setEditingId(null);
-                setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente', empresaPessoaFisica: '', eventDate: '', eventName: '' });
-                setFormattedValue('0,00');
-                setIsFormOpen(true);
-              }} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
+              <button
+                onClick={() => {
+                  setEditingId(null);
+                  setFormData({
+                    type: 'income',
+                    value: 0,
+                    date: new Date().toISOString().split('T')[0],
+                    category: '',
+                    description: '',
+                    status: 'Pendente',
+                    empresaPessoaFisica: '',
+                    eventDate: '',
+                    eventName: ''
+                  });
+                  setFormattedValue('0,00');
+                  setIsFormOpen(true);
+                }}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+              >
                 <Plus size={18} /> Novo Lançamento
               </button>
             </div>
@@ -492,21 +570,83 @@ export default function FinanceDashboard() {
         {/* 🔍 Filtros Premium */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
           <div className="flex flex-wrap items-end gap-4">
-            <FilterSelect label="Ano" value={filterYear} onChange={setFilterYear} options={years.map(y => ({ value: y, label: y === 'todos' ? 'Todos' : y }))} />
-            <FilterSelect label="Mês" value={filterMonth} onChange={setFilterMonth} options={months.map(m => ({ value: m, label: monthLabels[m] }))} />
-            <FilterSelect label="Categoria" value={filterCategory} onChange={setFilterCategory} options={CATEGORIES.map(c => ({ value: c, label: c === 'todos' ? 'Todas' : c }))} />
-            <FilterSelect label="Tipo" value={filterType} onChange={setFilterType} options={TYPES.map(t => ({ value: t, label: typeLabels[t] }))} />
-            <FilterSelect label="Status" value={filterStatus} onChange={setFilterStatus} options={STATUS.map(s => ({ value: s, label: statusLabels[s] }))} />
-            <FilterSelect label="Empresa/Pessoa" value={filterEmpresa} onChange={setFilterEmpresa} options={empresasList.map(e => ({ value: e, label: e === 'todos' ? 'Todas' : e }))} />
-            <FilterInput label="Nome do Evento" value={filterEventName} onChange={setFilterEventName} placeholder="Digite para buscar..." />
-            <FilterInput label="Data Inicial" value={filterDateStart} onChange={setFilterDateStart} type="date" />
-            <FilterInput label="Data Final" value={filterDateEnd} onChange={setFilterDateEnd} type="date" />
-            <FilterInput label="Valor Mínimo" value={filterValueMin} onChange={setFilterValueMin} type="number" placeholder="0,00" />
-            <FilterInput label="Valor Máximo" value={filterValueMax} onChange={setFilterValueMax} type="number" placeholder="0,00" />
-            <button onClick={() => {
-              setFilterMonth('todos'); setFilterYear('todos'); setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
-              setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd(''); setFilterValueMin(''); setFilterValueMax('');
-            }} className="px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+            <FilterSelect
+              label="Ano"
+              value={filterYear}
+              onChange={setFilterYear}
+              options={years.map(y => ({ value: y, label: y === 'todos' ? 'Todos' : y }))}
+            />
+            <FilterSelect
+              label="Mês"
+              value={filterMonth}
+              onChange={setFilterMonth}
+              options={months.map(m => ({ value: m, label: monthLabels[m] }))}
+            />
+            <FilterSelect
+              label="Categoria"
+              value={filterCategory}
+              onChange={setFilterCategory}
+              options={CATEGORIES.map(c => ({ value: c, label: c === 'todos' ? 'Todas' : c }))}
+            />
+            <FilterSelect
+              label="Tipo"
+              value={filterType}
+              onChange={setFilterType}
+              options={TYPES.map(t => ({ value: t, label: typeLabels[t] }))}
+            />
+            <FilterSelect
+              label="Status"
+              value={filterStatus}
+              onChange={setFilterStatus}
+              options={STATUS.map(s => ({ value: s, label: statusLabels[s] }))}
+            />
+            <FilterSelect
+              label="Empresa/Pessoa"
+              value={filterEmpresa}
+              onChange={setFilterEmpresa}
+              options={empresasList.map(e => ({ value: e, label: e === 'todos' ? 'Todas' : e }))}
+            />
+            <FilterInput
+              label="Nome do Evento"
+              value={filterEventName}
+              onChange={setFilterEventName}
+              placeholder="Digite para buscar..."
+            />
+            <FilterInput
+              label="Data Inicial"
+              value={filterDateStart}
+              onChange={setFilterDateStart}
+              type="date"
+            />
+            <FilterInput
+              label="Data Final"
+              value={filterDateEnd}
+              onChange={setFilterDateEnd}
+              type="date"
+            />
+            <FilterInput
+              label="Valor Mínimo"
+              value={filterValueMin}
+              onChange={setFilterValueMin}
+              type="number"
+              placeholder="0,00"
+            />
+            <FilterInput
+              label="Valor Máximo"
+              value={filterValueMax}
+              onChange={setFilterValueMax}
+              type="number"
+              placeholder="0,00"
+            />
+            <button
+              onClick={() => {
+                setFilterMonth('todos'); setFilterYear('todos');
+                setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
+                setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd('');
+                setFilterValueMin(''); setFilterValueMax('');
+              }}
+              className="px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            >
               <Filter size={16} /> Limpar
             </button>
           </div>
@@ -514,23 +654,54 @@ export default function FinanceDashboard() {
 
         {/* 📊 KPIs Premium */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <KPICard title="Receitas Totais" value={formatCurrency(kpis.totalIncome)} subtitle={`Pago: ${formatCurrency(kpis.incomePaid)} • Pendente: ${formatCurrency(kpis.pendingReceivable)}`} icon={<DollarSign size={24} />} color="bg-green-500" trend={12.5} />
-          <KPICard title="Despesas Totais" value={formatCurrency(kpis.totalExpense)} subtitle={`Pago: ${formatCurrency(kpis.expensePaid)} • Pendente: ${formatCurrency(kpis.pendingPayable)}`} icon={<Wallet size={24} />} color="bg-red-500" trend={-5.2} />
-          <KPICard title="Saldo Atual" value={formatCurrency(kpis.balance)} icon={<Activity size={24} />} color={kpis.balance >= 0 ? 'bg-blue-500' : 'bg-orange-500'} />
-          <KPICard title="Execução Orçamentária" value={`${kpis.executionRate.toFixed(1)}%`} icon={<PieChart size={24} />} color="bg-purple-500" />
+          <KPICard
+            title="Receitas Totais"
+            value={formatCurrency(kpis.totalIncome)}
+            subtitle={`Pago: ${formatCurrency(kpis.incomePaid)} • Pendente: ${formatCurrency(kpis.pendingReceivable)}`}
+            icon={<DollarSign size={24} />}
+            color="bg-green-500"
+            trend={12.5}
+          />
+          <KPICard
+            title="Despesas Totais"
+            value={formatCurrency(kpis.totalExpense)}
+            subtitle={`Pago: ${formatCurrency(kpis.expensePaid)} • Pendente: ${formatCurrency(kpis.pendingPayable)}`}
+            icon={<Wallet size={24} />}
+            color="bg-red-500"
+            trend={-5.2}
+          />
+          <KPICard
+            title="Saldo Atual"
+            value={formatCurrency(kpis.balance)}
+            icon={<Activity size={24} />}
+            color={kpis.balance >= 0 ? 'bg-blue-500' : 'bg-orange-500'}
+          />
+          <KPICard
+            title="Execução Orçamentária"
+            value={`${kpis.executionRate.toFixed(1)}%`}
+            icon={<PieChart size={24} />}
+            color="bg-purple-500"
+          />
         </div>
 
         {/* 📈 Gráficos Executivos */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Gráfico: Receitas x Despesas */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><BarChart3 className="text-blue-600" size={20} /> Receitas x Despesas por Mês</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <BarChart3 className="text-blue-600" size={20} />
+              Receitas x Despesas por Mês
+            </h3>
             {chartData.monthlyChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={chartData.monthlyChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
                   <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCurrency(v).replace('R$', '').trim()} />
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                  <Tooltip 
+                    formatter={(v: number) => formatCurrency(v)}
+                    contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  />
                   <Legend wrapperStyle={{ paddingTop: '20px' }} />
                   <Bar dataKey="Receitas" fill={COLORS.income} radius={[6, 6, 0, 0]} maxBarSize={60} />
                   <Bar dataKey="Despesas" fill={COLORS.expense} radius={[6, 6, 0, 0]} maxBarSize={60} />
@@ -538,17 +709,34 @@ export default function FinanceDashboard() {
               </ResponsiveContainer>
             ) : (
               <div className="flex items-center justify-center h-80 text-gray-400 bg-gray-50 rounded-lg">
-                <div className="text-center"><AlertCircle className="mx-auto h-12 w-12 mb-2" /><p>Sem dados para exibir</p></div>
+                <div className="text-center">
+                  <AlertCircle className="mx-auto h-12 w-12 mb-2" />
+                  <p>Sem dados para exibir</p>
+                </div>
               </div>
             )}
           </div>
 
+          {/* Gráfico: Despesas por Categoria */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><PieChart className="text-purple-600" size={20} /> Despesas por Categoria</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <PieChart className="text-purple-600" size={20} />
+              Despesas por Categoria
+            </h3>
             {chartData.categoryChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={320}>
                 <RechartsPie>
-                  <Pie data={chartData.categoryChartData} cx="50%" cy="50%" innerRadius={70} outerRadius={110} paddingAngle={3} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                  <Pie
+                    data={chartData.categoryChartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={110}
+                    paddingAngle={3}
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    labelLine={false}
+                  >
                     {chartData.categoryChartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={[COLORS.primary, COLORS.primaryLight, COLORS.secondary, '#8B5CF6', '#EC4899', '#14B8A6'][index % 6]} />
                     ))}
@@ -559,7 +747,10 @@ export default function FinanceDashboard() {
               </ResponsiveContainer>
             ) : (
               <div className="flex items-center justify-center h-80 text-gray-400 bg-gray-50 rounded-lg">
-                <div className="text-center"><AlertCircle className="mx-auto h-12 w-12 mb-2" /><p>Sem dados para exibir</p></div>
+                <div className="text-center">
+                  <AlertCircle className="mx-auto h-12 w-12 mb-2" />
+                  <p>Sem dados para exibir</p>
+                </div>
               </div>
             )}
           </div>
@@ -567,11 +758,19 @@ export default function FinanceDashboard() {
 
         {/* 📈 Gráfico de Evolução do Saldo */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
-          <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><Activity className="text-blue-600" size={20} /> Evolução do Saldo Acumulado</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Activity className="text-blue-600" size={20} />
+            Evolução do Saldo Acumulado
+          </h3>
           {chartData.balanceData.length > 0 ? (
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={chartData.balanceData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                <defs><linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3}/><stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/></linearGradient></defs>
+                <defs>
+                  <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCurrency(v).replace('R$', '').trim()} />
@@ -580,19 +779,32 @@ export default function FinanceDashboard() {
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-64 text-gray-400 bg-gray-50 rounded-lg"><p>Sem dados para exibir</p></div>
+            <div className="flex items-center justify-center h-64 text-gray-400 bg-gray-50 rounded-lg">
+              <p>Sem dados para exibir</p>
+            </div>
           )}
         </div>
 
-        {/* 📋 Tabela Completa de Lançamentos - COM BOTÃO EDITAR ✅ */}
+        {/* 📋 Tabela Completa de Lançamentos */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
             <div>
               <h3 className="text-lg font-bold text-gray-900">Lançamentos Financeiros</h3>
               <p className="text-sm text-gray-500 mt-1">{filteredFinances.length} registros encontrados</p>
             </div>
-            <button onClick={() => setShowAllTransactions(!showAllTransactions)} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-              {showAllTransactions ? <><ChevronUp size={16} /> Mostrar menos</> : <><ChevronDown size={16} /> Ver todos ({filteredFinances.length})</>}
+            <button
+              onClick={() => setShowAllTransactions(!showAllTransactions)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            >
+              {showAllTransactions ? (
+                <>
+                  <ChevronUp size={16} /> Mostrar menos
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} /> Ver todos ({filteredFinances.length})
+                </>
+              )}
             </button>
           </div>
           {filteredFinances.length > 0 ? (
@@ -614,25 +826,42 @@ export default function FinanceDashboard() {
                 <tbody className="divide-y divide-gray-100">
                   {(showAllTransactions ? filteredFinances : filteredFinances.slice(0, 10)).map((fin) => (
                     <tr key={fin.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{formatDateDisplay(fin.date)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                        {formatDateDisplay(fin.date)}
+                      </td>
                       <td className="px-6 py-4 text-sm">
                         <div className="font-medium text-gray-900">{fin.description || '-'}</div>
                         <div className="text-xs text-gray-500 mt-0.5">{fin.category}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap"><span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">{fin.category}</span></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{fin.empresaPessoaFisica || '-'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{fin.eventName || '-'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDateDisplay(fin.eventDate)}</td>
-                      <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>{fin.type === 'income' ? '+' : '-'} {formatCurrency(fin.value)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap"><span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${fin.status === 'Pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{fin.status}</span></td>
-                      {/* ✅ BOTÕES DE AÇÃO - EDITAR E EXCLUIR */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                          {fin.category}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {fin.empresaPessoaFisica || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {fin.eventName || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDateDisplay(fin.eventDate)}
+                      </td>
+                      <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                        {fin.type === 'income' ? '+' : '-'} {formatCurrency(fin.value)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
+                          fin.status === 'Pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {fin.status}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                         <div className="flex items-center justify-end gap-2">
-                          {/* ✅ BOTÃO EDITAR */}
                           <button onClick={() => handleEdit(fin)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
                             <Edit2 size={16} />
                           </button>
-                          {/* ✅ BOTÃO EXCLUIR */}
                           <button onClick={() => handleDelete(fin.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Excluir">
                             <Trash2 size={16} />
                           </button>
@@ -648,10 +877,17 @@ export default function FinanceDashboard() {
               <AlertCircle className="mx-auto h-16 w-16 text-gray-300 mb-4" />
               <p className="text-lg font-medium text-gray-900 mb-2">Nenhum lançamento encontrado</p>
               <p className="text-sm mb-4">Ajuste os filtros ou adicione um novo lançamento</p>
-              <button onClick={() => {
-                setFilterMonth('todos'); setFilterYear('todos'); setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
-                setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd(''); setFilterValueMin(''); setFilterValueMax('');
-              }} className="px-6 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">Limpar filtros</button>
+              <button
+                onClick={() => {
+                  setFilterMonth('todos'); setFilterYear('todos');
+                  setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
+                  setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd('');
+                  setFilterValueMin(''); setFilterValueMax('');
+                }}
+                className="px-6 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                Limpar filtros
+              </button>
             </div>
           )}
         </div>
@@ -664,95 +900,191 @@ export default function FinanceDashboard() {
         </div>
       </main>
 
-      {/* 📝 Modal de Lançamento */}
+      {/* 📝 Modal de Lançamento - CAMPO VALOR CORRIGIDO */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50 rounded-t-2xl">
-              <h2 className="text-xl font-bold text-gray-900">{editingId ? 'Editar Lançamento' : 'Novo Lançamento'}</h2>
-              <button onClick={() => { setIsFormOpen(false); setEditingId(null); }} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><X size={20} /></button>
+              <h2 className="text-xl font-bold text-gray-900">
+                {editingId ? 'Editar Lançamento' : 'Novo Lançamento'}
+              </h2>
+              <button onClick={() => { setIsFormOpen(false); setEditingId(null); }} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <X size={20} />
+              </button>
             </div>
+            
             <form onSubmit={handleSave} className="p-6 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Tipo</label>
                   <div className="flex gap-2">
                     {['income', 'expense'].map(type => (
-                      <label key={type} className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-lg cursor-pointer transition-all ${formData.type === type ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm' : 'border-gray-200 hover:border-gray-300'}`}>
-                        <input type="radio" name="type" value={type} checked={formData.type === type} onChange={(e) => setFormData({ ...formData, type: e.target.value as 'income' | 'expense' })} className="sr-only" />
+                      <label key={type} className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-lg cursor-pointer transition-all ${
+                        formData.type === type 
+                          ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}>
+                        <input
+                          type="radio"
+                          name="type"
+                          value={type}
+                          checked={formData.type === type}
+                          onChange={(e) => setFormData({ ...formData, type: e.target.value as 'income' | 'expense' })}
+                          className="sr-only"
+                        />
                         {type === 'income' ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
                         <span className="text-sm font-semibold">{typeLabels[type]}</span>
                       </label>
                     ))}
                   </div>
                 </div>
+                
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                  <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    {STATUS.filter(s => s !== 'todos').map(s => (<option key={s} value={s}>{statusLabels[s]}</option>))}
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {STATUS.filter(s => s !== 'todos').map(s => (
+                      <option key={s} value={s}>{statusLabels[s]}</option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Categoria</label>
-                <select required value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select
+                  required
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
                   <option value="">Selecione uma categoria...</option>
-                  {CATEGORIES.filter(c => c !== 'todos').map(c => (<option key={c} value={c}>{c}</option>))}
+                  {CATEGORIES.filter(c => c !== 'todos').map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
                 </select>
               </div>
 
+              {/* ✅ CAMPO EMPRESA/PESSOA FÍSICA */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">{formData.type === 'income' ? 'Doador/Empresa' : 'Fornecedor/Empresa'}</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {formData.type === 'income' ? 'Doador/Empresa' : 'Fornecedor/Empresa'}
+                </label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                  <input type="text" value={formData.empresaPessoaFisica || ''} onChange={(e) => setFormData({ ...formData, empresaPessoaFisica: e.target.value })} className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Empresa XYZ ou João Silva" list="empresas-suggestions" />
-                  <datalist id="empresas-suggestions">{empresasList.filter(e => e !== 'todos').map(e => (<option key={e} value={e} />))}</datalist>
+                  <input
+                    type="text"
+                    value={formData.empresaPessoaFisica || ''}
+                    onChange={(e) => setFormData({ ...formData, empresaPessoaFisica: e.target.value })}
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Ex: Empresa XYZ ou João Silva"
+                    list="empresas-suggestions"
+                  />
+                  <datalist id="empresas-suggestions">
+                    {empresasList.filter(e => e !== 'todos').map(e => (
+                      <option key={e} value={e} />
+                    ))}
+                  </datalist>
                 </div>
               </div>
 
+              {/* ✅ CAMPOS DE EVENTO */}
               {formData.category === 'Evento' && (
                 <>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Nome do Evento</label>
-                    <input type="text" value={formData.eventName || ''} onChange={(e) => setFormData({ ...formData, eventName: e.target.value })} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Bazar de Inverno" list="eventos-suggestions" />
-                    <datalist id="eventos-suggestions">{eventNamesList.map(name => (<option key={name} value={name} />))}</datalist>
+                    <input
+                      type="text"
+                      value={formData.eventName || ''}
+                      onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Ex: Bazar de Inverno"
+                      list="eventos-suggestions"
+                    />
+                    <datalist id="eventos-suggestions">
+                      {eventNamesList.map(name => (
+                        <option key={name} value={name} />
+                      ))}
+                    </datalist>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Evento</label>
-                    <input type="date" value={formData.eventDate || ''} onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    <input
+                      type="date"
+                      value={formData.eventDate || ''}
+                      onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
                   </div>
                 </>
               )}
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Descrição</label>
-                <input required type="text" value={formData.description || ''} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Doação Campanha Winter" />
+                <input
+                  required
+                  type="text"
+                  value={formData.description || ''}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Ex: Doação Campanha Winter"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Data do Lançamento</label>
-                  <input required type="date" value={formData.date || ''} onChange={(e) => setFormData({ ...formData, date: e.target.value })} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                  <input
+                    required
+                    type="date"
+                    value={formData.date || ''}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
-                  {/* ✅ CAMPO VALOR COM MÁSCARA DE CENTAVOS */}
-                  <input required type="text" value={formattedValue} onChange={(e) => {
-                    const formatted = formatCurrencyInput(e.target.value);
-                    setFormattedValue(formatted);
-                    setFormData({ ...formData, value: parseCurrencyInput(formatted) });
-                  }} onBlur={(e) => {
-                    const finalFormatted = formatCurrencyInput(e.target.value);
-                    setFormattedValue(finalFormatted);
-                    setFormData({ ...formData, value: parseCurrencyInput(finalFormatted) });
-                  }} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right font-mono" placeholder="0,00" />
+                  {/* ✅ CAMPO VALOR CORRIGIDO COM MÁSCARA MELHORADA */}
+                  <input
+                    required
+                    type="text"
+                    value={formattedValue}
+                    onChange={(e) => {
+                      // Formata enquanto digita usando a nova lógica
+                      const formatted = formatCurrencyInput(e.target.value);
+                      setFormattedValue(formatted);
+                      // Converte para número e salva no formData
+                      setFormData({ ...formData, value: parseCurrencyInput(formatted) });
+                    }}
+                    onBlur={(e) => {
+                      // Garante formatação correta ao perder o foco
+                      const finalFormatted = formatCurrencyInput(e.target.value);
+                      setFormattedValue(finalFormatted);
+                      setFormData({ ...formData, value: parseCurrencyInput(finalFormatted) });
+                    }}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right font-mono"
+                    placeholder="0,00"
+                  />
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                <button type="button" onClick={() => { setIsFormOpen(false); setEditingId(null); }} className="px-6 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Cancelar</button>
-                <button type="submit" className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-md">{editingId ? 'Atualizar' : 'Salvar Lançamento'}</button>
+                <button
+                  type="button"
+                  onClick={() => { setIsFormOpen(false); setEditingId(null); }}
+                  className="px-6 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+                >
+                  {editingId ? 'Atualizar' : 'Salvar Lançamento'}
+                </button>
               </div>
             </form>
           </div>
