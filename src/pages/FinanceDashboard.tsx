@@ -60,47 +60,6 @@ const formatCurrency = (value: number | undefined | null): string => {
   });
 };
 
-// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - ACEITA CENTAVOS CORRETAMENTE
-const formatCurrencyInput = (value: string): string => {
-  // Remove tudo que não é dígito, vírgula ou ponto
-  let cleaned = value.replace(/[^\d,.]/g, '');
-  
-  // Se vazio, retorna 0,00
-  if (!cleaned) return '0,00';
-  
-  // Divide por vírgula para separar parte inteira e decimal
-  const parts = cleaned.split(',');
-  let integerPart = parts[0].replace(/\./g, '');
-  let decimalPart = parts[1] || '';
-  
-  // Limita parte decimal a 2 dígitos
-  if (decimalPart.length > 2) {
-    decimalPart = decimalPart.substring(0, 2);
-  }
-  
-  // Converte para número
-  const numberValue = integerPart ? parseFloat(integerPart) : 0;
-  const decimalValue = decimalPart ? parseFloat('0.' + decimalPart) : 0;
-  const totalValue = numberValue + decimalValue;
-  
-  // Formata como moeda brasileira
-  return totalValue.toLocaleString('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-};
-
-// ✅ FUNÇÃO PARA CONVERTER VALOR FORMATADO PARA NÚMERO
-const parseCurrencyInput = (formattedValue: string): number => {
-  const cleaned = formattedValue
-    .replace(/\./g, '')
-    .replace(',', '.')
-    .replace(/[^\d.-]/g, '');
-  
-  const parsed = parseFloat(cleaned);
-  return isNaN(parsed) ? 0 : parsed;
-};
-
 // ✅ FUNÇÃO PARA FORMATAR DATA SEM BUG DE FUSO
 const formatDateDisplay = (dateString: string | undefined | null): string => {
   if (!dateString) return '-';
@@ -201,7 +160,6 @@ export default function FinanceDashboard() {
   // Estado do Formulário
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formattedValue, setFormattedValue] = useState('0,00');
   
   const [formData, setFormData] = useState<{
     type: 'income' | 'expense';
@@ -225,10 +183,7 @@ export default function FinanceDashboard() {
     eventName: ''
   });
 
-  React.useEffect(() => {
-    setFormattedValue(formatCurrencyInput(String(formData.value)));
-  }, [formData.value]);
-
+  // ✅ Lista única de empresas/pessoas para filtro
   const empresasList = useMemo(() => {
     const set = new Set<string>();
     finances.forEach(f => {
@@ -239,6 +194,7 @@ export default function FinanceDashboard() {
     return ['todos', ...Array.from(set).sort()];
   }, [finances]);
 
+  // ✅ Lista única de nomes de evento para filtro
   const eventNamesList = useMemo(() => {
     const set = new Set<string>();
     finances.forEach(f => {
@@ -249,6 +205,7 @@ export default function FinanceDashboard() {
     return Array.from(set).sort();
   }, [finances]);
 
+  // ✅ Filtragem Inteligente
   const filteredFinances = useMemo(() => {
     return finances.filter(f => {
       if (filterMonth !== 'todos') {
@@ -293,6 +250,7 @@ export default function FinanceDashboard() {
     filterEventName, filterDateStart, filterDateEnd, filterValueMin, filterValueMax
   ]);
 
+  // ✅ Cálculos de KPIs
   const kpis = useMemo(() => {
     const totalIncome = filteredFinances.filter(f => f.type === 'income').reduce((sum, f) => sum + (f.value || 0), 0);
     const totalExpense = filteredFinances.filter(f => f.type === 'expense').reduce((sum, f) => sum + (f.value || 0), 0);
@@ -308,6 +266,7 @@ export default function FinanceDashboard() {
     };
   }, [filteredFinances]);
 
+  // ✅ Dados para Gráficos
   const chartData = useMemo(() => {
     const monthlyData: Record<string, { income: number; expense: number }> = {};
     filteredFinances.forEach(f => {
@@ -342,6 +301,7 @@ export default function FinanceDashboard() {
     return { monthlyChartData, categoryChartData, balanceData };
   }, [filteredFinances]);
 
+  // ✅ Handlers
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     const financeData: Partial<FinanceRecord> & { eventName?: string } = {
@@ -370,7 +330,6 @@ export default function FinanceDashboard() {
       category: '', description: '', status: 'Pendente',
       empresaPessoaFisica: '', eventDate: '', eventName: ''
     });
-    setFormattedValue('0,00');
     setEditingId(null);
     setIsFormOpen(false);
   };
@@ -388,7 +347,6 @@ export default function FinanceDashboard() {
       eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : '',
       eventName: fin.category === 'Evento' ? (fin.eventName || '') : ''
     });
-    setFormattedValue(formatCurrencyInput(String(fin.value || 0)));
     setIsFormOpen(true);
   };
 
@@ -398,6 +356,7 @@ export default function FinanceDashboard() {
     }
   };
 
+  // ✅ Exportação para PDF
   const handleExportPDF = async () => {
     if (!dashboardRef.current) return;
     const pdf = new jsPDF('l', 'mm', 'a4');
@@ -414,6 +373,7 @@ export default function FinanceDashboard() {
     pdf.save(`AMOVIN_Relatorio_Financeiro_${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
+  // ✅ Exportação para CSV
   const handleExportCSV = () => {
     const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Nome Evento', 'Data Evento', 'Descrição', 'Valor', 'Status'];
     const rows = filteredFinances.map(f => [
@@ -439,6 +399,7 @@ export default function FinanceDashboard() {
     document.body.removeChild(link);
   };
 
+  // ✅ Anos disponíveis para filtro
   const years = useMemo(() => {
     const set = new Set(finances.map(f => f.year || String(new Date(f.date).getFullYear())));
     set.add(String(new Date().getFullYear()));
@@ -478,7 +439,6 @@ export default function FinanceDashboard() {
               <button onClick={() => {
                 setEditingId(null);
                 setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente', empresaPessoaFisica: '', eventDate: '', eventName: '' });
-                setFormattedValue('0,00');
                 setIsFormOpen(true);
               }} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
                 <Plus size={18} /> Novo Lançamento
@@ -628,8 +588,13 @@ export default function FinanceDashboard() {
                       {/* ✅ BOTÕES DE AÇÃO - EDITAR E EXCLUIR */}
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                         <div className="flex items-center justify-end gap-2">
-                          {/* ✅ BOTÃO EDITAR */}
-                          <button onClick={() => handleEdit(fin)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+                          {/* ✅ BOTÃO EDITAR - VISÍVEL E FUNCIONAL */}
+                          <button 
+                            onClick={() => handleEdit(fin)} 
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center" 
+                            title="Editar"
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          >
                             <Edit2 size={16} />
                           </button>
                           {/* ✅ BOTÃO EXCLUIR */}
@@ -664,7 +629,7 @@ export default function FinanceDashboard() {
         </div>
       </main>
 
-      {/* 📝 Modal de Lançamento */}
+      {/* 📝 Modal de Lançamento - CAMPO VALOR SIMPLIFICADO */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -737,16 +702,18 @@ export default function FinanceDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
-                  {/* ✅ CAMPO VALOR COM MÁSCARA DE CENTAVOS */}
-                  <input required type="text" value={formattedValue} onChange={(e) => {
-                    const formatted = formatCurrencyInput(e.target.value);
-                    setFormattedValue(formatted);
-                    setFormData({ ...formData, value: parseCurrencyInput(formatted) });
-                  }} onBlur={(e) => {
-                    const finalFormatted = formatCurrencyInput(e.target.value);
-                    setFormattedValue(finalFormatted);
-                    setFormData({ ...formData, value: parseCurrencyInput(finalFormatted) });
-                  }} className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right font-mono" placeholder="0,00" />
+                  {/* ✅ CAMPO VALOR SIMPLIFICADO - ACEITA CENTAVOS */}
+                  <input 
+                    required 
+                    type="number" 
+                    step="0.01" 
+                    min="0"
+                    value={formData.value}
+                    onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right font-mono"
+                    placeholder="0.00"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Ex: 20.50 para R$ 20,50</p>
                 </div>
               </div>
 
