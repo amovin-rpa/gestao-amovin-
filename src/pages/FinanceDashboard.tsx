@@ -60,20 +60,31 @@ const formatCurrency = (value: number | undefined | null): string => {
   });
 };
 
-// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - ACEITA VALORES DIRETOS (CORRIGIDA)
+// ✅ FUNÇÃO DE MÁSCARA PARA INPUT - ACEITA CENTAVOS CORRETAMENTE
 const formatCurrencyInput = (value: string): string => {
-  // Remove formatação existente: "1.000,00" → "1000.00"
-  const cleaned = value
-    .replace(/\./g, '')      // Remove pontos de milhar
-    .replace(',', '.');      // Troca vírgula decimal por ponto
+  // Remove tudo que não é dígito, vírgula ou ponto
+  let cleaned = value.replace(/[^\d,.]/g, '');
   
-  // Tenta parsear como número decimal direto
-  const numberValue = parseFloat(cleaned);
+  // Se vazio, retorna 0,00
+  if (!cleaned) return '0,00';
   
-  if (isNaN(numberValue) || numberValue < 0) return '0,00';
+  // Divide por vírgula para separar parte inteira e decimal
+  const parts = cleaned.split(',');
+  let integerPart = parts[0].replace(/\./g, ''); // Remove pontos da parte inteira
+  let decimalPart = parts[1] || '';
   
-  // Formata como moeda brasileira com 2 casas decimais
-  return numberValue.toLocaleString('pt-BR', {
+  // Limita parte decimal a 2 dígitos
+  if (decimalPart.length > 2) {
+    decimalPart = decimalPart.substring(0, 2);
+  }
+  
+  // Converte para número
+  const numberValue = integerPart ? parseFloat(integerPart) : 0;
+  const decimalValue = decimalPart ? parseFloat('0.' + decimalPart) : 0;
+  const totalValue = numberValue + decimalValue;
+  
+  // Formata como moeda brasileira
+  return totalValue.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
@@ -1047,13 +1058,13 @@ export default function FinanceDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
-                  {/* ✅ CAMPO VALOR CORRIGIDO COM MÁSCARA MELHORADA */}
+                  {/* ✅ CAMPO VALOR CORRIGIDO COM MÁSCARA QUE ACEITA CENTAVOS */}
                   <input
                     required
                     type="text"
                     value={formattedValue}
                     onChange={(e) => {
-                      // Formata enquanto digita usando a nova lógica
+                      // Formata enquanto digita usando a nova lógica que aceita centavos
                       const formatted = formatCurrencyInput(e.target.value);
                       setFormattedValue(formatted);
                       // Converte para número e salva no formData
