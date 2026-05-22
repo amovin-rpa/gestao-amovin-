@@ -5,7 +5,7 @@ import {
   Plus, Edit2, Trash2, Download, Filter, Calendar, 
   TrendingUp, TrendingDown, DollarSign, Wallet, 
   PieChart, BarChart3, Activity, AlertCircle, CheckCircle, X,
-  Printer, FileSpreadsheet, FileText, ChevronDown, ChevronUp, Building2
+  Printer, FileSpreadsheet, FileText, ChevronDown, ChevronUp, Building2, FileCheck
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -137,6 +137,60 @@ const FilterInput: React.FC<{
   </div>
 );
 
+// ✅ Componente Toggle Sim/Não Premium
+const ToggleFiscal: React.FC<{
+  label: string;
+  value: boolean;
+  onChange: (value: boolean) => void;
+}> = ({ label, value, onChange }) => (
+  <div className="flex flex-col gap-2">
+    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{label}</label>
+    <div className="flex gap-2">
+      <button
+        type="button"
+        onClick={() => onChange(true)}
+        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-lg transition-all ${
+          value === true 
+            ? 'border-green-500 bg-green-50 text-green-700 shadow-sm' 
+            : 'border-gray-200 hover:border-gray-300 text-gray-600'
+        }`}
+      >
+        <CheckCircle size={18} />
+        <span className="text-sm font-semibold">Sim</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange(false)}
+        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-lg transition-all ${
+          value === false 
+            ? 'border-red-500 bg-red-50 text-red-700 shadow-sm' 
+            : 'border-gray-200 hover:border-gray-300 text-gray-600'
+        }`}
+      >
+        <X size={18} />
+        <span className="text-sm font-semibold">Não</span>
+      </button>
+    </div>
+  </div>
+);
+
+// ✅ Componente Badge Fiscal Premium
+const FiscalBadge: React.FC<{ hasReceipt: boolean | undefined }> = ({ hasReceipt }) => {
+  if (hasReceipt === undefined || hasReceipt === null) {
+    return <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">-</span>;
+  }
+  
+  return hasReceipt ? (
+    <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+      <CheckCircle size={12} /> Comprovante
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">
+      <X size={12} /> Sem comprovante
+    </span>
+  );
+};
+
 // ✅ Componente Principal
 export default function FinanceDashboard() {
   const { finances, addFinance, updateFinance, deleteFinance } = useStore();
@@ -154,6 +208,7 @@ export default function FinanceDashboard() {
   const [filterDateEnd, setFilterDateEnd] = useState('');
   const [filterValueMin, setFilterValueMin] = useState('');
   const [filterValueMax, setFilterValueMax] = useState('');
+  const [filterHasFiscalReceipt, setFilterHasFiscalReceipt] = useState<'todos' | 'sim' | 'nao'>('todos');
   
   const [showAllTransactions, setShowAllTransactions] = useState(false);
   
@@ -171,6 +226,7 @@ export default function FinanceDashboard() {
     empresaPessoaFisica: string;
     eventDate: string;
     eventName: string;
+    hasFiscalReceipt: boolean; // ✅ NOVO CAMPO
   }>({
     type: 'income',
     value: 0,
@@ -180,7 +236,8 @@ export default function FinanceDashboard() {
     status: 'Pendente',
     empresaPessoaFisica: '',
     eventDate: '',
-    eventName: ''
+    eventName: '',
+    hasFiscalReceipt: false // ✅ VALOR PADRÃO
   });
 
   // ✅ Lista única de empresas/pessoas para filtro
@@ -205,7 +262,7 @@ export default function FinanceDashboard() {
     return Array.from(set).sort();
   }, [finances]);
 
-  // ✅ Filtragem Inteligente
+  // ✅ Filtragem Inteligente (COM FILTRO DE COMPROVANTE FISCAL)
   const filteredFinances = useMemo(() => {
     return finances.filter(f => {
       if (filterMonth !== 'todos') {
@@ -233,6 +290,12 @@ export default function FinanceDashboard() {
           return false;
         }
       }
+      // ✅ FILTRO COMPROVANTE FISCAL
+      if (filterHasFiscalReceipt !== 'todos') {
+        const hasReceipt = f.hasFiscalReceipt === true;
+        if (filterHasFiscalReceipt === 'sim' && !hasReceipt) return false;
+        if (filterHasFiscalReceipt === 'nao' && hasReceipt) return false;
+      }
       if (filterDateStart && f.date < filterDateStart) return false;
       if (filterDateEnd && f.date > filterDateEnd) return false;
       if (filterValueMin && filterValueMin.trim() !== '') {
@@ -247,7 +310,7 @@ export default function FinanceDashboard() {
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [
     finances, filterMonth, filterYear, filterCategory, filterType, filterStatus, filterEmpresa,
-    filterEventName, filterDateStart, filterDateEnd, filterValueMin, filterValueMax
+    filterEventName, filterDateStart, filterDateEnd, filterValueMin, filterValueMax, filterHasFiscalReceipt
   ]);
 
   // ✅ Cálculos de KPIs
@@ -304,7 +367,10 @@ export default function FinanceDashboard() {
   // ✅ Handlers
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    const financeData: Partial<FinanceRecord> & { eventName?: string } = {
+    const financeData: Partial<FinanceRecord> & { 
+      eventName?: string;
+      hasFiscalReceipt?: boolean; // ✅ NOVO CAMPO
+    } = {
       id: editingId || crypto.randomUUID(),
       type: formData.type,
       value: formData.value,
@@ -317,6 +383,7 @@ export default function FinanceDashboard() {
       empresaPessoaFisica: formData.empresaPessoaFisica || '',
       eventDate: formData.category === 'Evento' ? (formData.eventDate || '') : '',
       eventName: formData.category === 'Evento' ? (formData.eventName || '') : '',
+      hasFiscalReceipt: formData.hasFiscalReceipt, // ✅ SALVAR CAMPO
     };
 
     if (editingId) {
@@ -328,7 +395,8 @@ export default function FinanceDashboard() {
     setFormData({
       type: 'income', value: 0, date: new Date().toISOString().split('T')[0],
       category: '', description: '', status: 'Pendente',
-      empresaPessoaFisica: '', eventDate: '', eventName: ''
+      empresaPessoaFisica: '', eventDate: '', eventName: '',
+      hasFiscalReceipt: false // ✅ RESETAR CAMPO
     });
     setEditingId(null);
     setIsFormOpen(false);
@@ -345,7 +413,8 @@ export default function FinanceDashboard() {
       status: fin.status || 'Pendente',
       empresaPessoaFisica: fin.empresaPessoaFisica || '',
       eventDate: fin.category === 'Evento' ? (fin.eventDate || '') : '',
-      eventName: fin.category === 'Evento' ? (fin.eventName || '') : ''
+      eventName: fin.category === 'Evento' ? (fin.eventName || '') : '',
+      hasFiscalReceipt: fin.hasFiscalReceipt || false // ✅ CARREGAR CAMPO
     });
     setIsFormOpen(true);
   };
@@ -370,12 +439,12 @@ export default function FinanceDashboard() {
     const imgX = (pdfWidth - imgWidth * ratio) / 2;
     const imgY = 10;
     pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-    pdf.save(`AMOVIN_Relatorio_Financeiro_${new Date().toISOString().split('T')[0]}.pdf`);
+    pdf.save(`AMOVIN_Relatorio_Financeiro_${new Date().getFullYear()}.pdf`); // ✅ ANO CORRETO
   };
 
-  // ✅ Exportação para CSV
+  // ✅ Exportação para CSV (COM CAMPO COMPROVANTE FISCAL)
   const handleExportCSV = () => {
-    const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Nome Evento', 'Data Evento', 'Descrição', 'Valor', 'Status'];
+    const headers = ['Data', 'Tipo', 'Categoria', 'Empresa/Pessoa', 'Nome Evento', 'Data Evento', 'Descrição', 'Valor', 'Status', 'Comprovante Fiscal'];
     const rows = filteredFinances.map(f => [
       f.date ? formatDateDisplay(f.date) : '',
       f.type === 'income' ? 'Receita' : 'Despesa',
@@ -385,7 +454,8 @@ export default function FinanceDashboard() {
       f.eventDate ? formatDateDisplay(f.eventDate) : '',
       `"${(f.description || '').replace(/"/g, '""')}"`,
       formatCurrency(f.value).replace('R$', '').trim(),
-      f.status || ''
+      f.status || '',
+      f.hasFiscalReceipt ? 'Sim' : 'Não' // ✅ CAMPO COMPROVANTE NO CSV
     ]);
     const csvContent = [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n');
     const BOM = '\uFEFF';
@@ -393,16 +463,17 @@ export default function FinanceDashboard() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `AMOVIN_Lancamentos_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `AMOVIN_Lancamentos_${new Date().getFullYear()}.csv`); // ✅ ANO CORRETO
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  // ✅ Anos disponíveis para filtro
+  // ✅ Anos disponíveis para filtro (CORRIGIDO: new Date().getFullYear())
   const years = useMemo(() => {
+    const currentYear = String(new Date().getFullYear()); // ✅ CORREÇÃO: 2025
     const set = new Set(finances.map(f => f.year || String(new Date(f.date).getFullYear())));
-    set.add(String(new Date().getFullYear()));
+    set.add(currentYear);
     return ['todos', ...[...set].sort().reverse()];
   }, [finances]);
 
@@ -413,6 +484,8 @@ export default function FinanceDashboard() {
     '08': 'Agosto', '09': 'Setembro', '10': 'Outubro', '11': 'Novembro', '12': 'Dezembro'
   };
 
+  // ✅ CORREÇÃO: Usar getFullYear() para evitar erro de ano
+  const currentYear = new Date().getFullYear();
   const currentMonth = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
   return (
@@ -438,7 +511,12 @@ export default function FinanceDashboard() {
               </button>
               <button onClick={() => {
                 setEditingId(null);
-                setFormData({ type: 'income', value: 0, date: new Date().toISOString().split('T')[0], category: '', description: '', status: 'Pendente', empresaPessoaFisica: '', eventDate: '', eventName: '' });
+                setFormData({ 
+                  type: 'income', value: 0, date: new Date().toISOString().split('T')[0],
+                  category: '', description: '', status: 'Pendente',
+                  empresaPessoaFisica: '', eventDate: '', eventName: '',
+                  hasFiscalReceipt: false // ✅ RESETAR NOVO CAMPO
+                });
                 setIsFormOpen(true);
               }} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
                 <Plus size={18} /> Novo Lançamento
@@ -449,7 +527,7 @@ export default function FinanceDashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* 🔍 Filtros Premium */}
+        {/* 🔍 Filtros Premium (COM FILTRO DE COMPROVANTE FISCAL) */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
           <div className="flex flex-wrap items-end gap-4">
             <FilterSelect label="Ano" value={filterYear} onChange={setFilterYear} options={years.map(y => ({ value: y, label: y === 'todos' ? 'Todos' : y }))} />
@@ -458,6 +536,17 @@ export default function FinanceDashboard() {
             <FilterSelect label="Tipo" value={filterType} onChange={setFilterType} options={TYPES.map(t => ({ value: t, label: typeLabels[t] }))} />
             <FilterSelect label="Status" value={filterStatus} onChange={setFilterStatus} options={STATUS.map(s => ({ value: s, label: statusLabels[s] }))} />
             <FilterSelect label="Empresa/Pessoa" value={filterEmpresa} onChange={setFilterEmpresa} options={empresasList.map(e => ({ value: e, label: e === 'todos' ? 'Todas' : e }))} />
+            {/* ✅ NOVO FILTRO: Comprovante Fiscal */}
+            <FilterSelect 
+              label="Comprovante Fiscal" 
+              value={filterHasFiscalReceipt} 
+              onChange={(v) => setFilterHasFiscalReceipt(v as 'todos' | 'sim' | 'nao')} 
+              options={[
+                { value: 'todos', label: 'Todos' },
+                { value: 'sim', label: 'Com comprovante' },
+                { value: 'nao', label: 'Sem comprovante' }
+              ]} 
+            />
             <FilterInput label="Nome do Evento" value={filterEventName} onChange={setFilterEventName} placeholder="Digite para buscar..." />
             <FilterInput label="Data Inicial" value={filterDateStart} onChange={setFilterDateStart} type="date" />
             <FilterInput label="Data Final" value={filterDateEnd} onChange={setFilterDateEnd} type="date" />
@@ -465,6 +554,7 @@ export default function FinanceDashboard() {
             <FilterInput label="Valor Máximo" value={filterValueMax} onChange={setFilterValueMax} type="number" placeholder="0,00" />
             <button onClick={() => {
               setFilterMonth('todos'); setFilterYear('todos'); setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
+              setFilterHasFiscalReceipt('todos');
               setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd(''); setFilterValueMin(''); setFilterValueMax('');
             }} className="px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
               <Filter size={16} /> Limpar
@@ -544,7 +634,7 @@ export default function FinanceDashboard() {
           )}
         </div>
 
-        {/* 📋 Tabela Completa de Lançamentos - COM BOTÃO EDITAR ✅ */}
+        {/* 📋 Tabela Completa de Lançamentos - COM COLUNA COMPROVANTE FISCAL ✅ */}
         <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
             <div>
@@ -568,6 +658,8 @@ export default function FinanceDashboard() {
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Data Evento</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Valor</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+                    {/* ✅ NOVA COLUNA: Comprovante Fiscal */}
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Comprovante</th>
                     <th className="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Ações</th>
                   </tr>
                 </thead>
@@ -585,6 +677,10 @@ export default function FinanceDashboard() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDateDisplay(fin.eventDate)}</td>
                       <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${fin.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>{fin.type === 'income' ? '+' : '-'} {formatCurrency(fin.value)}</td>
                       <td className="px-6 py-4 whitespace-nowrap"><span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${fin.status === 'Pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{fin.status}</span></td>
+                      {/* ✅ COLUNA COMPROVANTE FISCAL */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <FiscalBadge hasReceipt={fin.hasFiscalReceipt} />
+                      </td>
                       {/* ✅ BOTÕES DE AÇÃO - EDITAR E EXCLUIR */}
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                         <div className="flex items-center justify-end gap-2">
@@ -615,21 +711,23 @@ export default function FinanceDashboard() {
               <p className="text-sm mb-4">Ajuste os filtros ou adicione um novo lançamento</p>
               <button onClick={() => {
                 setFilterMonth('todos'); setFilterYear('todos'); setFilterCategory('todos'); setFilterType('todos'); setFilterStatus('todos'); setFilterEmpresa('todos');
+                setFilterHasFiscalReceipt('todos');
                 setFilterEventName(''); setFilterDateStart(''); setFilterDateEnd(''); setFilterValueMin(''); setFilterValueMax('');
               }} className="px-6 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">Limpar filtros</button>
             </div>
           )}
         </div>
 
-        {/* 📄 Rodapé do Relatório */}
+        {/* 📄 Rodapé do Relatório - ANO CORRIGIDO */}
         <div className="mt-8 pt-6 border-t border-gray-200 text-center text-sm text-gray-500">
           <p className="font-medium text-gray-700">AMOVIN – Associação e Movimento pela Inclusão em Rio Paranaíba</p>
           <p className="mt-1">CNPJ: 55.880.046/0001-34 | contato@amovin.org.br | (34) 99821-0513</p>
           <p className="mt-2 text-xs">Relatório gerado em {new Date().toLocaleString('pt-BR')} • Documento confidencial</p>
+          <p className="mt-1 text-xs font-semibold text-blue-600">Exercício Financeiro: {currentYear}</p> {/* ✅ ANO CORRETO */}
         </div>
       </main>
 
-      {/* 📝 Modal de Lançamento - CAMPO VALOR SIMPLIFICADO */}
+      {/* 📝 Modal de Lançamento - COM CAMPO COMPROVANTE FISCAL */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -702,7 +800,6 @@ export default function FinanceDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$)</label>
-                  {/* ✅ CAMPO VALOR SIMPLIFICADO - ACEITA CENTAVOS */}
                   <input 
                     required 
                     type="number" 
@@ -716,6 +813,13 @@ export default function FinanceDashboard() {
                   <p className="text-xs text-gray-500 mt-1">Ex: 20.50 para R$ 20,50</p>
                 </div>
               </div>
+
+              {/* ✅ NOVO CAMPO: Possui Comprovante Fiscal? */}
+              <ToggleFiscal 
+                label="Possui Comprovante Fiscal?" 
+                value={formData.hasFiscalReceipt} 
+                onChange={(val) => setFormData({ ...formData, hasFiscalReceipt: val })} 
+              />
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => { setIsFormOpen(false); setEditingId(null); }} className="px-6 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Cancelar</button>
