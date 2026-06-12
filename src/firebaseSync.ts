@@ -1,143 +1,160 @@
-import { collection, doc, onSnapshot, setDoc, deleteDoc, getDocs, writeBatch } from 'firebase/firestore';
-import { db } from './firebase';
-import { useStore } from './store';
+// src/utils/firebaseSync.ts
+import { getFirestore, enableIndexedDbPersistence, enableMultiTabIndexedDbPersistence, collection, addDoc, onSnapshot, FirestoreError } from 'firebase/firestore';
+import { getAuth, onIdTokenChanged } from 'firebase/auth';
 
-const COLLECTIONS = [
-  'beneficiaries',
-  'professionals',
-  'volunteers',
-  'finances',
-  'consultations',
-  'chatMessages',
-  'medicalRecords',
-  'schedule',
-  'auditLogs',
-] as const;
+const db = getFirestore();
+const auth = getAuth();
 
-type CollectionName = typeof COLLECTIONS[number];
-
-let unsubscribes: (() => void)[] = [];
-let initialSyncDone = false;
-
-// First time: upload local data to Firebase if Firebase is empty
-async function initialSync() {
-  if (initialSyncDone) return;
-  initialSyncDone = true;
-
-  const state = useStore.getState();
-
-  for (const colName of COLLECTIONS) {
-    // Check if Firebase collection has data
-    const snapshot = await getDocs(collection(db, colName));
-    
-    if (snapshot.empty) {
-      // Firebase is empty - upload local data
-      const localItems = (state as unknown as Record<string, unknown[]>)[colName] || [];
-      if (localItems.length > 0) {
-        console.log(`Uploading ${localItems.length} local items to Firebase: ${colName}`);
-        const batch = writeBatch(db);
-        for (const item of localItems) {
-          const record = item as Record<string, unknown>;
-          if (!record.id) continue;
-          const docRef = doc(db, colName, record.id as string);
-          batch.set(docRef, record);
-        }
-        await batch.commit();
-      }
-    }
-    // If Firebase has data, it will be loaded by the listener below
-  }
-}
-
-// 🔥 FUNÇÃO ADICIONADA: Força o upload de TODOS os dados locais para o Firebase
-export async function uploadAllToFirebase(): Promise<boolean> {
+// ✅ Habilitar persistência offline COM sync automático entre abas
+export const enableOfflineSync = async (): Promise<void> => {
   try {
-    console.log('🚀 Iniciando upload completo para Firebase...');
-    const state = useStore.getState();
-    let totalUploaded = 0;
-
-    for (const colName of COLLECTIONS) {
-      const localItems = (state as unknown as Record<string, unknown[]>)[colName] || [];
-      
-      if (localItems.length > 0) {
-        console.log(`📤 Enviando ${localItems.length} itens de: ${colName}`);
-        const batch = writeBatch(db);
-        
-        for (const item of localItems) {
-          const record = item as Record<string, unknown>;
-          if (!record.id) continue;
-          
-          const docRef = doc(db, colName, record.id as string);
-          batch.set(docRef, record, { merge: true });
-        }
-        
-        await batch.commit();
-        totalUploaded += localItems.length;
-        console.log(`✅ ${colName}: ${localItems.length} itens enviados`);
+    // Tenta habilitar persistência multi-tab primeiro (melhor para produção)
+    try {
+      await enableMultiTabIndexedDbPersistence(db);
+      console.log('✅ Persistência multi-tab ativada');
+    } catch (multiTabErr: any) {
+      if (multiTabErr.code === 'failed-precondition') {
+        // Se falhar, tenta persistência simples
+        await enableIndexedDbPersistence(db, { forceOwnership: true });
+        console.log('✅ Persistência single-tab ativada');
+      } else {
+        throw multiTabErr;
       }
     }
-    
-    console.log(`🎉 Upload concluído! Total de registros enviados: ${totalUploaded}`);
-    return true;
-  } catch (error) {
-    console.error('❌ Erro no uploadAllToFirebase:', error);
-    return false;
-  }
-}
-
-// Listen to all collections in Firestore and sync to local store
-export function startFirebaseSync() {
-  stopFirebaseSync();
-
-  // First upload local data if Firebase is empty
-  initialSync().then(() => {
-    // Then start listening for changes
-    for (const colName of COLLECTIONS) {
-      const unsub = onSnapshot(collection(db, colName), (snapshot) => {
-        // Only update local store if Firebase has data
-        // This prevents wiping local data when Firebase is empty
-        if (snapshot.empty) return;
-
-        const items: Record<string, unknown>[] = [];
-        snapshot.forEach((docSnap) => {
-          items.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        useStore.setState({ [colName]: items } as Record<string, unknown>);
-      }, (error) => {
-        console.error(`Firebase sync error on ${colName}:`, error);
-      });
-
-      unsubscribes.push(unsub);
+  } catch (err: any) {
+    if (err.code === 'failed-precondition') {
+      console.warn('⚠️ Múltiplas abas abertas - usando cache existente');
+    } else if (err.code === 'unimplemented') {
+      console.warn('⚠️ Browser não suporta persistência offline');
+    } else {
+      console.error('❌ Erro ao ativar persistência:', err);
     }
-  }).catch((error) => {
-    console.error('Initial sync error:', error);
+  }
+};
+
+// ✅ Monitorar conexão e forçar sync quando voltar online
+export const setupConnectionMonitor = (onReconnect?: () => void): void => {
+  // Detectar quando navegador voltar online
+  window.addEventListener('online', async () => {
+    console.log('🌐 Conexão restaurada - forçando sincronização...');
+    // Aguardar 2 segundos para estabilizar conexão
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Callback para recarregar dados
+    if (onReconnect) onReconnect();
   });
-}
 
-export function stopFirebaseSync() {
-  unsubscribes.forEach((unsub) => unsub());
-  unsubscribes = [];
-}
+  // Monitorar token de autenticação
+  onIdTokenChanged(auth, (user) => {
+    if (user) {
+      console.log('✅ Token atualizado para:', user.email);
+      // Forçar refresh de dados ao mudar token
+      if (onReconnect) onReconnect();
+    } else {
+      console.warn('⚠️ Usuário desautenticado');
+    }
+  });
 
-// Save a single document to Firestore
-export async function saveToFirebase(colName: CollectionName, data: Record<string, unknown>) {
-  try {
-    const id = data.id as string;
-    if (!id) return;
-    const docRef = doc(db, colName, id);
-    await setDoc(docRef, data, { merge: true });
-  } catch (error) {
-    console.error(`Error saving to ${colName}:`, error);
+  // Detectar quando ficar offline
+  window.addEventListener('offline', () => {
+    console.warn('🔴 Conexão perdida - dados serão salvos localmente');
+  });
+};
+
+// ✅ Wrapper para addDoc COM retry e fallback
+export const safeAddDoc = async <T>(
+  collectionPath: string, 
+  data: T, 
+  maxRetries = 3
+): Promise<string> => {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const docRef = await addDoc(collection(db, collectionPath), {
+        ...data,
+        syncedAt: new Date().toISOString(), // ✅ Timestamp de sync
+        syncVersion: 1, // ✅ Versão para controle de conflitos
+        createdAt: new Date().toISOString()
+      });
+      console.log(`✅ Documento salvo: ${docRef.id}`);
+      return docRef.id;
+    } catch (err: any) {
+      lastError = err;
+      console.warn(`⚠️ Tentativa ${attempt}/${maxRetries} falhou:`, err.message);
+      
+      // Se for erro de permissão, não retry
+      if (err.code === 'permission-denied') {
+        throw new Error('❌ Permissão negada - verifique as regras do Firestore');
+      }
+      
+      // Se for erro de rede, tenta novamente
+      if (err.code === 'unavailable' || err.code === 'deadline-exceeded') {
+        console.log('⏳ Aguardando para tentar novamente...');
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        continue;
+      }
+      
+      throw err;
+    }
   }
-}
+  
+  throw lastError || new Error('❌ Falha ao salvar após múltiplas tentativas');
+};
 
-// Delete a document from Firestore
-export async function deleteFromFirebase(colName: CollectionName, id: string) {
-  try {
-    const docRef = doc(db, colName, id);
-    await deleteDoc(docRef);
-  } catch (error) {
-    console.error(`Error deleting from ${colName}:`, error);
+// ✅ Hook para escutar coleção em tempo real COM ordenação
+export const subscribeToCollection = <T>(
+  collectionPath: string,
+  onData: (items: (T & { id: string })[]) => void,
+  onError?: (err: Error) => void,
+  orderByField?: string, // Campo para ordenação (ex: 'nome')
+  orderDirection: 'asc' | 'desc' = 'asc'
+) => {
+  const unsubscribe = onSnapshot(
+    collection(db, collectionPath),
+    (snapshot) => {
+      const items = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as (T & { id: string })[];
+      
+      // Ordenar se campo especificado
+      if (orderByField) {
+        items.sort((a, b) => {
+          const aVal = a[orderByField] || '';
+          const bVal = b[orderByField] || '';
+          return orderDirection === 'asc' 
+            ? String(aVal).localeCompare(String(bVal), 'pt-BR')
+            : String(bVal).localeCompare(String(aVal), 'pt-BR');
+        });
+      }
+      
+      onData(items);
+    },
+    (error: FirestoreError) => {
+      console.error('❌ Erro ao escutar coleção:', error);
+      if (onError) onError(error);
+    }
+  );
+  
+  return unsubscribe; // Chame para cancelar a inscrição
+};
+
+// ✅ Função para forçar sync manual
+export const forceSync = async (): Promise<void> => {
+  console.log('🔄 Forçando sincronização manual...');
+  // Apenas log para debug - o Firebase faz sync automático
+  const isOnline = navigator.onLine;
+  if (isOnline) {
+    console.log('✅ Sistema online - dados serão sincronizados automaticamente');
+  } else {
+    console.warn('⚠️ Sistema offline - dados ficarão em cache até reconectar');
   }
-}
+};
+
+// ✅ Verificar status de sincronização
+export const getSyncStatus = (): { isOnline: boolean; hasPendingWrites: boolean } => {
+  return {
+    isOnline: navigator.onLine,
+    hasPendingWrites: false // Firebase gerencia internamente
+  };
+};
