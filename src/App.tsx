@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './store';
-import { startFirebaseSync } from './firebaseSync';
+import { enableOfflineSync, setupConnectionMonitor } from './utils/firebaseSync';
 import Login from './pages/Login';
 import Layout from './components/Layout';
 import DashboardHome from './pages/DashboardHome';
@@ -16,11 +16,47 @@ import Chat from './pages/Chat';
 import Agenda from './pages/Agenda';
 import ConsultationsList from './pages/ConsultationsList';
 
+// ✅ Indicador Visual de Status (Online/Offline)
+const SyncStatusIndicator: React.FC = () => {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  return (
+    <div className={`fixed bottom-4 right-4 px-4 py-2 rounded-full text-xs font-medium shadow-lg z-50 transition-all ${
+      isOnline
+        ? 'bg-green-100 text-green-800 border border-green-200'
+        : 'bg-yellow-100 text-yellow-800 border border-yellow-200 animate-pulse'
+    }`}>
+      {isOnline ? '🟢 Online - Sync ativo' : '🟡 Offline - Dados em cache'}
+    </div>
+  );
+};
+
 function App() {
   const currentUser = useStore((state) => state.currentUser);
 
   useEffect(() => {
-    startFirebaseSync();
+    // ✅ Inicialização segura do Firebase Sync
+    const initSync = async () => {
+      try {
+        await enableOfflineSync();
+        setupConnectionMonitor();
+        console.log('✅ Sistema de sincronização inicializado');
+      } catch (error) {
+        console.error('❌ Erro ao inicializar sync:', error);
+      }
+    };
+    initSync();
   }, []);
 
   return (
@@ -43,6 +79,9 @@ function App() {
           <Route path="prontuario" element={<ConsultationsList />} />
         </Route>
       </Routes>
+      
+      {/* Indicador flutuante de conexão */}
+      <SyncStatusIndicator />
     </Router>
   );
 }
