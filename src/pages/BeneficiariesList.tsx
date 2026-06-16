@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore, Beneficiary } from '../store';
 import FRBForm from '../components/FRBForm';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
@@ -7,16 +7,36 @@ export default function BeneficiariesList() {
   const { beneficiaries, deleteBeneficiary } = useStore();
   const [editingBen, setEditingBen] = useState<Beneficiary | undefined | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [sortedList, setSortedList] = useState<Beneficiary[]>([]);
 
-  // ✅ ORDENAÇÃO ALFABÉTICA (A-Z) COM useMemo
-  const sortedBeneficiaries = useMemo(() => {
-    const list = beneficiaries || [];
-    return [...list].sort((a, b) => {
-      const nameA = a.fullName || '';
-      const nameB = b.fullName || '';
-      return nameA.localeCompare(nameB, 'pt-BR'); // Respeita acentos: Á, Ã, Ç
+  // ✅ ORDENAÇÃO FORÇADA COM useEffect
+  useEffect(() => {
+    console.log('📋 Beneficiários brutos:', beneficiaries);
+    
+    if (!beneficiaries || beneficiaries.length === 0) {
+      setSortedList([]);
+      return;
+    }
+
+    const sorted = [...beneficiaries].sort((a, b) => {
+      const nameA = (a.fullName || '').toUpperCase().trim();
+      const nameB = (b.fullName || '').toUpperCase().trim();
+      
+      // Remove acentos para comparação correta
+      const normalize = (str: string) => 
+        str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      
+      const normalizedA = normalize(nameA);
+      const normalizedB = normalize(nameB);
+      
+      if (normalizedA < normalizedB) return -1;
+      if (normalizedA > normalizedB) return 1;
+      return 0;
     });
-  }, [beneficiaries]);
+
+    console.log('✅ Lista ordenada:', sorted.map(b => b.fullName));
+    setSortedList(sorted);
+  }, [beneficiaries]); // Reordena SEMPRE que beneficiaries mudar
 
   const handleOpenForm = (ben?: Beneficiary) => {
     setEditingBen(ben);
@@ -34,7 +54,7 @@ export default function BeneficiariesList() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Beneficiários (FRB)</h1>
-          <p className="text-sm text-gray-500 mt-1">Total de {sortedBeneficiaries.length} cadastrados</p>
+          <p className="text-sm text-gray-500 mt-1">Total de {sortedList.length} cadastrados (ordem alfabética)</p>
         </div>
         <button
           onClick={() => handleOpenForm()}
@@ -46,7 +66,7 @@ export default function BeneficiariesList() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        {sortedBeneficiaries.length === 0 ? (
+        {sortedList.length === 0 ? (
           <div className="p-16 text-center">
              <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Plus size={32} className="text-gray-400" />
@@ -56,7 +76,7 @@ export default function BeneficiariesList() {
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
-            {sortedBeneficiaries.map((ben) => (
+            {sortedList.map((ben) => (
               <li key={ben.id} className="hover:bg-gray-50 transition-colors duration-200">
                 <div className="px-6 py-5 flex items-center sm:px-8 justify-between">
                   <div className="flex items-center min-w-0 flex-1">
