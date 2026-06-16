@@ -8,13 +8,13 @@ export default function BeneficiariesList() {
   const [editingBen, setEditingBen] = useState<Beneficiary | undefined | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // ✅ Lógica de Ordenação Alfabética (A-Z) com useMemo para performance
+  // ✅ ORDENAÇÃO ALFABÉTICA (A-Z) COM useMemo
   const sortedBeneficiaries = useMemo(() => {
     const list = beneficiaries || [];
     return [...list].sort((a, b) => {
       const nameA = a.fullName || '';
       const nameB = b.fullName || '';
-      return nameA.localeCompare(nameB, 'pt-BR');
+      return nameA.localeCompare(nameB, 'pt-BR'); // Respeita acentos: Á, Ã, Ç
     });
   }, [beneficiaries]);
 
@@ -60,7 +60,6 @@ export default function BeneficiariesList() {
               <li key={ben.id} className="hover:bg-gray-50 transition-colors duration-200">
                 <div className="px-6 py-5 flex items-center sm:px-8 justify-between">
                   <div className="flex items-center min-w-0 flex-1">
-                    {/* Foto com tratamento de erro */}
                     <div className="flex-shrink-0 h-14 w-14 rounded-full overflow-hidden bg-gray-100 border-2 border-white shadow-sm">
                       {ben.photoUrl ? (
                         <img 
@@ -68,7 +67,6 @@ export default function BeneficiariesList() {
                           src={ben.photoUrl} 
                           alt={ben.fullName} 
                           onError={(e) => {
-                            // Se a imagem falhar, esconde o img e mostra fallback
                             (e.target as HTMLImageElement).style.display = 'none';
                             (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
                           }}
