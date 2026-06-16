@@ -14,7 +14,7 @@ interface Props {
   readOnly?: boolean;
 }
 
-// FUNÇÃO QUE CORRIGE A DATA (evita problema de fuso horário)
+// ✅ FUNÇÃO QUE CORRIGE A DATA (evita problema de fuso horário)
 function formatDateBR(dateString?: string): string {
   if (!dateString) return '-';
   const dataLimpa = dateString.split('T')[0];
@@ -25,16 +25,53 @@ function formatDateBR(dateString?: string): string {
   return `${diaFormatado}/${mesFormatado}/${ano}`;
 }
 
+// ✅ FUNÇÃO CRÍTICA: Limpa dados ANTES de salvar no Firebase
+// Remove campos undefined/null para evitar erro "Unsupported field value: undefined"
+const prepareForFirestore = (data: Partial<Beneficiary>) => {
+  const cleaned: Record<string, any> = {};
+  
+  for (const key in data) {
+    const value = data[key as keyof Beneficiary];
+    // Só inclui se NÃO for undefined ou null
+    if (value !== undefined && value !== null) {
+      cleaned[key] = value;
+    }
+  }
+  
+  // ✅ Garante que photoUrl NUNCA fique undefined (causa principal do erro)
+  cleaned.photoUrl = typeof data.photoUrl === 'string' ? data.photoUrl : "";
+  
+  // Garante campos obrigatórios com valor padrão
+  cleaned.fullName = data.fullName || "";
+  cleaned.respName = data.respName || "";
+  cleaned.cid = data.cid || "";
+  
+  // Garante que arrays sempre existam
+  cleaned.activities = Array.isArray(data.activities) ? data.activities : [];
+  
+  return cleaned;
+};
+
 export default function FRBForm({ initialData, onClose, readOnly = false }: Props) {
   const { addBeneficiary, updateBeneficiary, currentUser, addAuditLog } = useStore();
   const _readOnly = readOnly;
-  const [formData, setFormData] = useState<Partial<Beneficiary>>(initialData || {
-    activities: [],
-    supportLevel: 'Não',
-    isStudent: 'Não',
-    hasAllergies: 'Não',
-    continuousMedication: 'Não',
+  
+  const [formData, setFormData] = useState<Partial<Beneficiary>>(() => {
+    // Inicializa com valores padrão para evitar undefined
+    const base = {
+      activities: [],
+      supportLevel: 'Não',
+      isStudent: 'Não',
+      hasAllergies: 'Não',
+      continuousMedication: 'Não',
+      photoUrl: "", // ✅ Inicializa como string vazia, NÃO undefined
+      fullName: "",
+      respName: "",
+      cid: "",
+    };
+    return initialData ? { ...base, ...initialData } : base;
   });
+  
   const [isSaving, setIsSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
@@ -47,7 +84,8 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, photoUrl: reader.result as string }));
+        // ✅ Garante que photoUrl seja string válida
+        setFormData(prev => ({ ...prev, photoUrl: (reader.result as string) || "" }));
       };
       reader.readAsDataURL(file);
     }
@@ -75,13 +113,23 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
   const handleSave = async () => {
     if (_readOnly) return;
     setIsSaving(true);
+    
     try {
+      // 1. Upload da foto se houver arquivo novo
       let finalPhotoUrl = formData.photoUrl;
       if (selectedFile) {
         const imgurLink = await uploadToImgur(selectedFile);
         if (imgurLink) finalPhotoUrl = imgurLink;
       }
-      const dataToSave = { ...formData, photoUrl: finalPhotoUrl, matricula: formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : '' };
+
+      // 2. Prepara dados LIMPOS para o Firebase (CORREÇÃO DO ERRO)
+      const dataToSave = prepareForFirestore({
+        ...formData,
+        photoUrl: finalPhotoUrl,
+        matricula: formData.cpf ? formData.cpf.replace(/\D/g,'').substring(0,6) : ''
+      });
+
+      // 3. Salva no Firebase/Store
       if (initialData?.id) {
         await updateBeneficiary(initialData.id, dataToSave);
         addAuditLog('Editar beneficiario', formData.fullName || '');
@@ -89,10 +137,11 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
         await addBeneficiary(dataToSave as Omit<Beneficiary, 'id' | 'inclusionDate'>);
         addAuditLog('Cadastrar beneficiario', formData.fullName || '');
       }
+      
       onClose();
     } catch (err) {
-      console.error('Erro ao salvar:', err);
-      alert('Erro ao salvar. Tente novamente.');
+      console.error('❌ Erro ao salvar:', err);
+      alert('Erro ao salvar. Verifique o console para detalhes.');
     } finally {
       setIsSaving(false);
     }
@@ -109,9 +158,7 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
     }
   };
 
-  // Função para abrir o menu de termos
   const handleOpenTerms = () => {
-    // Verifica se tem dados mínimos para os termos
     if (!formData.fullName && !formData.respName) {
       alert('Preencha pelo menos o nome do beneficiário ou do responsável antes de gerar os termos.');
       return;
@@ -127,15 +174,11 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-bold text-gray-800">{S.fichaRegistro}</h2>
           <div className="flex space-x-2">
-            
-            {/* Botão Prontuário (só aparece se tiver ID) */}
             {formData.id && (
               <button onClick={() => setShowMedicalRecord(true)} className="p-2 text-amber-700 hover:bg-amber-50 rounded flex items-center gap-1 border border-amber-200" title={S.prontuario}>
                 <ClipboardList size={20} /> {S.prontuario}
               </button>
             )}
-            
-            {/* ✅ BOTÃO TERMOS - Sempre visível */}
             <button 
               onClick={handleOpenTerms} 
               className="p-2 text-gray-800 hover:bg-yellow-50 rounded flex items-center gap-1 border border-yellow-300 bg-yellow-50" 
@@ -143,21 +186,15 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
             >
               <FileText size={20} /> Termos
             </button>
-            
-            {/* Botão Imprimir */}
             <button onClick={handlePrint} className="p-2 text-gray-600 hover:bg-gray-100 rounded" title={S.imprimir}>
               <Printer size={20} /> {S.imprimir}
             </button>
-            
-            {/* Botão Salvar */}
             {!_readOnly && (
               <button onClick={handleSave} disabled={isSaving} className="p-2 text-blue-600 hover:bg-blue-50 rounded flex items-center gap-1 disabled:text-gray-400" title={S.salvar}>
                 {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                 {isSaving ? 'Salvando...' : S.salvar}
               </button>
             )}
-            
-            {/* Botão Fechar */}
             <button onClick={onClose} className="p-2 text-red-600 hover:bg-red-50 rounded" title={S.fechar}>
               <X size={20} />
             </button>
@@ -250,10 +287,10 @@ export default function FRBForm({ initialData, onClose, readOnly = false }: Prop
         <div className="signature-area"><div className="signature-line"></div><div className="signature-name">{currentUser?.name}</div><div className="signature-date">Assinado digitalmente em: {new Date().toLocaleDateString('pt-BR')}</div></div>
       </div>
 
-      {/* ✅ MODAL DE PRONTUÁRIO */}
+      {/* MODAL DE PRONTUÁRIO */}
       {showMedicalRecord && formData.id && <MedicalRecordModal beneficiary={formData as Beneficiary} onClose={() => setShowMedicalRecord(false)} />}
       
-      {/* ✅ MODAL DE TERMOS - Abre o menu de seleção */}
+      {/* MODAL DE TERMOS */}
       {showTerm && <TermModal beneficiary={formData as Beneficiary} onClose={() => setShowTerm(false)} />}
       
     </div>
