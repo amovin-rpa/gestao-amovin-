@@ -11,8 +11,6 @@ export default function BeneficiariesList() {
 
   // ✅ ORDENAÇÃO ALFABÉTICA FORÇADA
   useEffect(() => {
-    console.log('📋 Beneficiários brutos:', beneficiaries?.length);
-    
     if (!beneficiaries || beneficiaries.length === 0) {
       setSortedList([]);
       return;
@@ -26,11 +24,9 @@ export default function BeneficiariesList() {
       const normalize = (str: string) => 
         str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       
-      const result = normalize(nameA).localeCompare(normalize(nameB));
-      return result;
+      return normalize(nameA).localeCompare(normalize(nameB));
     });
 
-    console.log('✅ Lista ORDENADA:', sorted.map(b => b.fullName));
     setSortedList(sorted);
   }, [beneficiaries]);
 
@@ -50,9 +46,7 @@ export default function BeneficiariesList() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Beneficiários (FRB)</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Total: {sortedList.length} | Ordem: A-Z
-          </p>
+          <p className="text-sm text-gray-500 mt-1">Total: {sortedList.length} | Ordem: A-Z</p>
         </div>
         <button
           onClick={() => handleOpenForm()}
@@ -79,23 +73,14 @@ export default function BeneficiariesList() {
                   <div className="flex items-center min-w-0 flex-1">
                     <div className="flex-shrink-0 h-14 w-14 rounded-full overflow-hidden bg-gray-100 border-2 border-white">
                       {ben.photoUrl ? (
-                        <img 
-                          className="h-14 w-14 object-cover" 
-                          src={ben.photoUrl} 
-                          alt={ben.fullName}
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
+                        <img className="h-14 w-14 object-cover" src={ben.photoUrl} alt={ben.fullName} />
                       ) : (
                         <span className="h-14 w-14 flex items-center justify-center text-gray-400 text-xs">Sem foto</span>
                       )}
                     </div>
                     <div className="ml-5">
                       <p className="text-base font-semibold text-gray-900">{ben.fullName}</p>
-                      <p className="text-sm text-gray-500">
-                        Resp: {ben.respName} | CID: {ben.cid}
-                      </p>
+                      <p className="text-sm text-gray-500">Resp: {ben.respName} | CID: {ben.cid}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
