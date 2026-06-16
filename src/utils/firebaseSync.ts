@@ -1,23 +1,18 @@
-import { 
-  getFirestore, 
-  enableIndexedDbPersistence, 
-  collection, 
-  addDoc, 
-  onSnapshot, 
-  FirestoreError 
-} from 'firebase/firestore';
+// src/utils/firebaseSync.ts
+
+import { getFirestore, enableIndexedDbPersistence, collection, addDoc, onSnapshot, FirestoreError } from 'firebase/firestore';
 import { getAuth, onIdTokenChanged } from 'firebase/auth';
 
 const db = getFirestore();
 const auth = getAuth();
 
-// ✅ 1. Habilitar Persistência Offline (Evita "pausa" do Firebase)
+// ✅ 1. Habilitar Persistência Offline
 export const enableOfflineSync = async (): Promise<void> => {
   try {
     await enableIndexedDbPersistence(db, { forceOwnership: true });
     console.log('✅ Persistência Offline Ativada');
   } catch (err: any) {
-    if (err.code === 'failed-precondition') console.warn('⚠️ Múltiplas abas abertas');
+    if (err.code === 'failed-precondition') console.warn('️ Múltiplas abas abertas');
     else console.error('❌ Erro offline:', err);
   }
 };
@@ -35,7 +30,7 @@ export const setupConnectionMonitor = (onReconnect?: () => void): void => {
   });
 };
 
-// ✅ 3. Salvar com Retry Automático
+// ✅ 3. Salvar com Retry
 export const safeAddDoc = async <T>(
   collectionPath: string,
   data: T,
@@ -75,7 +70,7 @@ export const subscribeToCollectionSorted = <T>(
         ...doc.data()
       })) as (T & { id: string })[];
 
-      // Ordenação A-Z segura (respeita acentos)
+      // Ordenação A-Z
       items.sort((a, b) => 
         String(a[orderByField] || '').localeCompare(String(b[orderByField] || ''), 'pt-BR')
       );
