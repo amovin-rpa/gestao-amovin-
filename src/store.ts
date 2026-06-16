@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import { saveToFirebase, deleteFromFirebase } from './firebaseSync';
+
+// ✅ CORREÇÃO DO CAMINHO: Agora aponta para utils/firebaseSync
+import { saveToFirebase, deleteFromFirebase } from './utils/firebaseSync';
 
 export type Role = 'admin' | 'recepcao' | 'consulta' | null;
 
@@ -88,9 +90,9 @@ export interface FinanceRecord {
   year: string;
   category: string;
   description?: string;
-  eventDate?: string;              // ✅ JÁ EXISTIA: Data do evento (para categoria Evento)
-  empresaPessoaFisica?: string;    // ✅ NOVO: Empresa ou Pessoa Física
-  status: 'Pago' | 'Pendente';     // ✅ NOVO: Status do lançamento
+  eventDate?: string;              
+  empresaPessoaFisica?: string;    
+  status: 'Pago' | 'Pendente';     
 }
 
 export interface Consultation {
@@ -231,6 +233,7 @@ export const useStore = create<AppState>()(
       addBeneficiary: (b) => {
         const newItem = { ...b, id: uuidv4(), inclusionDate: new Date().toISOString() };
         set((state) => ({ beneficiaries: [...state.beneficiaries, newItem] }));
+        // Use o await se possível, senão deixe síncrono para UI rápida
         saveToFirebase('beneficiaries', newItem as unknown as Record<string, unknown>);
       },
       updateBeneficiary: (id, b) => {
@@ -283,11 +286,10 @@ export const useStore = create<AppState>()(
       },
 
       addFinance: (f) => {
-        // ✅ Define valor padrão para status se não fornecido
         const newItem = { 
           ...f, 
           id: uuidv4(),
-          status: f.status || 'Pendente' // ✅ Default: Pendente
+          status: f.status || 'Pendente' 
         };
         set((state) => ({ finances: [...state.finances, newItem] }));
         saveToFirebase('finances', newItem as unknown as Record<string, unknown>);
@@ -364,7 +366,6 @@ export const useStore = create<AppState>()(
   )
 );
 
-// Auto-logout when browser/tab closes
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
     useStore.getState().logout();
