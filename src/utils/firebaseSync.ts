@@ -132,3 +132,38 @@ export const subscribeToCollectionSorted = <T>(
   );
   return unsubscribe;
 };
+
+// ✅ 6. FUNÇÃO NOVA: Upload em massa para o DashboardHome (CORREÇÃO DO ERRO)
+export const uploadAllToFirebase = async (
+  store: Record<string, unknown>
+): Promise<number> => {
+  let total = 0;
+  
+  // Lista de todas as coleções do seu store
+  const collections = [
+    'beneficiaries', 
+    'professionals', 
+    'volunteers', 
+    'finances', 
+    'consultations', 
+    'chatMessages', 
+    'medicalRecords', 
+    'schedule', 
+    'auditLogs'
+  ];
+  
+  for (const collectionName of collections) {
+    const items = store[collectionName] as unknown[];
+    
+    if (Array.isArray(items)) {
+      for (const item of items) {
+        // Usa a função saveToFirebase que já limpa os dados
+        await saveToFirebase(collectionName, item as Record<string, unknown>);
+        total++;
+      }
+    }
+  }
+  
+  console.log(`✅ Upload em massa concluído: ${total} registros enviados`);
+  return total;
+};
