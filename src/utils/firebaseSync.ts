@@ -1,5 +1,4 @@
 import { 
-  getFirestore, 
   enableIndexedDbPersistence, 
   collection, 
   addDoc, 
@@ -9,10 +8,8 @@ import {
   onSnapshot, 
   FirestoreError 
 } from 'firebase/firestore';
-import { getAuth, onIdTokenChanged } from 'firebase/auth';
-
-const db = getFirestore();
-const auth = getAuth();
+import { onIdTokenChanged } from 'firebase/auth';
+import { db, auth } from '../firebase';
 
 // ✅ 1. Habilitar Persistência Offline
 export const enableOfflineSync = async (): Promise<void> => {
