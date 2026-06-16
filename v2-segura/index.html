@@ -8,11 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,7 +21,7 @@
             padding-bottom: 80px;
         }
 
-        /* ========== BANNER LGPD ========== */
+        /* Banner LGPD */
         .lgpd-banner {
             position: fixed;
             bottom: 0;
@@ -44,15 +40,7 @@
             flex-wrap: wrap;
         }
 
-        .lgpd-banner span {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .lgpd-banner a {
-            color: #667eea;
-            text-decoration: underline;
-        }
+        .lgpd-banner a { color: #667eea; text-decoration: underline; }
 
         .lgpd-btn {
             background: #667eea;
@@ -64,22 +52,18 @@
             font-size: 14px;
             font-weight: bold;
             white-space: nowrap;
-            transition: background 0.3s;
         }
 
-        .lgpd-btn:hover {
-            background: #5a6fd6;
-        }
+        .lgpd-btn:hover { background: #5a6fd6; }
 
-        /* ========== LOGIN ========== */
+        /* Login */
         .login-container {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             overflow: hidden;
-            margin-bottom: 60px;
         }
 
         .login-header {
@@ -90,37 +74,25 @@
         }
 
         .login-header .logo {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
-            font-size: 45px;
+            font-size: 40px;
             font-weight: bold;
             color: #764ba2;
         }
 
-        .login-header h1 {
-            font-size: 26px;
-            margin-bottom: 5px;
-        }
+        .login-header h1 { font-size: 24px; margin-bottom: 5px; }
+        .login-header p { font-size: 14px; opacity: 0.9; }
 
-        .login-header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
+        .login-body { padding: 35px; }
 
-        .login-body {
-            padding: 35px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
+        .form-group { margin-bottom: 25px; position: relative; }
 
         .form-group label {
             display: block;
@@ -151,17 +123,13 @@
             top: 44px;
             cursor: pointer;
             font-size: 22px;
-            user-select: none;
-            opacity: 0.6;
-            transition: opacity 0.3s;
             background: none;
             border: none;
-            z-index: 10;
+            opacity: 0.6;
+            transition: opacity 0.3s;
         }
 
-        .olho-magico:hover {
-            opacity: 1;
-        }
+        .olho-magico:hover { opacity: 1; }
 
         .btn-login {
             width: 100%;
@@ -173,20 +141,11 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 5px;
+            transition: transform 0.2s;
         }
 
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-login:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-login:hover { transform: translateY(-2px); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .erro-msg {
             background: #fff5f5;
@@ -200,79 +159,8 @@
             font-weight: 500;
         }
 
-        .erro-msg.show {
-            display: block;
-        }
+        .erro-msg.show { display: block; }
 
-        /* ========== STATUS FIREBASE ========== */
-        .firebase-status {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 18px;
-            padding: 10px;
-            border-radius: 25px;
-            font-weight: 500;
-        }
-
-        .firebase-status.online {
-            color: #2e7d32;
-            background: #e8f5e9;
-        }
-
-        .firebase-status.offline {
-            color: #c62828;
-            background: #ffebee;
-        }
-
-        .firebase-status .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .firebase-status.online .status-dot {
-            background: #4caf50;
-        }
-
-        .firebase-status.offline .status-dot {
-            background: #f44336;
-        }
-
-        /* ========== ESPAÇO EM PERCENTUAL ========== */
-        .espaco-info {
-            background: #f5f5ff;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 18px;
-            text-align: center;
-            border: 1px solid #e0e0ff;
-        }
-
-        .espaco-titulo {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-
-        .espaco-percentual {
-            font-size: 36px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .espaco-percentual span {
-            font-size: 18px;
-        }
-
-        .espaco-legenda {
-            font-size: 11px;
-            color: #999;
-            margin-top: 5px;
-        }
-
-        /* ========== LINKS LEGAIS ========== */
         .links-legal {
             text-align: center;
             margin-top: 20px;
@@ -280,53 +168,27 @@
             color: #999;
         }
 
-        .links-legal a {
-            color: #667eea;
-            text-decoration: none;
-            margin: 0 10px;
-            font-weight: 500;
-        }
-
-        .links-legal a:hover {
-            text-decoration: underline;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .conectando {
-            animation: pulse 1.5s infinite;
-        }
+        .links-legal a { color: #667eea; text-decoration: none; margin: 0 8px; }
+        .links-legal a:hover { text-decoration: underline; }
 
         @media (max-width: 500px) {
-            .login-body {
-                padding: 25px;
-            }
-            
-            .lgpd-banner {
-                flex-direction: column;
-                text-align: center;
-                padding: 15px 20px;
-                gap: 10px;
-            }
+            .login-body { padding: 25px; }
+            .lgpd-banner { flex-direction: column; text-align: center; padding: 15px 20px; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ========== BANNER LGPD (SEMPRE VISÍVEL) ========== -->
+    <!-- Banner LGPD -->
     <div class="lgpd-banner" id="lgpdBanner">
         <span>
-            🍪 Este site usa cookies essenciais para funcionamento. Ao continuar, você concorda com nossa 
-            <a href="#" onclick="alert('Política de Privacidade completa em breve.')">Política de Privacidade</a> 
-            e está ciente do tratamento de dados conforme a <strong>LGPD</strong>.
+            🍪 Este site usa cookies essenciais. Ao continuar, você concorda com a 
+            <a href="#">Política de Privacidade</a> (LGPD).
         </span>
         <button class="lgpd-btn" onclick="aceitarLGPD()">ENTENDI E ACEITO</button>
     </div>
 
-    <!-- ========== LOGIN ========== -->
+    <!-- Login -->
     <div class="login-container">
         <div class="login-header">
             <div class="logo">A</div>
@@ -340,65 +202,29 @@
             <form id="loginForm" autocomplete="off">
                 <div class="form-group">
                     <label>📧 E-mail</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        required 
-                        placeholder="seu@email.com"
-                        autocomplete="off"
-                    >
+                    <input type="email" id="email" required placeholder="seu@email.com" autocomplete="off">
                 </div>
 
                 <div class="form-group">
                     <label>🔒 Senha</label>
-                    <input 
-                        type="password" 
-                        id="senha" 
-                        required 
-                        placeholder="••••••••"
-                        autocomplete="new-password"
-                    >
-                    <button type="button" class="olho-magico" id="olhoMagico" onclick="toggleSenha()" tabindex="-1">
-                        👁️
-                    </button>
+                    <input type="password" id="senha" required placeholder="••••••••" autocomplete="new-password">
+                    <button type="button" class="olho-magico" onclick="toggleSenha()" tabindex="-1">👁️</button>
                 </div>
 
-                <button type="submit" class="btn-login" id="btnLogin">
-                    🔐 Entrar
-                </button>
+                <button type="submit" class="btn-login" id="btnLogin">🔐 Entrar</button>
             </form>
 
-            <!-- Status Firebase -->
-            <div class="firebase-status" id="firebaseStatus">
-                <span class="status-dot"></span>
-                <span id="statusTexto">Verificando conexão...</span>
-            </div>
-
-            <!-- Espaço em PERCENTUAL -->
-            <div class="espaco-info">
-                <div class="espaco-titulo">📊 ESPAÇO UTILIZADO</div>
-                <div class="espaco-percentual">
-                    <span id="espacoValor">--</span><span>%</span>
-                </div>
-                <div class="espaco-legenda">Firebase Storage</div>
-            </div>
-
-            <!-- Links -->
             <div class="links-legal">
-                <a href="#" onclick="alert('Política de Privacidade completa em breve.')">Política de Privacidade</a>
-                <span>|</span>
-                <a href="#" onclick="alert('Termos de Uso completos em breve.')">Termos de Uso</a>
-                <span>|</span>
+                <a href="#">Privacidade</a> |
+                <a href="#">Termos</a> |
                 <span>🔒 LGPD</span>
             </div>
         </div>
     </div>
 
-    <!-- ========== SCRIPTS ========== -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, enableNetwork, disableNetwork } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
@@ -411,42 +237,8 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
 
-        // ========== STATUS FIREBASE ==========
-        const statusDiv = document.getElementById('firebaseStatus');
-        const statusTexto = document.getElementById('statusTexto');
-        
-        function atualizarStatus(online) {
-            if (online) {
-                statusDiv.className = 'firebase-status online';
-                statusTexto.textContent = 'Conectado ao Firebase';
-            } else {
-                statusDiv.className = 'firebase-status offline';
-                statusTexto.textContent = 'Firebase offline';
-            }
-        }
-
-        window.addEventListener('online', () => {
-            enableNetwork(db);
-            atualizarStatus(true);
-        });
-
-        window.addEventListener('offline', () => {
-            disableNetwork(db);
-            atualizarStatus(false);
-        });
-
-        atualizarStatus(navigator.onLine);
-
-        // ========== ESPAÇO EM PERCENTUAL ==========
-        function atualizarEspaco() {
-            const usoEstimado = Math.floor(Math.random() * 12) + 1;
-            document.getElementById('espacoValor').textContent = usoEstimado;
-        }
-        atualizarEspaco();
-
-        // ========== VERIFICAR LOGIN ==========
+        // Verificar se já logado
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 sessionStorage.setItem('amovin_logado', 'true');
@@ -455,7 +247,7 @@
             }
         });
 
-        // ========== LOGIN ==========
+        // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -475,16 +267,8 @@
                 window.location.href = 'dashboard.html';
             } catch (error) {
                 let mensagem = 'Erro ao fazer login.';
-                
-                if (error.code === 'auth/invalid-credential') {
-                    mensagem = 'E-mail ou senha incorretos.';
-                } else if (error.code === 'auth/user-not-found') {
-                    mensagem = 'Usuário não encontrado.';
-                } else if (error.code === 'auth/wrong-password') {
-                    mensagem = 'Senha incorreta.';
-                } else if (error.code === 'auth/too-many-requests') {
-                    mensagem = 'Muitas tentativas. Aguarde 1 minuto.';
-                }
+                if (error.code === 'auth/invalid-credential') mensagem = 'E-mail ou senha incorretos.';
+                else if (error.code === 'auth/too-many-requests') mensagem = 'Muitas tentativas. Aguarde.';
                 
                 erroMsg.textContent = '❌ ' + mensagem;
                 erroMsg.classList.add('show');
@@ -493,21 +277,20 @@
             }
         });
 
-        // ========== OLHO MÁGICO ==========
+        // Olho mágico
         window.toggleSenha = function() {
-            const senhaInput = document.getElementById('senha');
-            const olho = document.getElementById('olhoMagico');
-            
-            if (senhaInput.type === 'password') {
-                senhaInput.type = 'text';
+            const senha = document.getElementById('senha');
+            const olho = document.querySelector('.olho-magico');
+            if (senha.type === 'password') {
+                senha.type = 'text';
                 olho.textContent = '🙈';
             } else {
-                senhaInput.type = 'password';
+                senha.type = 'password';
                 olho.textContent = '👁️';
             }
         };
 
-        // ========== SEGURANÇA: BLOQUEAR VOLTAR ==========
+        // Segurança: bloquear voltar
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', () => {
             history.pushState(null, null, location.href);
@@ -524,33 +307,29 @@
             }
         });
 
-        // ========== TIMEOUT DE SESSÃO ==========
-        let timeoutInatividade;
-        
-        function resetarTimeout() {
-            clearTimeout(timeoutInatividade);
-            timeoutInatividade = setTimeout(() => {
+        // Timeout 30 min
+        let timeout;
+        function resetTimeout() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
                 if (sessionStorage.getItem('amovin_logado')) {
                     signOut(auth);
                     sessionStorage.clear();
-                    alert('⏰ Sessão expirada por inatividade. Faça login novamente.');
+                    alert('⏰ Sessão expirada.');
                     window.location.href = 'index.html';
                 }
             }, 30 * 60 * 1000);
         }
-        
-        document.addEventListener('mousemove', resetarTimeout);
-        document.addEventListener('keypress', resetarTimeout);
-        document.addEventListener('click', resetarTimeout);
-        resetarTimeout();
+        document.addEventListener('mousemove', resetTimeout);
+        document.addEventListener('keypress', resetTimeout);
+        document.addEventListener('click', resetTimeout);
+        resetTimeout();
 
-        // ========== LGPD ==========
+        // LGPD
         window.aceitarLGPD = function() {
             document.getElementById('lgpdBanner').style.display = 'none';
             localStorage.setItem('lgpd_aceito', 'true');
-            localStorage.setItem('lgpd_data', new Date().toISOString());
         };
-
         if (localStorage.getItem('lgpd_aceito') === 'true') {
             document.getElementById('lgpdBanner').style.display = 'none';
         }
