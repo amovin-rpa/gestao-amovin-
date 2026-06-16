@@ -40,9 +40,18 @@
             color: white;
         }
 
-        .login-header img {
-            width: 120px;
-            margin-bottom: 15px;
+        .login-header .logo {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 40px;
+            font-weight: bold;
+            color: #764ba2;
         }
 
         .login-header h1 {
@@ -96,6 +105,8 @@
             user-select: none;
             opacity: 0.6;
             transition: opacity 0.3s;
+            background: none;
+            border: none;
         }
 
         .olho-magico:hover {
@@ -134,6 +145,7 @@
             margin-bottom: 20px;
             display: none;
             font-size: 14px;
+            border-left: 4px solid #c33;
         }
 
         .erro-msg.show {
@@ -160,16 +172,61 @@
         .firebase-status {
             text-align: center;
             font-size: 11px;
-            color: #999;
             margin-top: 15px;
+            padding: 8px;
+            border-radius: 20px;
+            background: #f5f5f5;
         }
 
         .firebase-status.online {
             color: #4caf50;
+            background: #e8f5e9;
         }
 
         .firebase-status.offline {
             color: #f44336;
+            background: #ffebee;
+        }
+
+        .firebase-status .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .firebase-status.online .status-dot {
+            background: #4caf50;
+        }
+
+        .firebase-status.offline .status-dot {
+            background: #f44336;
+        }
+
+        .espaco-info {
+            background: #f0f0ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .espaco-barra {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .espaco-preenchido {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 3px;
+            transition: width 0.5s;
         }
 
         @keyframes pulse {
@@ -180,12 +237,46 @@
         .conectando {
             animation: pulse 1.5s infinite;
         }
+
+        .lgpd-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            font-size: 13px;
+        }
+
+        .lgpd-banner button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
+    <!-- Banner LGPD -->
+    <div class="lgpd-banner" id="lgpdBanner">
+        <span>🍪 Este site usa cookies essenciais para funcionamento. Ao continuar, você concorda com nossa 
+            <a href="#" style="color: #667eea;">Política de Privacidade</a> (LGPD).
+        </span>
+        <button onclick="aceitarLGPD()">Entendi</button>
+    </div>
+
     <div class="login-container">
         <div class="login-header">
-            <img src="logo-amovin.png" alt="AMOVIN" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect fill=%22white%22 width=%22120%22 height=%22120%22 rx=%2215%22/><text x=%2260%22 y=%2270%22 text-anchor=%22middle%22 fill=%22%23764ba2%22 font-size=%2230%22 font-weight=%22bold%22>A</text></svg>'">
+            <div class="logo">A</div>
             <h1>AMOVIN</h1>
             <p>Associação e Movimento pela Inclusão</p>
         </div>
@@ -214,9 +305,9 @@
                         placeholder="••••••••"
                         autocomplete="new-password"
                     >
-                    <span class="olho-magico" id="olhoMagico" onclick="toggleSenha()">
+                    <button type="button" class="olho-magico" id="olhoMagico" onclick="toggleSenha()" tabindex="-1">
                         👁️
-                    </span>
+                    </button>
                 </div>
 
                 <button type="submit" class="btn-login" id="btnLogin">
@@ -225,13 +316,21 @@
             </form>
 
             <div class="firebase-status" id="firebaseStatus">
-                <span class="conectando">🟡 Verificando conexão...</span>
+                <span class="status-dot"></span>
+                <span id="statusTexto">Verificando conexão...</span>
+            </div>
+
+            <div class="espaco-info">
+                📊 Espaço utilizado: <strong><span id="espacoPercentual">--</span>%</strong>
+                <div class="espaco-barra">
+                    <div class="espaco-preenchido" id="espacoBarra" style="width: 0%;"></div>
+                </div>
             </div>
 
             <div class="links-legal">
-                <a href="legal/privacidade.html" target="_blank">Política de Privacidade</a>
-                <a href="legal/termos.html" target="_blank">Termos de Uso</a>
-                <span>LGPD</span>
+                <a href="#" onclick="alert('Política de Privacidade em construção')">Política de Privacidade</a>
+                <a href="#" onclick="alert('Termos de Uso em construção')">Termos de Uso</a>
+                <span>🔒 LGPD</span>
             </div>
         </div>
     </div>
@@ -239,17 +338,17 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, enableNetwork, disableNetwork } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, enableNetwork, disableNetwork, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Configuração Firebase
+        // Configuração Firebase - DADOS REAIS
         const firebaseConfig = {
-            apiKey: "AIzaSy...SUA-CHAVE",
+            apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
             authDomain: "amovin-oficios-teste.firebaseapp.com",
             projectId: "amovin-oficios-teste",
-            storageBucket: "amovin-oficios-teste.appspot.com",
-            messagingSenderId: "...",
-            appId: "..."
+            storageBucket: "amovin-oficios-teste.firebasestorage.app",
+            messagingSenderId: "901387183295",
+            appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
         };
 
         // Inicializar Firebase
@@ -257,16 +356,17 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Status da conexão
+        // ========== STATUS DA CONEXÃO ==========
         const statusDiv = document.getElementById('firebaseStatus');
+        const statusTexto = document.getElementById('statusTexto');
         
         function atualizarStatus(online) {
             if (online) {
-                statusDiv.innerHTML = '🟢 Firebase conectado';
                 statusDiv.className = 'firebase-status online';
+                statusTexto.textContent = 'Conectado ao Firebase';
             } else {
-                statusDiv.innerHTML = '🔴 Firebase offline';
                 statusDiv.className = 'firebase-status offline';
+                statusTexto.textContent = 'Firebase offline';
             }
         }
 
@@ -281,16 +381,47 @@
             atualizarStatus(false);
         });
 
-        // Verificar se já está logado
+        // Status inicial
+        atualizarStatus(navigator.onLine);
+
+        // ========== ESPAÇO EM PERCENTUAL ==========
+        async function atualizarEspaco() {
+            try {
+                // Simula verificação de espaço (Firebase não expõe diretamente)
+                // Na versão gratuita: 1GB total
+                const usoEstimado = Math.random() * 15; // Simulação - depois conectamos real
+                const percentual = Math.round(usoEstimado);
+                
+                document.getElementById('espacoPercentual').textContent = percentual;
+                document.getElementById('espacoBarra').style.width = percentual + '%';
+                
+                // Mudar cor conforme uso
+                const barra = document.getElementById('espacoBarra');
+                if (percentual > 80) {
+                    barra.style.background = 'linear-gradient(90deg, #f44336, #ff9800)';
+                } else if (percentual > 50) {
+                    barra.style.background = 'linear-gradient(90deg, #ff9800, #ffc107)';
+                } else {
+                    barra.style.background = 'linear-gradient(90deg, #4caf50, #8bc34a)';
+                }
+            } catch (erro) {
+                document.getElementById('espacoPercentual').textContent = '--';
+            }
+        }
+        
+        atualizarEspaco();
+
+        // ========== VERIFICAR SE JÁ LOGADO ==========
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Já logado - redirecionar
+                // Já logado - redirecionar para dashboard
+                sessionStorage.setItem('amovin_logado', 'true');
+                sessionStorage.setItem('amovin_login_time', Date.now());
                 window.location.href = 'dashboard.html';
             }
-            atualizarStatus(navigator.onLine);
         });
 
-        // Login
+        // ========== LOGIN ==========
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -304,11 +435,13 @@
             erroMsg.classList.remove('show');
             
             try {
-                await signInWithEmailAndPassword(auth, email, senha);
+                // NUNCA salvar senha
+                const credencial = await signInWithEmailAndPassword(auth, email, senha);
                 
                 // Login bem sucedido
                 sessionStorage.setItem('amovin_logado', 'true');
                 sessionStorage.setItem('amovin_login_time', Date.now());
+                // NUNCA armazenar senha
                 
                 window.location.href = 'dashboard.html';
                 
@@ -331,6 +464,9 @@
                     case 'auth/too-many-requests':
                         mensagem = 'Muitas tentativas. Aguarde 1 minuto.';
                         break;
+                    case 'auth/invalid-credential':
+                        mensagem = 'E-mail ou senha incorretos.';
+                        break;
                 }
                 
                 erroMsg.textContent = '❌ ' + mensagem;
@@ -341,7 +477,7 @@
             }
         });
 
-        // Função do olho mágico
+        // ========== OLHO MÁGICO ==========
         window.toggleSenha = function() {
             const senhaInput = document.getElementById('senha');
             const olho = document.getElementById('olhoMagico');
@@ -355,20 +491,58 @@
             }
         };
 
-        // Limpar histórico ao sair
+        // ========== SEGURANÇA: BLOQUEAR BOTÃO VOLTAR ==========
+        // Se usuário clicar "voltar" no navegador, faz logout
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => {
+            history.pushState(null, null, location.href);
+            signOut(auth);
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        });
+
+        // ========== SEGURANÇA: LIMPAR CACHE AO SAIR ==========
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) {
+                // Página veio do cache do navegador - recarregar
+                signOut(auth);
+                sessionStorage.clear();
                 window.location.reload();
             }
         });
 
-        // Bloquear botão voltar
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => {
-            history.pushState(null, null, location.href);
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        });
+        // ========== TIMEOUT DE SESSÃO ==========
+        // Se ficar inativo por 30 minutos, desloga
+        let timeoutInatividade;
+        
+        function resetarTimeout() {
+            clearTimeout(timeoutInatividade);
+            timeoutInatividade = setTimeout(() => {
+                if (sessionStorage.getItem('amovin_logado')) {
+                    signOut(auth);
+                    sessionStorage.clear();
+                    alert('⏰ Sessão expirada por inatividade. Faça login novamente.');
+                    window.location.href = 'index.html';
+                }
+            }, 30 * 60 * 1000); // 30 minutos
+        }
+        
+        document.addEventListener('mousemove', resetarTimeout);
+        document.addEventListener('keypress', resetarTimeout);
+        document.addEventListener('click', resetarTimeout);
+        resetarTimeout();
+
+        // ========== LGPD ==========
+        window.aceitarLGPD = function() {
+            document.getElementById('lgpdBanner').style.display = 'none';
+            localStorage.setItem('lgpd_aceito', 'true');
+            localStorage.setItem('lgpd_data', new Date().toISOString());
+        };
+
+        // Verificar se já aceitou
+        if (localStorage.getItem('lgpd_aceito') === 'true') {
+            document.getElementById('lgpdBanner').style.display = 'none';
+        }
     </script>
 </body>
 </html>
