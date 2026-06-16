@@ -1,6 +1,14 @@
-// src/utils/firebaseSync.ts
-
-import { getFirestore, enableIndexedDbPersistence, collection, addDoc, onSnapshot, FirestoreError } from 'firebase/firestore';
+import { 
+  getFirestore, 
+  enableIndexedDbPersistence, 
+  collection, 
+  addDoc, 
+  doc,
+  setDoc,
+  deleteDoc,
+  onSnapshot, 
+  FirestoreError 
+} from 'firebase/firestore';
 import { getAuth, onIdTokenChanged } from 'firebase/auth';
 
 const db = getFirestore();
@@ -12,7 +20,7 @@ export const enableOfflineSync = async (): Promise<void> => {
     await enableIndexedDbPersistence(db, { forceOwnership: true });
     console.log('✅ Persistência Offline Ativada');
   } catch (err: any) {
-    if (err.code === 'failed-precondition') console.warn('️ Múltiplas abas abertas');
+    if (err.code === 'failed-precondition') console.warn('⚠️ Múltiplas abas abertas');
     else console.error('❌ Erro offline:', err);
   }
 };
@@ -30,7 +38,7 @@ export const setupConnectionMonitor = (onReconnect?: () => void): void => {
   });
 };
 
-// ✅ 3. Salvar com Retry
+// ✅ 3. Salvar com Retry (safeAddDoc)
 export const safeAddDoc = async <T>(
   collectionPath: string,
   data: T,
@@ -55,7 +63,47 @@ export const safeAddDoc = async <T>(
   throw lastError;
 };
 
-// ✅ 4. Escutar Coleção COM ORDENAÇÃO ALFABÉTICA
+// ✅ 4. Funções que o store.ts espera (saveToFirebase e deleteFromFirebase)
+export const saveToFirebase = async (collectionName: string, data: Record<string, unknown>) => {
+  try {
+    if (!data.id) {
+      console.error('❌ Dados sem ID não podem ser salvos');
+      return;
+    }
+    
+    // Limpa dados undefined antes de salvar
+    const cleanedData: Record<string, any> = {};
+    for (const key in data) {
+      if (data[key] !== undefined && data[key] !== null) {
+        cleanedData[key] = data[key];
+      }
+    }
+    
+    // Garante photoUrl como string vazia se não existir
+    if (!cleanedData.photoUrl) {
+      cleanedData.photoUrl = "";
+    }
+    
+    await setDoc(doc(db, collectionName, data.id as string), {
+      ...cleanedData,
+      updatedAt: new Date().toISOString()
+    });
+    console.log(`✅ Firebase sync: ${collectionName}/${data.id}`);
+  } catch (error) {
+    console.error(`❌ Erro ao salvar no Firebase (${collectionName}):`, error);
+  }
+};
+
+export const deleteFromFirebase = async (collectionName: string, id: string) => {
+  try {
+    await deleteDoc(doc(db, collectionName, id));
+    console.log(`✅ Deletado do Firebase: ${collectionName}/${id}`);
+  } catch (error) {
+    console.error(`❌ Erro ao deletar do Firebase (${collectionName}):`, error);
+  }
+};
+
+// ✅ 5. Escutar Coleção COM ORDENAÇÃO ALFABÉTICA
 export const subscribeToCollectionSorted = <T>(
   collectionPath: string,
   orderByField: string,
