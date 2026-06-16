@@ -1,7 +1,0 @@
-{
-  "name": "amovin-v2-segura",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "echo 'Nenhum build necessário'"
-  }
-}
