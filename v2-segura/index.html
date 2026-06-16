@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOVIN - Login Seguro</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .login-header img {
+            width: 120px;
+            margin-bottom: 15px;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .login-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .olho-magico {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            font-size: 20px;
+            user-select: none;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .olho-magico:hover {
+            opacity: 1;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .erro-msg {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .erro-msg.show {
+            display: block;
+        }
+
+        .links-legal {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .links-legal a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .links-legal a:hover {
+            text-decoration: underline;
+        }
+
+        .firebase-status {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            margin-top: 15px;
+        }
+
+        .firebase-status.online {
+            color: #4caf50;
+        }
+
+        .firebase-status.offline {
+            color: #f44336;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .conectando {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="logo-amovin.png" alt="AMOVIN" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect fill=%22white%22 width=%22120%22 height=%22120%22 rx=%2215%22/><text x=%2260%22 y=%2270%22 text-anchor=%22middle%22 fill=%22%23764ba2%22 font-size=%2230%22 font-weight=%22bold%22>A</text></svg>'">
+            <h1>AMOVIN</h1>
+            <p>Associação e Movimento pela Inclusão</p>
+        </div>
+
+        <div class="login-body">
+            <div class="erro-msg" id="erroMsg"></div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label>📧 E-mail</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        required 
+                        placeholder="seu@email.com"
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>🔒 Senha</label>
+                    <input 
+                        type="password" 
+                        id="senha" 
+                        required 
+                        placeholder="••••••••"
+                        autocomplete="new-password"
+                    >
+                    <span class="olho-magico" id="olhoMagico" onclick="toggleSenha()">
+                        👁️
+                    </span>
+                </div>
+
+                <button type="submit" class="btn-login" id="btnLogin">
+                    🔐 Entrar
+                </button>
+            </form>
+
+            <div class="firebase-status" id="firebaseStatus">
+                <span class="conectando">🟡 Verificando conexão...</span>
+            </div>
+
+            <div class="links-legal">
+                <a href="legal/privacidade.html" target="_blank">Política de Privacidade</a>
+                <a href="legal/termos.html" target="_blank">Termos de Uso</a>
+                <span>LGPD</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, enableNetwork, disableNetwork } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSy...SUA-CHAVE",
+            authDomain: "amovin-oficios-teste.firebaseapp.com",
+            projectId: "amovin-oficios-teste",
+            storageBucket: "amovin-oficios-teste.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Status da conexão
+        const statusDiv = document.getElementById('firebaseStatus');
+        
+        function atualizarStatus(online) {
+            if (online) {
+                statusDiv.innerHTML = '🟢 Firebase conectado';
+                statusDiv.className = 'firebase-status online';
+            } else {
+                statusDiv.innerHTML = '🔴 Firebase offline';
+                statusDiv.className = 'firebase-status offline';
+            }
+        }
+
+        // Monitorar conexão
+        window.addEventListener('online', () => {
+            enableNetwork(db);
+            atualizarStatus(true);
+        });
+
+        window.addEventListener('offline', () => {
+            disableNetwork(db);
+            atualizarStatus(false);
+        });
+
+        // Verificar se já está logado
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Já logado - redirecionar
+                window.location.href = 'dashboard.html';
+            }
+            atualizarStatus(navigator.onLine);
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const btnLogin = document.getElementById('btnLogin');
+            const erroMsg = document.getElementById('erroMsg');
+            
+            btnLogin.disabled = true;
+            btnLogin.textContent = '⏳ Autenticando...';
+            erroMsg.classList.remove('show');
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, senha);
+                
+                // Login bem sucedido
+                sessionStorage.setItem('amovin_logado', 'true');
+                sessionStorage.setItem('amovin_login_time', Date.now());
+                
+                window.location.href = 'dashboard.html';
+                
+            } catch (error) {
+                let mensagem = 'Erro ao fazer login.';
+                
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        mensagem = 'E-mail inválido.';
+                        break;
+                    case 'auth/user-disabled':
+                        mensagem = 'Usuário desativado.';
+                        break;
+                    case 'auth/user-not-found':
+                        mensagem = 'Usuário não encontrado.';
+                        break;
+                    case 'auth/wrong-password':
+                        mensagem = 'Senha incorreta.';
+                        break;
+                    case 'auth/too-many-requests':
+                        mensagem = 'Muitas tentativas. Aguarde 1 minuto.';
+                        break;
+                }
+                
+                erroMsg.textContent = '❌ ' + mensagem;
+                erroMsg.classList.add('show');
+                
+                btnLogin.disabled = false;
+                btnLogin.textContent = '🔐 Entrar';
+            }
+        });
+
+        // Função do olho mágico
+        window.toggleSenha = function() {
+            const senhaInput = document.getElementById('senha');
+            const olho = document.getElementById('olhoMagico');
+            
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                olho.textContent = '🙈';
+            } else {
+                senhaInput.type = 'password';
+                olho.textContent = '👁️';
+            }
+        };
+
+        // Limpar histórico ao sair
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        // Bloquear botão voltar
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => {
+            history.pushState(null, null, location.href);
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
