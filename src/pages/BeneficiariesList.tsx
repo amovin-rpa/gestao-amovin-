@@ -9,34 +9,30 @@ export default function BeneficiariesList() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [sortedList, setSortedList] = useState<Beneficiary[]>([]);
 
-  // ✅ ORDENAÇÃO FORÇADA COM useEffect
+  // ✅ ORDENAÇÃO ALFABÉTICA FORÇADA
   useEffect(() => {
-    console.log('📋 Beneficiários brutos:', beneficiaries);
+    console.log('📋 Total de beneficiários:', beneficiaries?.length);
     
     if (!beneficiaries || beneficiaries.length === 0) {
       setSortedList([]);
       return;
     }
 
+    // Cria cópia e ordena
     const sorted = [...beneficiaries].sort((a, b) => {
       const nameA = (a.fullName || '').toUpperCase().trim();
       const nameB = (b.fullName || '').toUpperCase().trim();
       
-      // Remove acentos para comparação correta
+      // Remove acentos para ordenação correta
       const normalize = (str: string) => 
         str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       
-      const normalizedA = normalize(nameA);
-      const normalizedB = normalize(nameB);
-      
-      if (normalizedA < normalizedB) return -1;
-      if (normalizedA > normalizedB) return 1;
-      return 0;
+      return normalize(nameA).localeCompare(normalize(nameB));
     });
 
     console.log('✅ Lista ordenada:', sorted.map(b => b.fullName));
     setSortedList(sorted);
-  }, [beneficiaries]); // Reordena SEMPRE que beneficiaries mudar
+  }, [beneficiaries]);
 
   const handleOpenForm = (ben?: Beneficiary) => {
     setEditingBen(ben);
@@ -54,7 +50,9 @@ export default function BeneficiariesList() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Beneficiários (FRB)</h1>
-          <p className="text-sm text-gray-500 mt-1">Total de {sortedList.length} cadastrados (ordem alfabética)</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Total: {sortedList.length} | Ordem: A-Z
+          </p>
         </div>
         <button
           onClick={() => handleOpenForm()}
@@ -72,56 +70,40 @@ export default function BeneficiariesList() {
                 <Plus size={32} className="text-gray-400" />
              </div>
              <p className="text-lg font-medium text-gray-900">Nenhum beneficiário cadastrado</p>
-             <p className="text-gray-500 text-sm mt-1">Clique no botão acima para adicionar o primeiro.</p>
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
             {sortedList.map((ben) => (
-              <li key={ben.id} className="hover:bg-gray-50 transition-colors duration-200">
-                <div className="px-6 py-5 flex items-center sm:px-8 justify-between">
+              <li key={ben.id} className="hover:bg-gray-50 transition-colors">
+                <div className="px-6 py-5 flex items-center justify-between">
                   <div className="flex items-center min-w-0 flex-1">
-                    <div className="flex-shrink-0 h-14 w-14 rounded-full overflow-hidden bg-gray-100 border-2 border-white shadow-sm">
+                    <div className="flex-shrink-0 h-14 w-14 rounded-full overflow-hidden bg-gray-100 border-2 border-white">
                       {ben.photoUrl ? (
                         <img 
                           className="h-14 w-14 object-cover" 
                           src={ben.photoUrl} 
-                          alt={ben.fullName} 
+                          alt={ben.fullName}
                           onError={(e) => {
+                            // Se imagem falhar, esconde
                             (e.target as HTMLImageElement).style.display = 'none';
-                            (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
                           }}
                         />
-                      ) : null}
-                      <div className={`h-14 w-14 flex items-center justify-center text-gray-400 ${ben.photoUrl ? 'hidden' : ''}`}>
-                        <span className="text-xs font-medium">Sem foto</span>
-                      </div>
+                      ) : (
+                        <span className="h-14 w-14 flex items-center justify-center text-gray-400 text-xs">Sem foto</span>
+                      )}
                     </div>
-                    
                     <div className="ml-5">
-                      <p className="text-base font-semibold text-gray-900 truncate hover:text-blue-600 transition-colors">
-                        {ben.fullName}
+                      <p className="text-base font-semibold text-gray-900">{ben.fullName}</p>
+                      <p className="text-sm text-gray-500">
+                        Resp: {ben.respName} | CID: {ben.cid}
                       </p>
-                      <div className="flex items-center gap-2 text-sm text-gray-500 mt-0.5">
-                        <span className="truncate max-w-[200px]">Resp: {ben.respName || '-'}</span>
-                        <span className="w-1 h-1 bg-gray-300 rounded-full flex-shrink-0"></span>
-                        <span>CID: {ben.cid || '-'}</span>
-                      </div>
                     </div>
                   </div>
-
-                  <div className="flex gap-2 ml-4">
-                    <button
-                      onClick={() => handleOpenForm(ben)}
-                      className="text-gray-400 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-all"
-                      title="Editar / Visualizar"
-                    >
+                  <div className="flex gap-2">
+                    <button onClick={() => handleOpenForm(ben)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg">
                       <Edit2 size={18} />
                     </button>
-                    <button
-                      onClick={() => handleDelete(ben.id)}
-                      className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all"
-                      title="Excluir"
-                    >
+                    <button onClick={() => handleDelete(ben.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
                       <Trash2 size={18} />
                     </button>
                   </div>
@@ -135,10 +117,7 @@ export default function BeneficiariesList() {
       {isFormOpen && (
         <FRBForm
           initialData={editingBen || undefined}
-          onClose={() => {
-            setIsFormOpen(false);
-            setEditingBen(null);
-          }}
+          onClose={() => { setIsFormOpen(false); setEditingBen(null); }}
         />
       )}
     </div>
