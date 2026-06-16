@@ -3,7 +3,9 @@ import { useStore } from '../store';
 import { isThisWeek, isToday, parseISO, getDaysInMonth } from 'date-fns';
 import { AMOVIN_LOGO_SRC } from '../assets/logo';
 import { Calendar, Clock, Upload, AlertCircle } from 'lucide-react';
-import { uploadAllToFirebase } from '../firebaseSync';
+
+// ✅ CORREÇÃO: Caminho atualizado para a pasta utils
+import { uploadAllToFirebase } from '../utils/firebaseSync';
 import { Link } from 'react-router-dom';
 
 const statusLabels: Record<string, string> = {
