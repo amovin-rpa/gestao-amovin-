@@ -11,26 +11,26 @@ export default function BeneficiariesList() {
 
   // ✅ ORDENAÇÃO ALFABÉTICA FORÇADA
   useEffect(() => {
-    console.log('📋 Total de beneficiários:', beneficiaries?.length);
+    console.log('📋 Beneficiários brutos:', beneficiaries?.length);
     
     if (!beneficiaries || beneficiaries.length === 0) {
       setSortedList([]);
       return;
     }
 
-    // Cria cópia e ordena
     const sorted = [...beneficiaries].sort((a, b) => {
       const nameA = (a.fullName || '').toUpperCase().trim();
       const nameB = (b.fullName || '').toUpperCase().trim();
       
-      // Remove acentos para ordenação correta
+      // Remove acentos
       const normalize = (str: string) => 
         str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       
-      return normalize(nameA).localeCompare(normalize(nameB));
+      const result = normalize(nameA).localeCompare(normalize(nameB));
+      return result;
     });
 
-    console.log('✅ Lista ordenada:', sorted.map(b => b.fullName));
+    console.log('✅ Lista ORDENADA:', sorted.map(b => b.fullName));
     setSortedList(sorted);
   }, [beneficiaries]);
 
@@ -40,7 +40,7 @@ export default function BeneficiariesList() {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este beneficiário?')) {
+    if (window.confirm('Tem certeza que deseja excluir?')) {
       deleteBeneficiary(id);
     }
   };
@@ -84,7 +84,6 @@ export default function BeneficiariesList() {
                           src={ben.photoUrl} 
                           alt={ben.fullName}
                           onError={(e) => {
-                            // Se imagem falhar, esconde
                             (e.target as HTMLImageElement).style.display = 'none';
                           }}
                         />
