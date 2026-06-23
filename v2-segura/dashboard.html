@@ -8,7 +8,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; display: flex; }
-
         .sidebar { width: 260px; background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); color: white; min-height: 100vh; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; }
         .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sidebar-logo { width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 24px; font-weight: bold; color: #764ba2; }
@@ -26,7 +25,6 @@
         .avatar-admin { background: #ffd700; color: #333; } .avatar-prof { background: #4caf50; color: white; }
         .avatar-vol { background: #2196f3; color: white; } .avatar-fin { background: #ff9800; color: white; } .avatar-recep { background: #00bcd4; color: white; }
         .btn-sair-sidebar { width: 100%; padding: 8px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; }
-
         .main-content { flex: 1; margin-left: 260px; padding: 25px; min-height: 100vh; }
         .welcome-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3); position: relative; overflow: hidden; }
         .welcome-card::after { content: ''; position: absolute; right: -30px; top: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
@@ -35,14 +33,12 @@
         .welcome-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .data-hoje { background: rgba(255,255,255,0.2); padding: 15px 20px; border-radius: 15px; text-align: center; min-width: 120px; }
         .data-hoje .dia { font-size: 32px; font-weight: bold; } .data-hoje .mes { font-size: 12px; text-transform: uppercase; }
-
         .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 15px; }
         .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
         .stat-icon.blue { background: #e3f2fd; } .stat-icon.green { background: #e8f5e9; }
         .stat-icon.red { background: #ffebee; } .stat-icon.purple { background: #f3e5f5; }
         .stat-info .stat-valor { font-size: 24px; font-weight: bold; color: #333; } .stat-info .stat-label { font-size: 12px; color: #888; }
-
         .section-title { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 15px; }
         .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .module-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.3s; text-decoration: none; display: block; border: 2px solid transparent; }
@@ -51,11 +47,11 @@
         .module-card.oficios { border-left: 4px solid #667eea; } .module-card.projetos { border-left: 4px solid #2d8a4e; }
         .module-card.financeiro { border-left: 4px solid #00897b; } .module-card.pessoas { border-left: 4px solid #7b1fa2; }
         .module-card.profissionais { border-left: 4px solid #e91e63; } .module-card.voluntarios { border-left: 4px solid #2196f3; }
-        .module-card.agenda { border-left: 4px solid #0288d1; } .module-card.relatorios { border-left: 4px solid #455a64; }
-        .module-card.editais { border-left: 4px solid #ff9800; } .module-card.assistente { border-left: 4px solid #283593; }
+        .module-card.agenda { border-left: 4px solid #0288d1; } .module-card.prontuario { border-left: 4px solid #d32f2f; }
+        .module-card.relatorios { border-left: 4px solid #455a64; } .module-card.editais { border-left: 4px solid #ff9800; }
+        .module-card.assistente { border-left: 4px solid #283593; }
         .module-card.bloqueado { opacity: 0.5; cursor: not-allowed; background: #f9f9f9; }
         .module-card.bloqueado:hover { transform: none; box-shadow: 0 2px 10px rgba(0,0,0,0.04); border-color: transparent; }
-
         .hoje-table { background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); overflow: hidden; }
         .hoje-table-header { background: #fafafa; padding: 15px 20px; font-weight: 700; font-size: 16px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; }
         .hoje-item { display: flex; align-items: center; gap: 15px; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; }
@@ -65,23 +61,19 @@
         .status-agendado { background: #e3f2fd; color: #1565c0; } .status-presente { background: #e8f5e9; color: #2e7d32; }
         .status-falta { background: #ffebee; color: #c62828; } .status-cancelado { background: #f3e5f5; color: #7b1fa2; }
         .sem-agendamentos { text-align: center; padding: 40px; color: #bbb; }
-
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
         .topo-mobile { display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; align-items: center; gap: 15px; }
         .btn-menu-mobile { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-
         @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .sidebar-overlay.show { display: block; } .main-content { margin-left: 0; } .topo-mobile { display: flex; } }
     </style>
 </head>
 <body>
-
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharSidebar()"></div>
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header"><div class="sidebar-logo">A</div><h3>AMOVIN</h3><p>Gestão Integrada</p></div>
     <nav class="sidebar-nav"><div class="nav-section"><div class="nav-section-title">Principal</div><a href="#" class="nav-item ativo"><span class="icone">🏠</span> Dashboard</a></div><div class="nav-section" id="menuModulos"></div></nav>
     <div class="sidebar-footer"><div class="user-mini"><div class="user-avatar" id="userAvatar">A</div><div><div style="font-weight:600;" id="userNome">Admin</div><div style="font-size:10px;opacity:0.7;" id="userPerfil">Administrador</div></div></div><button class="btn-sair-sidebar" onclick="fazerLogout()">🚪 Sair do Sistema</button></div>
 </aside>
-
 <main class="main-content">
     <div class="topo-mobile"><button class="btn-menu-mobile" onclick="abrirSidebar()">☰</button><span style="font-weight:700;">AMOVIN</span><button class="btn-menu-mobile" onclick="fazerLogout()" style="margin-left:auto;">🚪</button></div>
     <div class="welcome-card"><div class="welcome-row"><div><h1>Bem-vindo(a), <span id="nomeUsuario">Admin</span>!</h1><p id="cargoUsuario">Painel de Gestão Integrada</p></div><div class="data-hoje"><div class="dia" id="diaHoje">23</div><div class="mes" id="mesHoje">Junho 2026</div></div></div></div>
@@ -90,13 +82,12 @@
     <div class="modules-grid" id="modulesGrid"></div>
     <div class="hoje-table"><div class="hoje-table-header">📅 Atendimentos de Hoje <span style="font-size:13px;font-weight:normal;color:#888;" id="totalHoje">0 agendamentos</span></div><div class="hoje-table-body" id="hojeBody" style="max-height:400px;overflow-y:auto;"><div class="sem-agendamentos">Nenhum atendimento para hoje.</div></div></div>
 </main>
-
 <script>
     const usuario = { nome: sessionStorage.getItem('amovin_nome') || 'Administrador', perfil: sessionStorage.getItem('amovin_perfil') || 'admin' };
     const PERMISSOES = {
-        admin: { nome: 'Administrador', avatar: 'avatar-admin', modulos: ['oficios','projetos','editais','financeiro','pessoas','profissionais','voluntarios','agenda','relatorios','assistente'], stats: ['total_mes','presentes','faltas','cancelados'] },
-        recepcao: { nome: 'Recepção', avatar: 'avatar-recep', modulos: ['pessoas','profissionais','voluntarios','agenda'], stats: ['total_mes','presentes'] },
-        consulta: { nome: 'Profissional', avatar: 'avatar-prof', modulos: ['agenda','assistente'], stats: ['total_mes','presentes'] },
+        admin: { nome: 'Administrador', avatar: 'avatar-admin', modulos: ['oficios','projetos','editais','financeiro','pessoas','profissionais','voluntarios','agenda','prontuario','relatorios','assistente'], stats: ['total_mes','presentes','faltas','cancelados'] },
+        recepcao: { nome: 'Recepção', avatar: 'avatar-recep', modulos: ['pessoas','profissionais','voluntarios','agenda','prontuario'], stats: ['total_mes','presentes'] },
+        consulta: { nome: 'Profissional', avatar: 'avatar-prof', modulos: ['agenda','prontuario','assistente'], stats: ['total_mes','presentes'] },
         financeiro: { nome: 'Financeiro', avatar: 'avatar-fin', modulos: ['oficios','projetos','financeiro','relatorios'], stats: ['total_mes','faltas'] },
         voluntario: { nome: 'Voluntário', avatar: 'avatar-vol', modulos: ['agenda'], stats: ['total_mes'] }
     };
@@ -109,10 +100,10 @@
         profissionais: { nome: 'Profissionais', desc: 'Cadastro da equipe', url: 'profissionais.html', icone: '👨‍⚕️', cor: 'profissionais' },
         voluntarios: { nome: 'Voluntários', desc: 'Cadastro de voluntários', url: 'voluntarios.html', icone: '💪', cor: 'voluntarios' },
         agenda: { nome: 'Agenda', desc: 'Consultas e horários', url: 'agenda.html', icone: '📅', cor: 'agenda' },
+        prontuario: { nome: 'Prontuário', desc: 'Registros médicos', url: 'prontuario.html', icone: '🩺', cor: 'prontuario' },
         relatorios: { nome: 'Relatórios', desc: 'KPIs e BI', url: 'relatorios.html', icone: '📈', cor: 'relatorios' },
         assistente: { nome: 'Assistente IA', desc: 'Chat inteligente', url: 'assistente.html', icone: '🤖', cor: 'assistente' }
     };
-
     function renderizar() {
         const perfil = usuario.perfil || 'admin'; const perm = PERMISSOES[perfil] || PERMISSOES['admin'];
         document.getElementById('nomeUsuario').textContent = usuario.nome;
@@ -122,19 +113,14 @@
         document.getElementById('userAvatar').className = 'user-avatar ' + perm.avatar;
         document.getElementById('userAvatar').textContent = usuario.nome.charAt(0).toUpperCase();
         const hoje = new Date(); document.getElementById('diaHoje').textContent = hoje.getDate(); document.getElementById('mesHoje').textContent = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-
         const statsData = { total_mes: { valor: 156, label: 'Total no Mês', icone: '📊', cor: 'blue' }, presentes: { valor: 132, label: 'Presenças', icone: '✅', cor: 'green' }, faltas: { valor: 18, label: 'Faltas', icone: '⚠️', cor: 'red' }, cancelados: { valor: 6, label: 'Cancelados', icone: '❌', cor: 'purple' } };
         document.getElementById('statsRow').innerHTML = perm.stats.map(s => { const d = statsData[s]; return d ? `<div class="stat-card"><div class="stat-icon ${d.cor}">${d.icone}</div><div class="stat-info"><div class="stat-valor">${d.valor}</div><div class="stat-label">${d.label}</div></div></div>` : ''; }).join('');
-
         document.getElementById('modulesGrid').innerHTML = Object.keys(MODULOS).map(chave => { const mod = MODULOS[chave]; const permitido = perm.modulos.includes(chave); return `<${permitido ? `a href="${mod.url}"` : 'div'} class="module-card ${mod.cor} ${permitido ? '' : 'bloqueado'}"><div class="module-icon">${permitido ? mod.icone : '🔒'}</div><h4>${mod.nome}</h4><p>${permitido ? mod.desc : 'Sem acesso'}</p></${permitido ? 'a' : 'div'}>`; }).join('');
-
         document.getElementById('menuModulos').innerHTML = '<div class="nav-section-title">Módulos</div>' + perm.modulos.map(chave => { const mod = MODULOS[chave]; return `<a href="${mod.url}" class="nav-item"><span class="icone">${mod.icone}</span> ${mod.nome}</a>`; }).join('');
-
         const hojeSimulado = [{ hora: '09:00', nome: 'Maria Silva', detalhe: 'Psicologia | Dr. Carlos', status: 'agendado' },{ hora: '10:00', nome: 'João Santos', detalhe: 'Social | Dra. Lucia', status: 'presente' },{ hora: '11:00', nome: 'Ana Costa', detalhe: 'Reforço | Prof. Sandra', status: 'agendado' },{ hora: '14:00', nome: 'Pedro Lima', detalhe: 'Capacitação | Dr. Carlos', status: 'falta' },{ hora: '15:00', nome: 'Carla Souza', detalhe: 'Psicologia | Dr. Carlos', status: 'agendado' }];
         document.getElementById('totalHoje').textContent = hojeSimulado.length + ' agendamentos';
         document.getElementById('hojeBody').innerHTML = hojeSimulado.map(a => `<div class="hoje-item"><span class="hoje-horario">${a.hora}</span><div class="hoje-info"><div class="nome">${a.nome}</div><div class="detalhe">${a.detalhe}</div></div><span class="hoje-status status-${a.status}">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span></div>`).join('');
     }
-
     window.abrirSidebar = function() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('show'); };
     window.fecharSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); };
     window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
