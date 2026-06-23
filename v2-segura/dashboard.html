@@ -44,7 +44,6 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 30px; }
 
-        /* Cards de status */
         .status-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -71,7 +70,6 @@
         .status-card.destaque .valor { color: white; }
         .status-card.destaque .rotulo { color: rgba(255,255,255,0.8); }
 
-        /* Cards de módulos */
         .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
 
         .card {
@@ -89,11 +87,17 @@
         .card h3 { color: #333; margin-bottom: 8px; }
         .card p { color: #888; font-size: 13px; }
 
-        .card.novo {
+        .card.oficios {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-        .card.novo h3, .card.novo p { color: white; }
+        .card.oficios h3, .card.oficios p { color: white; }
+
+        .card.projetos {
+            background: linear-gradient(135deg, #1a5c2e 0%, #2d8a4e 100%);
+            color: white;
+        }
+        .card.projetos h3, .card.projetos p { color: white; }
 
         @media (max-width: 768px) {
             .topo { flex-direction: column; text-align: center; }
@@ -111,7 +115,7 @@
     </div>
 
     <div class="container">
-        <!-- STATUS FIREBASE + ESPAÇO -->
+        <!-- STATUS -->
         <div class="status-cards">
             <div class="status-card">
                 <div class="icone">🟢</div>
@@ -140,16 +144,16 @@
 
         <!-- MÓDULOS -->
         <div class="cards">
-            <div class="card novo" onclick="window.location.href='oficios.html'">
+            <div class="card oficios" onclick="window.location.href='oficios.html'">
                 <div class="icone">📄</div>
                 <h3>Gerador de Ofícios</h3>
-                <p>✨ Novo! Crie ofícios com IA</p>
+                <p>✨ Crie ofícios profissionais com IA</p>
             </div>
 
-            <div class="card" onclick="alert('Em breve!')">
+            <div class="card projetos" onclick="window.location.href='projetos.html'">
                 <div class="icone">📋</div>
                 <h3>Gerador de Projetos</h3>
-                <p>Em desenvolvimento</p>
+                <p>✨ Novo! Crie projetos sociais completos</p>
             </div>
 
             <div class="card" onclick="alert('Em breve!')">
@@ -184,7 +188,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ========== VERIFICAR LOGIN ==========
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = 'index.html';
@@ -194,7 +197,6 @@
             sessionStorage.setItem('amovin_logado', 'true');
         });
 
-        // ========== STATUS FIREBASE ==========
         function atualizarStatusFirebase(online) {
             const el = document.getElementById('firebaseStatus');
             if (online) {
@@ -218,25 +220,16 @@
 
         atualizarStatusFirebase(navigator.onLine);
 
-        // ========== ESPAÇO EM % ==========
-        function atualizarEspaco() {
-            const uso = Math.floor(Math.random() * 12) + 1;
-            document.getElementById('espacoValor').textContent = uso;
-        }
-        atualizarEspaco();
-
-        // ========== DADOS SIMULADOS ==========
+        document.getElementById('espacoValor').textContent = Math.floor(Math.random() * 12) + 1;
         document.getElementById('totalOficios').textContent = Math.floor(Math.random() * 50);
         document.getElementById('totalProjetos').textContent = Math.floor(Math.random() * 10);
 
-        // ========== LOGOUT ==========
         window.fazerLogout = async function() {
             await signOut(auth);
             sessionStorage.clear();
             window.location.href = 'index.html';
         };
 
-        // ========== SEGURANÇA ==========
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', () => {
             history.pushState(null, null, location.href);
@@ -253,7 +246,6 @@
             }
         });
 
-        // ========== TIMEOUT 30 MIN ==========
         let timeout;
         function resetTimeout() {
             clearTimeout(timeout);
