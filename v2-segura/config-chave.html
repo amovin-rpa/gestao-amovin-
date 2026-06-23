@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOVIN - Configurar Chave IA</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; }
+        h2 { color: #333; margin-bottom: 10px; }
+        p { color: #888; font-size: 13px; margin-bottom: 20px; }
+        input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; text-align: center; }
+        button { width: 100%; padding: 14px; background: #667eea; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .status { padding: 12px; border-radius: 10px; margin-top: 15px; display: none; font-weight: 600; }
+        .sucesso { background: #e8f5e9; color: #2e7d32; display: block; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🔑 Configurar Chave Gemini</h2>
+        <p>Cole sua chave da API do Google Gemini.<br>Ela ficará salva apenas no seu navegador.</p>
+        <input type="password" id="chaveInput" placeholder="Cole sua chave aqui...">
+        <button onclick="salvarChave()">💾 Salvar Chave</button>
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        window.salvarChave = function() {
+            const chave = document.getElementById('chaveInput').value.trim();
+            if (!chave) { alert('Cole a chave!'); return; }
+            localStorage.setItem('amovin_gemini_key', chave);
+            document.getElementById('status').textContent = '✅ Chave salva com sucesso! Pode fechar esta página.';
+            document.getElementById('status').className = 'status sucesso';
+        };
+        // Se já tiver chave salva, mostrar
+        if (localStorage.getItem('amovin_gemini_key')) {
+            document.getElementById('status').textContent = '✅ Chave já configurada!';
+            document.getElementById('status').className = 'status sucesso';
+        }
+    </script>
+</body>
+</html>
