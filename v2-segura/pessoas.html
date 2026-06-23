@@ -37,17 +37,17 @@
             cursor: pointer;
             font-size: 13px;
             text-decoration: none;
-            margin-left: 6px;
+            margin-left: 4px;
         }
 
         .btn-topo:hover { background: rgba(255,255,255,0.3); }
 
-        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
 
         .abas {
             display: flex;
             gap: 5px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
@@ -63,31 +63,13 @@
             transition: all 0.3s;
         }
 
-        .aba.ativa {
-            background: #7b1fa2;
-            color: white;
-        }
+        .aba.ativa { background: #7b1fa2; color: white; }
 
-        .aba:hover { background: #e1bee7; }
-
-        .resumo-cards {
+        .grid-principal {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 380px 1fr;
             gap: 20px;
-            margin-bottom: 30px;
         }
-
-        .resumo-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
-        .resumo-card .icone { font-size: 35px; margin-bottom: 10px; }
-        .resumo-card .numero { font-size: 32px; font-weight: bold; color: #7b1fa2; }
-        .resumo-card .rotulo { font-size: 13px; color: #888; }
 
         .card {
             background: white;
@@ -104,6 +86,62 @@
             padding-bottom: 10px;
         }
 
+        .form-group { margin-bottom: 14px; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #7b1fa2;
+            outline: none;
+        }
+
+        .linha-dupla {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-salvar {
+            width: 100%;
+            padding: 12px;
+            background: #7b1fa2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-salvar:hover { background: #4a148c; }
+        .btn-cancelar {
+            width: 100%;
+            padding: 10px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -118,7 +156,7 @@
         }
 
         td {
-            padding: 12px;
+            padding: 10px 12px;
             border-bottom: 1px solid #e0e0e0;
             font-size: 13px;
         }
@@ -134,26 +172,46 @@
             font-weight: bold;
         }
 
-        .btn-add {
-            padding: 10px 20px;
-            background: #7b1fa2;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
+        .status-inativo {
+            background: #ffebee;
+            color: #c62828;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
             font-weight: bold;
-            margin-top: 15px;
         }
 
-        .btn-add:hover { background: #4a148c; }
+        .btn-editar {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 3px;
+        }
+
+        .btn-excluir {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-editar:hover { background: #ffb300; }
+        .btn-excluir:hover { background: #d32f2f; }
 
         .conteudo-aba { display: none; }
         .conteudo-aba.ativo { display: block; }
 
-        @media (max-width: 768px) {
-            .abas { flex-direction: column; }
-            .aba { border-radius: 10px; }
+        @media (max-width: 900px) {
+            .grid-principal { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -165,36 +223,12 @@
             <a href="oficios.html" class="btn-topo">📄 Ofícios</a>
             <a href="projetos.html" class="btn-topo">📋 Projetos</a>
             <a href="financeiro.html" class="btn-topo">💰 Financeiro</a>
+            <a href="agenda.html" class="btn-topo">📅 Agenda</a>
             <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
         </div>
     </div>
 
     <div class="container">
-        <!-- RESUMO -->
-        <div class="resumo-cards">
-            <div class="resumo-card">
-                <div class="icone">👨‍👩‍👧‍👦</div>
-                <div class="numero">456</div>
-                <div class="rotulo">Beneficiários Ativos</div>
-            </div>
-            <div class="resumo-card">
-                <div class="icone">👨‍⚕️</div>
-                <div class="numero">28</div>
-                <div class="rotulo">Profissionais</div>
-            </div>
-            <div class="resumo-card">
-                <div class="icone">💪</div>
-                <div class="numero">85</div>
-                <div class="rotulo">Voluntários</div>
-            </div>
-            <div class="resumo-card">
-                <div class="icone">📊</div>
-                <div class="numero">1.250</div>
-                <div class="rotulo">Atendimentos/Mês</div>
-            </div>
-        </div>
-
-        <!-- ABAS -->
         <div class="abas">
             <button class="aba ativa" onclick="mudarAba('beneficiarios', this)">👨‍👩‍👧‍👦 Beneficiários</button>
             <button class="aba" onclick="mudarAba('profissionais', this)">👨‍⚕️ Profissionais</button>
@@ -203,105 +237,79 @@
 
         <!-- BENEFICIÁRIOS -->
         <div class="conteudo-aba ativo" id="aba-beneficiarios">
-            <div class="card">
-                <h3>Lista de Beneficiários</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Idade</th>
-                            <th>Projeto</th>
-                            <th>Entrada</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Maria Silva</td>
-                            <td>17</td>
-                            <td>Inclusão Digital</td>
-                            <td>10/01/2026</td>
-                            <td><span class="status-ativo">Ativo</span></td>
-                        </tr>
-                        <tr>
-                            <td>João Santos</td>
-                            <td>22</td>
-                            <td>Esporte para Todos</td>
-                            <td>15/02/2026</td>
-                            <td><span class="status-ativo">Ativo</span></td>
-                        </tr>
-                        <tr>
-                            <td>Ana Costa</td>
-                            <td>14</td>
-                            <td>Reforço Escolar</td>
-                            <td>01/03/2026</td>
-                            <td><span class="status-ativo">Ativo</span></td>
-                        </tr>
-                        <tr>
-                            <td>Pedro Lima</td>
-                            <td>25</td>
-                            <td>Capacitação Profissional</td>
-                            <td>20/01/2026</td>
-                            <td><span class="status-ativo">Ativo</span></td>
-                        </tr>
-                        <tr>
-                            <td>Carla Souza</td>
-                            <td>19</td>
-                            <td>Inclusão Digital</td>
-                            <td>05/04/2026</td>
-                            <td><span class="status-ativo">Ativo</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="btn-add" onclick="alert('Em breve!')">+ Novo Beneficiário</button>
+            <div class="grid-principal">
+                <div class="card">
+                    <h3><span id="tituloFormB">📝 Novo Beneficiário</span></h3>
+                    <input type="hidden" id="pessoaIdB">
+                    <div class="form-group"><label>Nome *</label><input type="text" id="nomeB" required></div>
+                    <div class="linha-dupla">
+                        <div class="form-group"><label>Idade *</label><input type="number" id="idadeB" required></div>
+                        <div class="form-group"><label>Telefone</label><input type="text" id="telefoneB"></div>
+                    </div>
+                    <div class="form-group"><label>Projeto *</label>
+                        <select id="projetoB">
+                            <option value="Inclusão Digital">Inclusão Digital</option>
+                            <option value="Esporte para Todos">Esporte para Todos</option>
+                            <option value="Reforço Escolar">Reforço Escolar</option>
+                            <option value="Capacitação Profissional">Capacitação Profissional</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Status</label>
+                        <select id="statusB"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select>
+                    </div>
+                    <button class="btn-salvar" onclick="salvarPessoa('beneficiarios')">💾 Salvar</button>
+                    <button class="btn-cancelar" id="btnCancelarB" style="display:none;" onclick="cancelarEdicao('beneficiarios')">Cancelar</button>
+                </div>
+                <div class="card">
+                    <h3>📋 Lista de Beneficiários</h3>
+                    <div style="overflow-x:auto;"><table><thead><tr><th>Nome</th><th>Idade</th><th>Projeto</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tabelaB"></tbody></table></div>
+                </div>
             </div>
         </div>
 
         <!-- PROFISSIONAIS -->
         <div class="conteudo-aba" id="aba-profissionais">
-            <div class="card">
-                <h3>Equipe de Profissionais</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Especialidade</th>
-                            <th>Contrato</th>
-                            <th>Carga Horária</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Dr. Carlos Mendes</td><td>Psicólogo</td><td>CLT</td><td>40h</td></tr>
-                        <tr><td>Dra. Lucia Ferreira</td><td>Assistente Social</td><td>CLT</td><td>40h</td></tr>
-                        <tr><td>Prof. Roberto Alves</td><td>Educador Físico</td><td>PJ</td><td>20h</td></tr>
-                        <tr><td>Profa. Sandra Reis</td><td>Pedagoga</td><td>CLT</td><td>30h</td></tr>
-                    </tbody>
-                </table>
-                <button class="btn-add" onclick="alert('Em breve!')">+ Novo Profissional</button>
+            <div class="grid-principal">
+                <div class="card">
+                    <h3><span id="tituloFormP">📝 Novo Profissional</span></h3>
+                    <input type="hidden" id="pessoaIdP">
+                    <div class="form-group"><label>Nome *</label><input type="text" id="nomeP" required></div>
+                    <div class="form-group"><label>Especialidade *</label><input type="text" id="especialidadeP" required></div>
+                    <div class="linha-dupla">
+                        <div class="form-group"><label>Contrato</label>
+                            <select id="contratoP"><option value="CLT">CLT</option><option value="PJ">PJ</option><option value="Voluntário">Voluntário</option></select>
+                        </div>
+                        <div class="form-group"><label>Carga Horária</label><input type="text" id="cargaP"></div>
+                    </div>
+                    <button class="btn-salvar" onclick="salvarPessoa('profissionais')">💾 Salvar</button>
+                    <button class="btn-cancelar" id="btnCancelarP" style="display:none;" onclick="cancelarEdicao('profissionais')">Cancelar</button>
+                </div>
+                <div class="card">
+                    <h3>📋 Equipe</h3>
+                    <div style="overflow-x:auto;"><table><thead><tr><th>Nome</th><th>Especialidade</th><th>Contrato</th><th>Carga</th><th>Ações</th></tr></thead><tbody id="tabelaP"></tbody></table></div>
+                </div>
             </div>
         </div>
 
         <!-- VOLUNTÁRIOS -->
         <div class="conteudo-aba" id="aba-voluntarios">
-            <div class="card">
-                <h3>Voluntários</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Área</th>
-                            <th>Disponibilidade</th>
-                            <th>Horas/Mês</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Fernanda Lima</td><td>Informática</td><td>Sábados</td><td>16h</td></tr>
-                        <tr><td>Rafael Costa</td><td>Esportes</td><td>Terças e Quintas</td><td>20h</td></tr>
-                        <tr><td>Juliana Martins</td><td>Artes</td><td>Quartas</td><td>8h</td></tr>
-                        <tr><td>Bruno Oliveira</td><td>Música</td><td>Sextas</td><td>12h</td></tr>
-                    </tbody>
-                </table>
-                <button class="btn-add" onclick="alert('Em breve!')">+ Novo Voluntário</button>
+            <div class="grid-principal">
+                <div class="card">
+                    <h3><span id="tituloFormV">📝 Novo Voluntário</span></h3>
+                    <input type="hidden" id="pessoaIdV">
+                    <div class="form-group"><label>Nome *</label><input type="text" id="nomeV" required></div>
+                    <div class="form-group"><label>Área *</label><input type="text" id="areaV" required></div>
+                    <div class="linha-dupla">
+                        <div class="form-group"><label>Disponibilidade</label><input type="text" id="disponibilidadeV"></div>
+                        <div class="form-group"><label>Horas/Mês</label><input type="text" id="horasV"></div>
+                    </div>
+                    <button class="btn-salvar" onclick="salvarPessoa('voluntarios')">💾 Salvar</button>
+                    <button class="btn-cancelar" id="btnCancelarV" style="display:none;" onclick="cancelarEdicao('voluntarios')">Cancelar</button>
+                </div>
+                <div class="card">
+                    <h3>📋 Voluntários</h3>
+                    <div style="overflow-x:auto;"><table><thead><tr><th>Nome</th><th>Área</th><th>Disponibilidade</th><th>Horas</th><th>Ações</th></tr></thead><tbody id="tabelaV"></tbody></table></div>
+                </div>
             </div>
         </div>
     </div>
@@ -322,8 +330,193 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        let dados = { beneficiarios: [], profissionais: [], voluntarios: [] };
+        let editando = { beneficiarios: null, profissionais: null, voluntarios: null };
+
+        const iniciais = {
+            beneficiarios: [
+                { id: 1, nome: 'Maria Silva', idade: 17, telefone: '(34) 99999-0001', projeto: 'Inclusão Digital', status: 'Ativo' },
+                { id: 2, nome: 'João Santos', idade: 22, telefone: '(34) 99999-0002', projeto: 'Esporte para Todos', status: 'Ativo' },
+                { id: 3, nome: 'Ana Costa', idade: 14, telefone: '(34) 99999-0003', projeto: 'Reforço Escolar', status: 'Ativo' },
+            ],
+            profissionais: [
+                { id: 1, nome: 'Dr. Carlos Mendes', especialidade: 'Psicólogo', contrato: 'CLT', carga: '40h' },
+                { id: 2, nome: 'Dra. Lucia Ferreira', especialidade: 'Assistente Social', contrato: 'CLT', carga: '40h' },
+            ],
+            voluntarios: [
+                { id: 1, nome: 'Fernanda Lima', area: 'Informática', disponibilidade: 'Sábados', horas: '16h' },
+                { id: 2, nome: 'Rafael Costa', area: 'Esportes', disponibilidade: 'Terças e Quintas', horas: '20h' },
+            ]
+        };
+
+        function carregar() {
+            for (let tipo of ['beneficiarios', 'profissionais', 'voluntarios']) {
+                const salvos = localStorage.getItem('amovin_' + tipo);
+                dados[tipo] = salvos ? JSON.parse(salvos) : [...iniciais[tipo]];
+                if (!salvos) salvar(tipo);
+            }
+        }
+
+        function salvar(tipo) {
+            localStorage.setItem('amovin_' + tipo, JSON.stringify(dados[tipo]));
+        }
+
+        function renderizar(tipo) {
+            const tabela = document.getElementById('tabela' + (tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V'));
+            const lista = dados[tipo];
+
+            if (lista.length === 0) {
+                tabela.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#bbb;padding:30px;">Nenhum registro.</td></tr>';
+                return;
+            }
+
+            if (tipo === 'beneficiarios') {
+                tabela.innerHTML = lista.map(p => `
+                    <tr>
+                        <td>${p.nome}</td><td>${p.idade}</td><td>${p.projeto}</td>
+                        <td><span class="${p.status === 'Ativo' ? 'status-ativo' : 'status-inativo'}">${p.status}</span></td>
+                        <td><button class="btn-editar" onclick="editarPessoa('${tipo}',${p.id})">✏️</button><button class="btn-excluir" onclick="excluirPessoa('${tipo}',${p.id})">🗑️</button></td>
+                    </tr>`).join('');
+            } else if (tipo === 'profissionais') {
+                tabela.innerHTML = lista.map(p => `
+                    <tr>
+                        <td>${p.nome}</td><td>${p.especialidade}</td><td>${p.contrato}</td><td>${p.carga}</td>
+                        <td><button class="btn-editar" onclick="editarPessoa('${tipo}',${p.id})">✏️</button><button class="btn-excluir" onclick="excluirPessoa('${tipo}',${p.id})">🗑️</button></td>
+                    </tr>`).join('');
+            } else {
+                tabela.innerHTML = lista.map(p => `
+                    <tr>
+                        <td>${p.nome}</td><td>${p.area}</td><td>${p.disponibilidade}</td><td>${p.horas}</td>
+                        <td><button class="btn-editar" onclick="editarPessoa('${tipo}',${p.id})">✏️</button><button class="btn-excluir" onclick="excluirPessoa('${tipo}',${p.id})">🗑️</button></td>
+                    </tr>`).join('');
+            }
+        }
+
+        window.salvarPessoa = function(tipo) {
+            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
+            const id = document.getElementById('pessoaId' + prefixo).value;
+
+            let obj = {};
+            if (tipo === 'beneficiarios') {
+                obj = {
+                    nome: document.getElementById('nomeB').value.trim(),
+                    idade: parseInt(document.getElementById('idadeB').value) || 0,
+                    telefone: document.getElementById('telefoneB').value.trim(),
+                    projeto: document.getElementById('projetoB').value,
+                    status: document.getElementById('statusB').value
+                };
+            } else if (tipo === 'profissionais') {
+                obj = {
+                    nome: document.getElementById('nomeP').value.trim(),
+                    especialidade: document.getElementById('especialidadeP').value.trim(),
+                    contrato: document.getElementById('contratoP').value,
+                    carga: document.getElementById('cargaP').value.trim()
+                };
+            } else {
+                obj = {
+                    nome: document.getElementById('nomeV').value.trim(),
+                    area: document.getElementById('areaV').value.trim(),
+                    disponibilidade: document.getElementById('disponibilidadeV').value.trim(),
+                    horas: document.getElementById('horasV').value.trim()
+                };
+            }
+
+            if (!obj.nome) { alert('❌ Nome é obrigatório!'); return; }
+
+            if (id) {
+                const index = dados[tipo].findIndex(p => p.id === parseInt(id));
+                if (index >= 0) dados[tipo][index] = { ...dados[tipo][index], ...obj };
+                editando[tipo] = null;
+                document.getElementById('btnCancelar' + prefixo).style.display = 'none';
+                document.getElementById('tituloForm' + prefixo).textContent = '📝 Novo Registro';
+            } else {
+                const novoId = dados[tipo].length > 0 ? Math.max(...dados[tipo].map(p => p.id)) + 1 : 1;
+                dados[tipo].push({ id: novoId, ...obj });
+            }
+
+            salvar(tipo);
+            limparForm(tipo);
+            renderizar(tipo);
+        };
+
+        window.editarPessoa = function(tipo, id) {
+            const pessoa = dados[tipo].find(p => p.id === id);
+            if (!pessoa) return;
+
+            editando[tipo] = id;
+            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
+            document.getElementById('tituloForm' + prefixo).textContent = '✏️ Editando';
+            document.getElementById('pessoaId' + prefixo).value = id;
+            document.getElementById('btnCancelar' + prefixo).style.display = 'block';
+
+            if (tipo === 'beneficiarios') {
+                document.getElementById('nomeB').value = pessoa.nome;
+                document.getElementById('idadeB').value = pessoa.idade;
+                document.getElementById('telefoneB').value = pessoa.telefone || '';
+                document.getElementById('projetoB').value = pessoa.projeto;
+                document.getElementById('statusB').value = pessoa.status;
+            } else if (tipo === 'profissionais') {
+                document.getElementById('nomeP').value = pessoa.nome;
+                document.getElementById('especialidadeP').value = pessoa.especialidade;
+                document.getElementById('contratoP').value = pessoa.contrato;
+                document.getElementById('cargaP').value = pessoa.carga;
+            } else {
+                document.getElementById('nomeV').value = pessoa.nome;
+                document.getElementById('areaV').value = pessoa.area;
+                document.getElementById('disponibilidadeV').value = pessoa.disponibilidade;
+                document.getElementById('horasV').value = pessoa.horas;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.excluirPessoa = function(tipo, id) {
+            if (!confirm('Excluir este registro?')) return;
+            dados[tipo] = dados[tipo].filter(p => p.id !== id);
+            salvar(tipo);
+            renderizar(tipo);
+            if (editando[tipo] === id) cancelarEdicao(tipo);
+        };
+
+        window.cancelarEdicao = function(tipo) {
+            editando[tipo] = null;
+            limparForm(tipo);
+            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
+            document.getElementById('btnCancelar' + prefixo).style.display = 'none';
+            document.getElementById('tituloForm' + prefixo).textContent = '📝 Novo Registro';
+        };
+
+        function limparForm(tipo) {
+            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
+            document.getElementById('pessoaId' + prefixo).value = '';
+            if (tipo === 'beneficiarios') {
+                document.getElementById('nomeB').value = '';
+                document.getElementById('idadeB').value = '';
+                document.getElementById('telefoneB').value = '';
+            } else if (tipo === 'profissionais') {
+                document.getElementById('nomeP').value = '';
+                document.getElementById('especialidadeP').value = '';
+                document.getElementById('cargaP').value = '';
+            } else {
+                document.getElementById('nomeV').value = '';
+                document.getElementById('areaV').value = '';
+                document.getElementById('disponibilidadeV').value = '';
+                document.getElementById('horasV').value = '';
+            }
+        }
+
+        window.mudarAba = function(aba, botao) {
+            document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.remove('ativo'));
+            document.querySelectorAll('.aba').forEach(el => el.classList.remove('ativa'));
+            document.getElementById('aba-' + aba).classList.add('ativo');
+            botao.classList.add('ativa');
+        };
+
         onAuthStateChanged(auth, (user) => {
-            if (!user) window.location.href = 'index.html';
+            if (!user) { window.location.href = 'index.html'; return; }
+            carregar();
+            renderizar('beneficiarios');
+            renderizar('profissionais');
+            renderizar('voluntarios');
         });
 
         window.fazerLogout = async function() {
@@ -339,13 +532,6 @@
             sessionStorage.clear();
             window.location.href = 'index.html';
         });
-
-        window.mudarAba = function(aba, botao) {
-            document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.remove('ativo'));
-            document.querySelectorAll('.aba').forEach(el => el.classList.remove('ativa'));
-            document.getElementById('aba-' + aba).classList.add('ativo');
-            botao.classList.add('ativa');
-        };
 
         let timeout;
         function resetTimeout() {
