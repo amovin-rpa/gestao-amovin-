@@ -469,4 +469,61 @@
             const t = transacoes.find(t => t.id === id);
             const historico = logs.filter(l => l.transacaoId === id);
             const body = document.getElementById('historicoBody');
-            body.innerHTML = `<p style="margin-bottom:15px;"><strong>Lançamento:</strong> ${t ? t.descric
+            body.innerHTML = `<p style="margin-bottom:15px;"><strong>Lançamento:</strong> ${t ? t.descricao : 'N/A'}</p>
+                <p style="margin-bottom:15px;"><strong>Criado por:</strong> ${t?.criadoPor || 'N/A'} em ${t?.criadoEm ? new Date(t.criadoEm).toLocaleString('pt-BR') : 'N/A'}</p>
+                ${t?.atualizadoPor ? `<p style="margin-bottom:15px;"><strong>Última alteração:</strong> ${t.atualizadoPor} em ${new Date(t.atualizadoEm).toLocaleString('pt-BR')}</p>` : ''}
+                <hr><h4 style="margin:15px 0;">Histórico de Ações:</h4>
+                ${historico.length === 0 ? '<p style="color:#888;">Nenhuma ação registrada.</p>' : historico.map(l => `<div class="log-item"><div><span class="log-acao">${l.acao}</span> - ${l.detalhes}</div><div class="log-data">👤 ${l.usuario} • ${new Date(l.data).toLocaleString('pt-BR')}</div></div>`).join('')}`;
+            document.getElementById('modalHistorico').style.display = 'flex';
+        };
+
+        window.limparFiltros = function() {
+            document.getElementById('filtroAno').value = 'todos';
+            document.getElementById('filtroMes').value = 'todos';
+            document.getElementById('filtroTipo').value = 'todos';
+            document.getElementById('filtroCategoria').value = 'todos';
+            document.getElementById('filtroStatus').value = 'todos';
+            document.getElementById('filtroComprovante').value = 'todos';
+            document.getElementById('filtroBusca').value = '';
+            filtrar();
+        };
+
+        window.exportarCSV = function() {
+            const lista = [...transacoes].sort((a,b) => new Date(b.data) - new Date(a.data));
+            let csv = 'Data;Tipo;Categoria;Empresa;Descrição;Valor;Status;Comprovante;Obs;Criado por;Criado em;Atualizado por\n';
+            lista.forEach(t => {
+                csv += `${formatarData(t.data)};${t.tipo==='receita'?'Receita':'Despesa'};${t.categoria};${t.empresa||''};"${t.descricao}";${t.valor.toFixed(2).replace('.',',')};${t.status};${t.comprovante?'Sim':'Não'};"${t.obs||''}";${t.criadoPor||''};${t.criadoEm||''};${t.atualizadoPor||''}\n`;
+            });
+            const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'AMOVIN_Financeiro.csv'; a.click();
+            addLog('📥 Exportou', 'CSV/Excel', null);
+            renderizarLogs();
+        };
+
+        // IMPRESSÃO com rodapé de quem imprimiu
+        window.addEventListener('beforeprint', function() {
+            const rodape = document.createElement('div');
+            rodape.id = 'rodapeImpressao';
+            rodape.style.cssText = 'position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:10px;color:#666;padding:8px;border-top:1px solid #ccc;background:white;';
+            rodape.textContent = `Documento impresso por: ${usuarioAtual} • ${new Date().toLocaleString('pt-BR')} • AMOVIN`;
+            document.body.appendChild(rodape);
+        });
+        window.addEventListener('afterprint', function() {
+            const rodape = document.getElementById('rodapeImpressao');
+            if (rodape) rodape.remove();
+        });
+
+        window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
+        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+        let timeout;
+        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
+        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
+
+        popularFiltros();
+        filtrar();
+        renderizarLogs();
+    </script>
+</body>
+</html>
