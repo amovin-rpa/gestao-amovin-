@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOVIN - Agenda</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f6fa;
+            min-height: 100vh;
+        }
+
+        .topo {
+            background: linear-gradient(135deg, #0277bd 0%, #0288d1 100%);
+            color: white;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .topo h2 { font-size: 18px; }
+
+        .btn-topo {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            margin-left: 6px;
+        }
+
+        .btn-topo:hover { background: rgba(255,255,255,0.3); }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+
+        .grid-agenda {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: #0277bd;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 10px;
+        }
+
+        .evento {
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #0288d1;
+            background: #f5f5f5;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .evento:hover { transform: translateX(5px); }
+
+        .evento h4 { color: #333; font-size: 15px; margin-bottom: 5px; }
+        .evento p { color: #777; font-size: 12px; }
+
+        .evento .horario {
+            display: inline-block;
+            background: #0288d1;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .evento.reuniao { border-left-color: #e65100; }
+        .evento.atendimento { border-left-color: #2e7d32; }
+        .evento.evento-especial { border-left-color: #7b1fa2; }
+
+        .calendario-mes {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+
+        .calendario-mes .dia-semana {
+            font-weight: bold;
+            color: #0277bd;
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        .calendario-mes .dia {
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .calendario-mes .dia:hover { background: #e1f5fe; }
+        .calendario-mes .dia.hoje { background: #0288d1; color: white; font-weight: bold; }
+        .calendario-mes .dia.evento-marcado { border: 2px solid #0288d1; }
+        .calendario-mes .dia.vazio { cursor: default; }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: #0288d1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .btn-add:hover { background: #0277bd; }
+
+        @media (max-width: 900px) {
+            .grid-agenda { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topo">
+        <h2>📅 Agenda Corporativa</h2>
+        <div>
+            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
+            <a href="oficios.html" class="btn-topo">📄 Ofícios</a>
+            <a href="projetos.html" class="btn-topo">📋 Projetos</a>
+            <a href="financeiro.html" class="btn-topo">💰 Financeiro</a>
+            <a href="pessoas.html" class="btn-topo">👥 Pessoas</a>
+            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="grid-agenda">
+            <!-- PRÓXIMOS EVENTOS -->
+            <div class="card">
+                <h3>📌 Próximos Eventos</h3>
+                
+                <div class="evento atendimento">
+                    <h4>Atendimento Psicológico - Maria Silva</h4>
+                    <p>Dr. Carlos Mendes</p>
+                    <span class="horario">🕐 09:00 - 10:00</span>
+                </div>
+
+                <div class="evento reuniao">
+                    <h4>Reunião de Equipe</h4>
+                    <p>Todos os profissionais</p>
+                    <span class="horario">🕐 14:00 - 15:30</span>
+                </div>
+
+                <div class="evento evento-especial">
+                    <h4>Workshop: Captação de Recursos</h4>
+                    <p>Online - Google Meet</p>
+                    <span class="horario">🕐 16:00 - 18:00</span>
+                </div>
+
+                <div class="evento atendimento">
+                    <h4>Aula de Informática - Turma B</h4>
+                    <p>Prof. Fernanda Lima</p>
+                    <span class="horario">🕐 10:00 - 12:00</span>
+                </div>
+
+                <div class="evento reuniao">
+                    <h4>Visita Técnica - Prefeitura</h4>
+                    <p>Equipe de Captação</p>
+                    <span class="horario">🕐 08:00 - 11:00</span>
+                </div>
+
+                <button class="btn-add" onclick="alert('Em breve!')">+ Novo Evento</button>
+            </div>
+
+            <!-- CALENDÁRIO -->
+            <div class="card">
+                <h3>📅 Junho 2026</h3>
+                <div class="calendario-mes" id="calendario"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
+            authDomain: "amovin-oficios-teste.firebaseapp.com",
+            projectId: "amovin-oficios-teste",
+            storageBucket: "amovin-oficios-teste.firebasestorage.app",
+            messagingSenderId: "901387183295",
+            appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = 'index.html';
+        });
+
+        window.fazerLogout = async function() {
+            await signOut(auth);
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        };
+
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => {
+            history.pushState(null, null, location.href);
+            signOut(auth);
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        });
+
+        // Gerar calendário
+        function gerarCalendario() {
+            const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const diasNoMes = 30;
+            const primeiroDia = 1; // Segunda-feira (Junho 2026)
+            const hoje = 23;
+
+            let html = '';
+            diasSemana.forEach(d => {
+                html += `<div class="dia-semana">${d}</div>`;
+            });
+
+            // Dias vazios
+            for (let i = 1; i < primeiroDia; i++) {
+                html += '<div class="dia vazio"></div>';
+            }
+
+            // Dias do mês
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                let classe = 'dia';
+                if (dia === hoje) classe += ' hoje';
+                if ([5, 10, 15, 20, 25, 28].includes(dia)) classe += ' evento-marcado';
+                html += `<div class="${classe}" onclick="alert('Eventos do dia ${dia}/06/2026')">${dia}</div>`;
+            }
+
+            document.getElementById('calendario').innerHTML = html;
+        }
+
+        gerarCalendario();
+
+        let timeout;
+        function resetTimeout() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                signOut(auth);
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            }, 30 * 60 * 1000);
+        }
+        document.addEventListener('mousemove', resetTimeout);
+        document.addEventListener('keypress', resetTimeout);
+        document.addEventListener('click', resetTimeout);
+        resetTimeout();
+    </script>
+</body>
+</html>
