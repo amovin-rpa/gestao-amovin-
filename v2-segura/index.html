@@ -12,213 +12,326 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #0f1729 0%, #1a2744 50%, #16203a 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            padding-bottom: 80px;
         }
 
-        /* Banner LGPD */
-        .lgpd-banner {
+        .particulas {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1a1a2e;
-            color: white;
-            padding: 20px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 9999;
-            font-size: 14px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-            gap: 20px;
-            flex-wrap: wrap;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .lgpd-banner a { color: #667eea; text-decoration: underline; }
-
-        .lgpd-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            white-space: nowrap;
+        .particula {
+            position: absolute;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+            animation: flutuar linear infinite;
         }
 
-        .lgpd-btn:hover { background: #5a6fd6; }
+        @keyframes flutuar {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+        }
 
-        /* Login */
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
+        }
+
+        .login-card {
+            background: rgba(255,255,255,0.98);
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         .login-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 30px;
+            padding: 35px 30px 30px;
             text-align: center;
             color: white;
         }
 
-        .login-header .logo {
-            width: 90px;
-            height: 90px;
+        .logo-container {
+            width: 80px;
+            height: 80px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
-            font-size: 40px;
+            font-size: 38px;
             font-weight: bold;
             color: #764ba2;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
 
-        .login-header h1 { font-size: 24px; margin-bottom: 5px; }
-        .login-header p { font-size: 14px; opacity: 0.9; }
+        .login-header h1 { font-size: 22px; margin-bottom: 4px; letter-spacing: 1px; }
+        .login-header p { font-size: 12px; opacity: 0.85; }
 
-        .login-body { padding: 35px; }
+        .login-body { padding: 30px; }
 
-        .form-group { margin-bottom: 25px; position: relative; }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            background: #f5f5f5;
+            padding: 5px;
+            border-radius: 14px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: transparent;
+            color: #888;
+        }
+
+        .tab .tab-icone { font-size: 20px; }
+
+        .tab.ativo {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .tab.admin.ativo { color: #1565c0; }
+        .tab.recepcao.ativo { color: #2e7d32; }
+        .tab.consulta.ativo { color: #7b1fa2; }
+
+        .form-group { margin-bottom: 22px; position: relative; }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            color: #333;
+            margin-bottom: 7px;
+            color: #444;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group label .opcional {
+            font-weight: normal;
+            color: #aaa;
+            font-size: 11px;
+        }
+
+        .input-wrapper {
+            position: relative;
         }
 
         .form-group input {
             width: 100%;
-            padding: 15px 50px 15px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
+            padding: 14px 48px 14px 16px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 15px;
             transition: all 0.3s;
+            background: #fafafa;
+            font-family: inherit;
         }
 
         .form-group input:focus {
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.08);
             outline: none;
         }
 
         .olho-magico {
             position: absolute;
-            right: 15px;
-            top: 44px;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
-            font-size: 22px;
+            font-size: 20px;
             background: none;
             border: none;
-            opacity: 0.6;
+            opacity: 0.5;
             transition: opacity 0.3s;
+            padding: 5px;
         }
 
         .olho-magico:hover { opacity: 1; }
 
-        .btn-login {
+        .btn-entrar {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
         }
 
-        .btn-login:hover { transform: translateY(-2px); }
-        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-entrar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-entrar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
         .erro-msg {
             background: #fff5f5;
-            color: #c33;
-            padding: 14px;
-            border-radius: 10px;
+            color: #c62828;
+            padding: 14px 16px;
+            border-radius: 12px;
             margin-bottom: 20px;
             display: none;
-            font-size: 14px;
-            border-left: 4px solid #c33;
+            font-size: 13px;
             font-weight: 500;
+            border-left: 4px solid #c62828;
+            animation: shake 0.5s;
         }
 
         .erro-msg.show { display: block; }
 
-        .links-legal {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #999;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
-        .links-legal a { color: #667eea; text-decoration: none; margin: 0 8px; }
-        .links-legal a:hover { text-decoration: underline; }
+        .rodape-login {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .rodape-login span { margin: 0 8px; }
+
+        .lgpd-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 41, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            z-index: 9999;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .lgpd-banner button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .lgpd-banner button:hover { background: #5a6fd6; }
 
         @media (max-width: 500px) {
-            .login-body { padding: 25px; }
-            .lgpd-banner { flex-direction: column; text-align: center; padding: 15px 20px; gap: 10px; }
+            .login-body { padding: 20px; }
+            .tabs { flex-direction: row; }
+            .tab { font-size: 10px; padding: 10px 5px; }
+            .lgpd-banner { flex-direction: column; text-align: center; gap: 10px; }
         }
     </style>
 </head>
 <body>
+    <!-- Partículas -->
+    <div class="particulas" id="particulas"></div>
 
     <!-- Banner LGPD -->
     <div class="lgpd-banner" id="lgpdBanner">
-        <span>
-            🍪 Este site usa cookies essenciais. Ao continuar, você concorda com a 
-            <a href="#">Política de Privacidade</a> (LGPD).
-        </span>
-        <button class="lgpd-btn" onclick="aceitarLGPD()">ENTENDI E ACEITO</button>
+        <span>🍪 Usamos cookies essenciais. Ao continuar, você concorda com a <strong>LGPD</strong>.</span>
+        <button onclick="aceitarLGPD()">ENTENDI</button>
     </div>
 
     <!-- Login -->
-    <div class="login-container">
-        <div class="login-header">
-            <div class="logo">A</div>
-            <h1>AMOVIN</h1>
-            <p>Associação e Movimento pela Inclusão</p>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-container">A</div>
+                <h1>AMOVIN</h1>
+                <p>Associação e Movimento pela Inclusão</p>
+            </div>
+
+            <div class="login-body">
+                <div class="erro-msg" id="erroMsg"></div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab admin ativo" onclick="mudarTab('admin', this)">
+                        <span class="tab-icone">🛡️</span> Administrador
+                    </button>
+                    <button class="tab recepcao" onclick="mudarTab('recepcao', this)">
+                        <span class="tab-icone">👥</span> Recepção
+                    </button>
+                    <button class="tab consulta" onclick="mudarTab('consulta', this)">
+                        <span class="tab-icone">🩺</span> Consulta
+                    </button>
+                </div>
+
+                <form id="loginForm" autocomplete="off">
+                    <div class="form-group">
+                        <label id="labelNome">📧 Login</label>
+                        <input type="text" id="nome" required placeholder="Seu login ou nome" autocomplete="off">
+                    </div>
+
+                    <div class="form-group" id="grupoSenha">
+                        <label>🔒 Senha <span class="opcional" id="labelOpcional"></span></label>
+                        <div class="input-wrapper">
+                            <input type="password" id="senha" placeholder="••••••••" autocomplete="new-password">
+                            <button type="button" class="olho-magico" onclick="toggleSenha()">👁️</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-entrar" id="btnEntrar">🔐 Entrar</button>
+                </form>
+            </div>
         </div>
 
-        <div class="login-body">
-            <div class="erro-msg" id="erroMsg"></div>
-
-            <form id="loginForm" autocomplete="off">
-                <div class="form-group">
-                    <label>📧 E-mail</label>
-                    <input type="email" id="email" required placeholder="seu@email.com" autocomplete="off">
-                </div>
-
-                <div class="form-group">
-                    <label>🔒 Senha</label>
-                    <input type="password" id="senha" required placeholder="••••••••" autocomplete="new-password">
-                    <button type="button" class="olho-magico" onclick="toggleSenha()" tabindex="-1">👁️</button>
-                </div>
-
-                <button type="submit" class="btn-login" id="btnLogin">🔐 Entrar</button>
-            </form>
-
-            <div class="links-legal">
-                <a href="#">Privacidade</a> |
-                <a href="#">Termos</a> |
-                <span>🔒 LGPD</span>
-            </div>
+        <div class="rodape-login">
+            <span>🔒 LGPD</span>
+            <span>•</span>
+            <span>AMOVIN © 2026</span>
         </div>
     </div>
 
@@ -238,44 +351,54 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Verificar se já logado
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                sessionStorage.setItem('amovin_logado', 'true');
-                sessionStorage.setItem('amovin_login_time', Date.now());
-                window.location.href = 'dashboard.html';
-            }
-        });
+        let tabAtiva = 'admin';
 
-        // Login
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const btnLogin = document.getElementById('btnLogin');
-            const erroMsg = document.getElementById('erroMsg');
-            
-            btnLogin.disabled = true;
-            btnLogin.textContent = '⏳ Autenticando...';
-            erroMsg.classList.remove('show');
-            
-            try {
-                await signInWithEmailAndPassword(auth, email, senha);
-                sessionStorage.setItem('amovin_logado', 'true');
-                sessionStorage.setItem('amovin_login_time', Date.now());
-                window.location.href = 'dashboard.html';
-            } catch (error) {
-                let mensagem = 'Erro ao fazer login.';
-                if (error.code === 'auth/invalid-credential') mensagem = 'E-mail ou senha incorretos.';
-                else if (error.code === 'auth/too-many-requests') mensagem = 'Muitas tentativas. Aguarde.';
-                
-                erroMsg.textContent = '❌ ' + mensagem;
-                erroMsg.classList.add('show');
-                btnLogin.disabled = false;
-                btnLogin.textContent = '🔐 Entrar';
+        // Partículas animadas
+        function criarParticulas() {
+            const container = document.getElementById('particulas');
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = 'particula';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.width = Math.random() * 6 + 2 + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDuration = Math.random() * 20 + 10 + 's';
+                p.style.animationDelay = Math.random() * 20 + 's';
+                container.appendChild(p);
             }
-        });
+        }
+        criarParticulas();
+
+        // Mudar tab
+        window.mudarTab = function(tab, botao) {
+            tabAtiva = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+            botao.classList.add('ativo');
+
+            const labelNome = document.getElementById('labelNome');
+            const labelOpcional = document.getElementById('labelOpcional');
+            const senhaInput = document.getElementById('senha');
+            const grupoSenha = document.getElementById('grupoSenha');
+
+            if (tab === 'admin') {
+                labelNome.textContent = '🛡️ Login do Administrador';
+                senhaInput.required = true;
+                grupoSenha.style.display = 'block';
+                labelOpcional.textContent = '';
+            } else if (tab === 'recepcao') {
+                labelNome.textContent = '👥 Seu Nome ou Login';
+                senhaInput.required = false;
+                grupoSenha.style.display = 'block';
+                labelOpcional.textContent = '(opcional)';
+            } else {
+                labelNome.textContent = '🩺 Login do Profissional';
+                senhaInput.required = true;
+                grupoSenha.style.display = 'block';
+                labelOpcional.textContent = '';
+            }
+
+            document.getElementById('erroMsg').classList.remove('show');
+        };
 
         // Olho mágico
         window.toggleSenha = function() {
@@ -290,7 +413,75 @@
             }
         };
 
-        // Segurança: bloquear voltar
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const senha = document.getElementById('senha').value;
+            const btnEntrar = document.getElementById('btnEntrar');
+            const erroMsg = document.getElementById('erroMsg');
+
+            if (!nome) {
+                erroMsg.textContent = '❌ Preencha o campo de login.';
+                erroMsg.classList.add('show');
+                return;
+            }
+
+            // Admin padrão
+            if (tabAtiva === 'admin' && nome.toLowerCase() === 'admin' && senha === 'amovin2026') {
+                sessionStorage.setItem('amovin_logado', 'true');
+                sessionStorage.setItem('amovin_perfil', 'admin');
+                sessionStorage.setItem('amovin_nome', 'Administrador');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // Tentar Firebase Auth
+            if (senha) {
+                btnEntrar.disabled = true;
+                btnEntrar.textContent = '⏳ Autenticando...';
+                erroMsg.classList.remove('show');
+
+                try {
+                    let email = nome;
+                    if (!email.includes('@')) email = nome + '@amovin.org.br';
+                    
+                    await signInWithEmailAndPassword(auth, email, senha);
+                    sessionStorage.setItem('amovin_logado', 'true');
+                    sessionStorage.setItem('amovin_perfil', tabAtiva);
+                    sessionStorage.setItem('amovin_nome', nome);
+                    window.location.href = 'dashboard.html';
+                    return;
+                } catch (error) {
+                    // Se falhar Firebase, tenta login local
+                }
+            }
+
+            // Login local sem senha (recepção)
+            if (tabAtiva === 'recepcao' && !senha) {
+                sessionStorage.setItem('amovin_logado', 'true');
+                sessionStorage.setItem('amovin_perfil', 'recepcao');
+                sessionStorage.setItem('amovin_nome', nome);
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            erroMsg.textContent = '❌ Login ou senha inválidos.';
+            erroMsg.classList.add('show');
+            btnEntrar.disabled = false;
+            btnEntrar.textContent = '🔐 Entrar';
+        });
+
+        // Verificar se já logado
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                sessionStorage.setItem('amovin_logado', 'true');
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Segurança
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', () => {
             history.pushState(null, null, location.href);
@@ -299,8 +490,8 @@
             window.location.href = 'index.html';
         });
 
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
+        window.addEventListener('pageshow', (e) => {
+            if (e.persisted) {
                 signOut(auth);
                 sessionStorage.clear();
                 window.location.reload();
@@ -312,12 +503,10 @@
         function resetTimeout() {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
-                if (sessionStorage.getItem('amovin_logado')) {
-                    signOut(auth);
-                    sessionStorage.clear();
-                    alert('⏰ Sessão expirada.');
-                    window.location.href = 'index.html';
-                }
+                signOut(auth);
+                sessionStorage.clear();
+                alert('⏰ Sessão expirada.');
+                window.location.href = 'index.html';
             }, 30 * 60 * 1000);
         }
         document.addEventListener('mousemove', resetTimeout);
@@ -336,5 +525,3 @@
     </script>
 </body>
 </html>
-
-
