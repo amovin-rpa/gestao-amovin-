@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOVIN - Profissionais</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+        .topo {
+            background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
+            color: white; padding: 14px 25px; display: flex;
+            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .topo h2 { font-size: 18px; }
+        .btn-topo {
+            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px;
+        }
+        .btn-topo:hover { background: rgba(255,255,255,0.3); }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        .header-actions {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+        }
+        .header-actions h1 { font-size: 24px; color: #333; }
+        .btn-novo {
+            background: #7b1fa2; color: white; border: none; padding: 12px 25px;
+            border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px;
+        }
+        .btn-novo:hover { background: #4a148c; }
+
+        .profissionais-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 15px;
+        }
+
+        .prof-card {
+            background: white; border-radius: 15px; padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; gap: 15px;
+            align-items: center; transition: transform 0.2s;
+        }
+        .prof-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+
+        .prof-foto {
+            width: 70px; height: 90px; border-radius: 8px; background: #f0f0f0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; color: #aaa; overflow: hidden; flex-shrink: 0;
+            border: 2px solid #e0e0e0;
+        }
+        .prof-foto img { width: 100%; height: 100%; object-fit: cover; }
+
+        .prof-info { flex: 1; min-width: 0; }
+        .prof-info h3 { font-size: 16px; color: #333; margin-bottom: 3px; }
+        .prof-info .especialidade { font-size: 13px; color: #7b1fa2; font-weight: 600; }
+        .prof-info .detalhes { font-size: 11px; color: #888; margin-top: 4px; }
+
+        .prof-acoes { display: flex; gap: 4px; flex-wrap: wrap; }
+        .btn-acao {
+            padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer;
+            font-size: 11px; font-weight: bold;
+        }
+        .btn-editar { background: #ffc107; color: #333; }
+        .btn-agenda { background: #4caf50; color: white; }
+        .btn-termo { background: #ff9800; color: white; }
+        .btn-imprimir { background: #2196f3; color: white; }
+        .btn-excluir { background: #f44336; color: white; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal {
+            background: white; border-radius: 20px; width: 100%; max-width: 800px;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 20px; border-bottom: 2px solid #eee; display: flex;
+            justify-content: space-between; align-items: center; position: sticky; top: 0;
+            background: white; z-index: 10; border-radius: 20px 20px 0 0;
+        }
+        .modal-header h3 { color: #4a148c; }
+        .modal-body { padding: 25px; }
+        .modal-body .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .modal-body .form-full { grid-column: 1 / -1; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #444; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0;
+            border-radius: 8px; font-size: 14px; font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #7b1fa2; outline: none; }
+
+        .btn-salvar {
+            width: 100%; padding: 14px; background: #7b1fa2; color: white;
+            border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;
+        }
+        .btn-salvar:hover { background: #4a148c; }
+        .btn-fechar { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
+        .btn-fechar:hover { color: #f44336; }
+
+        .section-title {
+            font-size: 15px; font-weight: 700; color: #4a148c;
+            border-bottom: 2px solid #e0e0e0; padding-bottom: 8px;
+            margin: 20px 0 15px; grid-column: 1 / -1;
+        }
+
+        .sem-dados { text-align: center; padding: 60px; color: #bbb; }
+
+        @media (max-width: 768px) {
+            .profissionais-grid { grid-template-columns: 1fr; }
+            .modal-body .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topo">
+        <h2>👨‍⚕️ Gestão de Profissionais</h2>
+        <div>
+            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
+            <a href="pessoas.html" class="btn-topo">👥 Pessoas</a>
+            <a href="agenda.html" class="btn-topo">📅 Agenda</a>
+            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header-actions">
+            <h1>Profissionais Cadastrados</h1>
+            <button class="btn-novo" onclick="abrirForm()">➕ Novo Profissional</button>
+        </div>
+
+        <div class="profissionais-grid" id="listaProfissionais">
+            <div class="sem-dados">Nenhum profissional cadastrado.</div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CADASTRO -->
+    <div class="modal-overlay" id="modalForm" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="tituloModal">📝 Novo Profissional</h3>
+                <button class="btn-fechar" onclick="fecharForm()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="profId">
+                <div class="form-grid">
+                    <div class="section-title">📸 Foto</div>
+                    <div style="text-align:center;">
+                        <div id="previewFoto" style="width:100px;height:130px;border:2px dashed #ccc;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#aaa;overflow:hidden;border-radius:8px;">Foto 3x4</div>
+                        <input type="file" id="fotoUpload" accept="image/*" onchange="previewImagem(this)" style="font-size:12px;">
+                    </div>
+                    <div></div>
+
+                    <div class="section-title">👤 Dados Pessoais</div>
+                    <div class="form-full"><div class="form-group"><label>Nome Completo *</label><input type="text" id="nomeProf" required></div></div>
+                    <div class="form-group"><label>Especialidade *</label>
+                        <select id="especialidadeProf" required>
+                            <option value="">Selecione...</option>
+                            <option>Administrador</option><option>Advogado</option><option>Assistente Social</option>
+                            <option>Educador Físico</option><option>Fisioterapeuta</option><option>Fonoaudiólogo</option>
+                            <option>Musicoterapeuta</option><option>Neuropediatra</option><option>Neuropsicólogo</option>
+                            <option>Nutricionista</option><option>Pediatra</option><option>Psicólogo</option>
+                            <option>Psicomotricista</option><option>Psicopedagogo</option><option>Psiquiatria Infantil</option>
+                            <option>Terapeuta Ocupacional</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>CPF</label><input type="text" id="cpfProf"></div>
+                    <div class="form-group"><label>Telefone *</label><input type="text" id="telefoneProf" required></div>
+                    <div class="form-group"><label>Tem Registro Profissional?</label>
+                        <select id="temRegistro" onchange="toggleRegistro()">
+                            <option value="Não">Não</option><option value="Sim">Sim</option>
+                        </select>
+                    </div>
+                    <div id="campoConselho" style="display:none;" class="form-group"><label>Conselho/Órgão</label><input type="text" id="conselhoProf" placeholder="Ex: CRM-MG, CREFITO-4"></div>
+                    <div id="campoRegistro" style="display:none;" class="form-group"><label>Nº do Registro</label><input type="text" id="registroProf" placeholder="Ex: 123456-F"></div>
+                    <div class="form-group"><label>Tipo de Vínculo *</label>
+                        <select id="vinculoProf" required>
+                            <option value="">Selecione...</option>
+                            <option>Contratado</option><option>Parceiro Social</option>
+                            <option>Voluntário</option><option>Diretoria</option>
+                        </select>
+                    </div>
+
+                    <div class="section-title">🔐 Credenciais de Acesso</div>
+                    <div class="form-group"><label>Ambiente *</label>
+                        <select id="acessoProf" required>
+                            <option value="consulta">Consulta</option>
+                            <option value="recepcao">Recepção</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Login *</label><input type="text" id="loginProf" required></div>
+                    <div class="form-group"><label>Senha *</label><input type="password" id="senhaProf" required></div>
+
+                    <div class="section-title">📄 Termos</div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button type="button" class="btn-acao btn-termo" onclick="gerarTermo('parceria')">📄 Termo de Parceria</button>
+                        <button type="button" class="btn-acao btn-termo" onclick="gerarTermo('voluntario')">📄 Termo de Voluntário</button>
+                    </div>
+                </div>
+                <button class="btn-salvar" onclick="salvarProfissional()" style="margin-top:20px;">💾 Salvar Profissional</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
+        let editandoId = null;
+
+        if (profissionais.length === 0) {
+            profissionais = [
+                {id:1, nome:'Dr. Carlos Mendes', especialidade:'Psicólogo', cpf:'111.222.333-44', telefone:'(34) 99999-0001', temRegistro:'Sim', conselho:'CRP-MG', registro:'12345', vinculo:'Contratado', acesso:'consulta', login:'carlos', senha:'123456', foto:''},
+                {id:2, nome:'Dra. Lucia Ferreira', especialidade:'Assistente Social', cpf:'222.333.444-55', telefone:'(34) 99999-0002', temRegistro:'Sim', conselho:'CRESS-MG', registro:'54321', vinculo:'Contratado', acesso:'consulta', login:'lucia', senha:'123456', foto:''},
+            ];
+            salvar();
+        }
+
+        function salvar() { localStorage.setItem('amovin_profissionais', JSON.stringify(profissionais)); }
+        function renderizar() {
+            const container = document.getElementById('listaProfissionais');
+            if (profissionais.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum profissional cadastrado.</div>';
+                return;
+            }
+            container.innerHTML = profissionais.sort((a,b) => a.nome.localeCompare(b.nome)).map(p => `
+                <div class="prof-card">
+                    <div class="prof-foto">${p.foto ? `<img src="${p.foto}" alt="">` : '3x4'}</div>
+                    <div class="prof-info">
+                        <h3>${p.nome}</h3>
+                        <div class="especialidade">${p.especialidade} ${p.temRegistro === 'Sim' ? '| '+ (p.conselho||'') + ' ' + (p.registro||'') : ''}</div>
+                        <div class="detalhes">📞 ${p.telefone} | 🏷️ ${p.vinculo} | 🔐 ${p.acesso}</div>
+                    </div>
+                    <div class="prof-acoes">
+                        <button class="btn-acao btn-editar" onclick="editarProf(${p.id})">✏️</button>
+                        <button class="btn-acao btn-agenda" onclick="window.location.href='agenda.html'">📅</button>
+                        <button class="btn-acao btn-termo" onclick="gerarTermoProf(${p.id})">📄</button>
+                        <button class="btn-acao btn-imprimir" onclick="imprimirProf(${p.id})">🖨️</button>
+                        <button class="btn-acao btn-excluir" onclick="excluirProf(${p.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.abrirForm = function(id = null) {
+            editandoId = id;
+            document.getElementById('modalForm').style.display = 'flex';
+            document.getElementById('tituloModal').textContent = id ? '✏️ Editar Profissional' : '📝 Novo Profissional';
+            
+            if (id) {
+                const p = profissionais.find(p => p.id === id);
+                if (!p) return;
+                document.getElementById('profId').value = p.id;
+                document.getElementById('nomeProf').value = p.nome;
+                document.getElementById('especialidadeProf').value = p.especialidade;
+                document.getElementById('cpfProf').value = p.cpf || '';
+                document.getElementById('telefoneProf').value = p.telefone;
+                document.getElementById('temRegistro').value = p.temRegistro || 'Não';
+                document.getElementById('conselhoProf').value = p.conselho || '';
+                document.getElementById('registroProf').value = p.registro || '';
+                document.getElementById('vinculoProf').value = p.vinculo;
+                document.getElementById('acessoProf').value = p.acesso || 'consulta';
+                document.getElementById('loginProf').value = p.login || '';
+                document.getElementById('senhaProf').value = p.senha || '';
+                if (p.foto) {
+                    document.getElementById('previewFoto').innerHTML = `<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;">`;
+                }
+                toggleRegistro();
+            } else {
+                document.getElementById('profId').value = '';
+                document.getElementById('nomeProf').value = '';
+                document.getElementById('especialidadeProf').value = '';
+                document.getElementById('cpfProf').value = '';
+                document.getElementById('telefoneProf').value = '';
+                document.getElementById('temRegistro').value = 'Não';
+                document.getElementById('conselhoProf').value = '';
+                document.getElementById('registroProf').value = '';
+                document.getElementById('vinculoProf').value = '';
+                document.getElementById('acessoProf').value = 'consulta';
+                document.getElementById('loginProf').value = '';
+                document.getElementById('senhaProf').value = '';
+                document.getElementById('previewFoto').innerHTML = 'Foto 3x4';
+                document.getElementById('fotoUpload').value = '';
+                toggleRegistro();
+            }
+        };
+
+        window.fecharForm = function() {
+            document.getElementById('modalForm').style.display = 'none';
+            editandoId = null;
+        };
+
+        window.toggleRegistro = function() {
+            const tem = document.getElementById('temRegistro').value === 'Sim';
+            document.getElementById('campoConselho').style.display = tem ? 'block' : 'none';
+            document.getElementById('campoRegistro').style.display = tem ? 'block' : 'none';
+        };
+
+        window.previewImagem = function(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewFoto').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.salvarProfissional = function() {
+            const nome = document.getElementById('nomeProf').value.trim();
+            const especialidade = document.getElementById('especialidadeProf').value;
+            const telefone = document.getElementById('telefoneProf').value.trim();
+            const vinculo = document.getElementById('vinculoProf').value;
+            const acesso = document.getElementById('acessoProf').value;
+            const login = document.getElementById('loginProf').value.trim();
+            const senha = document.getElementById('senhaProf').value.trim();
+
+            if (!nome || !especialidade || !telefone || !vinculo || !login || !senha) {
+                alert('❌ Preencha todos os campos obrigatórios (*)');
+                return;
+            }
+
+            const dados = {
+                nome, especialidade,
+                cpf: document.getElementById('cpfProf').value.trim(),
+                telefone,
+                temRegistro: document.getElementById('temRegistro').value,
+                conselho: document.getElementById('conselhoProf').value.trim(),
+                registro: document.getElementById('registroProf').value.trim(),
+                vinculo, acesso, login, senha,
+                foto: document.getElementById('previewFoto').querySelector('img')?.src || ''
+            };
+
+            if (editandoId) {
+                const idx = profissionais.findIndex(p => p.id === editandoId);
+                if (idx >= 0) profissionais[idx] = { ...profissionais[idx], ...dados };
+            } else {
+                profissionais.push({ id: Date.now(), ...dados });
+            }
+
+            salvar(); renderizar(); fecharForm();
+            alert('✅ Profissional salvo com sucesso!');
+        };
+
+        window.editarProf = function(id) { abrirForm(id); };
+        window.excluirProf = function(id) {
+            if (!confirm('Excluir este profissional?')) return;
+            profissionais = profissionais.filter(p => p.id !== id);
+            salvar(); renderizar();
+        };
+
+        window.gerarTermoProf = function(id) {
+            const p = profissionais.find(p => p.id === id);
+            if (!p) return;
+            const tipo = p.vinculo === 'Voluntário' ? 'voluntario' : 'parceria';
+            gerarTermoImpressao(p, tipo);
+        };
+
+        window.gerarTermo = function(tipo) {
+            const p = {
+                nome: document.getElementById('nomeProf').value || '________________',
+                especialidade: document.getElementById('especialidadeProf').value || '________________',
+                cpf: document.getElementById('cpfProf').value || '________________',
+                temRegistro: document.getElementById('temRegistro').value,
+                registro: document.getElementById('registroProf').value || '',
+            };
+            gerarTermoImpressao(p, tipo);
+        };
+
+        function gerarTermoImpressao(p, tipo) {
+            const hoje = new Date();
+            const data = hoje.toLocaleDateString('pt-BR', { day:'numeric', month:'long', year:'numeric' });
+            const reg = p.temRegistro === 'Sim' && p.registro ? `, registrado(a) sob o nº ${p.registro}` : '';
+
+            const conteudo = tipo === 'parceria' ? `
+                <h2 style="text-align:center;">TERMO DE PARCERIA E COOPERAÇÃO TÉCNICO-SOCIAL</h2>
+                <p><strong>PARCEIRO(A):</strong> ${p.nome}, ${p.especialidade}, CPF ${p.cpf}${reg}.</p>
+                <p><strong>ASSOCIAÇÃO:</strong> AMOVIN - CNPJ: 55.880.046/0001-34</p>
+                <p>A AMOVIN disponibiliza ao PARCEIRO o uso de suas instalações. O PARCEIRO compromete-se a cumprir os horários estabelecidos.</p>
+                <p>Esta parceria não estabelece vínculo empregatício.</p>
+            ` : `
+                <h2 style="text-align:center;">TERMO DE ADESÃO AO TRABALHO VOLUNTÁRIO</h2>
+                <p><strong>VOLUNTÁRIO(A):</strong> ${p.nome}, ${p.especialidade}, CPF ${p.cpf}${reg}.</p>
+                <p><strong>INSTITUIÇÃO:</strong> AMOVIN</p>
+                <p>O serviço prestado é de natureza não remunerada e não gera vínculo empregatício.</p>
+                <p>O VOLUNTÁRIO compromete-se a cumprir os horários agendados.</p>
+            `;
+
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html><head><title>Termo</title>
+                <style>body{font-family:Arial;padding:40px;line-height:1.6;max-width:700px;margin:0 auto}.logo{width:180px;margin-bottom:20px}</style>
+                </head><body>
+                <p><strong>AMOVIN - Associação e Movimento pela Inclusão</strong><br>CNPJ: 55.880.046/0001-34<br>Rio Paranaíba/MG</p>
+                ${conteudo}
+                <p style="margin-top:40px;">Rio Paranaíba, ${data}</p>
+                <div style="margin-top:60px;text-align:center;"><hr style="width:400px;">Presidente da AMOVIN</div>
+                <div style="margin-top:40px;text-align:center;"><hr style="width:400px;">${p.nome}<br>${p.especialidade}${p.temRegistro === 'Sim' && p.registro ? ' - Registro: '+p.registro : ''}</div>
+                <script>window.onload=function(){window.print()}</script>
+                </body></html>
+            `);
+            win.document.close();
+        }
+
+        window.imprimirProf = function(id) {
+            const p = profissionais.find(p => p.id === id);
+            if (!p) return;
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html><head><title>Cadastro Profissional</title>
+                <style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}.foto{width:3cm;height:4cm;border:1px solid #000;float:right}</style>
+                </head><body>
+                <h2>AMOVIN - Cadastro Profissional</h2>
+                ${p.foto ? `<div class="foto"><img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;"></div>` : ''}
+                <p><strong>Nome:</strong> ${p.nome}</p>
+                <p><strong>Especialidade:</strong> ${p.especialidade}</p>
+                <p><strong>CPF:</strong> ${p.cpf}</p>
+                <p><strong>Registro:</strong> ${p.temRegistro === 'Sim' ? (p.conselho||'') + ' ' + (p.registro||'') : 'Não possui'}</p>
+                <p><strong>Telefone:</strong> ${p.telefone}</p>
+                <p><strong>Vínculo:</strong> ${p.vinculo}</p>
+                <script>window.onload=function(){window.print()}</script>
+                </body></html>
+            `);
+            win.document.close();
+        };
+
+        window.fazerLogout = function() {
+            sessionStorage.clear(); window.location.href = 'index.html';
+        };
+
+        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => {
+            history.pushState(null, null, location.href);
+            sessionStorage.clear(); window.location.href = 'index.html';
+        });
+
+        let timeout;
+        function resetTimeout() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html';
+            }, 30 * 60 * 1000);
+        }
+        document.addEventListener('mousemove', resetTimeout);
+        document.addEventListener('keypress', resetTimeout);
+        document.addEventListener('click', resetTimeout);
+        resetTimeout();
+
+        renderizar();
+    </script>
+</body>
+</html>
