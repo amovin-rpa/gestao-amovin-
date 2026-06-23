@@ -49,7 +49,7 @@
         .module-card.profissionais { border-left: 4px solid #e91e63; } .module-card.voluntarios { border-left: 4px solid #2196f3; }
         .module-card.agenda { border-left: 4px solid #0288d1; } .module-card.prontuario { border-left: 4px solid #d32f2f; }
         .module-card.relatorios { border-left: 4px solid #455a64; } .module-card.editais { border-left: 4px solid #ff9800; }
-        .module-card.assistente { border-left: 4px solid #283593; }
+        .module-card.chat { border-left: 4px solid #1a237e; } .module-card.assistente { border-left: 4px solid #283593; }
         .module-card.bloqueado { opacity: 0.5; cursor: not-allowed; background: #f9f9f9; }
         .module-card.bloqueado:hover { transform: none; box-shadow: 0 2px 10px rgba(0,0,0,0.04); border-color: transparent; }
         .hoje-table { background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); overflow: hidden; }
@@ -85,11 +85,11 @@
 <script>
     const usuario = { nome: sessionStorage.getItem('amovin_nome') || 'Administrador', perfil: sessionStorage.getItem('amovin_perfil') || 'admin' };
     const PERMISSOES = {
-        admin: { nome: 'Administrador', avatar: 'avatar-admin', modulos: ['oficios','projetos','editais','financeiro','pessoas','profissionais','voluntarios','agenda','prontuario','relatorios','assistente'], stats: ['total_mes','presentes','faltas','cancelados'] },
-        recepcao: { nome: 'Recepção', avatar: 'avatar-recep', modulos: ['pessoas','profissionais','voluntarios','agenda','prontuario'], stats: ['total_mes','presentes'] },
-        consulta: { nome: 'Profissional', avatar: 'avatar-prof', modulos: ['agenda','prontuario','assistente'], stats: ['total_mes','presentes'] },
-        financeiro: { nome: 'Financeiro', avatar: 'avatar-fin', modulos: ['oficios','projetos','financeiro','relatorios'], stats: ['total_mes','faltas'] },
-        voluntario: { nome: 'Voluntário', avatar: 'avatar-vol', modulos: ['agenda'], stats: ['total_mes'] }
+        admin: { nome: 'Administrador', avatar: 'avatar-admin', modulos: ['oficios','projetos','editais','financeiro','pessoas','profissionais','voluntarios','agenda','prontuario','relatorios','chat','assistente'], stats: ['total_mes','presentes','faltas','cancelados'] },
+        recepcao: { nome: 'Recepção', avatar: 'avatar-recep', modulos: ['pessoas','profissionais','voluntarios','agenda','prontuario','chat'], stats: ['total_mes','presentes'] },
+        consulta: { nome: 'Profissional', avatar: 'avatar-prof', modulos: ['agenda','prontuario','chat','assistente'], stats: ['total_mes','presentes'] },
+        financeiro: { nome: 'Financeiro', avatar: 'avatar-fin', modulos: ['oficios','projetos','financeiro','relatorios','chat'], stats: ['total_mes','faltas'] },
+        voluntario: { nome: 'Voluntário', avatar: 'avatar-vol', modulos: ['agenda','chat'], stats: ['total_mes'] }
     };
     const MODULOS = {
         oficios: { nome: 'Gerador de Ofícios', desc: 'Crie ofícios com IA', url: 'oficios.html', icone: '📄', cor: 'oficios' },
@@ -102,6 +102,7 @@
         agenda: { nome: 'Agenda', desc: 'Consultas e horários', url: 'agenda.html', icone: '📅', cor: 'agenda' },
         prontuario: { nome: 'Prontuário', desc: 'Registros médicos', url: 'prontuario.html', icone: '🩺', cor: 'prontuario' },
         relatorios: { nome: 'Relatórios', desc: 'KPIs e BI', url: 'relatorios.html', icone: '📈', cor: 'relatorios' },
+        chat: { nome: 'Chat Interno', desc: 'Comunique-se com a equipe', url: 'chat.html', icone: '💬', cor: 'chat' },
         assistente: { nome: 'Assistente IA', desc: 'Chat inteligente', url: 'assistente.html', icone: '🤖', cor: 'assistente' }
     };
     function renderizar() {
