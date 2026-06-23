@@ -3,428 +3,687 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Dashboard</title>
+    <title>AMOVIN - Dashboard Integrado</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f6fa;
+            background: #f0f2f5;
             min-height: 100vh;
-        }
-
-        .topo {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
-        .topo h2 { font-size: 20px; }
-
-        .user-info { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-
-        .perfil-badge {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .perfil-admin { background: #ffd700; color: #333; }
-        .perfil-profissional { background: #4caf50; color: white; }
-        .perfil-voluntario { background: #2196f3; color: white; }
-        .perfil-financeiro { background: #ff9800; color: white; }
-
-        .btn-sair {
-            background: rgba(255,255,255,0.2);
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 20px;
-            border-radius: 8px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .sidebar-header h3 { font-size: 16px; }
+        .sidebar-header p { font-size: 10px; opacity: 0.7; }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 0;
+        }
+
+        .nav-section {
+            padding: 0 15px;
+            margin-bottom: 15px;
+        }
+
+        .nav-section-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.4);
+            padding: 10px 10px 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 15px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 13px;
+            transition: all 0.2s;
+            margin-bottom: 2px;
             cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+
+        .nav-item.ativo {
+            background: rgba(102, 126, 234, 0.3);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-item .icone { font-size: 18px; width: 24px; text-align: center; }
+        .nav-item .badge {
+            margin-left: auto;
+            background: #f44336;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .sidebar-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 11px;
+        }
+
+        .user-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
             font-size: 14px;
         }
 
-        .btn-sair:hover { background: rgba(255,255,255,0.3); }
+        .avatar-admin { background: #ffd700; color: #333; }
+        .avatar-prof { background: #4caf50; color: white; }
+        .avatar-vol { background: #2196f3; color: white; }
+        .avatar-fin { background: #ff9800; color: white; }
+        .avatar-recep { background: #00bcd4; color: white; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 30px; }
-
-        .status-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        .btn-sair-sidebar {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
         }
 
-        .status-card {
+        /* ========== CONTEÚDO PRINCIPAL ========== */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 25px;
+            min-height: 100vh;
+        }
+
+        .topo-mobile {
+            display: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-menu-mobile {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* ========== CARDS DE BOAS-VINDAS ========== */
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            right: -30px;
+            top: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-card h1 { font-size: 26px; margin-bottom: 5px; position: relative; z-index: 1; }
+        .welcome-card p { opacity: 0.9; position: relative; z-index: 1; font-size: 14px; }
+
+        .welcome-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .data-hoje {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 20px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .data-hoje .dia { font-size: 32px; font-weight: bold; }
+        .data-hoje .mes { font-size: 12px; text-transform: uppercase; }
+
+        /* ========== STATS CARDS ========== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.blue { background: #e3f2fd; }
+        .stat-icon.green { background: #e8f5e9; }
+        .stat-icon.red { background: #ffebee; }
+        .stat-icon.purple { background: #f3e5f5; }
+        .stat-icon.orange { background: #fff3e0; }
+
+        .stat-info .stat-valor { font-size: 24px; font-weight: bold; color: #333; }
+        .stat-info .stat-label { font-size: 12px; color: #888; }
+
+        /* ========== MÓDULOS ========== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .module-card {
             background: white;
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
-        .status-card .icone { font-size: 35px; margin-bottom: 10px; }
-        .status-card .valor { font-size: 32px; font-weight: bold; color: #667eea; }
-        .status-card .rotulo { font-size: 13px; color: #888; margin-top: 5px; }
-
-        .status-card.destaque {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .status-card.destaque .valor { color: white; }
-        .status-card.destaque .rotulo { color: rgba(255,255,255,0.8); }
-
-        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            border: 2px solid transparent;
         }
 
-        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .card .icone { font-size: 50px; margin-bottom: 15px; }
-        .card h3 { color: #333; margin-bottom: 8px; }
-        .card p { color: #888; font-size: 13px; }
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
 
-        .card.oficios { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .card.oficios h3, .card.oficios p { color: white; }
-        .card.projetos { background: linear-gradient(135deg, #1a5c2e 0%, #2d8a4e 100%); }
-        .card.projetos h3, .card.projetos p { color: white; }
-        .card.financeiro { background: linear-gradient(135deg, #00695c 0%, #00897b 100%); }
-        .card.financeiro h3, .card.financeiro p { color: white; }
-        .card.pessoas { background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%); }
-        .card.pessoas h3, .card.pessoas p { color: white; }
-        .card.agenda { background: linear-gradient(135deg, #0277bd 0%, #0288d1 100%); }
-        .card.agenda h3, .card.agenda p { color: white; }
-        .card.relatorios { background: linear-gradient(135deg, #37474f 0%, #455a64 100%); }
-        .card.relatorios h3, .card.relatorios p { color: white; }
-        .card.assistente { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); }
-        .card.assistente h3, .card.assistente p { color: white; }
-        .card.bloqueado {
-            background: #f5f5f5;
-            cursor: not-allowed;
+        .module-card .module-icon { font-size: 40px; margin-bottom: 12px; }
+        .module-card h4 { color: #333; margin-bottom: 5px; font-size: 15px; }
+        .module-card p { color: #888; font-size: 12px; }
+
+        .module-card.oficios { border-left: 4px solid #667eea; }
+        .module-card.projetos { border-left: 4px solid #2d8a4e; }
+        .module-card.financeiro { border-left: 4px solid #00897b; }
+        .module-card.pessoas { border-left: 4px solid #7b1fa2; }
+        .module-card.agenda { border-left: 4px solid #0288d1; }
+        .module-card.relatorios { border-left: 4px solid #455a64; }
+        .module-card.editais { border-left: 4px solid #ff9800; }
+        .module-card.assistente { border-left: 4px solid #283593; }
+
+        .module-card.bloqueado {
             opacity: 0.5;
+            cursor: not-allowed;
+            background: #f9f9f9;
         }
-        .card.bloqueado:hover { transform: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .module-card.bloqueado:hover { transform: none; box-shadow: 0 2px 10px rgba(0,0,0,0.04); border-color: transparent; }
+
+        /* ========== TABELA DE HOJE ========== */
+        .hoje-table {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        .hoje-table-header {
+            background: #fafafa;
+            padding: 15px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hoje-table-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .hoje-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .hoje-item:hover { background: #fafafa; }
+
+        .hoje-horario {
+            font-weight: 700;
+            font-size: 14px;
+            color: #667eea;
+            min-width: 60px;
+        }
+
+        .hoje-info { flex: 1; }
+        .hoje-info .nome { font-weight: 600; color: #333; }
+        .hoje-info .detalhe { font-size: 12px; color: #888; }
+
+        .hoje-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-agendado { background: #e3f2fd; color: #1565c0; }
+        .status-presente { background: #e8f5e9; color: #2e7d32; }
+        .status-falta { background: #ffebee; color: #c62828; }
+        .status-cancelado { background: #f3e5f5; color: #7b1fa2; }
+
+        .sem-agendamentos {
+            text-align: center;
+            padding: 40px;
+            color: #bbb;
+        }
+
+        /* ========== OVERLAY MOBILE ========== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
 
         @media (max-width: 768px) {
-            .topo { flex-direction: column; text-align: center; }
-            .status-cards { grid-template-columns: 1fr 1fr; }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .topo-mobile {
+                display: flex;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="topo">
-        <h2>🏠 Dashboard - AMOVIN</h2>
-        <div class="user-info">
-            <span class="perfil-badge" id="perfilBadge">Admin</span>
-            <span id="emailUsuario">---</span>
-            <button class="btn-sair" onclick="fazerLogout()">🚪 Sair</button>
-        </div>
-    </div>
 
-    <div class="container">
-        <!-- STATUS -->
-        <div class="status-cards" id="statusCards"></div>
+    <!-- OVERLAY MOBILE -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">A</div>
+            <h3>AMOVIN</h3>
+            <p>Gestão Integrada</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <a href="#" class="nav-item ativo" onclick="navegar('dashboard')">
+                    <span class="icone">🏠</span> Dashboard
+                </a>
+            </div>
+
+            <div class="nav-section" id="menuModulos"></div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+                <a href="#" class="nav-item" onclick="navegar('relatorios')">
+                    <span class="icone">📈</span> Relatórios
+                </a>
+                <a href="#" class="nav-item" onclick="navegar('assistente')">
+                    <span class="icone">🤖</span> Assistente IA
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-mini">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <div>
+                    <div style="font-weight:600;" id="userNome">Admin</div>
+                    <div style="font-size:10px;opacity:0.7;" id="userPerfil">Administrador</div>
+                </div>
+            </div>
+            <button class="btn-sair-sidebar" onclick="fazerLogout()">🚪 Sair do Sistema</button>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+        <!-- TOPO MOBILE -->
+        <div class="topo-mobile">
+            <button class="btn-menu-mobile" onclick="abrirSidebar()">☰</button>
+            <span style="font-weight:700;">AMOVIN</span>
+            <button class="btn-menu-mobile" onclick="fazerLogout()" style="margin-left:auto;">🚪</button>
+        </div>
+
+        <!-- BOAS-VINDAS -->
+        <div class="welcome-card">
+            <div class="welcome-row">
+                <div>
+                    <h1>Bem-vindo(a), <span id="nomeUsuario">Admin</span>!</h1>
+                    <p id="cargoUsuario">Painel de Gestão Integrada</p>
+                </div>
+                <div class="data-hoje">
+                    <div class="dia" id="diaHoje">23</div>
+                    <div class="mes" id="mesHoje">Junho 2026</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-row" id="statsRow"></div>
 
         <!-- MÓDULOS -->
-        <div class="cards" id="modulos"></div>
-    </div>
+        <div class="section-title">📦 Módulos do Sistema</div>
+        <div class="modules-grid" id="modulesGrid"></div>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, enableNetwork, disableNetwork, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        <!-- AGENDA DE HOJE -->
+        <div class="hoje-table" id="hojeTable">
+            <div class="hoje-table-header">
+                📅 Atendimentos de Hoje
+                <span style="font-size:13px;font-weight:normal;color:#888;" id="totalHoje">0 agendamentos</span>
+            </div>
+            <div class="hoje-table-body" id="hojeBody">
+                <div class="sem-agendamentos">Nenhum atendimento para hoje.</div>
+            </div>
+        </div>
+    </main>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
-            authDomain: "amovin-oficios-teste.firebaseapp.com",
-            projectId: "amovin-oficios-teste",
-            storageBucket: "amovin-oficios-teste.firebasestorage.app",
-            messagingSenderId: "901387183295",
-            appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
+    <script>
+        // ========== DADOS DO USUÁRIO ==========
+        const usuario = {
+            nome: sessionStorage.getItem('amovin_nome') || 'Administrador',
+            perfil: sessionStorage.getItem('amovin_perfil') || 'admin',
+            email: sessionStorage.getItem('amovin_email') || 'admin@amovin.org.br'
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // ========== PERFIS E PERMISSÕES ==========
+        // ========== PERMISSÕES ==========
         const PERMISSOES = {
             admin: {
                 nome: 'Administrador',
-                cor: 'perfil-admin',
-                modulos: ['oficios', 'projetos', 'financeiro', 'pessoas', 'agenda', 'relatorios', 'assistente'],
-                statusCards: ['firebase', 'espaco', 'oficios', 'projetos']
+                avatar: 'avatar-admin',
+                modulos: ['oficios', 'projetos', 'editais', 'financeiro', 'pessoas', 'agenda'],
+                stats: ['total_mes', 'presentes', 'faltas', 'cancelados']
             },
-            profissional: {
+            recepcao: {
+                nome: 'Recepção',
+                avatar: 'avatar-recep',
+                modulos: ['pessoas', 'agenda'],
+                stats: ['total_mes', 'presentes']
+            },
+            consulta: {
                 nome: 'Profissional',
-                cor: 'perfil-profissional',
-                modulos: ['pessoas', 'agenda', 'assistente'],
-                statusCards: ['firebase', 'pessoas', 'agenda']
-            },
-            voluntario: {
-                nome: 'Voluntário',
-                cor: 'perfil-voluntario',
+                avatar: 'avatar-prof',
                 modulos: ['agenda', 'assistente'],
-                statusCards: ['firebase', 'agenda']
+                stats: ['total_mes', 'presentes']
             },
             financeiro: {
                 nome: 'Financeiro',
-                cor: 'perfil-financeiro',
-                modulos: ['financeiro', 'relatorios', 'oficios', 'projetos', 'assistente'],
-                statusCards: ['firebase', 'espaco', 'financeiro', 'projetos']
+                avatar: 'avatar-fin',
+                modulos: ['oficios', 'projetos', 'financeiro', 'relatorios'],
+                stats: ['total_mes', 'faltas']
+            },
+            voluntario: {
+                nome: 'Voluntário',
+                avatar: 'avatar-vol',
+                modulos: ['agenda'],
+                stats: ['total_mes']
             }
         };
 
         // ========== DADOS DOS MÓDULOS ==========
         const MODULOS = {
-            oficios: {
-                titulo: 'Gerador de Ofícios',
-                descricao: 'Crie ofícios profissionais com IA',
-                url: 'oficios.html',
-                classe: 'oficios',
-                icone: '📄'
-            },
-            projetos: {
-                titulo: 'Gerador de Projetos',
-                descricao: 'Crie projetos sociais completos',
-                url: 'projetos.html',
-                classe: 'projetos',
-                icone: '📋'
-            },
-            financeiro: {
-                titulo: 'Financeiro',
-                descricao: 'Receitas, despesas, fluxo de caixa',
-                url: 'financeiro.html',
-                classe: 'financeiro',
-                icone: '💰'
-            },
-            pessoas: {
-                titulo: 'Gestão de Pessoas',
-                descricao: 'Beneficiários, profissionais, voluntários',
-                url: 'pessoas.html',
-                classe: 'pessoas',
-                icone: '👥'
-            },
-            agenda: {
-                titulo: 'Agenda',
-                descricao: 'Eventos, atendimentos, reuniões',
-                url: 'agenda.html',
-                classe: 'agenda',
-                icone: '📅'
-            },
-            relatorios: {
-                titulo: 'Relatórios',
-                descricao: 'KPIs, prestação de contas, BI',
-                url: 'relatorios.html',
-                classe: 'relatorios',
-                icone: '📈'
-            },
-            assistente: {
-                titulo: 'Assistente IA',
-                descricao: 'Chat inteligente para todas as tarefas',
-                url: 'assistente.html',
-                classe: 'assistente',
-                icone: '🤖'
-            }
+            oficios: { nome: 'Gerador de Ofícios', desc: 'Crie ofícios com IA', url: 'oficios.html', icone: '📄', cor: 'oficios' },
+            projetos: { nome: 'Gerador de Projetos', desc: 'Projetos sociais completos', url: 'projetos.html', icone: '📋', cor: 'projetos' },
+            editais: { nome: 'Captador de Editais', desc: 'Oportunidades de captação', url: 'editais.html', icone: '🔍', cor: 'editais' },
+            financeiro: { nome: 'Financeiro', desc: 'Receitas e despesas', url: 'financeiro.html', icone: '💰', cor: 'financeiro' },
+            pessoas: { nome: 'Gestão de Pessoas', desc: 'Beneficiários e equipe', url: 'pessoas.html', icone: '👥', cor: 'pessoas' },
+            agenda: { nome: 'Agenda', desc: 'Consultas e horários', url: 'agenda.html', icone: '📅', cor: 'agenda' },
+            relatorios: { nome: 'Relatórios', desc: 'KPIs e BI', url: 'relatorios.html', icone: '📈', cor: 'relatorios' },
+            assistente: { nome: 'Assistente IA', desc: 'Chat inteligente', url: 'assistente.html', icone: '🤖', cor: 'assistente' }
         };
 
-        // ========== DETECTAR PERFIL DO USUÁRIO ==========
-        async function getPerfilUsuario(email) {
-            // Por enquanto, define perfil baseado no email
-            // Depois conectamos com Firestore para buscar perfil real
-            if (email.includes('admin') || email === 'teste@amovin.org.br') return 'admin';
-            if (email.includes('financeiro')) return 'financeiro';
-            if (email.includes('prof') || email.includes('medico') || email.includes('psicologo')) return 'profissional';
-            if (email.includes('voluntario')) return 'voluntario';
-            return 'admin'; // padrão
-        }
+        // ========== RENDERIZAR ==========
+        function renderizar() {
+            const perfil = usuario.perfil || 'admin';
+            const perm = PERMISSOES[perfil] || PERMISSOES['admin'];
 
-        // ========== RENDERIZAR DASHBOARD ==========
-        async function renderizarDashboard(user) {
-            const email = user.email;
-            const perfil = await getPerfilUsuario(email);
-            const permissoes = PERMISSOES[perfil];
+            // Nome e avatar
+            document.getElementById('nomeUsuario').textContent = usuario.nome;
+            document.getElementById('cargoUsuario').textContent = perm.nome;
+            document.getElementById('userNome').textContent = usuario.nome.split(' ')[0];
+            document.getElementById('userPerfil').textContent = perm.nome;
+            document.getElementById('userAvatar').className = 'user-avatar ' + perm.avatar;
+            document.getElementById('userAvatar').textContent = usuario.nome.charAt(0).toUpperCase();
 
-            // Badge do perfil
-            const badge = document.getElementById('perfilBadge');
-            badge.textContent = permissoes.nome;
-            badge.className = 'perfil-badge ' + permissoes.cor;
+            // Data
+            const hoje = new Date();
+            document.getElementById('diaHoje').textContent = hoje.getDate();
+            document.getElementById('mesHoje').textContent = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
-            // Email
-            document.getElementById('emailUsuario').textContent = email;
+            // Stats (dados simulados - no futuro vêm do Firebase)
+            const statsData = {
+                total_mes: { valor: 156, label: 'Total no Mês', icone: '📊', cor: 'blue' },
+                presentes: { valor: 132, label: 'Presenças', icone: '✅', cor: 'green' },
+                faltas: { valor: 18, label: 'Faltas', icone: '⚠️', cor: 'red' },
+                cancelados: { valor: 6, label: 'Cancelados', icone: '❌', cor: 'purple' }
+            };
 
-            // Status Cards
-            const statusCards = document.getElementById('statusCards');
-            statusCards.innerHTML = '';
-            
-            if (permissoes.statusCards.includes('firebase')) {
-                statusCards.innerHTML += `
-                    <div class="status-card">
-                        <div class="icone">🟢</div>
-                        <div class="valor" id="firebaseStatus">Conectado</div>
-                        <div class="rotulo">Status Firebase</div>
-                    </div>`;
-            }
-            
-            if (permissoes.statusCards.includes('espaco')) {
-                statusCards.innerHTML += `
-                    <div class="status-card destaque">
-                        <div class="icone">📊</div>
-                        <div class="valor"><span id="espacoValor">--</span>%</div>
-                        <div class="rotulo">Espaço Utilizado</div>
-                    </div>`;
-            }
-            
-            if (permissoes.statusCards.includes('oficios')) {
-                statusCards.innerHTML += `
-                    <div class="status-card">
-                        <div class="icone">📄</div>
-                        <div class="valor" id="totalOficios">0</div>
-                        <div class="rotulo">Ofícios Emitidos</div>
-                    </div>`;
-            }
-            
-            if (permissoes.statusCards.includes('projetos')) {
-                statusCards.innerHTML += `
-                    <div class="status-card">
-                        <div class="icone">📋</div>
-                        <div class="valor" id="totalProjetos">0</div>
-                        <div class="rotulo">Projetos Ativos</div>
-                    </div>`;
-            }
-
-            if (permissoes.statusCards.includes('financeiro')) {
-                statusCards.innerHTML += `
-                    <div class="status-card">
-                        <div class="icone">💰</div>
-                        <div class="valor">R$ 57K</div>
-                        <div class="rotulo">Saldo Atual</div>
-                    </div>`;
-            }
-
-            if (permissoes.statusCards.includes('pessoas')) {
-                statusCards.innerHTML += `
-                    <div class="status-card">
-                        <div class="icone">👥</div>
-                        <div class="valor">456</div>
-                        <div class="rotulo">Beneficiários</div>
-                    </div>`;
-            }
-
-            if (permissoes.statusCards.includes('agenda')) {
-                statusCards.innerHTML += `
-                    <div class="status-card">
-                        <div class="icone">📅</div>
-                        <div class="valor">5</div>
-                        <div class="rotulo">Eventos Hoje</div>
-                    </div>`;
-            }
-
-            // Módulos
-            const modulosContainer = document.getElementById('modulos');
-            modulosContainer.innerHTML = '';
-
-            // Mostrar módulos permitidos
-            permissoes.modulos.forEach(chave => {
-                const mod = MODULOS[chave];
-                modulosContainer.innerHTML += `
-                    <div class="card ${mod.classe}" onclick="window.location.href='${mod.url}'">
-                        <div class="icone">${mod.icone}</div>
-                        <h3>${mod.titulo}</h3>
-                        <p>${mod.descricao}</p>
-                    </div>`;
-            });
-
-            // Mostrar módulos bloqueados
-            Object.keys(MODULOS).forEach(chave => {
-                if (!permissoes.modulos.includes(chave)) {
-                    const mod = MODULOS[chave];
-                    modulosContainer.innerHTML += `
-                        <div class="card bloqueado" title="Sem permissão de acesso">
-                            <div class="icone">🔒</div>
-                            <h3>${mod.titulo}</h3>
-                            <p>Sem acesso</p>
+            const statsRow = document.getElementById('statsRow');
+            statsRow.innerHTML = '';
+            perm.stats.forEach(s => {
+                const d = statsData[s];
+                if (d) {
+                    statsRow.innerHTML += `
+                        <div class="stat-card">
+                            <div class="stat-icon ${d.cor}">${d.icone}</div>
+                            <div class="stat-info">
+                                <div class="stat-valor">${d.valor}</div>
+                                <div class="stat-label">${d.label}</div>
+                            </div>
                         </div>`;
                 }
             });
+
+            // Módulos
+            const modulesGrid = document.getElementById('modulesGrid');
+            modulesGrid.innerHTML = '';
+            Object.keys(MODULOS).forEach(chave => {
+                const mod = MODULOS[chave];
+                const permitido = perm.modulos.includes(chave);
+                modulesGrid.innerHTML += `
+                    <${permitido ? `a href="${mod.url}"` : 'div'} class="module-card ${mod.cor} ${permitido ? '' : 'bloqueado'}">
+                        <div class="module-icon">${permitido ? mod.icone : '🔒'}</div>
+                        <h4>${mod.nome}</h4>
+                        <p>${permitido ? mod.desc : 'Sem acesso'}</p>
+                    </${permitido ? 'a' : 'div'}>`;
+            });
+
+            // Menu lateral
+            const menuModulos = document.getElementById('menuModulos');
+            menuModulos.innerHTML = '<div class="nav-section-title">Módulos</div>';
+            perm.modulos.forEach(chave => {
+                const mod = MODULOS[chave];
+                menuModulos.innerHTML += `
+                    <a href="${mod.url}" class="nav-item">
+                        <span class="icone">${mod.icone}</span> ${mod.nome}
+                    </a>`;
+            });
+
+            // Agenda de hoje (simulada)
+            const hojeBody = document.getElementById('hojeBody');
+            const hojeSimulado = [
+                { hora: '09:00', nome: 'Maria Silva', detalhe: 'Psicologia | Dr. Carlos Mendes', status: 'agendado' },
+                { hora: '10:00', nome: 'João Santos', detalhe: 'Social | Dra. Lucia Ferreira', status: 'presente' },
+                { hora: '11:00', nome: 'Ana Costa', detalhe: 'Reforço Escolar | Prof. Sandra', status: 'agendado' },
+                { hora: '14:00', nome: 'Pedro Lima', detalhe: 'Capacitação | Dr. Carlos Mendes', status: 'falta' },
+                { hora: '15:00', nome: 'Carla Souza', detalhe: 'Psicologia | Dr. Carlos Mendes', status: 'agendado' },
+            ];
+
+            document.getElementById('totalHoje').textContent = hojeSimulado.length + ' agendamentos';
+            hojeBody.innerHTML = hojeSimulado.map(a => `
+                <div class="hoje-item">
+                    <span class="hoje-horario">${a.hora}</span>
+                    <div class="hoje-info">
+                        <div class="nome">${a.nome}</div>
+                        <div class="detalhe">${a.detalhe}</div>
+                    </div>
+                    <span class="hoje-status status-${a.status}">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span>
+                </div>
+            `).join('');
         }
 
-        // ========== VERIFICAR LOGIN ==========
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = 'index.html';
-                return;
-            }
-            sessionStorage.setItem('amovin_logado', 'true');
-            await renderizarDashboard(user);
-            atualizarValores();
-        });
+        // ========== NAVEGAÇÃO ==========
+        window.navegar = function(destino) {
+            const urls = {
+                'dashboard': 'dashboard.html',
+                'oficios': 'oficios.html',
+                'projetos': 'projetos.html',
+                'editais': 'editais.html',
+                'financeiro': 'financeiro.html',
+                'pessoas': 'pessoas.html',
+                'agenda': 'agenda.html',
+                'relatorios': 'relatorios.html',
+                'assistente': 'assistente.html'
+            };
+            if (urls[destino]) window.location.href = urls[destino];
+        };
 
-        function atualizarValores() {
-            const espaco = document.getElementById('espacoValor');
-            if (espaco) espaco.textContent = Math.floor(Math.random() * 12) + 1;
-            const oficios = document.getElementById('totalOficios');
-            if (oficios) oficios.textContent = Math.floor(Math.random() * 50);
-            const projetos = document.getElementById('totalProjetos');
-            if (projetos) projetos.textContent = Math.floor(Math.random() * 10);
-        }
+        // ========== SIDEBAR MOBILE ==========
+        window.abrirSidebar = function() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('show');
+        };
 
-        // Status Firebase
-        window.addEventListener('online', () => {
-            enableNetwork(db);
-            const el = document.getElementById('firebaseStatus');
-            if (el) { el.textContent = 'Conectado'; el.style.color = '#4caf50'; }
-        });
-        window.addEventListener('offline', () => {
-            disableNetwork(db);
-            const el = document.getElementById('firebaseStatus');
-            if (el) { el.textContent = 'Offline'; el.style.color = '#f44336'; }
-        });
+        window.fecharSidebar = function() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+        };
 
-        // Logout
-        window.fazerLogout = async function() {
-            await signOut(auth);
+        // ========== LOGOUT ==========
+        window.fazerLogout = function() {
             sessionStorage.clear();
             window.location.href = 'index.html';
         };
 
-        // Segurança
+        // ========== VERIFICAR LOGIN ==========
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+
+        // ========== SEGURANÇA ==========
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', () => {
             history.pushState(null, null, location.href);
-            signOut(auth);
             sessionStorage.clear();
             window.location.href = 'index.html';
         });
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                signOut(auth);
-                sessionStorage.clear();
-                window.location.reload();
-            }
-        });
 
-        // Timeout
+        // ========== TIMEOUT ==========
         let timeout;
         function resetTimeout() {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
-                signOut(auth);
                 sessionStorage.clear();
                 alert('⏰ Sessão expirada.');
                 window.location.href = 'index.html';
@@ -434,6 +693,9 @@
         document.addEventListener('keypress', resetTimeout);
         document.addEventListener('click', resetTimeout);
         resetTimeout();
+
+        // ========== INICIAR ==========
+        renderizar();
     </script>
 </body>
 </html>
