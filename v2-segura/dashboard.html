@@ -28,7 +28,19 @@
 
         .topo h2 { font-size: 20px; }
 
-        .user-info { display: flex; align-items: center; gap: 15px; }
+        .user-info { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+
+        .perfil-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .perfil-admin { background: #ffd700; color: #333; }
+        .perfil-profissional { background: #4caf50; color: white; }
+        .perfil-voluntario { background: #2196f3; color: white; }
+        .perfil-financeiro { background: #ff9800; color: white; }
 
         .btn-sair {
             background: rgba(255,255,255,0.2);
@@ -87,17 +99,26 @@
         .card h3 { color: #333; margin-bottom: 8px; }
         .card p { color: #888; font-size: 13px; }
 
-        .card.oficios {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
+        .card.oficios { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .card.oficios h3, .card.oficios p { color: white; }
-
-        .card.projetos {
-            background: linear-gradient(135deg, #1a5c2e 0%, #2d8a4e 100%);
-            color: white;
-        }
+        .card.projetos { background: linear-gradient(135deg, #1a5c2e 0%, #2d8a4e 100%); }
         .card.projetos h3, .card.projetos p { color: white; }
+        .card.financeiro { background: linear-gradient(135deg, #00695c 0%, #00897b 100%); }
+        .card.financeiro h3, .card.financeiro p { color: white; }
+        .card.pessoas { background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%); }
+        .card.pessoas h3, .card.pessoas p { color: white; }
+        .card.agenda { background: linear-gradient(135deg, #0277bd 0%, #0288d1 100%); }
+        .card.agenda h3, .card.agenda p { color: white; }
+        .card.relatorios { background: linear-gradient(135deg, #37474f 0%, #455a64 100%); }
+        .card.relatorios h3, .card.relatorios p { color: white; }
+        .card.assistente { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); }
+        .card.assistente h3, .card.assistente p { color: white; }
+        .card.bloqueado {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .card.bloqueado:hover { transform: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
         @media (max-width: 768px) {
             .topo { flex-direction: column; text-align: center; }
@@ -109,6 +130,7 @@
     <div class="topo">
         <h2>🏠 Dashboard - AMOVIN</h2>
         <div class="user-info">
+            <span class="perfil-badge" id="perfilBadge">Admin</span>
             <span id="emailUsuario">---</span>
             <button class="btn-sair" onclick="fazerLogout()">🚪 Sair</button>
         </div>
@@ -116,64 +138,16 @@
 
     <div class="container">
         <!-- STATUS -->
-        <div class="status-cards">
-            <div class="status-card">
-                <div class="icone">🟢</div>
-                <div class="valor" id="firebaseStatus">Conectado</div>
-                <div class="rotulo">Status Firebase</div>
-            </div>
-
-            <div class="status-card destaque">
-                <div class="icone">📊</div>
-                <div class="valor"><span id="espacoValor">--</span>%</div>
-                <div class="rotulo">Espaço Utilizado</div>
-            </div>
-
-            <div class="status-card">
-                <div class="icone">📄</div>
-                <div class="valor" id="totalOficios">0</div>
-                <div class="rotulo">Ofícios Emitidos</div>
-            </div>
-
-            <div class="status-card">
-                <div class="icone">📋</div>
-                <div class="valor" id="totalProjetos">0</div>
-                <div class="rotulo">Projetos Ativos</div>
-            </div>
-        </div>
+        <div class="status-cards" id="statusCards"></div>
 
         <!-- MÓDULOS -->
-        <div class="cards">
-            <div class="card oficios" onclick="window.location.href='oficios.html'">
-                <div class="icone">📄</div>
-                <h3>Gerador de Ofícios</h3>
-                <p>✨ Crie ofícios profissionais com IA</p>
-            </div>
-
-            <div class="card projetos" onclick="window.location.href='projetos.html'">
-                <div class="icone">📋</div>
-                <h3>Gerador de Projetos</h3>
-                <p>✨ Novo! Crie projetos sociais completos</p>
-            </div>
-
-            <div class="card" onclick="alert('Em breve!')">
-                <div class="icone">🔍</div>
-                <h3>Captador de Editais</h3>
-                <p>Em desenvolvimento</p>
-            </div>
-
-            <div class="card" onclick="alert('Acesso ao sistema atual')">
-                <div class="icone">👥</div>
-                <h3>Gestão de Pessoas</h3>
-                <p>Sistema atual</p>
-            </div>
-        </div>
+        <div class="cards" id="modulos"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, enableNetwork, disableNetwork } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, enableNetwork, disableNetwork, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
@@ -188,48 +162,248 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        onAuthStateChanged(auth, (user) => {
+        // ========== PERFIS E PERMISSÕES ==========
+        const PERMISSOES = {
+            admin: {
+                nome: 'Administrador',
+                cor: 'perfil-admin',
+                modulos: ['oficios', 'projetos', 'financeiro', 'pessoas', 'agenda', 'relatorios', 'assistente'],
+                statusCards: ['firebase', 'espaco', 'oficios', 'projetos']
+            },
+            profissional: {
+                nome: 'Profissional',
+                cor: 'perfil-profissional',
+                modulos: ['pessoas', 'agenda', 'assistente'],
+                statusCards: ['firebase', 'pessoas', 'agenda']
+            },
+            voluntario: {
+                nome: 'Voluntário',
+                cor: 'perfil-voluntario',
+                modulos: ['agenda', 'assistente'],
+                statusCards: ['firebase', 'agenda']
+            },
+            financeiro: {
+                nome: 'Financeiro',
+                cor: 'perfil-financeiro',
+                modulos: ['financeiro', 'relatorios', 'oficios', 'projetos', 'assistente'],
+                statusCards: ['firebase', 'espaco', 'financeiro', 'projetos']
+            }
+        };
+
+        // ========== DADOS DOS MÓDULOS ==========
+        const MODULOS = {
+            oficios: {
+                titulo: 'Gerador de Ofícios',
+                descricao: 'Crie ofícios profissionais com IA',
+                url: 'oficios.html',
+                classe: 'oficios',
+                icone: '📄'
+            },
+            projetos: {
+                titulo: 'Gerador de Projetos',
+                descricao: 'Crie projetos sociais completos',
+                url: 'projetos.html',
+                classe: 'projetos',
+                icone: '📋'
+            },
+            financeiro: {
+                titulo: 'Financeiro',
+                descricao: 'Receitas, despesas, fluxo de caixa',
+                url: 'financeiro.html',
+                classe: 'financeiro',
+                icone: '💰'
+            },
+            pessoas: {
+                titulo: 'Gestão de Pessoas',
+                descricao: 'Beneficiários, profissionais, voluntários',
+                url: 'pessoas.html',
+                classe: 'pessoas',
+                icone: '👥'
+            },
+            agenda: {
+                titulo: 'Agenda',
+                descricao: 'Eventos, atendimentos, reuniões',
+                url: 'agenda.html',
+                classe: 'agenda',
+                icone: '📅'
+            },
+            relatorios: {
+                titulo: 'Relatórios',
+                descricao: 'KPIs, prestação de contas, BI',
+                url: 'relatorios.html',
+                classe: 'relatorios',
+                icone: '📈'
+            },
+            assistente: {
+                titulo: 'Assistente IA',
+                descricao: 'Chat inteligente para todas as tarefas',
+                url: 'assistente.html',
+                classe: 'assistente',
+                icone: '🤖'
+            }
+        };
+
+        // ========== DETECTAR PERFIL DO USUÁRIO ==========
+        async function getPerfilUsuario(email) {
+            // Por enquanto, define perfil baseado no email
+            // Depois conectamos com Firestore para buscar perfil real
+            if (email.includes('admin') || email === 'teste@amovin.org.br') return 'admin';
+            if (email.includes('financeiro')) return 'financeiro';
+            if (email.includes('prof') || email.includes('medico') || email.includes('psicologo')) return 'profissional';
+            if (email.includes('voluntario')) return 'voluntario';
+            return 'admin'; // padrão
+        }
+
+        // ========== RENDERIZAR DASHBOARD ==========
+        async function renderizarDashboard(user) {
+            const email = user.email;
+            const perfil = await getPerfilUsuario(email);
+            const permissoes = PERMISSOES[perfil];
+
+            // Badge do perfil
+            const badge = document.getElementById('perfilBadge');
+            badge.textContent = permissoes.nome;
+            badge.className = 'perfil-badge ' + permissoes.cor;
+
+            // Email
+            document.getElementById('emailUsuario').textContent = email;
+
+            // Status Cards
+            const statusCards = document.getElementById('statusCards');
+            statusCards.innerHTML = '';
+            
+            if (permissoes.statusCards.includes('firebase')) {
+                statusCards.innerHTML += `
+                    <div class="status-card">
+                        <div class="icone">🟢</div>
+                        <div class="valor" id="firebaseStatus">Conectado</div>
+                        <div class="rotulo">Status Firebase</div>
+                    </div>`;
+            }
+            
+            if (permissoes.statusCards.includes('espaco')) {
+                statusCards.innerHTML += `
+                    <div class="status-card destaque">
+                        <div class="icone">📊</div>
+                        <div class="valor"><span id="espacoValor">--</span>%</div>
+                        <div class="rotulo">Espaço Utilizado</div>
+                    </div>`;
+            }
+            
+            if (permissoes.statusCards.includes('oficios')) {
+                statusCards.innerHTML += `
+                    <div class="status-card">
+                        <div class="icone">📄</div>
+                        <div class="valor" id="totalOficios">0</div>
+                        <div class="rotulo">Ofícios Emitidos</div>
+                    </div>`;
+            }
+            
+            if (permissoes.statusCards.includes('projetos')) {
+                statusCards.innerHTML += `
+                    <div class="status-card">
+                        <div class="icone">📋</div>
+                        <div class="valor" id="totalProjetos">0</div>
+                        <div class="rotulo">Projetos Ativos</div>
+                    </div>`;
+            }
+
+            if (permissoes.statusCards.includes('financeiro')) {
+                statusCards.innerHTML += `
+                    <div class="status-card">
+                        <div class="icone">💰</div>
+                        <div class="valor">R$ 57K</div>
+                        <div class="rotulo">Saldo Atual</div>
+                    </div>`;
+            }
+
+            if (permissoes.statusCards.includes('pessoas')) {
+                statusCards.innerHTML += `
+                    <div class="status-card">
+                        <div class="icone">👥</div>
+                        <div class="valor">456</div>
+                        <div class="rotulo">Beneficiários</div>
+                    </div>`;
+            }
+
+            if (permissoes.statusCards.includes('agenda')) {
+                statusCards.innerHTML += `
+                    <div class="status-card">
+                        <div class="icone">📅</div>
+                        <div class="valor">5</div>
+                        <div class="rotulo">Eventos Hoje</div>
+                    </div>`;
+            }
+
+            // Módulos
+            const modulosContainer = document.getElementById('modulos');
+            modulosContainer.innerHTML = '';
+
+            // Mostrar módulos permitidos
+            permissoes.modulos.forEach(chave => {
+                const mod = MODULOS[chave];
+                modulosContainer.innerHTML += `
+                    <div class="card ${mod.classe}" onclick="window.location.href='${mod.url}'">
+                        <div class="icone">${mod.icone}</div>
+                        <h3>${mod.titulo}</h3>
+                        <p>${mod.descricao}</p>
+                    </div>`;
+            });
+
+            // Mostrar módulos bloqueados
+            Object.keys(MODULOS).forEach(chave => {
+                if (!permissoes.modulos.includes(chave)) {
+                    const mod = MODULOS[chave];
+                    modulosContainer.innerHTML += `
+                        <div class="card bloqueado" title="Sem permissão de acesso">
+                            <div class="icone">🔒</div>
+                            <h3>${mod.titulo}</h3>
+                            <p>Sem acesso</p>
+                        </div>`;
+                }
+            });
+        }
+
+        // ========== VERIFICAR LOGIN ==========
+        onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'index.html';
                 return;
             }
-            document.getElementById('emailUsuario').textContent = user.email;
             sessionStorage.setItem('amovin_logado', 'true');
+            await renderizarDashboard(user);
+            atualizarValores();
         });
 
-        function atualizarStatusFirebase(online) {
-            const el = document.getElementById('firebaseStatus');
-            if (online) {
-                el.textContent = 'Conectado';
-                el.style.color = '#4caf50';
-            } else {
-                el.textContent = 'Offline';
-                el.style.color = '#f44336';
-            }
+        function atualizarValores() {
+            const espaco = document.getElementById('espacoValor');
+            if (espaco) espaco.textContent = Math.floor(Math.random() * 12) + 1;
+            const oficios = document.getElementById('totalOficios');
+            if (oficios) oficios.textContent = Math.floor(Math.random() * 50);
+            const projetos = document.getElementById('totalProjetos');
+            if (projetos) projetos.textContent = Math.floor(Math.random() * 10);
         }
 
+        // Status Firebase
         window.addEventListener('online', () => {
             enableNetwork(db);
-            atualizarStatusFirebase(true);
+            const el = document.getElementById('firebaseStatus');
+            if (el) { el.textContent = 'Conectado'; el.style.color = '#4caf50'; }
         });
-
         window.addEventListener('offline', () => {
             disableNetwork(db);
-            atualizarStatusFirebase(false);
+            const el = document.getElementById('firebaseStatus');
+            if (el) { el.textContent = 'Offline'; el.style.color = '#f44336'; }
         });
 
-        atualizarStatusFirebase(navigator.onLine);
-
-        document.getElementById('espacoValor').textContent = Math.floor(Math.random() * 12) + 1;
-        document.getElementById('totalOficios').textContent = Math.floor(Math.random() * 50);
-        document.getElementById('totalProjetos').textContent = Math.floor(Math.random() * 10);
-
+        // Logout
         window.fazerLogout = async function() {
             await signOut(auth);
             sessionStorage.clear();
             window.location.href = 'index.html';
         };
 
+        // Segurança
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', () => {
             history.pushState(null, null, location.href);
@@ -237,7 +411,6 @@
             sessionStorage.clear();
             window.location.href = 'index.html';
         });
-
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) {
                 signOut(auth);
@@ -246,6 +419,7 @@
             }
         });
 
+        // Timeout
         let timeout;
         function resetTimeout() {
             clearTimeout(timeout);
