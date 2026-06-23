@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOVIN - Orçamentos e Compras</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .topo { background: linear-gradient(135deg, #bf360c 0%, #e64a19 100%); color: white; padding: 14px 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .topo h2 { font-size: 18px; }
+        .btn-topo { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px; }
+        .btn-topo:hover { background: rgba(255,255,255,0.3); }
+        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .card h3 { color: #bf360c; margin-bottom: 20px; font-size: 17px; border-bottom: 3px solid #e64a19; padding-bottom: 10px; display: flex; justify-content: space-between; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 12px; color: #444; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { border-color: #e64a19; outline: none; }
+        .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; margin: 3px; }
+        .btn-salvar { background: #e64a19; color: white; width: 100%; padding: 14px; font-size: 15px; }
+        .btn-comparar { background: #1565c0; color: white; }
+        .btn-vencedor { background: #2e7d32; color: white; }
+        .btn-editar { background: #ffc107; color: #333; }
+        .btn-excluir { background: #f44336; color: white; }
+
+        .orcamento-card { background: #fafafa; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #e64a19; }
+        .orcamento-card.vencedor { border-left-color: #2e7d32; background: #e8f5e9; }
+        .orcamento-card h4 { font-size: 14px; color: #333; }
+        .orcamento-card p { font-size: 12px; color: #888; }
+
+        .comparativo { background: #e3f2fd; padding: 15px; border-radius: 10px; margin-top: 15px; }
+        .comparativo h4 { color: #1565c0; }
+        .sem-dados { text-align: center; padding: 30px; color: #bbb; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .badge-vencedor { background: #e8f5e9; color: #2e7d32; }
+        .badge-pendente { background: #fff3e0; color: #e65100; }
+
+        @media (max-width: 768px) { .cards-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="topo">
+        <h2>📊 Orçamentos e Compras</h2>
+        <div>
+            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
+            <a href="financeiro.html" class="btn-topo">💰 Financeiro</a>
+            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cards-grid">
+            <!-- CADASTRO DE ORÇAMENTO -->
+            <div class="card">
+                <h3>📝 Novo Orçamento <span style="font-size:12px;color:#888;" id="contadorOrc">0/3</span></h3>
+                <input type="hidden" id="orcamentoId">
+                <div class="form-group"><label>Nome do Projeto/Solicitação *</label><input type="text" id="nomeSolicitacao" placeholder="Ex: Compra de Materiais Esportivos"></div>
+                <div class="form-group"><label>Empresa Fornecedora *</label><input type="text" id="empresaOrc" required></div>
+                <div class="form-group"><label>CNPJ</label><input type="text" id="cnpjOrc"></div>
+                <div class="linha-dupla">
+                    <div class="form-group"><label>Data *</label><input type="date" id="dataOrc"></div>
+                    <div class="form-group"><label>Valor Total (R$) *</label><input type="number" id="valorOrc" step="0.01"></div>
+                </div>
+                <div class="form-group"><label>Observações</label><textarea id="obsOrc" rows="2"></textarea></div>
+                <button class="btn btn-salvar" onclick="salvarOrcamento()">💾 Salvar Orçamento</button>
+            </div>
+
+            <!-- LISTA DE ORÇAMENTOS -->
+            <div class="card">
+                <h3>📋 Orçamentos Cadastrados</h3>
+                <div id="listaOrcamentos"><div class="sem-dados">Nenhum orçamento cadastrado.</div></div>
+                <div class="comparativo" id="comparativo" style="display:none;">
+                    <h4>📊 Comparativo</h4>
+                    <div id="resultadoComparativo"></div>
+                    <button class="btn btn-vencedor" onclick="definirVencedor()">🏆 Definir Vencedor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
+        let editandoId = null;
+        let solicitacaoAtual = '';
+
+        if (orcamentos.length === 0) {
+            orcamentos = [
+                {id:1,solicitacao:'Material Esportivo',empresa:'Loja Esportiva A',cnpj:'12.345.678/0001-90',data:'2026-06-20',valor:1500,obs:'Bolas e cones',vencedor:false},
+                {id:2,solicitacao:'Material Esportivo',empresa:'Fornecedor B',cnpj:'98.765.432/0001-10',data:'2026-06-21',valor:1200,obs:'Frete grátis',vencedor:true},
+                {id:3,solicitacao:'Material Esportivo',empresa:'Distribuidora C',cnpj:'11.222.333/0001-45',data:'2026-06-22',valor:1350,obs:'',vencedor:false},
+            ];
+            salvar();
+        }
+
+        function salvar() { localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos)); }
+        function formatarMoeda(v) { return 'R$ ' + (v||0).toFixed(2).replace('.',','); }
+
+        function atualizarContador() {
+            const count = orcamentos.filter(o => o.solicitacao === solicitacaoAtual).length;
+            document.getElementById('contadorOrc').textContent = count + '/3';
+        }
+
+        function renderizar() {
+            const container = document.getElementById('listaOrcamentos');
+            if (orcamentos.length === 0) { container.innerHTML = '<div class="sem-dados">Nenhum orçamento.</div>'; return; }
+
+            const grupos = {};
+            orcamentos.forEach(o => {
+                if (!grupos[o.solicitacao]) grupos[o.solicitacao] = [];
+                grupos[o.solicitacao].push(o);
+            });
+
+            let html = '';
+            Object.keys(grupos).forEach(sol => {
+                const orcs = grupos[sol];
+                const vencedor = orcs.find(o => o.vencedor);
+                html += `<div style="margin-bottom:20px;"><h4 style="color:#333;margin-bottom:10px;">📋 ${sol} (${orcs.length} orçamentos) ${vencedor ? '<span class="badge badge-vencedor">Vencedor: '+vencedor.empresa+'</span>' : '<span class="badge badge-pendente">Pendente</span>'}</h4>`;
+                orcs.forEach(o => {
+                    html += `<div class="orcamento-card ${o.vencedor?'vencedor':''}">
+                        <h4>${o.empresa} ${o.vencedor ? '🏆' : ''}</h4>
+                        <p>CNPJ: ${o.cnpj || '-'} | Data: ${o.data ? new Date(o.data+'T00:00:00').toLocaleDateString('pt-BR') : '-'}</p>
+                        <p><strong>${formatarMoeda(o.valor)}</strong> ${o.obs ? '| '+o.obs : ''}</p>
+                        <button class="btn btn-editar" onclick="editarOrc(${o.id})">✏️</button>
+                        <button class="btn btn-excluir" onclick="excluirOrc(${o.id})">🗑️</button>
+                    </div>`;
+                });
+                html += `<button class="btn btn-comparar" onclick="comparar('${sol}')">📊 Comparar</button></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        window.salvarOrcamento = function() {
+            const solicitacao = document.getElementById('nomeSolicitacao').value.trim();
+            const empresa = document.getElementById('empresaOrc').value.trim();
+            const valor = parseFloat(document.getElementById('valorOrc').value);
+            if (!solicitacao || !empresa || !valor) { alert('❌ Preencha os campos obrigatórios!'); return; }
+
+            const count = orcamentos.filter(o => o.solicitacao === solicitacao && o.id !== editandoId).length;
+            if (!editandoId && count >= 3) { alert('⚠️ Máximo de 3 orçamentos por solicitação!'); return; }
+
+            const dados = {
+                solicitacao, empresa,
+                cnpj: document.getElementById('cnpjOrc').value,
+                data: document.getElementById('dataOrc').value,
+                valor, obs: document.getElementById('obsOrc').value,
+                vencedor: false
+            };
+
+            if (editandoId) {
+                const idx = orcamentos.findIndex(o => o.id === editandoId);
+                if (idx >= 0) orcamentos[idx] = { ...orcamentos[idx], ...dados };
+            } else {
+                orcamentos.push({ id: Date.now(), ...dados });
+            }
+            salvar(); limparForm(); renderizar(); atualizarContador();
+        };
+
+        window.editarOrc = function(id) {
+            const o = orcamentos.find(o => o.id === id);
+            if (!o) return;
+            editandoId = id;
+            document.getElementById('orcamentoId').value = id;
+            document.getElementById('nomeSolicitacao').value = o.solicitacao;
+            document.getElementById('empresaOrc').value = o.empresa;
+            document.getElementById('cnpjOrc').value = o.cnpj || '';
+            document.getElementById('dataOrc').value = o.data || '';
+            document.getElementById('valorOrc').value = o.valor;
+            document.getElementById('obsOrc').value = o.obs || '';
+            solicitacaoAtual = o.solicitacao;
+            atualizarContador();
+        };
+
+        window.excluirOrc = function(id) {
+            if (!confirm('Excluir orçamento?')) return;
+            orcamentos = orcamentos.filter(o => o.id !== id);
+            salvar(); renderizar(); atualizarContador();
+        };
+
+        function limparForm() {
+            editandoId = null;
+            document.getElementById('orcamentoId').value = '';
+            document.getElementById('nomeSolicitacao').value = '';
+            document.getElementById('empresaOrc').value = '';
+            document.getElementById('cnpjOrc').value = '';
+            document.getElementById('dataOrc').value = '';
+            document.getElementById('valorOrc').value = '';
+            document.getElementById('obsOrc').value = '';
+            solicitacaoAtual = '';
+            atualizarContador();
+        }
+
+        window.comparar = function(solicitacao) {
+            const orcs = orcamentos.filter(o => o.solicitacao === solicitacao).sort((a,b) => a.valor - b.valor);
+            if (orcs.length < 2) { alert('Precisa de pelo menos 2 orçamentos para comparar!'); return; }
+
+            const menor = orcs[0];
+            const maior = orcs[orcs.length - 1];
+            const economia = maior.valor - menor.valor;
+            const percentual = ((economia / maior.valor) * 100).toFixed(1);
+
+            let html = `<p><strong>Menor Preço:</strong> ${menor.empresa} - ${formatarMoeda(menor.valor)}</p>`;
+            html += `<p><strong>Maior Preço:</strong> ${maior.empresa} - ${formatarMoeda(maior.valor)}</p>`;
+            html += `<p><strong>Economia Potencial:</strong> ${formatarMoeda(economia)} (${percentual}%)</p>`;
+            html += `<p><strong>Ranking:</strong></p><ol>`;
+            orcs.forEach(o => html += `<li>${o.empresa} - ${formatarMoeda(o.valor)}</li>`);
+            html += `</ol>`;
+            html += `<p style="color:#2e7d32;font-weight:600;">🏆 Fornecedor com melhor preço: <strong>${menor.empresa}</strong></p>`;
+
+            document.getElementById('resultadoComparativo').innerHTML = html;
+            document.getElementById('comparativo').style.display = 'block';
+            solicitacaoAtual = solicitacao;
+        };
+
+        window.definirVencedor = function() {
+            if (!solicitacaoAtual) return;
+            const orcs = orcamentos.filter(o => o.solicitacao === solicitacaoAtual).sort((a,b) => a.valor - b.valor);
+            if (orcs.length === 0) return;
+            orcamentos.forEach(o => { if (o.solicitacao === solicitacaoAtual) o.vencedor = false; });
+            orcs[0].vencedor = true;
+            salvar(); renderizar();
+            document.getElementById('comparativo').style.display = 'none';
+            alert('✅ ' + orcs[0].empresa + ' definido como vencedor!');
+        };
+
+        window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
+        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+        let timeout;
+        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
+        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
+
+        document.getElementById('dataOrc').value = new Date().toISOString().split('T')[0];
+        renderizar(); atualizarContador();
+    </script>
+</body>
+</html>
