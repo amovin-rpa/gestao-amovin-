@@ -3,40 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Configurar Chave IA</title>
+    <title>AMOVIN ERP Social - Configurar Chave IA</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; }
-        h2 { color: #333; margin-bottom: 10px; }
-        p { color: #888; font-size: 13px; margin-bottom: 20px; }
-        input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; text-align: center; }
-        button { width: 100%; padding: 14px; background: #667eea; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        .status { padding: 12px; border-radius: 10px; margin-top: 15px; display: none; font-weight: 600; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex; align-items: center; justify-content: center; min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            background: white; padding: 40px; border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 520px; width: 100%; text-align: center;
+        }
+        .logo {
+            width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 15px; font-size: 28px; color: white; font-weight: bold;
+        }
+        h2 { color: #1a1a2e; margin-bottom: 8px; font-size: 20px; }
+        p { color: #888; font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+        .dica {
+            background: #fff3e0; padding: 12px; border-radius: 10px; font-size: 12px;
+            color: #e65100; margin-bottom: 20px; text-align: left;
+        }
+        input {
+            width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px;
+            font-size: 14px; text-align: center; transition: border-color 0.3s;
+        }
+        input:focus { border-color: #667eea; outline: none; }
+        button {
+            width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold;
+            cursor: pointer; margin-top: 15px; transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .status { padding: 14px; border-radius: 10px; margin-top: 15px; display: none; font-weight: 600; font-size: 14px; }
         .sucesso { background: #e8f5e9; color: #2e7d32; display: block; }
+        .info { background: #e3f2fd; color: #1565c0; display: block; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>🔑 Configurar Chave Gemini</h2>
-        <p>Cole sua chave da API do Google Gemini.<br>Ela ficará salva apenas no seu navegador.</p>
+        <div class="logo">🔑</div>
+        <h2>Configurar Chave Gemini</h2>
+        <p>Cole a chave da API do Google Gemini.<br>Ela ficará salva apenas no seu navegador.</p>
+        
+        <div class="dica">
+            💡 <strong>Onde encontrar a chave?</strong><br>
+            Acesse: <strong>aistudio.google.com/apikey</strong><br>
+            Crie uma chave e cole abaixo.
+        </div>
+
         <input type="password" id="chaveInput" placeholder="Cole sua chave aqui...">
+
         <button onclick="salvarChave()">💾 Salvar Chave</button>
         <div class="status" id="status"></div>
     </div>
 
     <script>
+        // Verifica se já tem chave salva
+        const chaveSalva = localStorage.getItem('amovin_gemini_key');
+        if (chaveSalva) {
+            document.getElementById('status').textContent = '✅ Chave já configurada! O sistema está pronto para usar.';
+            document.getElementById('status').className = 'status sucesso';
+            document.getElementById('chaveInput').value = chaveSalva;
+        }
+
         window.salvarChave = function() {
             const chave = document.getElementById('chaveInput').value.trim();
-            if (!chave) { alert('Cole a chave!'); return; }
+            if (!chave) {
+                alert('⚠️ Cole a chave da API Gemini!');
+                return;
+            }
+            if (!chave.startsWith('AI') && !chave.startsWith('AQ')) {
+                alert('⚠️ A chave parece inválida. Verifique se copiou corretamente.');
+                return;
+            }
             localStorage.setItem('amovin_gemini_key', chave);
-            document.getElementById('status').textContent = '✅ Chave salva com sucesso! Pode fechar esta página.';
+            document.getElementById('status').textContent = '✅ Chave salva com sucesso! Todos os módulos IA estão prontos.';
             document.getElementById('status').className = 'status sucesso';
         };
-        // Se já tiver chave salva, mostrar
-        if (localStorage.getItem('amovin_gemini_key')) {
-            document.getElementById('status').textContent = '✅ Chave já configurada!';
-            document.getElementById('status').className = 'status sucesso';
-        }
     </script>
 </body>
 </html>
