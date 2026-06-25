@@ -2,550 +2,335 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Gestão de Pessoas</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Pessoas</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f6fa;
-            min-height: 100vh;
-        }
-
-        .topo {
-            background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
-            color: white;
-            padding: 12px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .topo h2 { font-size: 18px; }
-
-        .btn-topo {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: none;
-            margin-left: 4px;
-        }
-
-        .btn-topo:hover { background: rgba(255,255,255,0.3); }
-
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-
-        .abas {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .aba {
-            padding: 12px 25px;
-            background: white;
-            border: none;
-            border-radius: 10px 10px 0 0;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            color: #666;
-            transition: all 0.3s;
-        }
-
-        .aba.ativa { background: #7b1fa2; color: white; }
-
-        .grid-principal {
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .card h3 {
-            color: #4a148c;
-            margin-bottom: 20px;
-            font-size: 18px;
-            border-bottom: 3px solid #7b1fa2;
-            padding-bottom: 10px;
-        }
-
-        .form-group { margin-bottom: 14px; }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #7b1fa2;
-            outline: none;
-        }
-
-        .linha-dupla {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .btn-salvar {
-            width: 100%;
-            padding: 12px;
-            background: #7b1fa2;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-salvar:hover { background: #4a148c; }
-        .btn-cancelar {
-            width: 100%;
-            padding: 10px;
-            background: #f5f5f5;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #f3e5f5;
-            padding: 12px;
-            text-align: left;
-            font-size: 13px;
-            color: #4a148c;
-        }
-
-        td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 13px;
-        }
-
-        tr:hover { background: #fafafa; }
-
-        .status-ativo {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .status-inativo {
-            background: #ffebee;
-            color: #c62828;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .btn-editar {
-            background: #ffc107;
-            color: #333;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            margin-right: 3px;
-        }
-
-        .btn-excluir {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .btn-editar:hover { background: #ffb300; }
-        .btn-excluir:hover { background: #d32f2f; }
-
-        .conteudo-aba { display: none; }
-        .conteudo-aba.ativo { display: block; }
-
-        @media (max-width: 900px) {
-            .grid-principal { grid-template-columns: 1fr; }
-        }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #4a148c; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 3px; }
+        .btn-roxo { background: #7b1fa2; color: white; }
+        .btn-amarelo { background: #ffc107; color: #333; }
+        .btn-vermelho { background: #f44336; color: white; }
+        .btn-verde { background: #4caf50; color: white; }
+        .btn-azul { background: #2196f3; color: white; }
+        .btn-laranja { background: #ff9800; color: white; }
+        .btn-cinza { background: #666; color: white; }
+        .card { background: white; padding: 18px; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0 0 4px 0; font-size: 16px; }
+        .card p { margin: 2px 0; color: #666; font-size: 13px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; background: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .tab.ativo { background: #7b1fa2; color: white; }
+        .busca { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .busca input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-width: 200px; }
+        .busca select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; width: 500px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
+        .modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .modal-box label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 3px; }
+        .foto-preview { width: 70px; height: 90px; border: 2px dashed #ccc; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; overflow: hidden; border-radius: 6px; }
+        .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .sem-dados { text-align: center; color: #bbb; padding: 30px; grid-column: 1 / -1; }
+        .kpi-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .kpi-card { background: white; padding: 15px 20px; border-radius: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; min-width: 120px; }
+        .kpi-card .valor { font-size: 24px; font-weight: bold; color: #4a148c; }
+        .kpi-card .label { font-size: 11px; color: #888; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .status-ativo { background: #e8f5e9; color: #2e7d32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .status-inativo { background: #ffebee; color: #c62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="topo">
-        <h2>👥 Gestão de Pessoas</h2>
-        <div>
-            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
-            <a href="oficios.html" class="btn-topo">📄 Ofícios</a>
-            <a href="projetos.html" class="btn-topo">📋 Projetos</a>
-            <a href="financeiro.html" class="btn-topo">💰 Financeiro</a>
-            <a href="agenda.html" class="btn-topo">📅 Agenda</a>
-            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
-        </div>
+
+<div class="topo">
+    <strong>Gestao de Pessoas</strong>
+    <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
+</div>
+
+<div class="container">
+    <div class="kpi-row">
+        <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div>
+        <div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Ativos</div></div>
+        <div class="kpi-card"><div class="valor" id="kpiInativos">0</div><div class="label">Inativos</div></div>
     </div>
 
-    <div class="container">
-        <div class="abas">
-            <button class="aba ativa" onclick="mudarAba('beneficiarios', this)">👨‍👩‍👧‍👦 Beneficiários</button>
-            <button class="aba" onclick="mudarAba('profissionais', this)">👨‍⚕️ Profissionais</button>
-            <button class="aba" onclick="mudarAba('voluntarios', this)">💪 Voluntários</button>
-        </div>
-
-        <!-- BENEFICIÁRIOS -->
-        <div class="conteudo-aba ativo" id="aba-beneficiarios">
-            <div class="grid-principal">
-                <div class="card">
-                    <h3><span id="tituloFormB">📝 Novo Beneficiário</span></h3>
-                    <input type="hidden" id="pessoaIdB">
-                    <div class="form-group"><label>Nome *</label><input type="text" id="nomeB" required></div>
-                    <div class="linha-dupla">
-                        <div class="form-group"><label>Idade *</label><input type="number" id="idadeB" required></div>
-                        <div class="form-group"><label>Telefone</label><input type="text" id="telefoneB"></div>
-                    </div>
-                    <div class="form-group"><label>Projeto *</label>
-                        <select id="projetoB">
-                            <option value="Inclusão Digital">Inclusão Digital</option>
-                            <option value="Esporte para Todos">Esporte para Todos</option>
-                            <option value="Reforço Escolar">Reforço Escolar</option>
-                            <option value="Capacitação Profissional">Capacitação Profissional</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Status</label>
-                        <select id="statusB"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select>
-                    </div>
-                    <button class="btn-salvar" onclick="salvarPessoa('beneficiarios')">💾 Salvar</button>
-                    <button class="btn-cancelar" id="btnCancelarB" style="display:none;" onclick="cancelarEdicao('beneficiarios')">Cancelar</button>
-                </div>
-                <div class="card">
-                    <h3>📋 Lista de Beneficiários</h3>
-                    <div style="overflow-x:auto;"><table><thead><tr><th>Nome</th><th>Idade</th><th>Projeto</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tabelaB"></tbody></table></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PROFISSIONAIS -->
-        <div class="conteudo-aba" id="aba-profissionais">
-            <div class="grid-principal">
-                <div class="card">
-                    <h3><span id="tituloFormP">📝 Novo Profissional</span></h3>
-                    <input type="hidden" id="pessoaIdP">
-                    <div class="form-group"><label>Nome *</label><input type="text" id="nomeP" required></div>
-                    <div class="form-group"><label>Especialidade *</label><input type="text" id="especialidadeP" required></div>
-                    <div class="linha-dupla">
-                        <div class="form-group"><label>Contrato</label>
-                            <select id="contratoP"><option value="CLT">CLT</option><option value="PJ">PJ</option><option value="Voluntário">Voluntário</option></select>
-                        </div>
-                        <div class="form-group"><label>Carga Horária</label><input type="text" id="cargaP"></div>
-                    </div>
-                    <button class="btn-salvar" onclick="salvarPessoa('profissionais')">💾 Salvar</button>
-                    <button class="btn-cancelar" id="btnCancelarP" style="display:none;" onclick="cancelarEdicao('profissionais')">Cancelar</button>
-                </div>
-                <div class="card">
-                    <h3>📋 Equipe</h3>
-                    <div style="overflow-x:auto;"><table><thead><tr><th>Nome</th><th>Especialidade</th><th>Contrato</th><th>Carga</th><th>Ações</th></tr></thead><tbody id="tabelaP"></tbody></table></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- VOLUNTÁRIOS -->
-        <div class="conteudo-aba" id="aba-voluntarios">
-            <div class="grid-principal">
-                <div class="card">
-                    <h3><span id="tituloFormV">📝 Novo Voluntário</span></h3>
-                    <input type="hidden" id="pessoaIdV">
-                    <div class="form-group"><label>Nome *</label><input type="text" id="nomeV" required></div>
-                    <div class="form-group"><label>Área *</label><input type="text" id="areaV" required></div>
-                    <div class="linha-dupla">
-                        <div class="form-group"><label>Disponibilidade</label><input type="text" id="disponibilidadeV"></div>
-                        <div class="form-group"><label>Horas/Mês</label><input type="text" id="horasV"></div>
-                    </div>
-                    <button class="btn-salvar" onclick="salvarPessoa('voluntarios')">💾 Salvar</button>
-                    <button class="btn-cancelar" id="btnCancelarV" style="display:none;" onclick="cancelarEdicao('voluntarios')">Cancelar</button>
-                </div>
-                <div class="card">
-                    <h3>📋 Voluntários</h3>
-                    <div style="overflow-x:auto;"><table><thead><tr><th>Nome</th><th>Área</th><th>Disponibilidade</th><th>Horas</th><th>Ações</th></tr></thead><tbody id="tabelaV"></tbody></table></div>
-                </div>
-            </div>
-        </div>
+    <div class="tabs">
+        <button class="tab ativo" id="tabBenef" onclick="mudarAba('beneficiarios')">Beneficiarios</button>
+        <button class="tab" id="tabProf" onclick="mudarAba('profissionais')">Profissionais</button>
+        <button class="tab" id="tabVol" onclick="mudarAba('voluntarios')">Voluntarios</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    <div class="busca">
+        <input type="text" id="busca" placeholder="Buscar por nome..." oninput="filtrar()">
+        <select id="ordem" onchange="filtrar()">
+            <option value="az">Ordem A-Z</option>
+            <option value="za">Ordem Z-A</option>
+        </select>
+        <select id="filtroStatus" onchange="filtrar()">
+            <option value="todos">Todos</option>
+            <option value="Ativo">Ativos</option>
+            <option value="Inativo">Inativos</option>
+        </select>
+        <button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button>
+    </div>
+    <div id="lista"></div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
-            authDomain: "amovin-oficios-teste.firebaseapp.com",
-            projectId: "amovin-oficios-teste",
-            storageBucket: "amovin-oficios-teste.firebasestorage.app",
-            messagingSenderId: "901387183295",
-            appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
-        };
+<div class="modal" id="modalForm">
+    <div class="modal-box">
+        <h3 id="tituloModal">Novo Beneficiario</h3>
+        <input type="hidden" id="pessoaId">
+        
+        <div class="foto-preview" id="fotoPreview">3x4</div>
+        <input type="file" id="fotoUpload" accept="image/*" onchange="previewFoto()" style="font-size:12px;">
+        
+        <label>Nome completo *</label>
+        <input type="text" id="nomePessoa" placeholder="Nome completo">
+        
+        <div class="form-row">
+            <div><label>Idade</label><input type="number" id="idadePessoa" placeholder="Idade"></div>
+            <div><label>Data Nascimento</label><input type="date" id="nascimentoPessoa"></div>
+        </div>
+        
+        <div class="form-row">
+            <div><label>CPF</label><input type="text" id="cpfPessoa" placeholder="000.000.000-00"></div>
+            <div><label>RG</label><input type="text" id="rgPessoa" placeholder="RG"></div>
+        </div>
+        
+        <label>Telefone</label>
+        <input type="text" id="telefonePessoa" placeholder="(34) 99999-0000">
+        
+        <label>Projeto</label>
+        <select id="projetoPessoa">
+            <option>Inclusao Digital</option>
+            <option>Esporte para Todos</option>
+            <option>Reforco Escolar</option>
+            <option>Capacitacao Profissional</option>
+        </select>
+        
+        <label>Status</label>
+        <select id="statusPessoa">
+            <option>Ativo</option>
+            <option>Inativo</option>
+        </select>
+        
+        <label>Diagnostico</label>
+        <input type="text" id="diagnosticoPessoa" placeholder="Diagnostico ou condicao">
+        
+        <label>CID</label>
+        <input type="text" id="cidPessoa" placeholder="CID">
+        
+        <label>Nome do Responsavel</label>
+        <input type="text" id="respNome" placeholder="Nome do responsavel">
+        
+        <label>Telefone do Responsavel</label>
+        <input type="text" id="respFone" placeholder="Telefone do responsavel">
+        
+        <label>Endereco</label>
+        <input type="text" id="enderecoPessoa" placeholder="Endereco completo">
+        
+        <label>Observacoes</label>
+        <textarea id="obsPessoa" rows="2" placeholder="Anotacoes..."></textarea>
+        
+        <button class="btn btn-roxo" onclick="salvar()">Salvar</button>
+        <button class="btn btn-vermelho" onclick="fecharForm()">Cancelar</button>
+    </div>
+</div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+<script>
+var beneficiarios = [];
+var editandoId = null;
 
-        let dados = { beneficiarios: [], profissionais: [], voluntarios: [] };
-        let editando = { beneficiarios: null, profissionais: null, voluntarios: null };
+var dadosSalvos = localStorage.getItem('amovin_beneficiarios');
+if (dadosSalvos) { beneficiarios = JSON.parse(dadosSalvos); }
 
-        const iniciais = {
-            beneficiarios: [
-                { id: 1, nome: 'Maria Silva', idade: 17, telefone: '(34) 99999-0001', projeto: 'Inclusão Digital', status: 'Ativo' },
-                { id: 2, nome: 'João Santos', idade: 22, telefone: '(34) 99999-0002', projeto: 'Esporte para Todos', status: 'Ativo' },
-                { id: 3, nome: 'Ana Costa', idade: 14, telefone: '(34) 99999-0003', projeto: 'Reforço Escolar', status: 'Ativo' },
-            ],
-            profissionais: [
-                { id: 1, nome: 'Dr. Carlos Mendes', especialidade: 'Psicólogo', contrato: 'CLT', carga: '40h' },
-                { id: 2, nome: 'Dra. Lucia Ferreira', especialidade: 'Assistente Social', contrato: 'CLT', carga: '40h' },
-            ],
-            voluntarios: [
-                { id: 1, nome: 'Fernanda Lima', area: 'Informática', disponibilidade: 'Sábados', horas: '16h' },
-                { id: 2, nome: 'Rafael Costa', area: 'Esportes', disponibilidade: 'Terças e Quintas', horas: '20h' },
-            ]
-        };
+if (beneficiarios.length === 0) {
+    beneficiarios.push({id:1, nome:'Maria Silva', idade:17, nascimento:'', cpf:'', rg:'', telefone:'(34) 99999-0001', projeto:'Inclusao Digital', status:'Ativo', diagnostico:'', cid:'', respNome:'Mae da Maria', respFone:'(34) 99999-0000', endereco:'', obs:'', foto:''});
+    beneficiarios.push({id:2, nome:'Joao Santos', idade:22, nascimento:'', cpf:'', rg:'', telefone:'(34) 99999-0002', projeto:'Esporte para Todos', status:'Ativo', diagnostico:'', cid:'', respNome:'', respFone:'', endereco:'', obs:'', foto:''});
+    beneficiarios.push({id:3, nome:'Ana Costa', idade:14, nascimento:'', cpf:'', rg:'', telefone:'(34) 99999-0003', projeto:'Reforco Escolar', status:'Ativo', diagnostico:'', cid:'', respNome:'', respFone:'', endereco:'', obs:'', foto:''});
+    salvarDados();
+}
 
-        function carregar() {
-            for (let tipo of ['beneficiarios', 'profissionais', 'voluntarios']) {
-                const salvos = localStorage.getItem('amovin_' + tipo);
-                dados[tipo] = salvos ? JSON.parse(salvos) : [...iniciais[tipo]];
-                if (!salvos) salvar(tipo);
-            }
+function salvarDados() { localStorage.setItem('amovin_beneficiarios', JSON.stringify(beneficiarios)); }
+
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = beneficiarios.length;
+    document.getElementById('kpiAtivos').textContent = beneficiarios.filter(function(b){ return b.status === 'Ativo'; }).length;
+    document.getElementById('kpiInativos').textContent = beneficiarios.filter(function(b){ return b.status === 'Inativo'; }).length;
+}
+
+function filtrar() {
+    var busca = document.getElementById('busca').value.toLowerCase();
+    var ordem = document.getElementById('ordem').value;
+    var statusFiltro = document.getElementById('filtroStatus').value;
+    var lista = [];
+    for (var i = 0; i < beneficiarios.length; i++) {
+        var b = beneficiarios[i];
+        var matchBusca = b.nome.toLowerCase().indexOf(busca) >= 0;
+        var matchStatus = statusFiltro === 'todos' || b.status === statusFiltro;
+        if (matchBusca && matchStatus) lista.push(b);
+    }
+    lista.sort(function(a, b) { if (ordem === 'az') return a.nome.localeCompare(b.nome); else return b.nome.localeCompare(a.nome); });
+    mostrarLista(lista);
+}
+
+function mostrarLista(lista) {
+    if (!lista) { lista = beneficiarios.slice(); lista.sort(function(a,b){ return a.nome.localeCompare(b.nome); }); }
+    var html = '';
+    if (lista.length === 0) html = '<div class="sem-dados">Nenhum beneficiario encontrado.</div>';
+    for (var i = 0; i < lista.length; i++) {
+        var b = lista[i];
+        var statusClass = b.status === 'Ativo' ? 'status-ativo' : 'status-inativo';
+        html += '<div class="card">';
+        if (b.foto) html += '<img src="' + b.foto + '" style="width:40px;height:50px;object-fit:cover;float:left;margin-right:10px;border-radius:4px;">';
+        html += '<h3>' + b.nome + ' <span class="' + statusClass + '">' + b.status + '</span></h3>';
+        html += '<p>Idade: ' + (b.idade||'-') + ' | Projeto: ' + b.projeto + ' | Tel: ' + (b.telefone||'-') + '</p>';
+        if (b.diagnostico) html += '<p>Diagnostico: ' + b.diagnostico + (b.cid ? ' | CID: ' + b.cid : '') + '</p>';
+        if (b.respNome) html += '<p>Resp: ' + b.respNome + (b.respFone ? ' | Tel: ' + b.respFone : '') + '</p>';
+        html += '<button class="btn btn-amarelo" onclick="editar(' + b.id + ')">Editar</button> ';
+        html += '<button class="btn btn-verde" onclick="window.location.href=\'prontuario.html?id=' + b.id + '\'">Prontuario</button> ';
+        html += '<button class="btn btn-laranja" onclick="imprimirTermo(' + b.id + ', \'adesao\')">Termo Adesao</button> ';
+        html += '<button class="btn btn-laranja" onclick="imprimirTermo(' + b.id + ', \'consentimento\')">TCLE</button> ';
+        html += '<button class="btn btn-azul" onclick="imprimir(' + b.id + ')">Imprimir</button> ';
+        html += '<button class="btn btn-vermelho" onclick="excluir(' + b.id + ')">Excluir</button>';
+        html += '</div>';
+    }
+    document.getElementById('lista').innerHTML = html;
+}
+
+window.previewFoto = function() {
+    var file = document.getElementById('fotoUpload').files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">'; };
+    reader.readAsDataURL(file);
+};
+
+window.abrirForm = function(id) {
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('tituloModal').textContent = id ? 'Editar Beneficiario' : 'Novo Beneficiario';
+    document.getElementById('fotoUpload').value = '';
+    document.getElementById('fotoPreview').innerHTML = '3x4';
+    if (id) {
+        var b = null;
+        for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } }
+        if (b) {
+            document.getElementById('pessoaId').value = b.id;
+            document.getElementById('nomePessoa').value = b.nome;
+            document.getElementById('idadePessoa').value = b.idade || '';
+            document.getElementById('nascimentoPessoa').value = b.nascimento || '';
+            document.getElementById('cpfPessoa').value = b.cpf || '';
+            document.getElementById('rgPessoa').value = b.rg || '';
+            document.getElementById('telefonePessoa').value = b.telefone || '';
+            document.getElementById('projetoPessoa').value = b.projeto;
+            document.getElementById('statusPessoa').value = b.status;
+            document.getElementById('diagnosticoPessoa').value = b.diagnostico || '';
+            document.getElementById('cidPessoa').value = b.cid || '';
+            document.getElementById('respNome').value = b.respNome || '';
+            document.getElementById('respFone').value = b.respFone || '';
+            document.getElementById('enderecoPessoa').value = b.endereco || '';
+            document.getElementById('obsPessoa').value = b.obs || '';
+            if (b.foto) document.getElementById('fotoPreview').innerHTML = '<img src="' + b.foto + '" style="width:100%;height:100%;object-fit:cover;">';
         }
+    } else {
+        document.getElementById('pessoaId').value = '';
+        document.getElementById('nomePessoa').value = '';
+        document.getElementById('idadePessoa').value = '';
+        document.getElementById('nascimentoPessoa').value = '';
+        document.getElementById('cpfPessoa').value = '';
+        document.getElementById('rgPessoa').value = '';
+        document.getElementById('telefonePessoa').value = '';
+        document.getElementById('projetoPessoa').value = 'Inclusao Digital';
+        document.getElementById('statusPessoa').value = 'Ativo';
+        document.getElementById('diagnosticoPessoa').value = '';
+        document.getElementById('cidPessoa').value = '';
+        document.getElementById('respNome').value = '';
+        document.getElementById('respFone').value = '';
+        document.getElementById('enderecoPessoa').value = '';
+        document.getElementById('obsPessoa').value = '';
+    }
+};
 
-        function salvar(tipo) {
-            localStorage.setItem('amovin_' + tipo, JSON.stringify(dados[tipo]));
+window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
+
+window.salvar = function() {
+    var nome = document.getElementById('nomePessoa').value;
+    if (!nome) { alert('Preencha o nome!'); return; }
+    var fotoAtual = document.getElementById('fotoPreview').querySelector('img');
+    var dados = {
+        nome: nome, idade: document.getElementById('idadePessoa').value,
+        nascimento: document.getElementById('nascimentoPessoa').value,
+        cpf: document.getElementById('cpfPessoa').value,
+        rg: document.getElementById('rgPessoa').value,
+        telefone: document.getElementById('telefonePessoa').value,
+        projeto: document.getElementById('projetoPessoa').value,
+        status: document.getElementById('statusPessoa').value,
+        diagnostico: document.getElementById('diagnosticoPessoa').value,
+        cid: document.getElementById('cidPessoa').value,
+        respNome: document.getElementById('respNome').value,
+        respFone: document.getElementById('respFone').value,
+        endereco: document.getElementById('enderecoPessoa').value,
+        obs: document.getElementById('obsPessoa').value,
+        foto: fotoAtual ? fotoAtual.src : ''
+    };
+    if (editandoId) {
+        for (var i = 0; i < beneficiarios.length; i++) {
+            if (beneficiarios[i].id === editandoId) { for (var key in dados) { beneficiarios[i][key] = dados[key]; } break; }
         }
+    } else { dados.id = Date.now(); beneficiarios.push(dados); }
+    salvarDados(); filtrar(); atualizarKPIs(); fecharForm();
+};
 
-        function renderizar(tipo) {
-            const tabela = document.getElementById('tabela' + (tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V'));
-            const lista = dados[tipo];
+window.editar = function(id) { abrirForm(id); };
 
-            if (lista.length === 0) {
-                tabela.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#bbb;padding:30px;">Nenhum registro.</td></tr>';
-                return;
-            }
+window.excluir = function(id) {
+    if (!confirm('Excluir?')) return;
+    var novo = [];
+    for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id !== id) novo.push(beneficiarios[i]); }
+    beneficiarios = novo;
+    salvarDados(); filtrar(); atualizarKPIs();
+};
 
-            if (tipo === 'beneficiarios') {
-                tabela.innerHTML = lista.map(p => `
-                    <tr>
-                        <td>${p.nome}</td><td>${p.idade}</td><td>${p.projeto}</td>
-                        <td><span class="${p.status === 'Ativo' ? 'status-ativo' : 'status-inativo'}">${p.status}</span></td>
-                        <td><button class="btn-editar" onclick="editarPessoa('${tipo}',${p.id})">✏️</button><button class="btn-excluir" onclick="excluirPessoa('${tipo}',${p.id})">🗑️</button></td>
-                    </tr>`).join('');
-            } else if (tipo === 'profissionais') {
-                tabela.innerHTML = lista.map(p => `
-                    <tr>
-                        <td>${p.nome}</td><td>${p.especialidade}</td><td>${p.contrato}</td><td>${p.carga}</td>
-                        <td><button class="btn-editar" onclick="editarPessoa('${tipo}',${p.id})">✏️</button><button class="btn-excluir" onclick="excluirPessoa('${tipo}',${p.id})">🗑️</button></td>
-                    </tr>`).join('');
-            } else {
-                tabela.innerHTML = lista.map(p => `
-                    <tr>
-                        <td>${p.nome}</td><td>${p.area}</td><td>${p.disponibilidade}</td><td>${p.horas}</td>
-                        <td><button class="btn-editar" onclick="editarPessoa('${tipo}',${p.id})">✏️</button><button class="btn-excluir" onclick="excluirPessoa('${tipo}',${p.id})">🗑️</button></td>
-                    </tr>`).join('');
-            }
-        }
+window.imprimir = function(id) {
+    var b = null;
+    for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } }
+    if (!b) return;
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px;max-width:500px}</style></head><body><h2>AMOVIN - Beneficiario</h2>'+(b.foto?'<img src="'+b.foto+'" style="width:3cm;height:4cm;float:right;border:1px solid #000;">':'')+'<p><strong>Nome:</strong> '+b.nome+'</p><p><strong>Idade:</strong> '+(b.idade||'-')+'</p><p><strong>CPF:</strong> '+(b.cpf||'-')+'</p><p><strong>Projeto:</strong> '+b.projeto+'</p><p><strong>Status:</strong> '+b.status+'</p><p><strong>Diagnostico:</strong> '+(b.diagnostico||'-')+'</p><p><strong>Responsavel:</strong> '+(b.respNome||'-')+'</p><p><strong>Tel Resp:</strong> '+(b.respFone||'-')+'</p><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
 
-        window.salvarPessoa = function(tipo) {
-            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
-            const id = document.getElementById('pessoaId' + prefixo).value;
+window.imprimirTermo = function(id, tipo) {
+    var b = null;
+    for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } }
+    if (!b) return;
+    var hoje = new Date();
+    var data = hoje.toLocaleDateString('pt-BR', {day:'numeric',month:'long',year:'numeric'});
+    var w = window.open('','_blank');
+    var conteudo = '';
+    if (tipo === 'adesao') {
+        conteudo = '<h2>TERMO DE ADESAO E COMPROMISSO</h2><p><strong>Associado Responsavel:</strong> '+(b.respNome||'________________')+'</p><p><strong>CPF:</strong> '+(b.cpf||'________________')+'</p><p><strong>Beneficiario:</strong> '+b.nome+'</p><p>A AMOVIN se compromete a oferecer atividades e zelar pelo bem-estar do beneficiario.</p><p>O responsavel se compromete a manter frequencia e comunicar ausencias.</p>';
+    } else {
+        conteudo = '<h2>TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</h2><p><strong>Responsavel:</strong> '+(b.respNome||'________________')+'</p><p><strong>Beneficiario:</strong> '+b.nome+'</p><p>Declaro que fui informado sobre o tratamento e dou meu consentimento.</p>';
+    }
+    w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto;line-height:1.6}</style></head><body><h3>AMOVIN - CNPJ: 55.880.046/0001-34</h3>'+conteudo+'<p>Rio Paranaiba/MG, '+data+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura do Responsavel</div><div style="margin-top:30px;text-align:center;"><hr style="width:300px;">Presidencia AMOVIN</div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
 
-            let obj = {};
-            if (tipo === 'beneficiarios') {
-                obj = {
-                    nome: document.getElementById('nomeB').value.trim(),
-                    idade: parseInt(document.getElementById('idadeB').value) || 0,
-                    telefone: document.getElementById('telefoneB').value.trim(),
-                    projeto: document.getElementById('projetoB').value,
-                    status: document.getElementById('statusB').value
-                };
-            } else if (tipo === 'profissionais') {
-                obj = {
-                    nome: document.getElementById('nomeP').value.trim(),
-                    especialidade: document.getElementById('especialidadeP').value.trim(),
-                    contrato: document.getElementById('contratoP').value,
-                    carga: document.getElementById('cargaP').value.trim()
-                };
-            } else {
-                obj = {
-                    nome: document.getElementById('nomeV').value.trim(),
-                    area: document.getElementById('areaV').value.trim(),
-                    disponibilidade: document.getElementById('disponibilidadeV').value.trim(),
-                    horas: document.getElementById('horasV').value.trim()
-                };
-            }
+window.mudarAba = function(aba) {
+    document.getElementById('tabBenef').classList.remove('ativo');
+    document.getElementById('tabProf').classList.remove('ativo');
+    document.getElementById('tabVol').classList.remove('ativo');
+    if (aba === 'beneficiarios') document.getElementById('tabBenef').classList.add('ativo');
+    if (aba === 'profissionais') { document.getElementById('tabProf').classList.add('ativo'); window.location.href = 'profissionais.html'; return; }
+    if (aba === 'voluntarios') { document.getElementById('tabVol').classList.add('ativo'); window.location.href = 'voluntarios.html'; return; }
+    filtrar();
+};
 
-            if (!obj.nome) { alert('❌ Nome é obrigatório!'); return; }
-
-            if (id) {
-                const index = dados[tipo].findIndex(p => p.id === parseInt(id));
-                if (index >= 0) dados[tipo][index] = { ...dados[tipo][index], ...obj };
-                editando[tipo] = null;
-                document.getElementById('btnCancelar' + prefixo).style.display = 'none';
-                document.getElementById('tituloForm' + prefixo).textContent = '📝 Novo Registro';
-            } else {
-                const novoId = dados[tipo].length > 0 ? Math.max(...dados[tipo].map(p => p.id)) + 1 : 1;
-                dados[tipo].push({ id: novoId, ...obj });
-            }
-
-            salvar(tipo);
-            limparForm(tipo);
-            renderizar(tipo);
-        };
-
-        window.editarPessoa = function(tipo, id) {
-            const pessoa = dados[tipo].find(p => p.id === id);
-            if (!pessoa) return;
-
-            editando[tipo] = id;
-            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
-            document.getElementById('tituloForm' + prefixo).textContent = '✏️ Editando';
-            document.getElementById('pessoaId' + prefixo).value = id;
-            document.getElementById('btnCancelar' + prefixo).style.display = 'block';
-
-            if (tipo === 'beneficiarios') {
-                document.getElementById('nomeB').value = pessoa.nome;
-                document.getElementById('idadeB').value = pessoa.idade;
-                document.getElementById('telefoneB').value = pessoa.telefone || '';
-                document.getElementById('projetoB').value = pessoa.projeto;
-                document.getElementById('statusB').value = pessoa.status;
-            } else if (tipo === 'profissionais') {
-                document.getElementById('nomeP').value = pessoa.nome;
-                document.getElementById('especialidadeP').value = pessoa.especialidade;
-                document.getElementById('contratoP').value = pessoa.contrato;
-                document.getElementById('cargaP').value = pessoa.carga;
-            } else {
-                document.getElementById('nomeV').value = pessoa.nome;
-                document.getElementById('areaV').value = pessoa.area;
-                document.getElementById('disponibilidadeV').value = pessoa.disponibilidade;
-                document.getElementById('horasV').value = pessoa.horas;
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.excluirPessoa = function(tipo, id) {
-            if (!confirm('Excluir este registro?')) return;
-            dados[tipo] = dados[tipo].filter(p => p.id !== id);
-            salvar(tipo);
-            renderizar(tipo);
-            if (editando[tipo] === id) cancelarEdicao(tipo);
-        };
-
-        window.cancelarEdicao = function(tipo) {
-            editando[tipo] = null;
-            limparForm(tipo);
-            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
-            document.getElementById('btnCancelar' + prefixo).style.display = 'none';
-            document.getElementById('tituloForm' + prefixo).textContent = '📝 Novo Registro';
-        };
-
-        function limparForm(tipo) {
-            const prefixo = tipo === 'beneficiarios' ? 'B' : tipo === 'profissionais' ? 'P' : 'V';
-            document.getElementById('pessoaId' + prefixo).value = '';
-            if (tipo === 'beneficiarios') {
-                document.getElementById('nomeB').value = '';
-                document.getElementById('idadeB').value = '';
-                document.getElementById('telefoneB').value = '';
-            } else if (tipo === 'profissionais') {
-                document.getElementById('nomeP').value = '';
-                document.getElementById('especialidadeP').value = '';
-                document.getElementById('cargaP').value = '';
-            } else {
-                document.getElementById('nomeV').value = '';
-                document.getElementById('areaV').value = '';
-                document.getElementById('disponibilidadeV').value = '';
-                document.getElementById('horasV').value = '';
-            }
-        }
-
-        window.mudarAba = function(aba, botao) {
-            document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.remove('ativo'));
-            document.querySelectorAll('.aba').forEach(el => el.classList.remove('ativa'));
-            document.getElementById('aba-' + aba).classList.add('ativo');
-            botao.classList.add('ativa');
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) { window.location.href = 'index.html'; return; }
-            carregar();
-            renderizar('beneficiarios');
-            renderizar('profissionais');
-            renderizar('voluntarios');
-        });
-
-        window.fazerLogout = async function() {
-            await signOut(auth);
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        };
-
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => {
-            history.pushState(null, null, location.href);
-            signOut(auth);
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        });
-
-        let timeout;
-        function resetTimeout() {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                signOut(auth);
-                sessionStorage.clear();
-                window.location.href = 'index.html';
-            }, 30 * 60 * 1000);
-        }
-        document.addEventListener('mousemove', resetTimeout);
-        document.addEventListener('keypress', resetTimeout);
-        document.addEventListener('click', resetTimeout);
-        resetTimeout();
-    </script>
+atualizarKPIs();
+filtrar();
+</script>
 </body>
 </html>

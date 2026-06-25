@@ -2,423 +2,261 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Prontuário</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Prontuario</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
-
-        .topo {
-            background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%);
-            color: white; padding: 14px 25px; display: flex;
-            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-        }
-        .topo h2 { font-size: 18px; }
-        .btn-topo {
-            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px;
-        }
-        .btn-topo:hover { background: rgba(255,255,255,0.3); }
-
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-
-        .seletor-ben {
-            background: white; padding: 20px; border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 20px;
-        }
-        .seletor-ben select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; }
-
-        .grid-prontuario { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card {
-            background: white; padding: 25px; border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-        }
-        .card h3 { color: #b71c1c; margin-bottom: 20px; font-size: 17px; border-bottom: 3px solid #d32f2f; padding-bottom: 10px; }
-
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #b71c1c; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 3px; }
+        .btn-vermelho { background: #d32f2f; color: white; }
+        .btn-verde { background: #4caf50; color: white; }
+        .btn-amarelo { background: #ffc107; color: #333; }
+        .btn-azul { background: #2196f3; color: white; }
+        .btn-cinza { background: #666; color: white; }
+        .card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .card h3 { color: #b71c1c; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .info-paciente { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
-        .foto-paciente {
-            width: 80px; height: 100px; border: 2px solid #e0e0e0; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; font-size: 10px;
-            color: #aaa; overflow: hidden; flex-shrink: 0; background: #f5f5f5;
-        }
-        .foto-paciente img { width: 100%; height: 100%; object-fit: cover; }
-        .dados-paciente { flex: 1; }
-        .dados-paciente h3 { border: none; margin: 0; padding: 0; font-size: 18px; color: #333; }
-        .dados-paciente p { font-size: 13px; color: #666; margin: 3px 0; }
-
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 12px; color: #444; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0;
-            border-radius: 8px; font-size: 14px; font-family: inherit;
-        }
-        .form-group input:focus, .form-group textarea:focus { border-color: #d32f2f; outline: none; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-        .btn {
-            padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer;
-            font-weight: 600; font-size: 13px; margin: 3px;
-        }
-        .btn-editar { background: #ffc107; color: #333; }
-        .btn-salvar { background: #4caf50; color: white; }
-        .btn-cancelar { background: #eee; color: #555; }
-        .btn-evolucao { background: #ff9800; color: white; }
-        .btn-imprimir { background: #2196f3; color: white; }
-
-        .modo-leitura p { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-        .modo-leitura strong { color: #555; font-size: 11px; text-transform: uppercase; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f5f5f5; padding: 10px; text-align: left; font-size: 11px; font-weight: 700; color: #666; }
-        td { padding: 10px; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
-
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-        .badge-presente { background: #e8f5e9; color: #2e7d32; }
-        .badge-falta { background: #ffebee; color: #c62828; }
-
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000;
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal {
-            background: white; border-radius: 20px; width: 100%; max-width: 600px;
-            max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .modal-header {
-            padding: 20px; border-bottom: 2px solid #eee; display: flex;
-            justify-content: space-between; align-items: center; position: sticky; top: 0;
-            background: white; z-index: 10; border-radius: 20px 20px 0 0;
-        }
-        .modal-body { padding: 25px; }
-
-        .log-container { margin-top: 20px; }
-        .log-item {
-            padding: 8px 15px; border-bottom: 1px solid #f0f0f0;
-            font-size: 11px; display: flex; justify-content: space-between;
-        }
-
-        .sem-dados { text-align: center; padding: 40px; color: #bbb; }
-
-        @media (max-width: 900px) { .grid-prontuario { grid-template-columns: 1fr; } }
+        .foto { width: 80px; height: 100px; border: 2px solid #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; overflow: hidden; background: #f5f5f5; flex-shrink: 0; }
+        .foto img { width: 100%; height: 100%; object-fit: cover; }
+        .dados { flex: 1; }
+        .dados h2 { margin: 0 0 5px 0; font-size: 20px; }
+        .dados p { margin: 3px 0; color: #666; font-size: 13px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 3px; color: #444; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 13px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-principal { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: #f5f5f5; padding: 8px; text-align: left; font-weight: bold; }
+        td { padding: 8px; border-bottom: 1px solid #eee; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; width: 500px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
+        .sem-dados { text-align: center; color: #bbb; padding: 40px; }
+        .btn-voltar { background: #666; color: white; padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+        @media (max-width: 768px) { .grid-principal { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="topo">
-        <h2>🩺 Prontuário Médico</h2>
-        <div>
-            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
-            <a href="agenda.html" class="btn-topo">📅 Agenda</a>
-            <a href="pessoas.html" class="btn-topo">👥 Pessoas</a>
-            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
+
+<div class="topo">
+    <strong>Prontuario Medico</strong>
+    <span><a href="dashboard.html">Dashboard</a> <a href="pessoas.html">Pessoas</a> <a href="index.html">Sair</a></span>
+</div>
+
+<div class="container">
+    <button class="btn-voltar" onclick="window.location.href='pessoas.html'">Voltar para Pessoas</button>
+
+    <div id="conteudoProntuario">
+        <div class="info-paciente">
+            <div class="foto" id="fotoPaciente">3x4</div>
+            <div class="dados">
+                <h2 id="nomePaciente"></h2>
+                <p id="infoPaciente"></p>
+                <p id="contatoPaciente"></p>
+            </div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="seletor-ben">
-            <label style="font-weight:600;display:block;margin-bottom:8px;">🔍 Selecione o Beneficiário</label>
-            <select id="seletorBeneficiario" onchange="selecionarBeneficiario()">
-                <option value="">Escolha um beneficiário...</option>
-            </select>
-        </div>
-
-        <div id="conteudoProntuario" style="display:none;">
-            <div class="grid-prontuario">
-                <!-- DADOS DO PACIENTE + PRONTUÁRIO -->
-                <div class="card">
-                    <div class="info-paciente">
-                        <div class="foto-paciente" id="fotoPaciente">3x4</div>
-                        <div class="dados-paciente">
-                            <h3 id="nomePaciente"></h3>
-                            <p id="infoPaciente"></p>
-                            <p id="contatoPaciente"></p>
-                        </div>
+        <div class="grid-principal">
+            <div class="card">
+                <h3>Dados Clinicos</h3>
+                <div id="modoLeitura"></div>
+                <div id="modoEdicao" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group"><label>Peso (kg)</label><input type="text" id="peso"></div>
+                        <div class="form-group"><label>Altura (cm)</label><input type="text" id="altura"></div>
                     </div>
-
-                    <div id="modoLeitura" class="modo-leitura"></div>
-                    <div id="modoEdicao" style="display:none;">
-                        <div class="form-row">
-                            <div class="form-group"><label>Peso (kg)</label><input type="text" id="peso"></div>
-                            <div class="form-group"><label>Altura (cm)</label><input type="text" id="altura"></div>
-                        </div>
-                        <div class="form-group"><label>Medicamentos em uso</label><input type="text" id="medicamentos"></div>
-                        <div class="form-group"><label>História Clínica</label><textarea id="historiaClinica" rows="4"></textarea></div>
-                        <div class="form-group"><label>Queixa Principal</label><textarea id="queixaPrincipal" rows="3"></textarea></div>
-                        <div class="form-group"><label>HMP/HMA</label><textarea id="hmpHma" rows="3"></textarea></div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Restrição Alimentar</label><input type="text" id="restricaoAlimentar"></div>
-                            <div class="form-group"><label>Cirurgias</label><input type="text" id="cirurgias"></div>
-                        </div>
-                        <div class="form-group"><label>Saúde Geral</label><textarea id="saudeGeral" rows="3"></textarea></div>
-                        <div style="text-align:right;margin-top:15px;">
-                            <button class="btn btn-salvar" onclick="salvarProntuario()">💾 Salvar</button>
-                            <button class="btn btn-cancelar" onclick="cancelarEdicao()">Cancelar</button>
-                        </div>
+                    <div class="form-group"><label>Medicamentos em uso</label><input type="text" id="medicamentos"></div>
+                    <div class="form-group"><label>Historia Clinica</label><textarea id="historiaClinica" rows="4"></textarea></div>
+                    <div class="form-group"><label>Queixa Principal</label><textarea id="queixaPrincipal" rows="3"></textarea></div>
+                    <div class="form-group"><label>HMP/HMA</label><textarea id="hmpHma" rows="3"></textarea></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Restricao Alimentar</label><input type="text" id="restricao"></div>
+                        <div class="form-group"><label>Cirurgias</label><input type="text" id="cirurgias"></div>
                     </div>
-
-                    <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;" id="botoesAcoes">
-                        <button class="btn btn-editar" onclick="habilitarEdicao()">✏️ Editar</button>
-                        <button class="btn btn-evolucao" onclick="abrirEvolucao()">➕ Nova Evolução</button>
-                        <button class="btn btn-imprimir" onclick="imprimirProntuario()">🖨️ Imprimir</button>
-                    </div>
+                    <div class="form-group"><label>Saude Geral</label><textarea id="saudeGeral" rows="3"></textarea></div>
+                    <button class="btn btn-verde" onclick="salvarProntuario()">Salvar</button>
+                    <button class="btn btn-cinza" onclick="cancelarEdicao()">Cancelar</button>
                 </div>
-
-                <!-- EVOLUÇÕES E CONSULTAS -->
-                <div class="card">
-                    <h3>📈 Evoluções de Atendimento</h3>
-                    <div id="evolucoesLista"><div class="sem-dados">Nenhuma evolução registrada.</div></div>
-
-                    <h3 style="margin-top:25px;">📋 Consultas Anteriores</h3>
-                    <div id="consultasLista"><div class="sem-dados">Nenhuma consulta registrada.</div></div>
+                <div style="margin-top:15px;">
+                    <button class="btn btn-amarelo" onclick="habilitarEdicao()">Editar</button>
+                    <button class="btn btn-azul" onclick="abrirEvolucao()">Nova Evolucao</button>
+                    <button class="btn btn-vermelho" onclick="imprimir()">Imprimir</button>
                 </div>
             </div>
 
-            <!-- LOG -->
-            <div class="card log-container">
-                <h3>📝 Histórico de Alterações</h3>
-                <div id="logProntuario"><div class="sem-dados">Nenhuma alteração.</div></div>
+            <div class="card">
+                <h3>Evolucoes</h3>
+                <div id="evolucoesLista"><div class="sem-dados">Nenhuma evolucao registrada.</div></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal Evolução -->
-    <div class="modal-overlay" id="modalEvolucao" style="display:none;">
-        <div class="modal"><div class="modal-header"><h3>➕ Nova Evolução</h3><button class="btn btn-cancelar" onclick="document.getElementById('modalEvolucao').style.display='none'" style="font-size:20px;">✕</button></div>
-        <div class="modal-body">
-            <div class="form-group"><label>Data e Hora</label><input type="datetime-local" id="evoDataHora"></div>
-            <div class="form-group"><label>Atividades Realizadas</label><textarea id="evoAtividades" rows="3"></textarea></div>
-            <div class="form-group"><label>Desempenho do Dia</label><textarea id="evoDesempenho" rows="3"></textarea></div>
-            <div class="form-group"><label>Planejamento / Orientação</label><textarea id="evoPlanejamento" rows="3"></textarea></div>
-            <button class="btn btn-salvar" onclick="salvarEvolucao()" style="width:100%;padding:14px;">💾 Registrar Evolução</button>
-        </div></div>
+<div class="modal" id="modalEvolucao">
+    <div class="modal-box">
+        <h3>Nova Evolucao</h3>
+        <div class="form-group"><label>Data e Hora</label><input type="datetime-local" id="evoDataHora"></div>
+        <div class="form-group"><label>Atividades Realizadas</label><textarea id="evoAtividades" rows="3"></textarea></div>
+        <div class="form-group"><label>Desempenho do Dia</label><textarea id="evoDesempenho" rows="3"></textarea></div>
+        <div class="form-group"><label>Planejamento</label><textarea id="evoPlanejamento" rows="3"></textarea></div>
+        <button class="btn btn-verde" onclick="salvarEvolucao()">Registrar Evolucao</button>
+        <button class="btn btn-cinza" onclick="document.getElementById('modalEvolucao').style.display='none'">Cancelar</button>
     </div>
+</div>
 
-    <script>
-        const usuarioAtual = sessionStorage.getItem('amovin_nome') || 'Profissional';
-        const beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
-        let prontuarios = JSON.parse(localStorage.getItem('amovin_prontuarios') || '{}');
-        let logsProntuario = JSON.parse(localStorage.getItem('amovin_prontuario_logs') || '[]');
-        let beneficiarioAtual = null;
-        let prontuarioAtual = null;
-        let editando = false;
+<script>
+var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
+var prontuarios = JSON.parse(localStorage.getItem('amovin_prontuarios') || '{}');
+var beneficiarioAtual = null;
+var prontuarioAtual = null;
 
-        function salvar() {
-            localStorage.setItem('amovin_prontuarios', JSON.stringify(prontuarios));
-            localStorage.setItem('amovin_prontuario_logs', JSON.stringify(logsProntuario));
-        }
+// Pegar ID da URL
+function getParametro(nome) {
+    var url = window.location.search;
+    nome = nome.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + nome + '(=([^&#]*)|&|#|$)');
+    var results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
 
-        function addLog(acao, detalhes) {
-            logsProntuario.unshift({ id: Date.now(), acao, detalhes, usuario: usuarioAtual, data: new Date().toISOString() });
-            if (logsProntuario.length > 50) logsProntuario = logsProntuario.slice(0, 50);
-            salvar();
-            renderizarLogs();
-        }
+function carregarBeneficiario(id) {
+    for (var i = 0; i < beneficiarios.length; i++) {
+        if (beneficiarios[i].id == id) { beneficiarioAtual = beneficiarios[i]; break; }
+    }
+    if (!beneficiarioAtual) return;
+    
+    if (!prontuarios[id]) {
+        prontuarios[id] = { peso:'', altura:'', medicamentos:'', historiaClinica:'', queixaPrincipal:'', hmpHma:'', restricao:'', cirurgias:'', saudeGeral:'', evolucoes:[] };
+        salvarProntuarios();
+    }
+    prontuarioAtual = prontuarios[id];
+    
+    document.getElementById('fotoPaciente').innerHTML = beneficiarioAtual.foto ? '<img src="'+beneficiarioAtual.foto+'" alt="">' : '3x4';
+    document.getElementById('nomePaciente').textContent = beneficiarioAtual.nome;
+    document.getElementById('infoPaciente').textContent = (beneficiarioAtual.diagnostico||'Sem diagnostico') + ' | CID: ' + (beneficiarioAtual.cid||'-') + ' | Idade: ' + (beneficiarioAtual.idade||'-');
+    document.getElementById('contatoPaciente').textContent = 'Resp: ' + (beneficiarioAtual.respNome||'-') + ' | Tel: ' + (beneficiarioAtual.respFone||beneficiarioAtual.telefone||'-');
+    renderizarLeitura();
+    renderizarEvolucoes();
+    cancelarEdicao();
+}
 
-        function popularSeletor() {
-            const sel = document.getElementById('seletorBeneficiario');
-            sel.innerHTML = '<option value="">Escolha um beneficiário...</option>' +
-                beneficiarios.map(b => `<option value="${b.id}">${b.nome || b.fullName || ''} - ${b.diagnosis || b.especialidade || ''}</option>`).join('');
-        }
+function salvarProntuarios() { localStorage.setItem('amovin_prontuarios', JSON.stringify(prontuarios)); }
 
-        window.selecionarBeneficiario = function() {
-            const id = document.getElementById('seletorBeneficiario').value;
-            if (!id) { document.getElementById('conteudoProntuario').style.display = 'none'; return; }
+function renderizarLeitura() {
+    var p = prontuarioAtual;
+    var html = '';
+    html += '<p><strong>Peso:</strong> ' + (p.peso||'-') + ' kg | <strong>Altura:</strong> ' + (p.altura||'-') + ' cm</p>';
+    html += '<p><strong>Medicamentos:</strong> ' + (p.medicamentos||'-') + '</p>';
+    html += '<p><strong>Historia Clinica:</strong> ' + (p.historiaClinica||'-') + '</p>';
+    html += '<p><strong>Queixa Principal:</strong> ' + (p.queixaPrincipal||'-') + '</p>';
+    html += '<p><strong>HMP/HMA:</strong> ' + (p.hmpHma||'-') + '</p>';
+    html += '<p><strong>Restricao Alimentar:</strong> ' + (p.restricao||'-') + ' | <strong>Cirurgias:</strong> ' + (p.cirurgias||'-') + '</p>';
+    html += '<p><strong>Saude Geral:</strong> ' + (p.saudeGeral||'-') + '</p>';
+    document.getElementById('modoLeitura').innerHTML = html;
+}
 
-            beneficiarioAtual = beneficiarios.find(b => b.id == id);
-            if (!beneficiarioAtual) return;
+function renderizarEvolucoes() {
+    var evos = prontuarioAtual.evolucoes || [];
+    var container = document.getElementById('evolucoesLista');
+    if (evos.length === 0) { container.innerHTML = '<div class="sem-dados">Nenhuma evolucao registrada.</div>'; return; }
+    var html = '<table><tr><th>Data/Hora</th><th>Atividades</th><th>Desempenho</th><th>Planejamento</th></tr>';
+    for (var i = 0; i < evos.length; i++) {
+        var e = evos[i];
+        html += '<tr><td>' + (e.dateTime ? new Date(e.dateTime).toLocaleString('pt-BR') : '-') + '</td><td>' + e.activities + '</td><td>' + e.performance + '</td><td>' + e.planning + '</td></tr>';
+    }
+    html += '</table>';
+    container.innerHTML = html;
+}
 
-            if (!prontuarios[id]) {
-                prontuarios[id] = {
-                    peso: '', altura: '', medicamentos: '', historiaClinica: '',
-                    queixaPrincipal: '', hmpHma: '', restricaoAlimentar: '', cirurgias: '',
-                    saudeGeral: '', evolucoes: [], consultas: []
-                };
-                salvar();
-            }
-            prontuarioAtual = prontuarios[id];
+window.habilitarEdicao = function() {
+    document.getElementById('modoLeitura').style.display = 'none';
+    document.getElementById('modoEdicao').style.display = 'block';
+    var p = prontuarioAtual;
+    document.getElementById('peso').value = p.peso || '';
+    document.getElementById('altura').value = p.altura || '';
+    document.getElementById('medicamentos').value = p.medicamentos || '';
+    document.getElementById('historiaClinica').value = p.historiaClinica || '';
+    document.getElementById('queixaPrincipal').value = p.queixaPrincipal || '';
+    document.getElementById('hmpHma').value = p.hmpHma || '';
+    document.getElementById('restricao').value = p.restricao || '';
+    document.getElementById('cirurgias').value = p.cirurgias || '';
+    document.getElementById('saudeGeral').value = p.saudeGeral || '';
+};
 
-            document.getElementById('conteudoProntuario').style.display = 'block';
-            document.getElementById('fotoPaciente').innerHTML = beneficiarioAtual.foto ? `<img src="${beneficiarioAtual.foto}" alt="">` : '3x4';
-            document.getElementById('nomePaciente').textContent = beneficiarioAtual.nome || beneficiarioAtual.fullName || '';
-            document.getElementById('infoPaciente').textContent = `${beneficiarioAtual.diagnosis || 'Sem diagnóstico'} | CID: ${beneficiarioAtual.cid || '-'} | Idade: ${beneficiarioAtual.idade || calcularIdade(beneficiarioAtual.birthDate)}`;
-            document.getElementById('contatoPaciente').textContent = `Resp: ${beneficiarioAtual.respName || '-'} | Tel: ${beneficiarioAtual.respPhone || beneficiarioAtual.telefone || '-'}`;
+window.cancelarEdicao = function() {
+    document.getElementById('modoLeitura').style.display = 'block';
+    document.getElementById('modoEdicao').style.display = 'none';
+};
 
-            renderizarLeitura();
-            renderizarEvolucoes();
-            renderizarConsultas();
-            renderizarLogs();
-            cancelarEdicao();
-        };
+window.salvarProntuario = function() {
+    prontuarioAtual.peso = document.getElementById('peso').value;
+    prontuarioAtual.altura = document.getElementById('altura').value;
+    prontuarioAtual.medicamentos = document.getElementById('medicamentos').value;
+    prontuarioAtual.historiaClinica = document.getElementById('historiaClinica').value;
+    prontuarioAtual.queixaPrincipal = document.getElementById('queixaPrincipal').value;
+    prontuarioAtual.hmpHma = document.getElementById('hmpHma').value;
+    prontuarioAtual.restricao = document.getElementById('restricao').value;
+    prontuarioAtual.cirurgias = document.getElementById('cirurgias').value;
+    prontuarioAtual.saudeGeral = document.getElementById('saudeGeral').value;
+    salvarProntuarios();
+    renderizarLeitura();
+    cancelarEdicao();
+    alert('Prontuario salvo!');
+};
 
-        function calcularIdade(data) {
-            if (!data) return '';
-            const hoje = new Date();
-            const nasc = new Date(data);
-            let idade = hoje.getFullYear() - nasc.getFullYear();
-            const m = hoje.getMonth() - nasc.getMonth();
-            if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
-            return idade + ' anos';
-        }
+window.abrirEvolucao = function() {
+    document.getElementById('modalEvolucao').style.display = 'block';
+    document.getElementById('evoDataHora').value = new Date().toISOString().slice(0,16);
+    document.getElementById('evoAtividades').value = '';
+    document.getElementById('evoDesempenho').value = '';
+    document.getElementById('evoPlanejamento').value = '';
+};
 
-        function renderizarLeitura() {
-            const p = prontuarioAtual;
-            document.getElementById('modoLeitura').innerHTML = `
-                <p><strong>Peso:</strong> ${p.peso || '-'} kg | <strong>Altura:</strong> ${p.altura || '-'} cm</p>
-                <p><strong>Medicamentos:</strong> ${p.medicamentos || '-'}</p>
-                <p><strong>História Clínica:</strong> ${p.historiaClinica || '-'}</p>
-                <p><strong>Queixa Principal:</strong> ${p.queixaPrincipal || '-'}</p>
-                <p><strong>HMP/HMA:</strong> ${p.hmpHma || '-'}</p>
-                <p><strong>Restrição Alimentar:</strong> ${p.restricaoAlimentar || '-'} | <strong>Cirurgias:</strong> ${p.cirurgias || '-'}</p>
-                <p><strong>Saúde Geral:</strong> ${p.saudeGeral || '-'}</p>
-            `;
-        }
+window.salvarEvolucao = function() {
+    var evo = {
+        dateTime: document.getElementById('evoDataHora').value,
+        activities: document.getElementById('evoAtividades').value,
+        performance: document.getElementById('evoDesempenho').value,
+        planning: document.getElementById('evoPlanejamento').value
+    };
+    if (!evo.dateTime && !evo.activities) { alert('Preencha os dados!'); return; }
+    prontuarioAtual.evolucoes.push(evo);
+    salvarProntuarios();
+    renderizarEvolucoes();
+    document.getElementById('modalEvolucao').style.display = 'none';
+    alert('Evolucao registrada!');
+};
 
-        function renderizarEvolucoes() {
-            const container = document.getElementById('evolucoesLista');
-            const evos = prontuarioAtual?.evolucoes || [];
-            if (evos.length === 0) { container.innerHTML = '<div class="sem-dados">Nenhuma evolução registrada.</div>'; return; }
-            container.innerHTML = '<table><thead><tr><th>Data/Hora</th><th>Atividades</th><th>Desempenho</th><th>Planejamento</th></tr></thead><tbody>' +
-                evos.map(e => `<tr><td>${e.dateTime ? new Date(e.dateTime).toLocaleString('pt-BR') : '-'}</td><td>${e.activities}</td><td>${e.performance}</td><td>${e.planning}</td></tr>`).join('') +
-                '</tbody></table>';
-        }
+window.imprimir = function() {
+    var b = beneficiarioAtual;
+    var p = prontuarioAtual;
+    var w = window.open('','_blank');
+    var html = '<html><head><title>Prontuario</title><style>body{font-family:Arial;padding:20px;max-width:700px;margin:0 auto}table{width:100%;border-collapse:collapse}td,th{border:1px solid #ddd;padding:8px}</style></head><body>';
+    html += '<h1>AMOVIN - Prontuario</h1>';
+    html += '<p><strong>Paciente:</strong> ' + b.nome + '</p>';
+    html += '<p><strong>Diagnostico:</strong> ' + (b.diagnostico||'-') + ' | CID: ' + (b.cid||'-') + '</p>';
+    html += '<p><strong>Peso:</strong> ' + (p.peso||'-') + ' kg | <strong>Altura:</strong> ' + (p.altura||'-') + ' cm</p>';
+    html += '<p><strong>Historia Clinica:</strong> ' + (p.historiaClinica||'-') + '</p>';
+    html += '<h2>Evolucoes</h2><table><tr><th>Data/Hora</th><th>Atividades</th><th>Desempenho</th><th>Planejamento</th></tr>';
+    var evos = p.evolucoes || [];
+    for (var i = 0; i < evos.length; i++) {
+        html += '<tr><td>' + (evos[i].dateTime?new Date(evos[i].dateTime).toLocaleString('pt-BR'):'-') + '</td><td>' + evos[i].activities + '</td><td>' + evos[i].performance + '</td><td>' + evos[i].planning + '</td></tr>';
+    }
+    html += '</table>';
+    html += '<p style="text-align:center;margin-top:30px;font-size:11px;color:#888;">Impresso por: ' + (sessionStorage.getItem('amovin_nome')||'Usuario') + ' em ' + new Date().toLocaleString('pt-BR') + '</p>';
+    html += '<script>window.onload=function(){window.print()}<\/script></body></html>';
+    w.document.write(html);
+    w.document.close();
+};
 
-        function renderizarConsultas() {
-            const container = document.getElementById('consultasLista');
-            const consultas = prontuarioAtual?.consultas || [];
-            if (consultas.length === 0) { container.innerHTML = '<div class="sem-dados">Nenhuma consulta registrada.</div>'; return; }
-            container.innerHTML = consultas.map(c => `
-                <div style="padding:10px;border-bottom:1px solid #f0f0f0;font-size:13px;">
-                    <strong>${new Date(c.data).toLocaleDateString('pt-BR')}</strong> -
-                    <span class="badge ${c.attendance === 'presente' ? 'badge-presente' : 'badge-falta'}">${c.attendance === 'presente' ? 'Presente' : 'Falta'}</span>
-                    ${c.anamnesis ? `<br><small>Anamnese: ${c.anamnesis}</small>` : ''}
-                    ${c.record ? `<br><small>Evolução: ${c.record}</small>` : ''}
-                </div>
-            `).join('');
-        }
-
-        function renderizarLogs() {
-            const container = document.getElementById('logProntuario');
-            if (logsProntuario.length === 0) { container.innerHTML = '<div class="sem-dados">Nenhuma alteração.</div>'; return; }
-            container.innerHTML = logsProntuario.slice(0, 15).map(l => `
-                <div class="log-item">
-                    <span><strong>${l.acao}</strong> - ${l.detalhes}</span>
-                    <span style="color:#888;font-size:10px;">👤 ${l.usuario} • ${new Date(l.data).toLocaleString('pt-BR')}</span>
-                </div>
-            `).join('');
-        }
-
-        window.habilitarEdicao = function() {
-            editando = true;
-            document.getElementById('modoLeitura').style.display = 'none';
-            document.getElementById('modoEdicao').style.display = 'block';
-            const p = prontuarioAtual;
-            document.getElementById('peso').value = p.peso || '';
-            document.getElementById('altura').value = p.altura || '';
-            document.getElementById('medicamentos').value = p.medicamentos || '';
-            document.getElementById('historiaClinica').value = p.historiaClinica || '';
-            document.getElementById('queixaPrincipal').value = p.queixaPrincipal || '';
-            document.getElementById('hmpHma').value = p.hmpHma || '';
-            document.getElementById('restricaoAlimentar').value = p.restricaoAlimentar || '';
-            document.getElementById('cirurgias').value = p.cirurgias || '';
-            document.getElementById('saudeGeral').value = p.saudeGeral || '';
-        };
-
-        window.cancelarEdicao = function() {
-            editando = false;
-            document.getElementById('modoLeitura').style.display = 'block';
-            document.getElementById('modoEdicao').style.display = 'none';
-        };
-
-        window.salvarProntuario = function() {
-            prontuarioAtual.peso = document.getElementById('peso').value;
-            prontuarioAtual.altura = document.getElementById('altura').value;
-            prontuarioAtual.medicamentos = document.getElementById('medicamentos').value;
-            prontuarioAtual.historiaClinica = document.getElementById('historiaClinica').value;
-            prontuarioAtual.queixaPrincipal = document.getElementById('queixaPrincipal').value;
-            prontuarioAtual.hmpHma = document.getElementById('hmpHma').value;
-            prontuarioAtual.restricaoAlimentar = document.getElementById('restricaoAlimentar').value;
-            prontuarioAtual.cirurgias = document.getElementById('cirurgias').value;
-            prontuarioAtual.saudeGeral = document.getElementById('saudeGeral').value;
-            salvar();
-            addLog('✏️ Editou prontuário', beneficiarioAtual.nome || beneficiarioAtual.fullName || '');
-            renderizarLeitura();
-            cancelarEdicao();
-            alert('✅ Prontuário salvo!');
-        };
-
-        window.abrirEvolucao = function() {
-            document.getElementById('modalEvolucao').style.display = 'flex';
-            document.getElementById('evoDataHora').value = new Date().toISOString().slice(0, 16);
-            document.getElementById('evoAtividades').value = '';
-            document.getElementById('evoDesempenho').value = '';
-            document.getElementById('evoPlanejamento').value = '';
-        };
-
-        window.salvarEvolucao = function() {
-            const evo = {
-                id: Date.now(),
-                dateTime: document.getElementById('evoDataHora').value,
-                activities: document.getElementById('evoAtividades').value,
-                performance: document.getElementById('evoDesempenho').value,
-                planning: document.getElementById('evoPlanejamento').value
-            };
-            if (!evo.dateTime && !evo.activities) { alert('Preencha pelo menos data/hora ou atividades!'); return; }
-            prontuarioAtual.evolucoes.push(evo);
-            prontuarioAtual.consultas.push({
-                data: evo.dateTime ? evo.dateTime.split('T')[0] : new Date().toISOString().split('T')[0],
-                attendance: 'presente',
-                record: `${evo.activities} | Desempenho: ${evo.performance} | Planejamento: ${evo.planning}`
-            });
-            salvar();
-            addLog('➕ Nova evolução', beneficiarioAtual.nome || beneficiarioAtual.fullName || '');
-            renderizarEvolucoes();
-            renderizarConsultas();
-            document.getElementById('modalEvolucao').style.display = 'none';
-            alert('✅ Evolução registrada!');
-        };
-
-        window.imprimirProntuario = function() {
-            const b = beneficiarioAtual;
-            const p = prontuarioAtual;
-            const win = window.open('', '_blank');
-            win.document.write(`<html><head><title>Prontuário</title>
-                <style>body{font-family:Arial;padding:25px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.5}
-                h2{border-bottom:2px solid #b71c1c;padding-bottom:8px;margin-top:20px}
-                table{width:100%;border-collapse:collapse;margin:10px 0}
-                th,td{border:1px solid #ddd;padding:7px;font-size:12px;text-align:left}
-                th{background:#f5f5f5}
-                .assinatura{margin-top:50px;text-align:center}
-                .linha{width:350px;border-top:1px solid #000;margin:0 auto 5px}
-                </style></head><body>
-                <h1 style="text-align:center;">AMOVIN - Prontuário Médico</h1>
-                <p><strong>Paciente:</strong> ${b.nome || b.fullName}</p>
-                <p><strong>Diagnóstico:</strong> ${b.diagnosis || '-'} | CID: ${b.cid || '-'}</p>
-                <p><strong>Responsável:</strong> ${b.respName || '-'} | Tel: ${b.respPhone || b.telefone || '-'}</p>
-                <h2>Dados Clínicos</h2>
-                <p><strong>Peso:</strong> ${p.peso || '-'} kg | <strong>Altura:</strong> ${p.altura || '-'} cm</p>
-                <p><strong>História Clínica:</strong> ${p.historiaClinica || '-'}</p>
-                <p><strong>Queixa Principal:</strong> ${p.queixaPrincipal || '-'}</p>
-                <h2>Evoluções</h2>
-                <table><tr><th>Data/Hora</th><th>Atividades</th><th>Desempenho</th><th>Planejamento</th></tr>
-                ${(p.evolucoes||[]).map(e => `<tr><td>${e.dateTime?new Date(e.dateTime).toLocaleString('pt-BR'):'-'}</td><td>${e.activities}</td><td>${e.performance}</td><td>${e.planning}</td></tr>`).join('')}
-                </table>
-                <div class="assinatura"><div class="linha"></div><strong>${usuarioAtual}</strong><br>${new Date().toLocaleDateString('pt-BR')}</div>
-                <p style="text-align:center;font-size:10px;color:#888;margin-top:20px;">Documento impresso por: ${usuarioAtual} • ${new Date().toLocaleString('pt-BR')} • AMOVIN</p>
-                <script>window.onload=function(){window.print()}</script></body></html>`);
-            win.document.close();
-            addLog('🖨️ Imprimiu', b.nome || b.fullName || '');
-            renderizarLogs();
-        };
-
-        window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
-        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
-        let timeout;
-        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
-
-        popularSeletor();
-    </script>
+// Carregar beneficiario da URL
+var idBenef = getParametro('id');
+if (idBenef) {
+    carregarBeneficiario(idBenef);
+}
+</script>
 </body>
 </html>

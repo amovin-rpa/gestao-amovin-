@@ -2,195 +2,103 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Assistente IA</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Assistente IA</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f6fa; min-height: 100vh; }
-        .topo { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); color: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); flex-wrap: wrap; gap: 10px; }
-        .topo h2 { font-size: 18px; }
-        .btn-topo { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 6px; }
-        .btn-topo:hover { background: rgba(255,255,255,0.3); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .grid-assistente { display: grid; grid-template-columns: 300px 1fr; gap: 20px; min-height: 600px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .card h3 { color: #1a237e; margin-bottom: 20px; font-size: 18px; border-bottom: 3px solid #283593; padding-bottom: 10px; }
-        .comando-rapido { display: block; width: 100%; padding: 12px; margin-bottom: 10px; background: #e8eaf6; border: 2px solid transparent; border-radius: 10px; cursor: pointer; text-align: left; font-size: 13px; transition: all 0.3s; }
-        .comando-rapido:hover { border-color: #283593; background: #c5cae9; }
-        .comando-rapido .icone { margin-right: 8px; }
-        .chat-area { display: flex; flex-direction: column; height: 100%; }
-        .chat-mensagens { flex: 1; overflow-y: auto; padding: 20px; background: #fafafa; border-radius: 10px; margin-bottom: 15px; min-height: 400px; max-height: 500px; }
-        .mensagem { margin-bottom: 15px; display: flex; gap: 10px; }
-        .mensagem.usuario { justify-content: flex-end; }
-        .mensagem .bolha { max-width: 80%; padding: 12px 18px; border-radius: 18px; font-size: 14px; line-height: 1.6; }
-        .mensagem.ia .bolha { background: #e8eaf6; color: #1a237e; border-bottom-left-radius: 5px; }
-        .mensagem.usuario .bolha { background: #283593; color: white; border-bottom-right-radius: 5px; }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #1a237e; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 280px 1fr; gap: 20px; min-height: 500px; }
+        .card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .card h3 { color: #1a237e; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .comando { display: block; width: 100%; padding: 10px; margin-bottom: 8px; background: #e8eaf6; border: none; border-radius: 8px; cursor: pointer; text-align: left; font-size: 13px; }
+        .comando:hover { background: #c5cae9; }
+        .chat-mensagens { height: 350px; overflow-y: auto; background: #fafafa; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .msg { margin-bottom: 12px; display: flex; gap: 8px; }
+        .msg.usuario { justify-content: flex-end; }
+        .bolha { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 13px; line-height: 1.5; }
+        .msg.ia .bolha { background: #e8eaf6; color: #1a237e; }
+        .msg.usuario .bolha { background: #283593; color: white; }
         .chat-input { display: flex; gap: 10px; }
-        .chat-input input { flex: 1; padding: 14px; border: 2px solid #e0e0e0; border-radius: 25px; font-size: 14px; }
-        .chat-input button { padding: 14px 25px; background: #283593; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
-        .chat-input button:hover { background: #1a237e; }
-        .chat-input button:disabled { opacity: 0.6; cursor: not-allowed; }
-        @media (max-width: 800px) { .grid-assistente { grid-template-columns: 1fr; } }
+        .chat-input input { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 25px; font-size: 14px; }
+        .chat-input button { padding: 12px 22px; background: #283593; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="topo">
-        <h2>🤖 Assistente AMOVIN IA</h2>
-        <div>
-            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
-            <a href="oficios.html" class="btn-topo">📄 Ofícios</a>
-            <a href="projetos.html" class="btn-topo">📋 Projetos</a>
-            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
+
+<div class="topo">
+    <strong>Assistente IA</strong>
+    <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
+</div>
+
+<div class="container">
+    <div class="grid">
+        <div class="card">
+            <h3>Comandos Rapidos</h3>
+            <button class="comando" onclick="perguntar('Criar um oficio para a Prefeitura solicitando apoio para projeto social')">Criar Oficio</button>
+            <button class="comando" onclick="perguntar('Gerar um projeto social para jovens em situacao de vulnerabilidade')">Criar Projeto</button>
+            <button class="comando" onclick="perguntar('Sugerir estrategias de captacao de recursos para ONG')">Captacao de Recursos</button>
+            <button class="comando" onclick="perguntar('Modelo de termo de parceria para profissionais voluntarios')">Termo de Parceria</button>
+            <button class="comando" onclick="perguntar('Como fazer prestacao de contas para editais')">Prestacao de Contas</button>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="grid-assistente">
-            <div class="card">
-                <h3>⚡ Comandos Rápidos</h3>
-                <button class="comando-rapido" onclick="comandoRapido('Criar um ofício para a Prefeitura solicitando apoio para projeto social')"><span class="icone">📄</span> Criar Ofício</button>
-                <button class="comando-rapido" onclick="comandoRapido('Gerar um projeto social para jovens em situação de vulnerabilidade')"><span class="icone">📋</span> Criar Projeto</button>
-                <button class="comando-rapido" onclick="comandoRapido('Analisar este edital e verificar se a AMOVIN se enquadra')"><span class="icone">🔍</span> Analisar Edital</button>
-                <button class="comando-rapido" onclick="comandoRapido('Gerar relatório mensal de atividades da AMOVIN')"><span class="icone">📈</span> Gerar Relatório</button>
-                <button class="comando-rapido" onclick="comandoRapido('Criar prestação de contas para a Emenda Parlamentar')"><span class="icone">💰</span> Prestação de Contas</button>
-                <button class="comando-rapido" onclick="comandoRapido('Sugerir estratégias de captação de recursos para ONG')"><span class="icone">🎯</span> Sugestões de Captação</button>
-                <button class="comando-rapido" onclick="comandoRapido('Modelo de termo de parceria para profissionais voluntários')"><span class="icone">📝</span> Termo de Parceria</button>
-                <button class="comando-rapido" onclick="comandoRapido('Como fazer um plano de comunicação para projetos sociais')"><span class="icone">📢</span> Plano de Comunicação</button>
+        <div class="card">
+            <h3>Chat com IA</h3>
+            <div class="chat-mensagens" id="chatMensagens">
+                <div class="msg ia"><div class="bolha">Ola! Sou o assistente virtual da AMOVIN. Como posso ajudar?</div></div>
             </div>
-
-            <div class="card">
-                <h3>💬 Chat com IA</h3>
-                <div class="chat-area">
-                    <div class="chat-mensagens" id="chatMensagens">
-                        <div class="mensagem ia">
-                            <div class="bolha">
-                                👋 Olá! Sou o assistente virtual da <strong>AMOVIN</strong>.<br><br>
-                                Posso ajudar com:<br>
-                                📄 Criação de ofícios<br>
-                                📋 Elaboração de projetos sociais<br>
-                                🔍 Análise de editais<br>
-                                📈 Relatórios e prestação de contas<br>
-                                💡 Sugestões de captação de recursos<br>
-                                📝 Modelos de termos e documentos<br><br>
-                                Como posso ajudar hoje?
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-input">
-                        <input type="text" id="inputMensagem" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter') enviarMensagem()">
-                        <button id="btnEnviar" onclick="enviarMensagem()">▶ Enviar</button>
-                    </div>
-                </div>
+            <div class="chat-input">
+                <input type="text" id="inputMsg" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter') enviarMensagem()">
+                <button onclick="enviarMensagem()">Enviar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+<script>
+function adicionarMensagem(texto, tipo) {
+    var div = document.createElement('div');
+    div.className = 'msg ' + tipo;
+    div.innerHTML = '<div class="bolha">' + texto + '</div>';
+    document.getElementById('chatMensagens').appendChild(div);
+    document.getElementById('chatMensagens').scrollTop = document.getElementById('chatMensagens').scrollHeight;
+}
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
-            authDomain: "amovin-oficios-teste.firebaseapp.com",
-            projectId: "amovin-oficios-teste",
-            storageBucket: "amovin-oficios-teste.firebasestorage.app",
-            messagingSenderId: "901387183295",
-            appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
-        };
+window.perguntar = function(texto) {
+    document.getElementById('inputMsg').value = texto;
+    enviarMensagem();
+};
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) window.location.href = 'index.html';
-        });
-
-        window.fazerLogout = async function() {
-            await signOut(auth);
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        };
-
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => {
-            history.pushState(null, null, location.href);
-            signOut(auth);
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        });
-
-        function adicionarMensagem(texto, tipo) {
-            const div = document.createElement('div');
-            div.className = `mensagem ${tipo}`;
-            div.innerHTML = `<div class="bolha">${texto}</div>`;
-            document.getElementById('chatMensagens').appendChild(div);
-            document.getElementById('chatMensagens').scrollTop = document.getElementById('chatMensagens').scrollHeight;
-        }
-
-        window.comandoRapido = function(texto) {
-            document.getElementById('inputMensagem').value = texto;
-            enviarMensagem();
-        };
-
-        window.enviarMensagem = async function() {
-            const input = document.getElementById('inputMensagem');
-            const btn = document.getElementById('btnEnviar');
-            const texto = input.value.trim();
-
-            if (!texto) return;
-
-            adicionarMensagem(texto, 'usuario');
-            input.value = '';
-            btn.disabled = true;
-            btn.textContent = '⏳';
-
-            try {
-                // 🔒 CHAVE PROTEGIDA - Busca do navegador, NUNCA exposta no código
-                const API_KEY = localStorage.getItem('amovin_gemini_key') || '';
-                if (!API_KEY) {
-                    adicionarMensagem('⚠️ <strong>Chave Gemini não configurada!</strong><br><br>Por favor, acesse:<br><strong>config-chave.html</strong><br><br>e cole sua chave da API Gemini.', 'ia');
-                    btn.disabled = false;
-                    btn.textContent = '▶ Enviar';
-                    return;
-                }
-
-                const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY;
-                const prompt = `Você é o assistente virtual da AMOVIN (Associação e Movimento pela Inclusão), localizada em Rio Paranaíba/MG. Seja prestativo, profissional e objetivo. Responda: ${texto}`;
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
-                    })
-                });
-
-                const data = await response.json();
-                const resposta = data.candidates[0].content.parts[0].text;
-                adicionarMensagem(resposta, 'ia');
-
-            } catch (erro) {
-                adicionarMensagem('❌ Erro ao processar. Tente novamente.', 'ia');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '▶ Enviar';
-            }
-        };
-
-        let timeout;
-        function resetTimeout() {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                signOut(auth);
-                sessionStorage.clear();
-                window.location.href = 'index.html';
-            }, 30 * 60 * 1000);
-        }
-        document.addEventListener('mousemove', resetTimeout);
-        document.addEventListener('keypress', resetTimeout);
-        document.addEventListener('click', resetTimeout);
-        resetTimeout();
-    </script>
+window.enviarMensagem = function() {
+    var texto = document.getElementById('inputMsg').value.trim();
+    if (!texto) return;
+    
+    adicionarMensagem(texto, 'usuario');
+    document.getElementById('inputMsg').value = '';
+    
+    var API_KEY = localStorage.getItem('amovin_gemini_key') || '';
+    if (!API_KEY) {
+        adicionarMensagem('Chave Gemini nao configurada. Acesse config-chave.html para configurar.', 'ia');
+        return;
+    }
+    
+    var prompt = 'Voce e o assistente virtual da AMOVIN (Associacao e Movimento pela Inclusao), Rio Paranaiba/MG. Seja prestativo e profissional. Responda: ' + texto;
+    
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        var resposta = data.candidates[0].content.parts[0].text;
+        adicionarMensagem(resposta, 'ia');
+    })
+    .catch(function() {
+        adicionarMensagem('Erro ao processar. Tente novamente.', 'ia');
+    });
+};
+</script>
 </body>
 </html>

@@ -2,382 +2,277 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Voluntários</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Voluntarios</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
-
-        .topo {
-            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
-            color: white; padding: 14px 25px; display: flex;
-            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-        }
-        .topo h2 { font-size: 18px; }
-        .btn-topo {
-            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px;
-        }
-        .btn-topo:hover { background: rgba(255,255,255,0.3); }
-
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-
-        .header-actions {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
-        }
-        .header-actions h1 { font-size: 24px; color: #333; }
-        .btn-novo {
-            background: #1565c0; color: white; border: none; padding: 12px 25px;
-            border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px;
-        }
-        .btn-novo:hover { background: #0d47a1; }
-
-        .voluntarios-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px;
-        }
-
-        .vol-card {
-            background: white; border-radius: 15px; padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; gap: 15px;
-            align-items: center; transition: transform 0.2s;
-        }
-        .vol-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
-
-        .vol-foto {
-            width: 70px; height: 90px; border-radius: 8px; background: #f0f0f0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; color: #aaa; overflow: hidden; flex-shrink: 0;
-            border: 2px solid #e0e0e0;
-        }
-        .vol-foto img { width: 100%; height: 100%; object-fit: cover; }
-
-        .vol-info { flex: 1; min-width: 0; }
-        .vol-info h3 { font-size: 16px; color: #333; margin-bottom: 3px; }
-        .vol-info .funcao { font-size: 13px; color: #1565c0; font-weight: 600; }
-        .vol-info .detalhes { font-size: 11px; color: #888; margin-top: 4px; }
-
-        .vol-acoes { display: flex; gap: 4px; flex-wrap: wrap; }
-        .btn-acao {
-            padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer;
-            font-size: 11px; font-weight: bold;
-        }
-        .btn-editar { background: #ffc107; color: #333; }
-        .btn-cracha { background: #4caf50; color: white; }
-        .btn-imprimir { background: #2196f3; color: white; }
-        .btn-excluir { background: #f44336; color: white; }
-
-        /* MODAL */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000;
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal {
-            background: white; border-radius: 20px; width: 100%; max-width: 550px;
-            max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .modal-header {
-            padding: 20px; border-bottom: 2px solid #eee; display: flex;
-            justify-content: space-between; align-items: center; position: sticky; top: 0;
-            background: white; z-index: 10; border-radius: 20px 20px 0 0;
-        }
-        .modal-header h3 { color: #0d47a1; }
-        .modal-body { padding: 25px; }
-
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #444; }
-        .form-group input {
-            width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0;
-            border-radius: 8px; font-size: 14px;
-        }
-        .form-group input:focus { border-color: #1565c0; outline: none; }
-
-        .btn-salvar {
-            width: 100%; padding: 14px; background: #1565c0; color: white;
-            border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;
-        }
-        .btn-salvar:hover { background: #0d47a1; }
-        .btn-fechar { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
-        .btn-fechar:hover { color: #f44336; }
-
-        /* CRACHÁ */
-        .cracha-container {
-            width: 300px; background: white; border: 3px solid #0d47a1; border-radius: 15px;
-            overflow: hidden; margin: 20px auto; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-        .cracha-topo {
-            background: #0d47a1; color: white; text-align: center; padding: 15px;
-        }
-        .cracha-topo h2 { font-size: 14px; }
-        .cracha-corpo { padding: 20px; text-align: center; }
-        .cracha-foto {
-            width: 80px; height: 100px; border: 2px solid #ccc; margin: 0 auto 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; color: #aaa; overflow: hidden;
-        }
-        .cracha-foto img { width: 100%; height: 100%; object-fit: cover; }
-        .cracha-nome { font-size: 16px; font-weight: bold; color: #333; }
-        .cracha-guerra { font-size: 13px; color: #f44336; font-weight: bold; margin: 5px 0; }
-        .cracha-funcao { font-size: 12px; color: #666; }
-        .cracha-rodape {
-            background: #0d47a1; color: white; text-align: center; padding: 8px; font-size: 10px;
-        }
-
-        .sem-dados { text-align: center; padding: 60px; color: #bbb; grid-column: 1 / -1; }
-
-        @media (max-width: 768px) {
-            .voluntarios-grid { grid-template-columns: 1fr; }
-        }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #0d47a1; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 3px; }
+        .btn-azul { background: #1565c0; color: white; }
+        .btn-amarelo { background: #ffc107; color: #333; }
+        .btn-vermelho { background: #f44336; color: white; }
+        .btn-verde { background: #4caf50; color: white; }
+        .btn-laranja { background: #ff9800; color: white; }
+        .card { background: white; padding: 18px; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0 0 4px 0; font-size: 16px; }
+        .card p { margin: 2px 0; color: #666; font-size: 13px; }
+        .busca { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .busca input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-width: 200px; }
+        .busca select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; width: 450px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
+        .modal-box input, .modal-box textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .modal-box label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 3px; }
+        .sem-dados { text-align: center; color: #bbb; padding: 30px; }
+        .abas { background: #f0f0f0; padding: 8px 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .aba { padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; color: white; }
+        .aba-voltar { background: #666; }
+        .aba-benef { background: #4a148c; }
+        .aba-prof { background: #4a148c; }
+        .aba-vol { background: #0d47a1; }
+        .foto-preview { width: 70px; height: 90px; border: 2px dashed #ccc; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; overflow: hidden; border-radius: 6px; }
+        .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .kpi-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .kpi-card { background: white; padding: 15px 20px; border-radius: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; min-width: 120px; }
+        .kpi-card .valor { font-size: 24px; font-weight: bold; color: #0d47a1; }
+        .kpi-card .label { font-size: 11px; color: #888; }
     </style>
 </head>
 <body>
+
+    <div class="abas">
+        <button class="aba aba-voltar" onclick="window.location.href='pessoas.html'">Voltar para Pessoas</button>
+        <button class="aba aba-benef" onclick="window.location.href='pessoas.html'">Beneficiarios</button>
+        <button class="aba aba-prof" onclick="window.location.href='profissionais.html'">Profissionais</button>
+        <button class="aba aba-vol" style="background:#0d47a1;">Voluntarios</button>
+    </div>
+
     <div class="topo">
-        <h2>💪 Gestão de Voluntários</h2>
-        <div>
-            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
-            <a href="profissionais.html" class="btn-topo">👨‍⚕️ Profissionais</a>
-            <a href="pessoas.html" class="btn-topo">👥 Pessoas</a>
-            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
-        </div>
+        <strong>Voluntarios</strong>
+        <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
     </div>
 
     <div class="container">
-        <div class="header-actions">
-            <h1>Voluntários Cadastrados</h1>
-            <button class="btn-novo" onclick="abrirForm()">➕ Novo Voluntário</button>
+        <div class="kpi-row">
+            <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div>
         </div>
 
-        <div class="voluntarios-grid" id="listaVoluntarios">
-            <div class="sem-dados">Nenhum voluntário cadastrado.</div>
+        <div class="busca">
+            <input type="text" id="busca" placeholder="Buscar por nome, funcao..." oninput="filtrar()">
+            <select id="ordem" onchange="filtrar()">
+                <option value="az">Ordem A-Z</option>
+                <option value="za">Ordem Z-A</option>
+            </select>
+            <select id="filtroFuncao" onchange="filtrar()">
+                <option value="todas">Todas funcoes</option>
+            </select>
+            <button class="btn btn-azul" onclick="abrirForm()">+ Novo</button>
         </div>
+        <div id="lista"></div>
     </div>
 
-    <!-- MODAL CADASTRO -->
-    <div class="modal-overlay" id="modalForm" style="display:none;">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="tituloModal">📝 Novo Voluntário</h3>
-                <button class="btn-fechar" onclick="fecharForm()">✕</button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="volId">
-                
-                <div style="text-align:center;margin-bottom:20px;">
-                    <div id="previewFoto" style="width:80px;height:100px;border:2px dashed #ccc;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;overflow:hidden;border-radius:8px;">Foto 3x4</div>
-                    <input type="file" id="fotoUpload" accept="image/*" onchange="previewImagem(this)" style="font-size:12px;">
-                </div>
-
-                <div class="form-group"><label>Nome Completo *</label><input type="text" id="nomeVol" required></div>
-                <div class="form-group"><label>Nome de Guerra (Crachá)</label><input type="text" id="guerraVol" placeholder="Como quer ser chamado(a)"></div>
-                <div class="form-group"><label>Função *</label><input type="text" id="funcaoVol" placeholder="Ex: Informática, Esportes, Artes..." required></div>
-                <div class="form-group"><label>Disponibilidade</label><input type="text" id="disponibilidadeVol" placeholder="Ex: Sábados, Terças e Quintas"></div>
-                <div class="form-group"><label>Horas por Mês</label><input type="text" id="horasVol" placeholder="Ex: 16h"></div>
-                <div class="form-group"><label>Telefone</label><input type="text" id="telefoneVol" placeholder="(34) 99999-0000"></div>
-
-                <button class="btn-salvar" onclick="salvarVoluntario()">💾 Salvar Voluntário</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL CRACHÁ -->
-    <div class="modal-overlay" id="modalCracha" style="display:none;">
-        <div class="modal" style="max-width:400px;">
-            <div class="modal-header">
-                <h3>🪪 Crachá do Voluntário</h3>
-                <button class="btn-fechar" onclick="document.getElementById('modalCracha').style.display='none'">✕</button>
-            </div>
-            <div class="modal-body" style="text-align:center;">
-                <div class="cracha-container" id="crachaParaImprimir">
-                    <div class="cracha-topo">
-                        <h2>AMOVIN</h2>
-                        <p style="font-size:10px;">Associação e Movimento pela Inclusão</p>
-                    </div>
-                    <div class="cracha-corpo">
-                        <div class="cracha-foto" id="crachaFoto">3x4</div>
-                        <div class="cracha-nome" id="crachaNome"></div>
-                        <div class="cracha-guerra" id="crachaGuerra"></div>
-                        <div class="cracha-funcao" id="crachaFuncao"></div>
-                    </div>
-                    <div class="cracha-rodape">
-                        Rio Paranaíba/MG | Voluntário
-                    </div>
-                </div>
-                <button class="btn-salvar" style="margin-top:15px;" onclick="imprimirCracha()">🖨️ Imprimir Crachá</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
-        let editandoId = null;
-
-        if (voluntarios.length === 0) {
-            voluntarios = [
-                {id:1, nome:'Fernanda Lima', guerra:'Fê', funcao:'Informática', disponibilidade:'Sábados', horas:'16h', telefone:'(34) 99999-0001', foto:''},
-                {id:2, nome:'Rafael Costa', guerra:'Rafa', funcao:'Esportes', disponibilidade:'Terças e Quintas', horas:'20h', telefone:'(34) 99999-0002', foto:''},
-                {id:3, nome:'Juliana Martins', guerra:'Ju', funcao:'Artes', disponibilidade:'Quartas', horas:'8h', telefone:'(34) 99999-0003', foto:''},
-            ];
-            salvar();
-        }
-
-        function salvar() { localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios)); }
-
-        function renderizar() {
-            const container = document.getElementById('listaVoluntarios');
-            if (voluntarios.length === 0) {
-                container.innerHTML = '<div class="sem-dados">Nenhum voluntário cadastrado.</div>';
-                return;
-            }
-            container.innerHTML = voluntarios.sort((a,b) => a.nome.localeCompare(b.nome)).map(v => `
-                <div class="vol-card">
-                    <div class="vol-foto">${v.foto ? `<img src="${v.foto}" alt="">` : '3x4'}</div>
-                    <div class="vol-info">
-                        <h3>${v.nome}</h3>
-                        <div class="funcao">${v.funcao} ${v.guerra ? '| 🏷️ ' + v.guerra : ''}</div>
-                        <div class="detalhes">📅 ${v.disponibilidade || '-'} | ⏰ ${v.horas || '-'} | 📞 ${v.telefone || '-'}</div>
-                    </div>
-                    <div class="vol-acoes">
-                        <button class="btn-acao btn-editar" onclick="editarVol(${v.id})">✏️</button>
-                        <button class="btn-acao btn-cracha" onclick="mostrarCracha(${v.id})">🪪</button>
-                        <button class="btn-acao btn-imprimir" onclick="imprimirCadastro(${v.id})">🖨️</button>
-                        <button class="btn-acao btn-excluir" onclick="excluirVol(${v.id})">🗑️</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.abrirForm = function(id = null) {
-            editandoId = id;
-            document.getElementById('modalForm').style.display = 'flex';
-            document.getElementById('tituloModal').textContent = id ? '✏️ Editar Voluntário' : '📝 Novo Voluntário';
+    <div class="modal" id="modalForm">
+        <div class="modal-box">
+            <h3 id="tituloModal">Novo Voluntario</h3>
+            <input type="hidden" id="volId">
             
-            if (id) {
-                const v = voluntarios.find(v => v.id === id);
-                if (!v) return;
-                document.getElementById('volId').value = v.id;
-                document.getElementById('nomeVol').value = v.nome;
-                document.getElementById('guerraVol').value = v.guerra || '';
-                document.getElementById('funcaoVol').value = v.funcao;
-                document.getElementById('disponibilidadeVol').value = v.disponibilidade || '';
-                document.getElementById('horasVol').value = v.horas || '';
-                document.getElementById('telefoneVol').value = v.telefone || '';
-                if (v.foto) document.getElementById('previewFoto').innerHTML = `<img src="${v.foto}" style="width:100%;height:100%;object-fit:cover;">`;
-                else document.getElementById('previewFoto').innerHTML = 'Foto 3x4';
-            } else {
-                document.getElementById('volId').value = '';
-                document.getElementById('nomeVol').value = '';
-                document.getElementById('guerraVol').value = '';
-                document.getElementById('funcaoVol').value = '';
-                document.getElementById('disponibilidadeVol').value = '';
-                document.getElementById('horasVol').value = '';
-                document.getElementById('telefoneVol').value = '';
-                document.getElementById('previewFoto').innerHTML = 'Foto 3x4';
-                document.getElementById('fotoUpload').value = '';
-            }
-        };
+            <div class="foto-preview" id="fotoPreview">3x4</div>
+            <input type="file" id="fotoUpload" accept="image/*" onchange="previewFoto()" style="font-size:12px;">
+            
+            <label>Nome completo *</label>
+            <input type="text" id="nomeVol" placeholder="Nome completo">
+            
+            <label>Nome de guerra (cracha)</label>
+            <input type="text" id="guerraVol" placeholder="Como quer ser chamado">
+            
+            <label>Funcao *</label>
+            <input type="text" id="funcaoVol" placeholder="Ex: Informatica, Esportes...">
+            
+            <label>Disponibilidade</label>
+            <input type="text" id="dispoVol" placeholder="Ex: Sabados, Tercas e Quintas">
+            
+            <label>Horas por mes</label>
+            <input type="text" id="horasVol" placeholder="Ex: 16h">
+            
+            <label>Telefone</label>
+            <input type="text" id="foneVol" placeholder="(34) 99999-0000">
+            
+            <label>Email</label>
+            <input type="text" id="emailVol" placeholder="email@exemplo.com">
+            
+            <label>Observacoes</label>
+            <textarea id="obsVol" rows="2" placeholder="Anotacoes internas..."></textarea>
+            
+            <button class="btn btn-azul" onclick="salvar()" style="width:100%;">Salvar</button>
+            <button class="btn btn-vermelho" onclick="fecharForm()" style="width:100%;">Cancelar</button>
+        </div>
+    </div>
 
-        window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; editandoId = null; };
+<script>
+var voluntarios = [];
+var editandoId = null;
 
-        window.previewImagem = function(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('previewFoto').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
-            };
-            reader.readAsDataURL(file);
-        };
+var dadosSalvos = localStorage.getItem('amovin_voluntarios');
+if (dadosSalvos) { voluntarios = JSON.parse(dadosSalvos); }
 
-        window.salvarVoluntario = function() {
-            const nome = document.getElementById('nomeVol').value.trim();
-            const funcao = document.getElementById('funcaoVol').value.trim();
-            if (!nome || !funcao) { alert('❌ Nome e Função são obrigatórios!'); return; }
+if (voluntarios.length === 0) {
+    voluntarios.push({id:1, nome:'Fernanda Lima', guerra:'Fe', funcao:'Informatica', disponibilidade:'Sabados', horas:'16h', telefone:'(34) 99999-0001', email:'fernanda@email.com', obs:'', foto:''});
+    voluntarios.push({id:2, nome:'Rafael Costa', guerra:'Rafa', funcao:'Esportes', disponibilidade:'Tercas e Quintas', horas:'20h', telefone:'(34) 99999-0002', email:'rafael@email.com', obs:'', foto:''});
+    voluntarios.push({id:3, nome:'Juliana Martins', guerra:'Ju', funcao:'Artes', disponibilidade:'Quartas', horas:'8h', telefone:'(34) 99999-0003', email:'juliana@email.com', obs:'', foto:''});
+    salvarDados();
+}
 
-            const dados = {
-                nome,
-                guerra: document.getElementById('guerraVol').value.trim(),
-                funcao,
-                disponibilidade: document.getElementById('disponibilidadeVol').value.trim(),
-                horas: document.getElementById('horasVol').value.trim(),
-                telefone: document.getElementById('telefoneVol').value.trim(),
-                foto: document.getElementById('previewFoto').querySelector('img')?.src || ''
-            };
+function salvarDados() { localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios)); }
 
-            if (editandoId) {
-                const idx = voluntarios.findIndex(v => v.id === editandoId);
-                if (idx >= 0) voluntarios[idx] = { ...voluntarios[idx], ...dados };
-            } else {
-                voluntarios.push({ id: Date.now(), ...dados });
-            }
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = voluntarios.length;
+    popularFiltroFuncao();
+}
 
-            salvar(); renderizar(); fecharForm();
-            alert('✅ Voluntário salvo!');
-        };
+function popularFiltroFuncao() {
+    var funcoes = [];
+    for (var i = 0; i < voluntarios.length; i++) {
+        if (funcoes.indexOf(voluntarios[i].funcao) === -1) funcoes.push(voluntarios[i].funcao);
+    }
+    var sel = document.getElementById('filtroFuncao');
+    var html = '<option value="todas">Todas funcoes</option>';
+    for (var i = 0; i < funcoes.length; i++) html += '<option value="' + funcoes[i] + '">' + funcoes[i] + '</option>';
+    sel.innerHTML = html;
+}
 
-        window.editarVol = function(id) { abrirForm(id); };
+function filtrar() {
+    var busca = document.getElementById('busca').value.toLowerCase();
+    var ordem = document.getElementById('ordem').value;
+    var funcaoFiltro = document.getElementById('filtroFuncao').value;
+    var lista = [];
+    for (var i = 0; i < voluntarios.length; i++) {
+        var v = voluntarios[i];
+        var matchBusca = v.nome.toLowerCase().indexOf(busca) >= 0 || v.funcao.toLowerCase().indexOf(busca) >= 0 || (v.guerra||'').toLowerCase().indexOf(busca) >= 0;
+        var matchFuncao = funcaoFiltro === 'todas' || v.funcao === funcaoFiltro;
+        if (matchBusca && matchFuncao) lista.push(v);
+    }
+    lista.sort(function(a, b) { if (ordem === 'az') return a.nome.localeCompare(b.nome); else return b.nome.localeCompare(a.nome); });
+    mostrarLista(lista);
+}
 
-        window.excluirVol = function(id) {
-            if (!confirm('Tem certeza que deseja excluir este voluntário?\n\n⚠️ Esta ação não pode ser desfeita.')) return;
-            voluntarios = voluntarios.filter(v => v.id !== id);
-            salvar(); renderizar();
-            alert('✅ Voluntário excluído com sucesso!');
-        };
+function mostrarLista(lista) {
+    if (!lista) { lista = voluntarios.slice(); lista.sort(function(a,b){ return a.nome.localeCompare(b.nome); }); }
+    var html = '';
+    if (lista.length === 0) html = '<div class="sem-dados">Nenhum voluntario encontrado.</div>';
+    for (var i = 0; i < lista.length; i++) {
+        var v = lista[i];
+        var apelido = v.guerra ? ' (' + v.guerra + ')' : '';
+        html += '<div class="card">';
+        if (v.foto) html += '<img src="' + v.foto + '" style="width:40px;height:50px;object-fit:cover;float:left;margin-right:10px;border-radius:4px;">';
+        html += '<h3>' + v.nome + apelido + '</h3>';
+        html += '<p>' + v.funcao + ' | ' + (v.disponibilidade||'') + ' | ' + (v.horas||'') + ' | Tel: ' + (v.telefone||'') + '</p>';
+        if (v.email) html += '<p>Email: ' + v.email + '</p>';
+        html += '<button class="btn btn-amarelo" onclick="editar(' + v.id + ')">Editar</button> ';
+        html += '<button class="btn btn-verde" onclick="cracha(' + v.id + ')">Cracha</button> ';
+        html += '<button class="btn btn-laranja" onclick="imprimirCadastro(' + v.id + ')">Imprimir</button> ';
+        html += '<button class="btn btn-vermelho" onclick="excluir(' + v.id + ')">Excluir</button>';
+        html += '</div>';
+    }
+    document.getElementById('lista').innerHTML = html;
+}
 
-        window.mostrarCracha = function(id) {
-            const v = voluntarios.find(v => v.id === id);
-            if (!v) return;
-            document.getElementById('crachaFoto').innerHTML = v.foto ? `<img src="${v.foto}" style="width:100%;height:100%;object-fit:cover;">` : '3x4';
-            document.getElementById('crachaNome').textContent = v.nome;
-            document.getElementById('crachaGuerra').textContent = v.guerra ? '🏷️ ' + v.guerra : '';
-            document.getElementById('crachaFuncao').textContent = v.funcao;
-            document.getElementById('modalCracha').style.display = 'flex';
-        };
+window.previewFoto = function() {
+    var file = document.getElementById('fotoUpload').files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">'; };
+    reader.readAsDataURL(file);
+};
 
-        window.imprimirCracha = function() {
-            const conteudo = document.getElementById('crachaParaImprimir').outerHTML;
-            const win = window.open('', '_blank');
-            win.document.write(`<html><head><title>Crachá</title><style>
-                body{font-family:Arial;display:flex;justify-content:center;padding:20px}
-                .cracha-container{width:300px;border:3px solid #0d47a1;border-radius:15px;overflow:hidden}
-                .cracha-topo{background:#0d47a1;color:white;text-align:center;padding:15px}
-                .cracha-corpo{padding:20px;text-align:center}
-                .cracha-foto{width:80px;height:100px;border:2px solid #ccc;margin:0 auto 10px;overflow:hidden}
-                .cracha-foto img{width:100%;height:100%;object-fit:cover}
-                .cracha-rodape{background:#0d47a1;color:white;text-align:center;padding:8px;font-size:10px}
-            </style></head><body>${conteudo}<script>window.onload=function(){window.print()}</script></body></html>`);
-            win.document.close();
-        };
+window.abrirForm = function(id) {
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('tituloModal').textContent = id ? 'Editar Voluntario' : 'Novo Voluntario';
+    document.getElementById('fotoUpload').value = '';
+    document.getElementById('fotoPreview').innerHTML = '3x4';
+    if (id) {
+        var v = null;
+        for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } }
+        if (v) {
+            document.getElementById('volId').value = v.id;
+            document.getElementById('nomeVol').value = v.nome;
+            document.getElementById('guerraVol').value = v.guerra || '';
+            document.getElementById('funcaoVol').value = v.funcao;
+            document.getElementById('dispoVol').value = v.disponibilidade || '';
+            document.getElementById('horasVol').value = v.horas || '';
+            document.getElementById('foneVol').value = v.telefone || '';
+            document.getElementById('emailVol').value = v.email || '';
+            document.getElementById('obsVol').value = v.obs || '';
+            if (v.foto) document.getElementById('fotoPreview').innerHTML = '<img src="' + v.foto + '" style="width:100%;height:100%;object-fit:cover;">';
+        }
+    } else {
+        document.getElementById('volId').value = '';
+        document.getElementById('nomeVol').value = '';
+        document.getElementById('guerraVol').value = '';
+        document.getElementById('funcaoVol').value = '';
+        document.getElementById('dispoVol').value = '';
+        document.getElementById('horasVol').value = '';
+        document.getElementById('foneVol').value = '';
+        document.getElementById('emailVol').value = '';
+        document.getElementById('obsVol').value = '';
+    }
+};
 
-        window.imprimirCadastro = function(id) {
-            const v = voluntarios.find(v => v.id === id);
-            if (!v) return;
-            const win = window.open('', '_blank');
-            win.document.write(`<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:30px;max-width:500px;margin:0 auto}</style></head><body>
-                <h2>AMOVIN - Cadastro de Voluntário</h2>
-                ${v.foto ? `<img src="${v.foto}" style="width:3cm;height:4cm;float:right;border:1px solid #000;">` : ''}
-                <p><strong>Nome:</strong> ${v.nome}</p>
-                <p><strong>Nome de Guerra:</strong> ${v.guerra || '-'}</p>
-                <p><strong>Função:</strong> ${v.funcao}</p>
-                <p><strong>Disponibilidade:</strong> ${v.disponibilidade || '-'}</p>
-                <p><strong>Horas/Mês:</strong> ${v.horas || '-'}</p>
-                <p><strong>Telefone:</strong> ${v.telefone || '-'}</p>
-                <script>window.onload=function(){window.print()}</script>
-            </body></html>`);
-            win.document.close();
-        };
+window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
 
-        window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
+window.salvar = function() {
+    var nome = document.getElementById('nomeVol').value;
+    if (!nome) { alert('Preencha o nome!'); return; }
+    var fotoAtual = document.getElementById('fotoPreview').querySelector('img');
+    var dados = {
+        nome: nome, guerra: document.getElementById('guerraVol').value,
+        funcao: document.getElementById('funcaoVol').value,
+        disponibilidade: document.getElementById('dispoVol').value,
+        horas: document.getElementById('horasVol').value,
+        telefone: document.getElementById('foneVol').value,
+        email: document.getElementById('emailVol').value,
+        obs: document.getElementById('obsVol').value,
+        foto: fotoAtual ? fotoAtual.src : ''
+    };
+    if (editandoId) {
+        for (var i = 0; i < voluntarios.length; i++) {
+            if (voluntarios[i].id === editandoId) { for (var key in dados) { voluntarios[i][key] = dados[key]; } break; }
+        }
+    } else { dados.id = Date.now(); voluntarios.push(dados); }
+    salvarDados(); filtrar(); atualizarKPIs(); fecharForm();
+};
 
-        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+window.editar = function(id) { abrirForm(id); };
 
-        let timeout;
-        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
+window.excluir = function(id) {
+    if (!confirm('Excluir?')) return;
+    var novo = [];
+    for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id !== id) novo.push(voluntarios[i]); }
+    voluntarios = novo;
+    salvarDados(); filtrar(); atualizarKPIs();
+};
 
-        renderizar();
-    </script>
+window.cracha = function(id) {
+    var v = null;
+    for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } }
+    if (!v) return;
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Cracha</title><style>body{font-family:Arial;text-align:center;padding:20px}.cracha{border:3px solid #0d47a1;padding:20px;width:300px;margin:0 auto;border-radius:10px}h2{color:#0d47a1}</style></head><body><div class="cracha"><h2>AMOVIN</h2>'+(v.foto?'<div style="width:80px;height:100px;border:1px solid #ccc;margin:0 auto 10px;overflow:hidden"><img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover"></div>':'')+'<h3>'+v.nome+'</h3><p><strong>'+(v.guerra||'')+'</strong></p><p>'+v.funcao+'</p><p>Voluntario</p></div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+window.imprimirCadastro = function(id) {
+    var v = null;
+    for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } }
+    if (!v) return;
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px;max-width:500px}</style></head><body><h2>AMOVIN - Voluntario</h2>'+(v.foto?'<img src="'+v.foto+'" style="width:3cm;height:4cm;float:right;border:1px solid #000;">':'')+'<p><strong>Nome:</strong> '+v.nome+'</p><p><strong>Guerra:</strong> '+(v.guerra||'-')+'</p><p><strong>Funcao:</strong> '+v.funcao+'</p><p><strong>Disponibilidade:</strong> '+(v.disponibilidade||'-')+'</p><p><strong>Horas/Mes:</strong> '+(v.horas||'-')+'</p><p><strong>Telefone:</strong> '+(v.telefone||'-')+'</p><p><strong>Email:</strong> '+(v.email||'-')+'</p><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+atualizarKPIs();
+filtrar();
+</script>
 </body>
 </html>

@@ -3,150 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN ERP Social - Dashboard</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>AMOVIN ERP Social</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; display: flex; }
-        .sidebar { width: 260px; background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); color: white; min-height: 100vh; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sidebar-logo { width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 24px; font-weight: bold; color: #764ba2; }
-        .sidebar-header h3 { font-size: 16px; } .sidebar-header p { font-size: 10px; opacity: 0.7; }
-        .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px 0; }
-        .nav-section { padding: 0 15px; margin-bottom: 15px; }
-        .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4); padding: 10px 10px 5px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 15px; color: rgba(255,255,255,0.7); text-decoration: none; border-radius: 10px; font-size: 13px; margin-bottom: 2px; cursor: pointer; }
-        .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
-        .nav-item.ativo { background: rgba(102, 126, 234, 0.3); color: white; font-weight: 600; }
-        .nav-item .icone { font-size: 18px; width: 24px; text-align: center; }
-        .sidebar-footer { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; }
-        .user-mini { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
-        .avatar-admin { background: #ffd700; color: #333; } .avatar-prof { background: #4caf50; color: white; }
-        .avatar-vol { background: #2196f3; color: white; } .avatar-fin { background: #ff9800; color: white; } .avatar-recep { background: #00bcd4; color: white; }
-        .btn-sair-sidebar { width: 100%; padding: 8px; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; }
-        .main-content { flex: 1; margin-left: 260px; padding: 25px; min-height: 100vh; }
-        .welcome-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3); position: relative; overflow: hidden; }
-        .welcome-card::after { content: ''; position: absolute; right: -30px; top: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-        .welcome-card h1 { font-size: 26px; margin-bottom: 5px; position: relative; z-index: 1; }
-        .welcome-card p { opacity: 0.9; position: relative; z-index: 1; font-size: 14px; }
-        .welcome-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .data-hoje { background: rgba(255,255,255,0.2); padding: 15px 20px; border-radius: 15px; text-align: center; min-width: 120px; }
-        .data-hoje .dia { font-size: 32px; font-weight: bold; } .data-hoje .mes { font-size: 12px; text-transform: uppercase; }
-        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 15px; }
-        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .stat-icon.blue { background: #e3f2fd; } .stat-icon.green { background: #e8f5e9; }
-        .stat-icon.red { background: #ffebee; } .stat-icon.purple { background: #f3e5f5; }
-        .stat-info .stat-valor { font-size: 24px; font-weight: bold; color: #333; } .stat-info .stat-label { font-size: 12px; color: #888; }
-        .section-title { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 15px; }
-        .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .module-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.3s; text-decoration: none; display: block; border: 2px solid transparent; }
-        .module-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-color: #667eea; }
-        .module-card .module-icon { font-size: 40px; margin-bottom: 12px; } .module-card h4 { color: #333; margin-bottom: 5px; font-size: 15px; } .module-card p { color: #888; font-size: 12px; }
-        .module-card.oficios { border-left: 4px solid #667eea; } .module-card.projetos { border-left: 4px solid #2d8a4e; }
-        .module-card.editais { border-left: 4px solid #ff9800; } .module-card.financeiro { border-left: 4px solid #00897b; }
-        .module-card.orcamentos { border-left: 4px solid #e64a19; } .module-card.pessoas { border-left: 4px solid #7b1fa2; }
-        .module-card.profissionais { border-left: 4px solid #e91e63; } .module-card.voluntarios { border-left: 4px solid #2196f3; }
-        .module-card.agenda { border-left: 4px solid #0288d1; } .module-card.prontuario { border-left: 4px solid #d32f2f; }
-        .module-card.relatorios { border-left: 4px solid #455a64; } .module-card.prestacao { border-left: 4px solid #004d40; }
-        .module-card.chat { border-left: 4px solid #1a237e; } .module-card.assistente { border-left: 4px solid #283593; }
-        .module-card.agenda-tel { border-left: 4px solid #0d47a1; } .module-card.patrimonio { border-left: 4px solid #4e342e; }
-        .module-card.biblioteca { border-left: 4px solid #2e7d32; } .module-card.certificados { border-left: 4px solid #6a1b9a; }
-        .module-card.documentos { border-left: 4px solid #1a237e; } .module-card.estoque { border-left: 4px solid #33691e; }
-        .module-card.bi { border-left: 4px solid #0d47a1; } .module-card.config { border-left: 4px solid #37474f; }
-        .module-card.backup { border-left: 4px solid #33691e; }
-        .module-card.bloqueado { opacity: 0.5; cursor: not-allowed; background: #f9f9f9; }
-        .module-card.bloqueado:hover { transform: none; box-shadow: 0 2px 10px rgba(0,0,0,0.04); border-color: transparent; }
-        .hoje-table { background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); overflow: hidden; }
-        .hoje-table-header { background: #fafafa; padding: 15px 20px; font-weight: 700; font-size: 16px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; }
-        .hoje-item { display: flex; align-items: center; gap: 15px; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; }
-        .hoje-item:hover { background: #fafafa; } .hoje-horario { font-weight: 700; font-size: 14px; color: #667eea; min-width: 60px; }
-        .hoje-info { flex: 1; } .hoje-info .nome { font-weight: 600; color: #333; } .hoje-info .detalhe { font-size: 12px; color: #888; }
-        .hoje-status { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .status-agendado { background: #e3f2fd; color: #1565c0; } .status-presente { background: #e8f5e9; color: #2e7d32; }
-        .status-falta { background: #ffebee; color: #c62828; } .status-cancelado { background: #f3e5f5; color: #7b1fa2; }
-        .sem-agendamentos { text-align: center; padding: 40px; color: #bbb; }
-        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
-        .topo-mobile { display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; align-items: center; gap: 15px; }
-        .btn-menu-mobile { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .sidebar-overlay.show { display: block; } .main-content { margin-left: 0; } .topo-mobile { display: flex; } }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; min-height: 100vh; }
+        .sidebar { width: 270px; background: linear-gradient(180deg, #0f1729 0%, #1a2744 100%); color: white; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-logo { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 22px; font-weight: bold; color: #667eea; }
+        .sidebar-header h3 { font-size: 14px; } .sidebar-header small { font-size: 9px; opacity: 0.6; }
+        .sidebar-nav { flex: 1; padding: 10px 0; }
+        .nav-categoria { padding: 8px 20px; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.35); font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 25px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 12px; transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-item.ativo { background: rgba(102,126,234,0.25); color: white; border-left-color: #667eea; font-weight: 600; }
+        .nav-item .icone { font-size: 15px; width: 22px; text-align: center; }
+        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .user-card { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; background: #667eea; color: white; }
+        .btn-sair { width: 100%; padding: 7px; background: rgba(255,255,255,0.08); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 10px; }
+        .main-content { flex: 1; margin-left: 270px; padding: 25px; }
+        .welcome { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 35px; border-radius: 20px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 15px 40px rgba(102,126,234,0.3); }
+        .welcome::before { content: ''; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+        .welcome::after { content: ''; position: absolute; right: 60px; bottom: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .welcome h1 { font-size: 26px; position: relative; z-index: 1; }
+        .welcome p { opacity: 0.85; position: relative; z-index: 1; font-size: 13px; margin-top: 5px; }
+        .welcome-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: relative; z-index: 1; }
+        .data-card { background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; text-align: center; min-width: 100px; }
+        .data-card .dia { font-size: 30px; font-weight: bold; }
+        .data-card .mes { font-size: 10px; text-transform: uppercase; opacity: 0.8; }
+        .status-bar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .status-item { background: white; padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-size: 12px; flex: 1; min-width: 180px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .status-dot.on { background: #4caf50; }
+        .status-info .valor { font-weight: 700; font-size: 15px; }
+        .status-info .label { font-size: 10px; color: #888; }
+        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 22px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .card h3 { color: #333; margin-bottom: 15px; font-size: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .card h3 .badge { font-size: 11px; font-weight: normal; padding: 3px 10px; border-radius: 20px; }
+        .badge-critico { background: #ffebee; color: #c62828; }
+        .badge-ok { background: #e8f5e9; color: #2e7d32; }
+        .badge-info { background: #e3f2fd; color: #1565c0; }
+        .lista-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
+        .lista-item:last-child { border-bottom: none; }
+        .lista-item .hora { font-weight: 700; color: #667eea; min-width: 45px; }
+        .lista-item .info { flex: 1; }
+        .lista-item .info strong { display: block; }
+        .lista-item .info small { color: #888; }
+        .sem-dados { text-align: center; padding: 25px; color: #bbb; font-size: 13px; }
+        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; min-height: auto; } .main-content { margin-left: 0; } .grid-info { grid-template-columns: 1fr; } .status-bar { flex-direction: column; } }
     </style>
 </head>
 <body>
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharSidebar()"></div>
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-header"><div class="sidebar-logo">A</div><h3>AMOVIN ERP Social</h3><p>Gestão Integrada</p></div>
-    <nav class="sidebar-nav"><div class="nav-section"><div class="nav-section-title">Principal</div><a href="#" class="nav-item ativo"><span class="icone">🏠</span> Dashboard</a><a href="bi.html" class="nav-item"><span class="icone">📊</span> BI Executivo</a></div><div class="nav-section" id="menuModulos"></div></nav>
-    <div class="sidebar-footer"><div class="user-mini"><div class="user-avatar" id="userAvatar">A</div><div><div style="font-weight:600;" id="userNome">Admin</div><div style="font-size:10px;opacity:0.7;" id="userPerfil">Administrador</div></div></div><button class="btn-sair-sidebar" onclick="fazerLogout()">🚪 Sair do Sistema</button></div>
-</aside>
-<main class="main-content">
-    <div class="topo-mobile"><button class="btn-menu-mobile" onclick="abrirSidebar()">☰</button><span style="font-weight:700;">AMOVIN ERP</span><button class="btn-menu-mobile" onclick="fazerLogout()" style="margin-left:auto;">🚪</button></div>
-    <div class="welcome-card"><div class="welcome-row"><div><h1>Bem-vindo(a), <span id="nomeUsuario">Admin</span>!</h1><p id="cargoUsuario">Painel de Gestão Integrada - ERP Social</p></div><div class="data-hoje"><div class="dia" id="diaHoje">24</div><div class="mes" id="mesHoje">Junho 2026</div></div></div></div>
-    <div class="stats-row" id="statsRow"></div>
-    <div class="section-title">📦 Módulos do Sistema</div>
-    <div class="modules-grid" id="modulesGrid"></div>
-    <div class="hoje-table"><div class="hoje-table-header">📅 Atendimentos de Hoje <span style="font-size:13px;font-weight:normal;color:#888;" id="totalHoje">0 agendamentos</span></div><div class="hoje-table-body" id="hojeBody" style="max-height:400px;overflow-y:auto;"><div class="sem-agendamentos">Nenhum atendimento para hoje.</div></div></div>
-</main>
-<script>
-    const usuario = { nome: sessionStorage.getItem('amovin_nome') || 'Administrador', perfil: sessionStorage.getItem('amovin_perfil') || 'admin' };
-    const PERMISSOES = {
-        admin: { nome: 'Administrador', avatar: 'avatar-admin', modulos: ['oficios','projetos','editais','financeiro','orcamentos','pessoas','profissionais','voluntarios','agenda','prontuario','relatorios','prestacao','documentos','estoque','chat','assistente','agenda-tel','patrimonio','biblioteca','certificados','config','backup'], stats: ['total_mes','presentes','faltas','cancelados'] },
-        recepcao: { nome: 'Recepção', avatar: 'avatar-recep', modulos: ['pessoas','profissionais','voluntarios','agenda','prontuario','documentos','chat','agenda-tel'], stats: ['total_mes','presentes'] },
-        consulta: { nome: 'Profissional', avatar: 'avatar-prof', modulos: ['agenda','prontuario','documentos','chat','assistente'], stats: ['total_mes','presentes'] },
-        financeiro: { nome: 'Financeiro', avatar: 'avatar-fin', modulos: ['oficios','projetos','financeiro','orcamentos','documentos','relatorios','prestacao','chat'], stats: ['total_mes','faltas'] },
-        voluntario: { nome: 'Voluntário', avatar: 'avatar-vol', modulos: ['agenda','chat'], stats: ['total_mes'] }
-    };
-    const MODULOS = {
-        oficios: { nome: 'Ofícios IA', desc: 'Crie ofícios com IA', url: 'oficios.html', icone: '📄', cor: 'oficios' },
-        projetos: { nome: 'Projetos IA', desc: 'Projetos sociais com IA', url: 'projetos.html', icone: '📋', cor: 'projetos' },
-        editais: { nome: 'Editais', desc: 'Captação de recursos', url: 'editais.html', icone: '🔍', cor: 'editais' },
-        financeiro: { nome: 'Financeiro', desc: 'Receitas e despesas', url: 'financeiro.html', icone: '💰', cor: 'financeiro' },
-        orcamentos: { nome: 'Orçamentos', desc: 'Compare fornecedores', url: 'orcamentos.html', icone: '📊', cor: 'orcamentos' },
-        pessoas: { nome: 'Pessoas', desc: 'Beneficiários e equipe', url: 'pessoas.html', icone: '👥', cor: 'pessoas' },
-        profissionais: { nome: 'Profissionais', desc: 'Cadastro da equipe', url: 'profissionais.html', icone: '👨‍⚕️', cor: 'profissionais' },
-        voluntarios: { nome: 'Voluntários', desc: 'Voluntários + Crachá', url: 'voluntarios.html', icone: '💪', cor: 'voluntarios' },
-        agenda: { nome: 'Agenda', desc: 'Consultas e horários', url: 'agenda.html', icone: '📅', cor: 'agenda' },
-        prontuario: { nome: 'Prontuário', desc: 'Registros médicos', url: 'prontuario.html', icone: '🩺', cor: 'prontuario' },
-        relatorios: { nome: 'Relatórios', desc: 'KPIs e BI', url: 'relatorios.html', icone: '📈', cor: 'relatorios' },
-        prestacao: { nome: 'Prest. Contas', desc: 'Auditoria', url: 'prestacao-contas.html', icone: '📋', cor: 'prestacao' },
-        documentos: { nome: 'Documentos', desc: 'Recibos e termos', url: 'documentos.html', icone: '📝', cor: 'documentos' },
-        estoque: { nome: 'Estoque', desc: 'Controle e alertas', url: 'estoque.html', icone: '📦', cor: 'estoque' },
-        chat: { nome: 'Chat', desc: 'Comunicação interna', url: 'chat.html', icone: '💬', cor: 'chat' },
-        assistente: { nome: 'Assistente IA', desc: 'Chat inteligente', url: 'assistente.html', icone: '🤖', cor: 'assistente' },
-        'agenda-tel': { nome: 'Agenda Telefônica', desc: 'CRM Social', url: 'agenda-telefonica.html', icone: '☎️', cor: 'agenda-tel' },
-        patrimonio: { nome: 'Patrimônio', desc: 'Bens e inventário', url: 'patrimonio.html', icone: '🏢', cor: 'patrimonio' },
-        biblioteca: { nome: 'Biblioteca', desc: 'Documentos digitalizados', url: 'biblioteca.html', icone: '📚', cor: 'biblioteca' },
-        certificados: { nome: 'Certificados', desc: 'Emissão de certificados', url: 'certificados.html', icone: '🎓', cor: 'certificados' },
-        config: { nome: 'Configurações', desc: 'Personalize o sistema', url: 'configuracoes.html', icone: '⚙️', cor: 'config' },
-        backup: { nome: 'Backup', desc: 'Exportar/Importar dados', url: 'backup.html', icone: '💾', cor: 'backup' }
-    };
-    function renderizar() {
-        const perfil = usuario.perfil || 'admin'; const perm = PERMISSOES[perfil] || PERMISSOES['admin'];
-        document.getElementById('nomeUsuario').textContent = usuario.nome;
-        document.getElementById('cargoUsuario').textContent = perm.nome;
-        document.getElementById('userNome').textContent = usuario.nome.split(' ')[0];
-        document.getElementById('userPerfil').textContent = perm.nome;
-        document.getElementById('userAvatar').className = 'user-avatar ' + perm.avatar;
-        document.getElementById('userAvatar').textContent = usuario.nome.charAt(0).toUpperCase();
-        const hoje = new Date(); document.getElementById('diaHoje').textContent = hoje.getDate(); document.getElementById('mesHoje').textContent = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-        const statsData = { total_mes: { valor: 156, label: 'Total no Mês', icone: '📊', cor: 'blue' }, presentes: { valor: 132, label: 'Presenças', icone: '✅', cor: 'green' }, faltas: { valor: 18, label: 'Faltas', icone: '⚠️', cor: 'red' }, cancelados: { valor: 6, label: 'Cancelados', icone: '❌', cor: 'purple' } };
-        document.getElementById('statsRow').innerHTML = perm.stats.map(s => { const d = statsData[s]; return d ? `<div class="stat-card"><div class="stat-icon ${d.cor}">${d.icone}</div><div class="stat-info"><div class="stat-valor">${d.valor}</div><div class="stat-label">${d.label}</div></div></div>` : ''; }).join('');
-        document.getElementById('modulesGrid').innerHTML = Object.keys(MODULOS).map(chave => { const mod = MODULOS[chave]; const permitido = perm.modulos.includes(chave); return `<${permitido ? `a href="${mod.url}"` : 'div'} class="module-card ${mod.cor} ${permitido ? '' : 'bloqueado'}"><div class="module-icon">${permitido ? mod.icone : '🔒'}</div><h4>${mod.nome}</h4><p>${permitido ? mod.desc : 'Sem acesso'}</p></${permitido ? 'a' : 'div'}>`; }).join('');
-        document.getElementById('menuModulos').innerHTML = '<div class="nav-section-title">Módulos</div>' + perm.modulos.map(chave => { const mod = MODULOS[chave]; return `<a href="${mod.url}" class="nav-item"><span class="icone">${mod.icone}</span> ${mod.nome}</a>`; }).join('');
-        const hojeSimulado = [{ hora: '09:00', nome: 'Maria Silva', detalhe: 'Psicologia | Dr. Carlos', status: 'agendado' },{ hora: '10:00', nome: 'João Santos', detalhe: 'Social | Dra. Lucia', status: 'presente' },{ hora: '11:00', nome: 'Ana Costa', detalhe: 'Reforço | Prof. Sandra', status: 'agendado' },{ hora: '14:00', nome: 'Pedro Lima', detalhe: 'Capacitação | Dr. Carlos', status: 'falta' },{ hora: '15:00', nome: 'Carla Souza', detalhe: 'Psicologia | Dr. Carlos', status: 'agendado' }];
-        document.getElementById('totalHoje').textContent = hojeSimulado.length + ' agendamentos';
-        document.getElementById('hojeBody').innerHTML = hojeSimulado.map(a => `<div class="hoje-item"><span class="hoje-horario">${a.hora}</span><div class="hoje-info"><div class="nome">${a.nome}</div><div class="detalhe">${a.detalhe}</div></div><span class="hoje-status status-${a.status}">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span></div>`).join('');
-    }
-    window.abrirSidebar = function() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('show'); };
-    window.fecharSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); };
-    window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
-    if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-    history.pushState(null, null, location.href);
-    window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
-    let timeout; function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-    document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
-    renderizar();
-</script>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">A</div>
+            <h3>AMOVIN ERP</h3>
+            <small>Gestao Integrada</small>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-categoria">Principal</div>
+            <a href="dashboard.html" class="nav-item ativo"><span class="icone">&#127968;</span> Dashboard</a>
+            <a href="bi.html" class="nav-item"><span class="icone">&#128202;</span> BI Executivo</a>
+
+            <div class="nav-categoria">Captacao</div>
+            <a href="em-breve.html" class="nav-item"><span class="icone">&#128269;</span> Editais</a>
+            <a href="em-breve.html" class="nav-item"><span class="icone">&#128196;</span> Oficios IA</a>
+            <a href="em-breve.html" class="nav-item"><span class="icone">&#128203;</span> Projetos IA</a>
+
+            <div class="nav-categoria">Financeiro</div>
+            <a href="financeiro.html" class="nav-item"><span class="icone">&#128176;</span> Financeiro</a>
+            <a href="orcamentos.html" class="nav-item"><span class="icone">&#128202;</span> Orcamentos</a>
+            <a href="prestacao-contas.html" class="nav-item"><span class="icone">&#128203;</span> Prest. Contas</a>
+
+            <div class="nav-categoria">Pessoas</div>
+            <a href="pessoas.html" class="nav-item"><span class="icone">&#128101;</span> Gestao de Pessoas</a>
+            <a href="agenda-telefonica.html" class="nav-item"><span class="icone">&#9742;</span> CRM Social</a>
+
+            <div class="nav-categoria">Atendimento</div>
+            <a href="agenda.html" class="nav-item"><span class="icone">&#128197;</span> Agenda</a>
+
+            <div class="nav-categoria">Documentos</div>
+            <a href="documentos.html" class="nav-item"><span class="icone">&#128221;</span> Documentos</a>
+            <a href="estoque.html" class="nav-item"><span class="icone">&#128230;</span> Estoque</a>
+            <a href="patrimonio.html" class="nav-item"><span class="icone">&#127983;</span> Patrimonio</a>
+
+            <div class="nav-categoria">Educacao</div>
+            <a href="biblioteca.html" class="nav-item"><span class="icone">&#128218;</span> Biblioteca</a>
+            <a href="certificados.html" class="nav-item"><span class="icone">&#127891;</span> Certificados</a>
+
+            <div class="nav-categoria">Comunicacao</div>
+            <a href="chat.html" class="nav-item"><span class="icone">&#128172;</span> Chat Interno</a>
+            <a href="assistente.html" class="nav-item"><span class="icone">&#129302;</span> Assistente IA</a>
+
+            <div class="nav-categoria">Relatorios</div>
+            <a href="relatorios.html" class="nav-item"><span class="icone">&#128200;</span> Relatorios</a>
+
+            <div class="nav-categoria">Sistema</div>
+            <a href="configuracoes.html" class="nav-item"><span class="icone">&#9881;</span> Configuracoes</a>
+            <a href="backup.html" class="nav-item"><span class="icone">&#128190;</span> Backup</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">A</div>
+                <div><div style="font-weight:600;font-size:12px;">Admin</div><div style="font-size:9px;opacity:0.6;">Administrador</div></div>
+            </div>
+            <button class="btn-sair" onclick="window.location.href='index.html'">Sair</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="welcome">
+            <div class="welcome-row">
+                <div><h1>Bem-vindo(a)!</h1><p>Painel de Gestao - AMOVIN ERP Social</p></div>
+                <div class="data-card"><div class="dia" id="welcomeDia">24</div><div class="mes" id="welcomeMes">Junho 2026</div></div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item"><div class="status-dot on"></div><div class="status-info"><div class="valor">Conectado</div><div class="label">Status Firebase</div></div></div>
+            <div class="status-item"><div>&#128202;</div><div class="status-info"><div class="valor"><span id="firebaseUso">3</span>%</div><div class="label">Firebase utilizado</div></div></div>
+            <div class="status-item"><div>&#128197;</div><div class="status-info"><div class="valor" id="totalHoje">0</div><div class="label">Agendamentos hoje</div></div></div>
+            <div class="status-item"><div>&#9888;</div><div class="status-info"><div class="valor" id="totalAlertas">0</div><div class="label">Alertas criticos</div></div></div>
+        </div>
+
+        <div class="grid-info">
+            <div class="card"><h3>Agendamentos de Hoje <span class="badge badge-info" id="countAgenda">0</span></h3><div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div></div>
+            <div class="card"><h3>Compras Pendentes <span class="badge badge-critico" id="countCompras">0</span></h3><div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div></div>
+            <div class="card"><h3>Estoque Critico</h3><div id="listaEstoqueCritico"><div class="sem-dados">Estoque esta OK.</div></div></div>
+            <div class="card"><h3>Ultimos Documentos</h3><div id="listaUltimosDocs"><div class="sem-dados">Nenhum documento recente.</div></div></div>
+        </div>
+    </main>
+
+    <script>
+        var hoje = new Date();
+        document.getElementById('welcomeDia').textContent = hoje.getDate();
+        document.getElementById('welcomeMes').textContent = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        document.getElementById('firebaseUso').textContent = Math.floor(Math.random() * 5) + 1;
+
+        var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
+        var hojeStr = hoje.toISOString().split('T')[0];
+        var agendamentosHoje = [];
+        for (var i = 0; i < agendamentos.length; i++) {
+            if (agendamentos[i].data === hojeStr) agendamentosHoje.push(agendamentos[i]);
+        }
+        agendamentosHoje.sort(function(a,b){ return (a.hora||'').localeCompare(b.hora||''); });
+        document.getElementById('countAgenda').textContent = agendamentosHoje.length;
+        document.getElementById('totalHoje').textContent = agendamentosHoje.length;
+        if (agendamentosHoje.length > 0) {
+            var htmlAgenda = '';
+            for (var i = 0; i < agendamentosHoje.length; i++) {
+                var a = agendamentosHoje[i];
+                htmlAgenda += '<div class="lista-item"><span class="hora">' + (a.hora||'--:--') + '</span><div class="info"><strong>' + (a.nome||'Beneficiario') + '</strong><small>' + (a.profissional||'') + ' | ' + (a.obs||'') + '</small></div></div>';
+            }
+            document.getElementById('listaAgenda').innerHTML = htmlAgenda;
+        }
+
+        var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
+        var pendentes = [];
+        for (var i = 0; i < orcamentos.length; i++) {
+            if (!orcamentos[i].vencedor) pendentes.push(orcamentos[i]);
+        }
+        pendentes = pendentes.slice(0, 5);
+        document.getElementById('countCompras').textContent = pendentes.length;
+        document.getElementById('totalAlertas').textContent = pendentes.length;
+        if (pendentes.length > 0) {
+            var htmlCompras = '';
+            for (var i = 0; i < pendentes.length; i++) {
+                var o = pendentes[i];
+                htmlCompras += '<div class="lista-item"><span>&#128202;</span><div class="info"><strong>' + (o.solicitacao||'Orcamento') + '</strong><small>' + (o.empresa||'') + ' - R$ ' + ((o.valor||0).toFixed(2)) + '</small></div></div>';
+            }
+            document.getElementById('listaCompras').innerHTML = htmlCompras;
+        }
+
+        var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+        var criticos = [];
+        for (var i = 0; i < estoque.length; i++) {
+            if (estoque[i].qtdAtual <= (estoque[i].qtdMinima || 5)) criticos.push(estoque[i]);
+        }
+        criticos = criticos.slice(0, 5);
+        if (criticos.length > 0) {
+            var htmlEstoque = '';
+            for (var i = 0; i < criticos.length; i++) {
+                var e = criticos[i];
+                htmlEstoque += '<div class="lista-item" style="border-left:3px solid #c62828;padding-left:8px;"><span>&#9888;</span><div class="info"><strong>' + e.nome + '</strong><small>Qtd: ' + e.qtdAtual + ' | Min: ' + (e.qtdMinima||5) + '</small></div></div>';
+            }
+            document.getElementById('listaEstoqueCritico').innerHTML = htmlEstoque;
+        }
+
+        var docs = JSON.parse(localStorage.getItem('amovin_documentos_oficiais') || '[]');
+        docs.sort(function(a,b){ return new Date(b.criadoEm) - new Date(a.criadoEm); });
+        var ultimos = docs.slice(0, 5);
+        if (ultimos.length > 0) {
+            var htmlDocs = '';
+            for (var i = 0; i < ultimos.length; i++) {
+                var d = ultimos[i];
+                htmlDocs += '<div class="lista-item"><span>&#128221;</span><div class="info"><strong>' + (d.numero||'-') + '</strong><small>' + (d.nome||'') + ' | ' + (d.tipo||'') + '</small></div></div>';
+            }
+            document.getElementById('listaUltimosDocs').innerHTML = htmlDocs;
+        }
+
+        var timeout;
+        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(function() { alert('Sessao expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
+        document.addEventListener('mousemove', resetTimeout);
+        document.addEventListener('keypress', resetTimeout);
+        document.addEventListener('click', resetTimeout);
+        resetTimeout();
+    </script>
 </body>
 </html>
