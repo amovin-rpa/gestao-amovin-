@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificados</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #6a1b9a; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .card h3 { color: #6a1b9a; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 3px; }
+        .btn-roxo { background: #8e24aa; color: white; }
+        .btn-azul { background: #1565c0; color: white; }
+        .btn-vermelho { background: #f44336; color: white; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 3px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .cert-card { background: #fafafa; padding: 15px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #8e24aa; }
+        .cert-card h4 { margin: 0 0 5px 0; }
+        .cert-card p { margin: 2px 0; color: #666; font-size: 13px; }
+        .sem-dados { text-align: center; color: #bbb; padding: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="topo">
+    <strong>Certificados</strong>
+    <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
+</div>
+
+<div class="container">
+    <div class="grid">
+        <div class="card">
+            <h3>Emitir Certificado</h3>
+            <div class="form-group"><label>Nome do Participante *</label><input type="text" id="nomeCert"></div>
+            <div class="form-group"><label>Tipo *</label><select id="tipoCert"><option>Horas Voluntarias</option><option>Participacao em Evento</option><option>Curso/Oficina</option><option>Palestra</option><option>Outros</option></select></div>
+            <div class="form-group"><label>Descricao da Atividade *</label><input type="text" id="descricaoCert"></div>
+            <div class="form-group"><label>Carga Horaria</label><input type="text" id="cargaCert" placeholder="Ex: 20 horas"></div>
+            <div class="form-group"><label>Data de Emissao</label><input type="date" id="dataCert"></div>
+            <button class="btn btn-roxo" onclick="gerarCertificado()">Gerar Certificado</button>
+        </div>
+
+        <div class="card">
+            <h3>Certificados Emitidos</h3>
+            <div id="listaCertificados"><div class="sem-dados">Nenhum certificado emitido.</div></div>
+        </div>
+    </div>
+</div>
+
+<script>
+var certificados = JSON.parse(localStorage.getItem('amovin_certificados') || '[]');
+
+if (certificados.length === 0) {
+    certificados.push({id:1, nome:'Fernanda Lima', tipo:'Horas Voluntarias', descricao:'Oficina de Informatica Basica', carga:'40 horas', data:'2026-06-23'});
+    certificados.push({id:2, nome:'Rafael Costa', tipo:'Horas Voluntarias', descricao:'Treinamento Esportivo', carga:'60 horas', data:'2026-06-20'});
+    salvar();
+}
+
+function salvar() { localStorage.setItem('amovin_certificados', JSON.stringify(certificados)); }
+
+function renderizar() {
+    var container = document.getElementById('listaCertificados');
+    if (certificados.length === 0) { container.innerHTML = '<div class="sem-dados">Nenhum certificado.</div>'; return; }
+    var html = '';
+    for (var i = 0; i < certificados.length; i++) {
+        var c = certificados[i];
+        html += '<div class="cert-card">';
+        html += '<h4>' + c.nome + '</h4>';
+        html += '<p>' + c.tipo + ' - ' + c.descricao + ' | ' + (c.carga||'') + '</p>';
+        html += '<p>Data: ' + (c.data ? new Date(c.data+'T00:00:00').toLocaleDateString('pt-BR') : '-') + '</p>';
+        html += '<button class="btn btn-azul" onclick="imprimir(' + c.id + ')">Imprimir</button> ';
+        html += '<button class="btn btn-vermelho" onclick="excluir(' + c.id + ')">Excluir</button>';
+        html += '</div>';
+    }
+    container.innerHTML = html;
+}
+
+window.gerarCertificado = function() {
+    var nome = document.getElementById('nomeCert').value.trim();
+    var descricao = document.getElementById('descricaoCert').value.trim();
+    if (!nome || !descricao) { alert('Preencha os campos obrigatorios!'); return; }
+    var dados = {
+        nome: nome,
+        tipo: document.getElementById('tipoCert').value,
+        descricao: descricao,
+        carga: document.getElementById('cargaCert').value,
+        data: document.getElementById('dataCert').value || new Date().toISOString().split('T')[0]
+    };
+    dados.id = Date.now();
+    certificados.push(dados);
+    salvar();
+    renderizar();
+    document.getElementById('nomeCert').value = '';
+    document.getElementById('descricaoCert').value = '';
+    document.getElementById('cargaCert').value = '';
+    imprimirAgora(dados);
+};
+
+window.imprimir = function(id) {
+    var c = null;
+    for (var i = 0; i < certificados.length; i++) { if (certificados[i].id === id) { c = certificados[i]; break; } }
+    if (c) imprimirAgora(c);
+};
+
+function imprimirAgora(c) {
+    var dataExtenso = c.data ? new Date(c.data+'T00:00:00').toLocaleDateString('pt-BR', {day:'numeric',month:'long',year:'numeric'}) : '';
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Certificado</title><style>body{font-family:Georgia,serif;text-align:center;padding:40px}.cert{border:6px double #6a1b9a;padding:40px;max-width:600px;margin:0 auto}h1{color:#6a1b9a;font-size:26px}h2{font-size:18px;margin:15px 0}p{font-size:14px;line-height:1.8}.assinatura{margin-top:50px}.linha{width:250px;border-top:1px solid #000;margin:0 auto 8px}</style></head><body><div class="cert"><h1>AMOVIN</h1><p>Associacao e Movimento pela Inclusao</p><h2>CERTIFICADO</h2><p>Certificamos que <strong>'+c.nome+'</strong></p><p>participou da atividade <strong>'+c.descricao+'</strong></p><p>'+c.tipo+(c.carga?' | Carga Horaria: '+c.carga:'')+'</p><p>Rio Paranaiba/MG, '+dataExtenso+'</p><div class="assinatura"><div class="linha"></div><p>Presidencia AMOVIN</p></div></div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+window.excluir = function(id) {
+    if (!confirm('Excluir?')) return;
+    var novo = [];
+    for (var i = 0; i < certificados.length; i++) { if (certificados[i].id !== id) novo.push(certificados[i]); }
+    certificados = novo;
+    salvar();
+    renderizar();
+};
+
+document.getElementById('dataCert').value = new Date().toISOString().split('T')[0];
+renderizar();
+</script>
+</body>
+</html>
