@@ -1,431 +1,310 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AMOVIN ERP Social - Gestão inteligente para inclusão social">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
-    <title>AMOVIN • ERP Social</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMOVIN ERP Social • Acesso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --preto: #0D0D0D;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F3F4F6;
+  --branco: #FFFFFF;
+}
 
-        @layer base {
-            :root {
-                /* Design Tokens - Paleta Extraída e Refinada */
-                --color-terracotta-600: #9F470D;
-                --color-terracotta-500: #C65A11;
-                --color-sunflower-500: #F4A01D;
-                --color-sunflower-400: #F5C518;
-                --color-emerald-500: #10B981;
-                --color-slate-950: #0F172A;
-                --color-slate-900: #1A2333;
-                --color-slate-800: #242E42;
-                --color-neutral-700: #475569;
-                --color-neutral-200: #E2E8F0;
-                --color-neutral-100: #F8FAFC;
-                --color-surface: #FFFFFF;
-                --color-surface-glass: rgba(255, 255, 255, 0.965);
-                --color-error: #DC2626;
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 50%, #FFF8E1 100%);
+  min-height:100vh;
+  display:flex;
+}
 
-                /* Functional Tokens */
-                --radius-lg: 20px;
-                --radius-md: 12px;
-                --shadow-sm: 0 10px 15px -3px rgb(0 0 0 / 0.05);
-                --shadow-lg: 0 25px 50px -12px rgb(15 23 42 / 0.15);
-                --transition: cubic-bezier(0.42, 0, 0.17, 1);
-            }
+.login-container { display:flex; width:100%; min-height:100vh; }
 
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
+.login-image {
+  flex:1; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, #1a0a00 0%, #2D1B0E 40%, #0D0D0D 100%);
+}
+.login-image .overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(198,90,17,0.75) 0%, rgba(245,197,24,0.35) 100%);
+  z-index:1;
+}
+.login-image .content { position:relative; z-index:2; text-align:center; padding:40px; max-width:520px; }
+.logo-grande { font-size:120px; margin-bottom:20px; filter:drop-shadow(0 10px 30px rgba(0,0,0,0.35)); }
+.login-image h1 { font-size:36px; font-weight:800; color:#fff; margin-bottom:16px; line-height:1.15; letter-spacing:-0.6px; }
+.login-image p { font-size:15px; color:rgba(255,255,255,0.9); line-height:1.6; font-weight:400; }
+.badges { display:flex; gap:12px; margin-top:32px; justify-content:center; flex-wrap:wrap; }
+.badge-item {
+  background:rgba(255,255,255,0.12); backdrop-filter:blur(12px);
+  padding:10px 18px; border-radius:9999px; color:#fff; font-size:12px; font-weight:600;
+  border:1px solid rgba(255,255,255,0.18);
+}
 
-            body {
-                font-family: 'Inter', system-ui, sans-serif;
-                background: linear-gradient(135deg, #FFF7ED 0%, #FEF3E8 100%);
-                min-height: 100dvh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: var(--color-slate-950);
-                line-height: 1.5;
-                font-feature-settings: "cv02","cv03","cv04","cv11";
-            }
+.login-form {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  background:transparent; padding:40px;
+}
+.form-card {
+  background:rgba(255,255,255,0.96); backdrop-filter:blur(24px);
+  border-radius:20px; padding:48px 44px; width:100%; max-width:420px;
+  box-shadow:0 25px 70px rgba(0,0,0,0.09), 0 0 0 1px rgba(0,0,0,0.04);
+}
+.logo-top { font-size:48px; text-align:center; margin-bottom:4px; }
+.form-card h2 { font-size:22px; font-weight:700; color:var(--grafite); text-align:center; margin-bottom:4px; letter-spacing:-0.4px; }
+.subtitulo { font-size:12.5px; color:var(--cinza); text-align:center; margin-bottom:28px; }
 
-            .login-container {
-                display: flex;
-                width: 100%;
-                max-width: 1280px;
-                min-height: 100dvh;
-                box-shadow: var(--shadow-lg);
-                overflow: hidden;
-                border-radius: 0;
-            }
-        }
+.tabs {
+  display:flex; gap:4px; margin-bottom:24px;
+  background:#F1F1F1; padding:4px; border-radius:12px;
+}
+.tab {
+  flex:1; padding:10px 8px; border:none; border-radius:10px; cursor:pointer;
+  font-size:11px; font-weight:600; transition:all .2s ease;
+  background:transparent; color:var(--cinza); font-family:inherit;
+}
+.tab.ativo { background:#fff; color:var(--laranja); box-shadow:0 2px 8px rgba(0,0,0,0.07); }
 
-        @layer components {
-            .login-image {
-                flex: 1;
-                position: relative;
-                background: linear-gradient(135deg, var(--color-slate-950) 0%, #1E2937 100%);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
-                contain: layout paint;
-            }
+.form-group { margin-bottom:16px; position:relative; }
+.form-group label {
+  display:block; margin-bottom:5px; color:var(--grafite);
+  font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.6px;
+}
+.form-group input {
+  width:100%; padding:14px 44px 14px 15px; border:2px solid #E5E5E5;
+  border-radius:12px; font-size:14px; transition:all .2s ease; font-family:inherit; background:#fff;
+}
+.form-group input:focus {
+  border-color:var(--laranja); outline:none; box-shadow:0 0 0 3px rgba(198,90,17,0.08);
+}
+.olho-magico {
+  position:absolute; right:14px; top:39px; cursor:pointer; font-size:17px;
+  background:none; border:none; opacity:0.45; transition:opacity .2s;
+}
+.olho-magico:hover { opacity:1; }
 
-            .login-image::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: var(--gradient-overlay, linear-gradient(135deg, rgba(198,90,17,0.78) 0%, rgba(244,160,29,0.45) 100%));
-                z-index: 1;
-            }
+.btn-entrar {
+  width:100%; padding:15px; background:var(--laranja); color:#fff; border:none;
+  border-radius:12px; font-size:14.5px; font-weight:700; cursor:pointer;
+  transition:all .2s ease; margin-top:6px; font-family:inherit; letter-spacing:-0.2px;
+}
+.btn-entrar:hover { background:#A04A0E; transform:translateY(-1px); box-shadow:0 8px 20px rgba(198,90,17,0.28); }
+.btn-entrar:disabled { opacity:0.55; cursor:not-allowed; transform:none; }
 
-            .login-image .content {
-                position: relative;
-                z-index: 2;
-                text-align: center;
-                max-width: 460px;
-                padding: 3rem;
-            }
+.erro-msg {
+  background:#FFF5F5; color:#C62828; padding:11px 13px; border-radius:10px;
+  margin-bottom:14px; display:none; font-size:12px; font-weight:600; border-left:3px solid #C62828;
+}
+.erro-msg.show { display:block; animation:shake .35s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
 
-            .logo-grande {
-                font-size: 9.5rem;
-                line-height: 1;
-                margin-bottom: 1.5rem;
-                filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.3));
-                animation: float 6s ease-in-out infinite;
-            }
+.rodape {
+  position:fixed; bottom:10px; right:20px; font-size:10px; color:var(--cinza);
+}
+.rodape strong { color:var(--grafite); }
 
-            .login-image h1 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                color: white;
-                line-height: 1.1;
-                margin-bottom: 1rem;
-                letter-spacing: -0.04em;
-            }
+.lgpd-banner {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:rgba(13,13,13,0.96); color:#fff; padding:11px 20px; border-radius:9999px;
+  z-index:9999; font-size:11px; display:flex; align-items:center; gap:14px;
+  box-shadow:0 10px 35px rgba(0,0,0,0.3);
+}
+.lgpd-banner button {
+  background:var(--laranja); color:#fff; border:none; padding:7px 16px;
+  border-radius:9999px; cursor:pointer; font-weight:600; font-size:11px;
+}
 
-            .login-form {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: var(--color-surface);
-                padding: 2.5rem;
-                position: relative;
-            }
-
-            .form-card {
-                background: var(--color-surface-glass);
-                backdrop-filter: blur(24px);
-                border: 1px solid var(--color-neutral-200);
-                border-radius: var(--radius-lg);
-                padding: 3rem 2.5rem;
-                width: 100%;
-                max-width: 440px;
-                box-shadow: var(--shadow-lg);
-                contain: layout style paint;
-            }
-
-            .tabs {
-                display: flex;
-                background: #F1F5F9;
-                padding: 6px;
-                border-radius: 14px;
-                margin-bottom: 2rem;
-                gap: 6px;
-            }
-
-            .tab {
-                flex: 1;
-                padding: 12px 16px;
-                border: none;
-                border-radius: 10px;
-                font-weight: 600;
-                font-size: 0.875rem;
-                cursor: pointer;
-                transition: all 0.3s var(--transition);
-                color: var(--color-neutral-700);
-            }
-
-            .tab.ativo {
-                background: white;
-                color: var(--color-terracotta-500);
-                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            }
-
-            .form-group {
-                margin-bottom: 1.25rem;
-                position: relative;
-            }
-
-            .form-group label {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-size: 0.75rem;
-                font-weight: 600;
-                color: var(--color-neutral-700);
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .form-group input {
-                width: 100%;
-                padding: 14px 16px;
-                border: 2px solid var(--color-neutral-200);
-                border-radius: var(--radius-md);
-                font-size: 1rem;
-                transition: all 0.25s var(--transition);
-                background: white;
-            }
-
-            .form-group input:focus {
-                outline: none;
-                border-color: var(--color-terracotta-500);
-                box-shadow: 0 0 0 4px rgba(198, 90, 17, 0.12);
-            }
-
-            .btn-entrar {
-                width: 100%;
-                padding: 16px;
-                margin-top: 1.25rem;
-                background: var(--color-terracotta-500);
-                color: white;
-                border: none;
-                border-radius: var(--radius-md);
-                font-size: 1.05rem;
-                font-weight: 700;
-                letter-spacing: -0.02em;
-                cursor: pointer;
-                transition: all 0.3s var(--transition);
-                position: relative;
-                overflow: hidden;
-            }
-
-            .btn-entrar:hover {
-                background: var(--color-terracotta-600);
-                transform: translateY(-2px);
-            }
-
-            .toast {
-                position: fixed;
-                bottom: 24px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #1E2937;
-                color: white;
-                padding: 14px 24px;
-                border-radius: 9999px;
-                font-size: 0.875rem;
-                box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
-                display: none;
-                align-items: center;
-                gap: 12px;
-                z-index: 10000;
-                white-space: nowrap;
-            }
-        }
-
-        @layer utilities {
-            .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
-            .text-balance { text-wrap: balance; }
-            @media (max-width: 768px) {
-                .login-container { flex-direction: column; }
-                .login-image { min-height: 38vh; }
-                .logo-grande { font-size: 6rem; }
-            }
-            @media (prefers-reduced-motion: reduce) {
-                * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-18px); }
-        }
-    </style>
+@media (max-width: 768px) {
+  .login-container { flex-direction:column; }
+  .login-image { min-height:32vh; }
+  .logo-grande { font-size:68px; }
+  .login-image h1 { font-size:21px; }
+  .form-card { padding:32px 26px; }
+}
+</style>
 </head>
 <body>
 
-<div id="toast" class="toast" role="alert" aria-live="polite"></div>
+<div class="lgpd-banner" id="lgpdBanner">
+  Cookies essenciais. Ao continuar, você concorda com a LGPD.
+  <button onclick="aceitarLGPD()">ENTENDI</button>
+</div>
 
 <div class="login-container">
-    <!-- Lado Esquerdo - Hero -->
-    <div class="login-image">
-        <div class="content">
-            <div class="logo-grande" aria-hidden="true">🌻</div>
-            <h1 class="text-balance">Transformando vidas<br>através da inclusão</h1>
-            <p style="color: rgba(255,255,255,0.85); font-size: 1.1rem; margin-top: 1rem;">
-                Gestão inteligente, transparente e com impacto real.
-            </p>
-        </div>
+  <!-- Lado visual -->
+  <div class="login-image">
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="logo-grande">🌻</div>
+      <h1>Transformando vidas<br>através da inclusão</h1>
+      <p>Gestão inteligente para uma sociedade mais inclusiva.</p>
+      <div class="badges">
+        <div class="badge-item">Inclusão Social</div>
+        <div class="badge-item">Transparência</div>
+        <div class="badge-item">Impacto Real</div>
+      </div>
     </div>
+  </div>
 
-    <!-- Lado Direito - Formulário -->
-    <div class="login-form">
-        <div class="form-card">
-            <div style="text-align:center; margin-bottom: 1.5rem;">
-                <div style="font-size: 3.25rem; margin-bottom: 0.5rem;">🌻</div>
-                <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--color-slate-950);">AMOVIN</h2>
-                <p style="color: var(--color-neutral-700); font-size: 0.95rem;">Associação e Movimento pela Inclusão</p>
-            </div>
+  <!-- Formulário -->
+  <div class="login-form">
+    <div class="form-card">
+      <div class="logo-top">🌻</div>
+      <h2>AMOVIN</h2>
+      <p class="subtitulo">Associação e Movimento pela Inclusão</p>
 
-            <div id="errorMessage" aria-live="polite" style="display:none; background:#FEE2E2; color:#B91C1C; padding:12px 16px; border-radius:12px; font-size:0.875rem; margin-bottom:1.25rem; border-left:4px solid #B91C1C;"></div>
+      <div class="erro-msg" id="erroMsg"></div>
 
-            <div class="tabs" role="tablist">
-                <button class="tab ativo" data-tab="admin" onclick="controller.switchTab(this)">Admin</button>
-                <button class="tab" data-tab="recepcao" onclick="controller.switchTab(this)">Recepção</button>
-                <button class="tab" data-tab="consulta" onclick="controller.switchTab(this)">Consulta</button>
-            </div>
+      <div class="tabs">
+        <button class="tab ativo" data-tab="admin">Admin</button>
+        <button class="tab" data-tab="recepcao">Recepção</button>
+        <button class="tab" data-tab="consulta">Consulta</button>
+      </div>
 
-            <form id="loginForm" novalidate>
-                <div class="form-group">
-                    <label for="username">Usuário</label>
-                    <input type="text" id="username" autocomplete="username" required placeholder="Digite seu usuário">
-                </div>
-
-                <div class="form-group" id="passwordGroup">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" autocomplete="current-password" required placeholder="••••••••">
-                </div>
-
-                <button type="submit" id="submitBtn" class="btn-entrar">
-                    <span id="btnText">Entrar no Sistema</span>
-                </button>
-            </form>
-
-            <p style="text-align:center; margin-top: 2rem; font-size: 0.75rem; color: var(--color-neutral-700);">
-                Desenvolvido por <strong>Vigorre Sistemas</strong><br>
-                <span style="font-size: 0.7rem; opacity: 0.6;">AMOVIN ERP Social v2.1.4 • Build 2025.12</span>
-            </p>
+      <form id="loginForm" autocomplete="off">
+        <div class="form-group">
+          <label for="nome">Login</label>
+          <input type="text" id="nome" required placeholder="Seu login ou nome" autocomplete="off">
         </div>
+        <div class="form-group" id="grupoSenha">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" placeholder="••••••••" autocomplete="new-password">
+          <button type="button" class="olho-magico" id="toggleSenha">👁️</button>
+        </div>
+        <button type="submit" class="btn-entrar" id="btnEntrar">Entrar no Sistema</button>
+      </form>
     </div>
+  </div>
+</div>
+
+<div class="rodape">
+  Desenvolvido por <strong>Vigorre Sistemas</strong> • Vigorre ERP Social
 </div>
 
 <script type="module">
-    // ====================== LOGIN CONTROLLER (Clean Architecture) ======================
-    class LoginController {
-        constructor() {
-            this.currentTab = 'admin';
-            this.isLoading = false;
-            this.init();
-        }
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-        init() {
-            const form = document.getElementById('loginForm');
-            form.addEventListener('submit', (e) => this.handleSubmit(e));
-            
-            // Keyboard support
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.isLoading) this.cancelLoading();
-            });
+  const firebaseConfig = {
+    apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
+    authDomain: "amovin-oficios-teste.firebaseapp.com",
+    projectId: "amovin-oficios-teste",
+    storageBucket: "amovin-oficios-teste.firebasestorage.app",
+    messagingSenderId: "901387183295",
+    appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
+  };
 
-            this.showToast('Bem-vindo ao AMOVIN ERP Social', 2200);
-        }
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-        switchTab(button) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('ativo'));
-            button.classList.add('ativo');
-            this.currentTab = button.dataset.tab;
+  let tabAtiva = 'admin';
 
-            const passwordGroup = document.getElementById('passwordGroup');
-            passwordGroup.style.display = (this.currentTab === 'recepcao') ? 'none' : 'block';
-        }
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+      tab.classList.add('ativo');
+      tabAtiva = tab.dataset.tab;
+      document.getElementById('erroMsg').classList.remove('show');
+    });
+  });
 
-        async handleSubmit(e) {
-            e.preventDefault();
-            if (this.isLoading) return;
+  // Toggle senha
+  document.getElementById('toggleSenha').addEventListener('click', function() {
+    const senha = document.getElementById('senha');
+    this.textContent = senha.type === 'password' ? '🙈' : '👁️';
+    senha.type = senha.type === 'password' ? 'text' : 'password';
+  });
 
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorEl = document.getElementById('errorMessage');
+  // Login
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('nome').value.trim();
+    const senha = document.getElementById('senha').value;
+    const erroMsg = document.getElementById('erroMsg');
 
-            if (!username) {
-                this.showError('O campo usuário é obrigatório.');
-                return;
-            }
-
-            this.setLoading(true);
-
-            // Simulação de latência realista + lógica de negócio
-            await new Promise(r => setTimeout(r, 680));
-
-            let success = false;
-            let userData = {};
-
-            if (this.currentTab === 'admin') {
-                if (username.toLowerCase() === 'admin' && password === 'amovin2026') {
-                    success = true;
-                    userData = { perfil: 'admin', nome: 'Administrador' };
-                }
-            } else if (this.currentTab === 'recepcao') {
-                success = true;
-                userData = { perfil: 'recepcao', nome: username || 'Recepcionista' };
-            } else if (this.currentTab === 'consulta') {
-                success = true;
-                userData = { perfil: 'consulta', nome: username || 'Consultor' };
-            }
-
-            if (success) {
-                sessionStorage.setItem('amovin_logado', 'true');
-                sessionStorage.setItem('amovin_perfil', userData.perfil);
-                sessionStorage.setItem('amovin_nome', userData.nome);
-                
-                this.showToast('Autenticação bem-sucedida. Redirecionando...', 1200);
-                setTimeout(() => window.location.href = 'dashboard.html', 800);
-            } else {
-                this.showError('Credenciais inválidas ou perfil incompatível.');
-                this.setLoading(false);
-            }
-        }
-
-        setLoading(state) {
-            this.isLoading = state;
-            const btn = document.getElementById('submitBtn');
-            const text = document.getElementById('btnText');
-            
-            if (state) {
-                btn.disabled = true;
-                text.innerHTML = `
-                    <span style="display:inline-block; animation: spin 1s linear infinite; margin-right:8px;">⟳</span>
-                    Autenticando...
-                `;
-            } else {
-                btn.disabled = false;
-                text.textContent = 'Entrar no Sistema';
-            }
-        }
-
-        showError(message) {
-            const el = document.getElementById('errorMessage');
-            el.textContent = message;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 4800);
-        }
-
-        showToast(message, duration = 3000) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.display = 'flex';
-            setTimeout(() => toast.style.display = 'none', duration);
-        }
-
-        cancelLoading() {
-            this.setLoading(false);
-        }
+    if (!nome) {
+      erroMsg.textContent = 'Preencha o campo de login.';
+      erroMsg.classList.add('show');
+      return;
     }
 
-    // Inicialização
-    const controller = new LoginController();
-    window.controller = controller; // Necessário apenas para onclick dos tabs (em produção usaria event delegation)
+    if (tabAtiva === 'admin' && nome.toLowerCase() === 'admin' && senha === 'amovin2026') {
+      sessionStorage.setItem('amovin_logado', 'true');
+      sessionStorage.setItem('amovin_perfil', 'admin');
+      sessionStorage.setItem('amovin_nome', 'Administrador');
+      window.location.href = 'dashboard.html';
+      return;
+    }
+
+    if (tabAtiva === 'recepcao' && !senha) {
+      sessionStorage.setItem('amovin_logado', 'true');
+      sessionStorage.setItem('amovin_perfil', 'recepcao');
+      sessionStorage.setItem('amovin_nome', nome);
+      window.location.href = 'dashboard.html';
+      return;
+    }
+
+    erroMsg.textContent = 'Login ou senha inválidos.';
+    erroMsg.classList.add('show');
+  });
+
+  // Firebase auth state
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      sessionStorage.setItem('amovin_logado', 'true');
+      window.location.href = 'dashboard.html';
+    }
+  });
+
+  // Proteção de navegação
+  history.pushState(null, null, location.href);
+  window.addEventListener('popstate', () => {
+    history.pushState(null, null, location.href);
+    signOut(auth);
+    sessionStorage.clear();
+    window.location.href = 'index.html';
+  });
+
+  // Timeout de sessão
+  let timeout;
+  function resetTimeout() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      signOut(auth);
+      sessionStorage.clear();
+      alert('Sessão expirada por inatividade.');
+      window.location.href = 'index.html';
+    }, 30 * 60 * 1000);
+  }
+  ['mousemove','keypress','click'].forEach(evt => 
+    document.addEventListener(evt, resetTimeout)
+  );
+  resetTimeout();
+
+  // LGPD
+  window.aceitarLGPD = function() {
+    document.getElementById('lgpdBanner').style.display = 'none';
+    localStorage.setItem('lgpd_aceito', 'true');
+  };
+  if (localStorage.getItem('lgpd_aceito') === 'true') {
+    document.getElementById('lgpdBanner').style.display = 'none';
+  }
+
+  // Keepalive
+  setInterval(() => {
+    localStorage.setItem('amovin_keepalive', new Date().toISOString());
+  }, 300000);
 </script>
 </body>
 </html>
