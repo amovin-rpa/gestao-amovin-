@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pessoas</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #4a148c; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 3px; }
+        .btn-roxo { background: #7b1fa2; color: white; }
+        .btn-amarelo { background: #ffc107; color: #333; }
+        .btn-vermelho { background: #f44336; color: white; }
+        .btn-verde { background: #4caf50; color: white; }
+        .btn-azul { background: #2196f3; color: white; }
+        .btn-laranja { background: #ff9800; color: white; }
+        .btn-cinza { background: #666; color: white; }
+        .card { background: white; padding: 18px; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0 0 4px 0; font-size: 16px; }
+        .card p { margin: 2px 0; color: #666; font-size: 13px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; background: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .tab.ativo { background: #7b1fa2; color: white; }
+        .busca { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .busca input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-width: 200px; }
+        .busca select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; width: 500px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
+        .modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .modal-box label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 3px; }
+        .foto-preview { width: 70px; height: 90px; border: 2px dashed #ccc; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; overflow: hidden; border-radius: 6px; }
+        .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .sem-dados { text-align: center; color: #bbb; padding: 30px; grid-column: 1 / -1; }
+        .kpi-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .kpi-card { background: white; padding: 15px 20px; border-radius: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; min-width: 120px; }
+        .kpi-card .valor { font-size: 24px; font-weight: bold; color: #4a148c; }
+        .kpi-card .label { font-size: 11px; color: #888; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .status-ativo { background: #e8f5e9; color: #2e7d32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .status-inativo { background: #ffebee; color: #c62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="topo">
+    <strong>Gestao de Pessoas</strong>
+    <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
+</div>
+
+<div class="container">
+    <div class="kpi-row">
+        <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div>
+        <div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Ativos</div></div>
+        <div class="kpi-card"><div class="valor" id="kpiInativos">0</div><div class="label">Inativos</div></div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab ativo" id="tabBenef" onclick="mudarAba('beneficiarios')">Beneficiarios</button>
+        <button class="tab" id="tabProf" onclick="mudarAba('profissionais')">Profissionais</button>
+        <button class="tab" id="tabVol" onclick="mudarAba('voluntarios')">Voluntarios</button>
+    </div>
+
+    <div class="busca">
+        <input type="text" id="busca" placeholder="Buscar por nome..." oninput="filtrar()">
+        <select id="ordem" onchange="filtrar()">
+            <option value="az">Ordem A-Z</option>
+            <option value="za">Ordem Z-A</option>
+        </select>
+        <select id="filtroStatus" onchange="filtrar()">
+            <option value="todos">Todos</option>
+            <option value="Ativo">Ativos</option>
+            <option value="Inativo">Inativos</option>
+        </select>
+        <button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button>
+    </div>
+    <div id="lista"></div>
+</div>
+
+<div class="modal" id="modalForm">
+    <div class="modal-box">
+        <h3 id="tituloModal">Novo Beneficiario</h3>
+        <input type="hidden" id="pessoaId">
+        
+        <div class="foto-preview" id="fotoPreview">3x4</div>
+        <input type="file" id="fotoUpload" accept="image/*" onchange="previewFoto()" style="font-size:12px;">
+        
+        <label>Nome completo *</label>
+        <input type="text" id="nomePessoa" placeholder="Nome completo">
+        
+        <div class="form-row">
+            <div><label>Idade</label><input type="number" id="idadePessoa" placeholder="Idade"></div>
+            <div><label>Data Nascimento</label><input type="date" id="nascimentoPessoa"></div>
+        </div>
+        
+        <div class="form-row">
+            <div><label>CPF</label><input type="text" id="cpfPessoa" placeholder="000.000.000-00"></div>
+            <div><label>RG</label><input type="text" id="rgPessoa" placeholder="RG"></div>
+        </div>
+        
+        <label>Telefone</label>
+        <input type="text" id="telefonePessoa" placeholder="(34) 99999-0000">
+        
+        <label>Projeto</label>
+        <select id="projetoPessoa">
+            <option>Inclusao Digital</option>
+            <option>Esporte para Todos</option>
+            <option>Reforco Escolar</option>
+            <option>Capacitacao Profissional</option>
+        </select>
+        
+        <label>Status</label>
+        <select id="statusPessoa">
+            <option>Ativo</option>
+            <option>Inativo</option>
+        </select>
+        
+        <label>Diagnostico</label>
+        <input type="text" id="diagnosticoPessoa" placeholder="Diagnostico ou condicao">
+        
+        <label>CID</label>
+        <input type="text" id="cidPessoa" placeholder="CID">
+        
+        <label>Nome do Responsavel</label>
+        <input type="text" id="respNome" placeholder="Nome do responsavel">
+        
+        <label>Telefone do Responsavel</label>
+        <input type="text" id="respFone" placeholder="Telefone do responsavel">
+        
+        <label>Endereco</label>
+        <input type="text" id="enderecoPessoa" placeholder="Endereco completo">
+        
+        <label>Observacoes</label>
+        <textarea id="obsPessoa" rows="2" placeholder="Anotacoes..."></textarea>
+        
+        <button class="btn btn-roxo" onclick="salvar()">Salvar</button>
+        <button class="btn btn-vermelho" onclick="fecharForm()">Cancelar</button>
+    </div>
+</div>
+
+<script>
+var beneficiarios = [];
+var editandoId = null;
+
+var dadosSalvos = localStorage.getItem('amovin_beneficiarios');
+if (dadosSalvos) { beneficiarios = JSON.parse(dadosSalvos); }
+
+if (beneficiarios.length === 0) {
+    beneficiarios.push({id:1, nome:'Maria Silva', idade:17, nascimento:'', cpf:'', rg:'', telefone:'(34) 99999-0001', projeto:'Inclusao Digital', status:'Ativo', diagnostico:'', cid:'', respNome:'Mae da Maria', respFone:'(34) 99999-0000', endereco:'', obs:'', foto:''});
+    beneficiarios.push({id:2, nome:'Joao Santos', idade:22, nascimento:'', cpf:'', rg:'', telefone:'(34) 99999-0002', projeto:'Esporte para Todos', status:'Ativo', diagnostico:'', cid:'', respNome:'', respFone:'', endereco:'', obs:'', foto:''});
+    beneficiarios.push({id:3, nome:'Ana Costa', idade:14, nascimento:'', cpf:'', rg:'', telefone:'(34) 99999-0003', projeto:'Reforco Escolar', status:'Ativo', diagnostico:'', cid:'', respNome:'', respFone:'', endereco:'', obs:'', foto:''});
+    salvarDados();
+}
+
+function salvarDados() { localStorage.setItem('amovin_beneficiarios', JSON.stringify(beneficiarios)); }
+
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = beneficiarios.length;
+    document.getElementById('kpiAtivos').textContent = beneficiarios.filter(function(b){ return b.status === 'Ativo'; }).length;
+    document.getElementById('kpiInativos').textContent = beneficiarios.filter(function(b){ return b.status === 'Inativo'; }).length;
+}
+
+function filtrar() {
+    var busca = document.getElementById('busca').value.toLowerCase();
+    var ordem = document.getElementById('ordem').value;
+    var statusFiltro = document.getElementById('filtroStatus').value;
+    var lista = [];
+    for (var i = 0; i < beneficiarios.length; i++) {
+        var b = beneficiarios[i];
+        var matchBusca = b.nome.toLowerCase().indexOf(busca) >= 0;
+        var matchStatus = statusFiltro === 'todos' || b.status === statusFiltro;
+        if (matchBusca && matchStatus) lista.push(b);
+    }
+    lista.sort(function(a, b) { if (ordem === 'az') return a.nome.localeCompare(b.nome); else return b.nome.localeCompare(a.nome); });
+    mostrarLista(lista);
+}
+
+function mostrarLista(lista) {
+    if (!lista) { lista = beneficiarios.slice(); lista.sort(function(a,b){ return a.nome.localeCompare(b.nome); }); }
+    var html = '';
+    if (lista.length === 0) html = '<div class="sem-dados">Nenhum beneficiario encontrado.</div>';
+    for (var i = 0; i < lista.length; i++) {
+        var b = lista[i];
+        var statusClass = b.status === 'Ativo' ? 'status-ativo' : 'status-inativo';
+        html += '<div class="card">';
+        if (b.foto) html += '<img src="' + b.foto + '" style="width:40px;height:50px;object-fit:cover;float:left;margin-right:10px;border-radius:4px;">';
+        html += '<h3>' + b.nome + ' <span class="' + statusClass + '">' + b.status + '</span></h3>';
+        html += '<p>Idade: ' + (b.idade||'-') + ' | Projeto: ' + b.projeto + ' | Tel: ' + (b.telefone||'-') + '</p>';
+        if (b.diagnostico) html += '<p>Diagnostico: ' + b.diagnostico + (b.cid ? ' | CID: ' + b.cid : '') + '</p>';
+        if (b.respNome) html += '<p>Resp: ' + b.respNome + (b.respFone ? ' | Tel: ' + b.respFone : '') + '</p>';
+        html += '<button class="btn btn-amarelo" onclick="editar(' + b.id + ')">Editar</button> ';
+        html += '<button class="btn btn-verde" onclick="window.location.href=\'prontuario.html?id=' + b.id + '\'">Prontuario</button> ';
+        html += '<button class="btn btn-laranja" onclick="imprimirTermo(' + b.id + ', \'adesao\')">Termo Adesao</button> ';
+        html += '<button class="btn btn-laranja" onclick="imprimirTermo(' + b.id + ', \'consentimento\')">TCLE</button> ';
+        html += '<button class="btn btn-azul" onclick="imprimir(' + b.id + ')">Imprimir</button> ';
+        html += '<button class="btn btn-vermelho" onclick="excluir(' + b.id + ')">Excluir</button>';
+        html += '</div>';
+    }
+    document.getElementById('lista').innerHTML = html;
+}
+
+window.previewFoto = function() {
+    var file = document.getElementById('fotoUpload').files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">'; };
+    reader.readAsDataURL(file);
+};
+
+window.abrirForm = function(id) {
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('tituloModal').textContent = id ? 'Editar Beneficiario' : 'Novo Beneficiario';
+    document.getElementById('fotoUpload').value = '';
+    document.getElementById('fotoPreview').innerHTML = '3x4';
+    if (id) {
+        var b = null;
+        for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } }
+        if (b) {
+            document.getElementById('pessoaId').value = b.id;
+            document.getElementById('nomePessoa').value = b.nome;
+            document.getElementById('idadePessoa').value = b.idade || '';
+            document.getElementById('nascimentoPessoa').value = b.nascimento || '';
+            document.getElementById('cpfPessoa').value = b.cpf || '';
+            document.getElementById('rgPessoa').value = b.rg || '';
+            document.getElementById('telefonePessoa').value = b.telefone || '';
+            document.getElementById('projetoPessoa').value = b.projeto;
+            document.getElementById('statusPessoa').value = b.status;
+            document.getElementById('diagnosticoPessoa').value = b.diagnostico || '';
+            document.getElementById('cidPessoa').value = b.cid || '';
+            document.getElementById('respNome').value = b.respNome || '';
+            document.getElementById('respFone').value = b.respFone || '';
+            document.getElementById('enderecoPessoa').value = b.endereco || '';
+            document.getElementById('obsPessoa').value = b.obs || '';
+            if (b.foto) document.getElementById('fotoPreview').innerHTML = '<img src="' + b.foto + '" style="width:100%;height:100%;object-fit:cover;">';
+        }
+    } else {
+        document.getElementById('pessoaId').value = '';
+        document.getElementById('nomePessoa').value = '';
+        document.getElementById('idadePessoa').value = '';
+        document.getElementById('nascimentoPessoa').value = '';
+        document.getElementById('cpfPessoa').value = '';
+        document.getElementById('rgPessoa').value = '';
+        document.getElementById('telefonePessoa').value = '';
+        document.getElementById('projetoPessoa').value = 'Inclusao Digital';
+        document.getElementById('statusPessoa').value = 'Ativo';
+        document.getElementById('diagnosticoPessoa').value = '';
+        document.getElementById('cidPessoa').value = '';
+        document.getElementById('respNome').value = '';
+        document.getElementById('respFone').value = '';
+        document.getElementById('enderecoPessoa').value = '';
+        document.getElementById('obsPessoa').value = '';
+    }
+};
+
+window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
+
+window.salvar = function() {
+    var nome = document.getElementById('nomePessoa').value;
+    if (!nome) { alert('Preencha o nome!'); return; }
+    var fotoAtual = document.getElementById('fotoPreview').querySelector('img');
+    var dados = {
+        nome: nome, idade: document.getElementById('idadePessoa').value,
+        nascimento: document.getElementById('nascimentoPessoa').value,
+        cpf: document.getElementById('cpfPessoa').value,
+        rg: document.getElementById('rgPessoa').value,
+        telefone: document.getElementById('telefonePessoa').value,
+        projeto: document.getElementById('projetoPessoa').value,
+        status: document.getElementById('statusPessoa').value,
+        diagnostico: document.getElementById('diagnosticoPessoa').value,
+        cid: document.getElementById('cidPessoa').value,
+        respNome: document.getElementById('respNome').value,
+        respFone: document.getElementById('respFone').value,
+        endereco: document.getElementById('enderecoPessoa').value,
+        obs: document.getElementById('obsPessoa').value,
+        foto: fotoAtual ? fotoAtual.src : ''
+    };
+    if (editandoId) {
+        for (var i = 0; i < beneficiarios.length; i++) {
+            if (beneficiarios[i].id === editandoId) { for (var key in dados) { beneficiarios[i][key] = dados[key]; } break; }
+        }
+    } else { dados.id = Date.now(); beneficiarios.push(dados); }
+    salvarDados(); filtrar(); atualizarKPIs(); fecharForm();
+};
+
+window.editar = function(id) { abrirForm(id); };
+
+window.excluir = function(id) {
+    if (!confirm('Excluir?')) return;
+    var novo = [];
+    for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id !== id) novo.push(beneficiarios[i]); }
+    beneficiarios = novo;
+    salvarDados(); filtrar(); atualizarKPIs();
+};
+
+window.imprimir = function(id) {
+    var b = null;
+    for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } }
+    if (!b) return;
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px;max-width:500px}</style></head><body><h2>AMOVIN - Beneficiario</h2>'+(b.foto?'<img src="'+b.foto+'" style="width:3cm;height:4cm;float:right;border:1px solid #000;">':'')+'<p><strong>Nome:</strong> '+b.nome+'</p><p><strong>Idade:</strong> '+(b.idade||'-')+'</p><p><strong>CPF:</strong> '+(b.cpf||'-')+'</p><p><strong>Projeto:</strong> '+b.projeto+'</p><p><strong>Status:</strong> '+b.status+'</p><p><strong>Diagnostico:</strong> '+(b.diagnostico||'-')+'</p><p><strong>Responsavel:</strong> '+(b.respNome||'-')+'</p><p><strong>Tel Resp:</strong> '+(b.respFone||'-')+'</p><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+window.imprimirTermo = function(id, tipo) {
+    var b = null;
+    for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } }
+    if (!b) return;
+    var hoje = new Date();
+    var data = hoje.toLocaleDateString('pt-BR', {day:'numeric',month:'long',year:'numeric'});
+    var w = window.open('','_blank');
+    var conteudo = '';
+    if (tipo === 'adesao') {
+        conteudo = '<h2>TERMO DE ADESAO E COMPROMISSO</h2><p><strong>Associado Responsavel:</strong> '+(b.respNome||'________________')+'</p><p><strong>CPF:</strong> '+(b.cpf||'________________')+'</p><p><strong>Beneficiario:</strong> '+b.nome+'</p><p>A AMOVIN se compromete a oferecer atividades e zelar pelo bem-estar do beneficiario.</p><p>O responsavel se compromete a manter frequencia e comunicar ausencias.</p>';
+    } else {
+        conteudo = '<h2>TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</h2><p><strong>Responsavel:</strong> '+(b.respNome||'________________')+'</p><p><strong>Beneficiario:</strong> '+b.nome+'</p><p>Declaro que fui informado sobre o tratamento e dou meu consentimento.</p>';
+    }
+    w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto;line-height:1.6}</style></head><body><h3>AMOVIN - CNPJ: 55.880.046/0001-34</h3>'+conteudo+'<p>Rio Paranaiba/MG, '+data+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura do Responsavel</div><div style="margin-top:30px;text-align:center;"><hr style="width:300px;">Presidencia AMOVIN</div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+window.mudarAba = function(aba) {
+    document.getElementById('tabBenef').classList.remove('ativo');
+    document.getElementById('tabProf').classList.remove('ativo');
+    document.getElementById('tabVol').classList.remove('ativo');
+    if (aba === 'beneficiarios') document.getElementById('tabBenef').classList.add('ativo');
+    if (aba === 'profissionais') { document.getElementById('tabProf').classList.add('ativo'); window.location.href = 'profissionais.html'; return; }
+    if (aba === 'voluntarios') { document.getElementById('tabVol').classList.add('ativo'); window.location.href = 'voluntarios.html'; return; }
+    filtrar();
+};
+
+atualizarKPIs();
+filtrar();
+</script>
+</body>
+</html>

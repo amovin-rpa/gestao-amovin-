@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOVIN - Agenda</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+        .topo {
+            background: linear-gradient(135deg, #0277bd 0%, #0288d1 100%);
+            color: white; padding: 14px 25px; display: flex;
+            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .topo h2 { font-size: 18px; }
+        .btn-topo {
+            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px;
+        }
+        .btn-topo:hover { background: rgba(255,255,255,0.3); }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        /* ABAS */
+        .abas { display: flex; gap: 5px; margin-bottom: 20px; }
+        .aba {
+            padding: 12px 25px; border: none; border-radius: 10px 10px 0 0;
+            cursor: pointer; font-weight: bold; font-size: 14px; background: white; color: #666;
+        }
+        .aba.ativa { background: #0288d1; color: white; }
+
+        /* GRID */
+        .grid-agenda { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .card h3 { color: #0277bd; margin-bottom: 18px; font-size: 17px; border-bottom: 3px solid #0288d1; padding-bottom: 10px; }
+
+        /* FORM */
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: 600; font-size: 13px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #0288d1; outline: none; }
+        .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .btn-salvar {
+            width: 100%; padding: 12px; background: #0288d1; color: white; border: none;
+            border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer;
+        }
+        .btn-cancelar {
+            width: 100%; padding: 10px; background: #eee; border: none; border-radius: 10px;
+            cursor: pointer; font-size: 13px; margin-top: 5px;
+        }
+
+        /* LISTA */
+        .evento-item {
+            display: flex; align-items: center; gap: 15px; padding: 14px; border-radius: 10px;
+            margin-bottom: 8px; background: #f8f9fa; border-left: 4px solid #0288d1;
+        }
+        .evento-item.presente { border-left-color: #4caf50; background: #e8f5e9; }
+        .evento-item.falta { border-left-color: #f44336; background: #ffebee; }
+        .evento-item.cancelado { border-left-color: #9c27b0; background: #f3e5f5; }
+
+        .evento-hora { font-weight: 700; font-size: 16px; color: #0277bd; min-width: 55px; }
+        .evento-info { flex: 1; }
+        .evento-info .nome { font-weight: 600; }
+        .evento-info .detalhe { font-size: 12px; color: #777; }
+
+        .btn-acao {
+            padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px;
+            font-weight: bold; margin: 2px;
+        }
+        .btn-presente { background: #4caf50; color: white; }
+        .btn-falta { background: #f44336; color: white; }
+        .btn-editar { background: #ffc107; color: #333; }
+        .btn-excluir { background: #ddd; color: #333; }
+        .btn-wpp { background: #25d366; color: white; }
+
+        .status-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;
+        }
+        .badge-agendado { background: #e3f2fd; color: #1565c0; }
+        .badge-presente { background: #e8f5e9; color: #2e7d32; }
+        .badge-falta { background: #ffebee; color: #c62828; }
+        .badge-cancelado { background: #f3e5f5; color: #7b1fa2; }
+
+        .sem-dados { text-align: center; padding: 40px; color: #bbb; }
+
+        @media (max-width: 900px) { .grid-agenda { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="topo">
+        <h2>📅 Agenda - AMOVIN</h2>
+        <div>
+            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
+            <a href="oficios.html" class="btn-topo">📄 Ofícios</a>
+            <a href="pessoas.html" class="btn-topo">👥 Pessoas</a>
+            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- ABAS -->
+        <div class="abas">
+            <button class="aba ativa" onclick="mudarAba('agendamentos', this)">📋 Agendamentos</button>
+            <button class="aba" onclick="mudarAba('disponibilidade', this)">🕐 Minha Disponibilidade</button>
+        </div>
+
+        <!-- ABA: AGENDAMENTOS -->
+        <div id="aba-agendamentos">
+            <div class="grid-agenda">
+                <!-- FORMULÁRIO -->
+                <div class="card">
+                    <h3><span id="tituloForm">📝 Novo Agendamento</span></h3>
+                    <input type="hidden" id="eventoId">
+
+                    <div class="form-group">
+                        <label>Beneficiário *</label>
+                        <select id="beneficiario" required>
+                            <option value="">Selecione...</option>
+                            <option value="1">Maria Silva</option>
+                            <option value="2">João Santos</option>
+                            <option value="3">Ana Costa</option>
+                            <option value="4">Pedro Lima</option>
+                            <option value="5">Carla Souza</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Profissional *</label>
+                        <select id="profissional">
+                            <option value="Dr. Carlos Mendes">Dr. Carlos Mendes - Psicólogo</option>
+                            <option value="Dra. Lucia Ferreira">Dra. Lucia Ferreira - Assistente Social</option>
+                            <option value="Prof. Sandra Reis">Profa. Sandra Reis - Pedagoga</option>
+                        </select>
+                    </div>
+
+                    <div class="linha-dupla">
+                        <div class="form-group">
+                            <label>Data *</label>
+                            <input type="date" id="dataEvento" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Horário *</label>
+                            <select id="horaEvento" required>
+                                <option value="">Selecione...</option>
+                                <option>08:00</option><option>08:30</option><option>09:00</option><option>09:30</option>
+                                <option>10:00</option><option>10:30</option><option>11:00</option><option>11:30</option>
+                                <option>13:00</option><option>13:30</option><option>14:00</option><option>14:30</option>
+                                <option>15:00</option><option>15:30</option><option>16:00</option><option>16:30</option>
+                                <option>17:00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sala/Consultório *</label>
+                        <select id="salaEvento">
+                            <option value="1">Sala 1 - Consultório Psicológico</option>
+                            <option value="2">Sala 2 - Atendimento Social</option>
+                            <option value="3">Sala 3 - Reuniões</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <input type="text" id="obsEvento" placeholder="Opcional...">
+                    </div>
+
+                    <button class="btn-salvar" onclick="salvarAgendamento()">💾 Salvar</button>
+                    <button class="btn-cancelar" id="btnCancelar" style="display:none;" onclick="cancelarEdicao()">Cancelar</button>
+                </div>
+
+                <!-- LISTA -->
+                <div class="card">
+                    <h3>📋 Agendamentos <span style="font-weight:normal;font-size:13px;color:#888;" id="totalAgendamentos"></span></h3>
+                    <div id="listaAgendamentos"><div class="sem-dados">Nenhum agendamento.</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA: DISPONIBILIDADE -->
+        <div id="aba-disponibilidade" style="display:none;">
+            <div class="card">
+                <h3>🕐 Meus Horários Disponíveis</h3>
+                <p style="color:#888;font-size:14px;margin-bottom:15px;">
+                    Defina seus horários de atendimento. Os beneficiários só poderão agendar nos horários disponíveis.
+                </p>
+
+                <div class="grid-agenda">
+                    <div class="card" style="box-shadow:none;border:1px solid #eee;">
+                        <h3 style="font-size:15px;">➕ Adicionar Horário</h3>
+                        <div class="linha-dupla">
+                            <div class="form-group"><label>Data</label><input type="date" id="slotData"></div>
+                            <div class="form-group"><label>Horário</label><input type="time" id="slotHora"></div>
+                        </div>
+                        <div class="form-group"><label>Sala</label>
+                            <select id="slotSala">
+                                <option value="1">Sala 1</option><option value="2">Sala 2</option><option value="3">Sala 3</option>
+                            </select>
+                        </div>
+                        <button class="btn-salvar" onclick="adicionarSlot()">➕ Adicionar</button>
+                    </div>
+
+                    <div id="listaSlots" style="max-height:400px;overflow-y:auto;">
+                        <div class="sem-dados">Nenhum horário cadastrado.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== DADOS ==========
+        let agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
+        let slots = JSON.parse(localStorage.getItem('amovin_slots') || '[]');
+        let editandoId = null;
+
+        const beneficiariosNomes = {1:'Maria Silva',2:'João Santos',3:'Ana Costa',4:'Pedro Lima',5:'Carla Souza'};
+        const salasNomes = {1:'Sala 1',2:'Sala 2',3:'Sala 3'};
+
+        if (agendamentos.length === 0) {
+            agendamentos = [
+                {id:1,beneficiario:'1',profissional:'Dr. Carlos Mendes',data:'2026-06-23',hora:'09:00',sala:'1',obs:'Psicologia',status:'agendado'},
+                {id:2,beneficiario:'2',profissional:'Dra. Lucia Ferreira',data:'2026-06-23',hora:'10:00',sala:'2',obs:'Social',status:'presente'},
+                {id:3,beneficiario:'3',profissional:'Dr. Carlos Mendes',data:'2026-06-23',hora:'11:00',sala:'1',obs:'Retorno',status:'agendado'},
+            ];
+            salvarDados();
+        }
+
+        function salvarDados() {
+            localStorage.setItem('amovin_agendamentos', JSON.stringify(agendamentos));
+            localStorage.setItem('amovin_slots', JSON.stringify(slots));
+        }
+
+        // ========== RENDERIZAR ==========
+        function renderizarAgendamentos() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const lista = agendamentos.filter(a => a.data === hoje).sort((a,b) => a.hora.localeCompare(b.hora));
+            
+            document.getElementById('totalAgendamentos').textContent = lista.length + ' hoje';
+            document.getElementById('dataEvento').value = hoje;
+
+            const container = document.getElementById('listaAgendamentos');
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="sem-dados">📅 Nenhum agendamento para hoje.</div>';
+                return;
+            }
+
+            container.innerHTML = lista.map(a => {
+                const classeStatus = a.status === 'presente' ? 'presente' : a.status === 'falta' ? 'falta' : a.status === 'cancelado' ? 'cancelado' : '';
+                const badgeClasse = 'badge-' + (a.status || 'agendado');
+                const statusNome = {agendado:'Agendado',presente:'Presente',falta:'Falta',cancelado:'Cancelado'};
+                
+                return `
+                <div class="evento-item ${classeStatus}">
+                    <div class="evento-hora">${a.hora}</div>
+                    <div class="evento-info">
+                        <div class="nome">${beneficiariosNomes[a.beneficiario] || 'Beneficiário'} <span class="status-badge ${badgeClasse}">${statusNome[a.status||'agendado']}</span></div>
+                        <div class="detalhe">👤 ${a.profissional} | 🏠 ${salasNomes[a.sala]} ${a.obs ? '| 📝 '+a.obs : ''}</div>
+                    </div>
+                    <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                        ${a.status === 'agendado' ? `<button class="btn-acao btn-presente" onclick="marcarPresenca(${a.id})">✅</button><button class="btn-acao btn-falta" onclick="marcarFalta(${a.id})">❌</button>` : ''}
+                        <button class="btn-acao btn-editar" onclick="editarAgendamento(${a.id})">✏️</button>
+                        <button class="btn-acao btn-excluir" onclick="excluirAgendamento(${a.id})">🗑️</button>
+                        <button class="btn-acao btn-wpp" onclick="whatsapp(${a.beneficiario})">📱</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderizarSlots() {
+            const container = document.getElementById('listaSlots');
+            if (slots.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum horário cadastrado.</div>';
+                return;
+            }
+
+            container.innerHTML = slots.sort((a,b) => a.data.localeCompare(b.data) || a.hora.localeCompare(b.hora)).map(s => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee;">
+                    <div>
+                        <strong>📅 ${new Date(s.data+'T00:00:00').toLocaleDateString('pt-BR')}</strong> 
+                        🕐 ${s.hora} | 🏠 ${salasNomes[s.sala]}
+                    </div>
+                    <button class="btn-acao btn-excluir" onclick="removerSlot('${s.data}','${s.hora}','${s.sala}')">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        // ========== CRUD AGENDAMENTOS ==========
+        window.salvarAgendamento = function() {
+            const b = document.getElementById('beneficiario').value;
+            const p = document.getElementById('profissional').value;
+            const d = document.getElementById('dataEvento').value;
+            const h = document.getElementById('horaEvento').value;
+            const s = document.getElementById('salaEvento').value;
+            const o = document.getElementById('obsEvento').value;
+
+            if (!b || !p || !d || !h) { alert('❌ Preencha todos os campos!'); return; }
+
+            // Verificar conflito
+            const conflito = agendamentos.find(a => a.data === d && a.hora === h && a.sala === s && a.id !== editandoId && a.status !== 'cancelado');
+            if (conflito) {
+                alert('⚠️ Sala ' + salasNomes[s] + ' já ocupada neste horário!\n\n' + beneficiariosNomes[conflito.beneficiario] + ' - ' + conflito.hora);
+                return;
+            }
+
+            if (editandoId) {
+                const idx = agendamentos.findIndex(a => a.id === editandoId);
+                if (idx >= 0) agendamentos[idx] = {...agendamentos[idx], beneficiario:b, profissional:p, data:d, hora:h, sala:s, obs:o};
+                editandoId = null;
+                document.getElementById('btnCancelar').style.display = 'none';
+                document.getElementById('tituloForm').textContent = '📝 Novo Agendamento';
+            } else {
+                agendamentos.push({id: Date.now(), beneficiario:b, profissional:p, data:d, hora:h, sala:s, obs:o, status:'agendado'});
+            }
+
+            salvarDados(); renderizarAgendamentos(); limparForm();
+        };
+
+        window.editarAgendamento = function(id) {
+            const a = agendamentos.find(a => a.id === id);
+            if (!a) return;
+            editandoId = id;
+            document.getElementById('tituloForm').textContent = '✏️ Editando';
+            document.getElementById('beneficiario').value = a.beneficiario;
+            document.getElementById('profissional').value = a.profissional;
+            document.getElementById('dataEvento').value = a.data;
+            document.getElementById('horaEvento').value = a.hora;
+            document.getElementById('salaEvento').value = a.sala;
+            document.getElementById('obsEvento').value = a.obs || '';
+            document.getElementById('btnCancelar').style.display = 'block';
+            window.scrollTo({top:0,behavior:'smooth'});
+        };
+
+        window.excluirAgendamento = function(id) {
+            if (!confirm('Excluir agendamento?')) return;
+            agendamentos = agendamentos.filter(a => a.id !== id);
+            salvarDados(); renderizarAgendamentos();
+            if (editandoId === id) cancelarEdicao();
+        };
+
+        window.cancelarEdicao = function() {
+            editandoId = null; limparForm();
+            document.getElementById('btnCancelar').style.display = 'none';
+            document.getElementById('tituloForm').textContent = '📝 Novo Agendamento';
+        };
+
+        window.marcarPresenca = function(id) {
+            const a = agendamentos.find(a => a.id === id);
+            if (a) { a.status = 'presente'; salvarDados(); renderizarAgendamentos(); }
+        };
+
+        window.marcarFalta = function(id) {
+            const a = agendamentos.find(a => a.id === id);
+            if (a) { a.status = 'falta'; salvarDados(); renderizarAgendamentos(); }
+        };
+
+        window.whatsapp = function(benId) {
+            const nome = beneficiariosNomes[benId] || 'Beneficiário';
+            window.open('https://wa.me/?text=' + encodeURIComponent('Olá ' + nome + '! Lembramos do seu atendimento na AMOVIN.'));
+        };
+
+        function limparForm() {
+            document.getElementById('beneficiario').value = '';
+            document.getElementById('profissional').value = '';
+            document.getElementById('horaEvento').value = '';
+            document.getElementById('obsEvento').value = '';
+        }
+
+        // ========== SLOTS ==========
+        window.adicionarSlot = function() {
+            const d = document.getElementById('slotData').value;
+            const h = document.getElementById('slotHora').value;
+            const s = document.getElementById('slotSala').value;
+            if (!d || !h) { alert('Preencha data e horário!'); return; }
+            slots.push({data:d, hora:h, sala:s});
+            salvarDados(); renderizarSlots();
+            document.getElementById('slotData').value = '';
+            document.getElementById('slotHora').value = '';
+        };
+
+        window.removerSlot = function(d, h, s) {
+            slots = slots.filter(sl => !(sl.data === d && sl.hora === h && sl.sala === s));
+            salvarDados(); renderizarSlots();
+        };
+
+        // ========== ABAS ==========
+        window.mudarAba = function(aba, btn) {
+            document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+            btn.classList.add('ativa');
+            document.getElementById('aba-agendamentos').style.display = aba === 'agendamentos' ? 'block' : 'none';
+            document.getElementById('aba-disponibilidade').style.display = aba === 'disponibilidade' ? 'block' : 'none';
+        };
+
+        // ========== LOGOUT ==========
+        window.fazerLogout = function() {
+            sessionStorage.clear(); window.location.href = 'index.html';
+        };
+
+        // ========== SEGURANÇA ==========
+        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => {
+            history.pushState(null, null, location.href);
+            sessionStorage.clear(); window.location.href = 'index.html';
+        });
+
+        let timeout;
+        function resetTimeout() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html';
+            }, 30 * 60 * 1000);
+        }
+        document.addEventListener('mousemove', resetTimeout);
+        document.addEventListener('keypress', resetTimeout);
+        document.addEventListener('click', resetTimeout);
+        resetTimeout();
+
+        // ========== INICIAR ==========
+        renderizarAgendamentos();
+        renderizarSlots();
+        document.getElementById('dataEvento').value = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>

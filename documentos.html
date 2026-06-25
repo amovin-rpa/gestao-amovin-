@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOVIN ERP Social - Documentos Oficiais</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+        .topo { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); color: white; padding: 14px 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .topo h2 { font-size: 18px; }
+        .btn-topo { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px; }
+        .btn-topo:hover { background: rgba(255,255,255,0.3); }
+        .container { max-width: 1500px; margin: 0 auto; padding: 20px; }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .kpi-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center; }
+        .kpi-card .kpi-valor { font-size: 24px; font-weight: bold; color: #1a237e; }
+        .kpi-card .kpi-label { font-size: 10px; color: #888; margin-top: 3px; }
+
+        .grid-principal { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .card h3 { color: #1a237e; margin-bottom: 18px; font-size: 17px; border-bottom: 3px solid #283593; padding-bottom: 10px; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 12px; color: #444; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #283593; outline: none; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; margin: 3px; transition: all 0.2s; }
+        .btn-salvar { background: #283593; color: white; }
+        .btn-ia { background: #8e24aa; color: white; }
+        .btn-editar { background: #ffc107; color: #333; }
+        .btn-visualizar { background: #2196f3; color: white; }
+        .btn-imprimir { background: #4caf50; color: white; }
+        .btn-cancelar { background: #f44336; color: white; }
+        .btn-duplicar { background: #ff9800; color: white; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #f5f5f5; padding: 10px; text-align: left; font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; }
+        td { padding: 10px; border-bottom: 1px solid #f0f0f0; }
+        tr:hover { background: #fafafa; }
+
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .badge-recibo { background: #e3f2fd; color: #1565c0; }
+        .badge-protocolo { background: #fff3e0; color: #e65100; }
+        .badge-declaracao { background: #e8f5e9; color: #2e7d32; }
+        .badge-termo { background: #f3e5f5; color: #7b1fa2; }
+        .badge-rascunho { background: #f5f5f5; color: #888; }
+        .badge-emitido { background: #e8f5e9; color: #2e7d32; }
+        .badge-cancelado { background: #ffebee; color: #c62828; }
+
+        .busca-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .busca-bar input { flex: 1; padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; min-width: 200px; }
+        .busca-bar select { padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; }
+
+        .log-item { padding: 8px 15px; border-bottom: 1px solid #f0f0f0; font-size: 12px; display: flex; justify-content: space-between; }
+        .sem-dados { text-align: center; padding: 40px; color: #bbb; }
+
+        .vinculo-info { background: #e8f5e9; padding: 10px; border-radius: 8px; font-size: 12px; margin-top: 8px; display: none; }
+
+        @media (max-width: 1000px) { .grid-principal { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="topo">
+        <h2>📄 Documentos Oficiais</h2>
+        <div>
+            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
+            <a href="bi.html" class="btn-topo">📊 BI</a>
+            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- KPIs -->
+        <div class="kpi-row">
+            <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
+            <div class="kpi-card"><div class="kpi-valor" id="kpiRecibos">0</div><div class="kpi-label">Recibos</div></div>
+            <div class="kpi-card"><div class="kpi-valor" id="kpiProtocolos">0</div><div class="kpi-label">Protocolos</div></div>
+            <div class="kpi-card"><div class="kpi-valor" id="kpiDeclaracoes">0</div><div class="kpi-label">Declarações</div></div>
+            <div class="kpi-card"><div class="kpi-valor" id="kpiHoje">0</div><div class="kpi-label">Hoje</div></div>
+            <div class="kpi-card"><div class="kpi-valor" id="kpiCancelados">0</div><div class="kpi-label">Cancelados</div></div>
+        </div>
+
+        <div class="grid-principal">
+            <!-- FORMULÁRIO -->
+            <div>
+                <div class="card">
+                    <h3 id="tituloForm">📝 Novo Documento</h3>
+                    <input type="hidden" id="docId">
+
+                    <div class="form-group"><label>Tipo *</label><select id="tipoDoc" onchange="atualizarTipo()"><option value="recibo">🧾 Recibo</option><option value="protocolo">🔢 Protocolo</option><option value="declaracao">📝 Declaração</option><option value="termo">📋 Termo de Entrega</option></select></div>
+                    <div class="form-group"><label>Status</label><select id="statusDoc"><option value="rascunho">📝 Rascunho</option><option value="emitido">✅ Emitido</option></select></div>
+
+                    <!-- Seleção de beneficiário -->
+                    <div class="form-group">
+                        <label>Beneficiário (opcional)</label>
+                        <select id="beneficiarioDoc" onchange="vincularBeneficiario()">
+                            <option value="">Nenhum (documento avulso)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group"><label>Nome/Pessoa *</label><input type="text" id="nomeDoc" placeholder="Nome completo"></div>
+                        <div class="form-group"><label>CPF/CNPJ *</label><input type="text" id="cpfDoc" placeholder="000.000.000-00"></div>
+                    </div>
+
+                    <!-- Vínculo com patrimônio (para termos de entrega) -->
+                    <div id="vinculoPatrimonio" style="display:none;">
+                        <div class="form-group">
+                            <label>Item a Entregar (do estoque)</label>
+                            <select id="itemPatrimonio" onchange="atualizarInfoItem()">
+                                <option value="">Selecione um item...</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Quantidade</label><input type="number" id="qtdEntregue" value="1" min="1"></div>
+                        <div class="vinculo-info" id="infoItem"></div>
+                    </div>
+
+                    <div id="camposRecibo">
+                        <div class="form-row">
+                            <div class="form-group"><label>Valor (R$)</label><input type="number" id="valorDoc" step="0.01" placeholder="0,00"></div>
+                            <div class="form-group"><label>Data *</label><input type="date" id="dataDoc"></div>
+                        </div>
+                    </div>
+
+                    <div id="camposProtocolo" style="display:none;">
+                        <div class="form-row">
+                            <div class="form-group"><label>Origem</label><input type="text" id="origemDoc"></div>
+                            <div class="form-group"><label>Destino</label><input type="text" id="destinoDoc"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group"><label>Texto do Documento</label><textarea id="textoDoc" rows="5" placeholder="Digite o conteúdo..."></textarea></div>
+                    <div class="form-group"><label>Observações Internas</label><input type="text" id="obsDoc" placeholder="Anotações (não aparecem no documento)"></div>
+
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn btn-salvar" onclick="salvarDocumento()" style="flex:1;">💾 Salvar</button>
+                        <button class="btn btn-ia" onclick="sugerirComIA()">🤖 Sugerir IA</button>
+                    </div>
+                    <button class="btn btn-cancelar" onclick="limparFormulario()" style="width:100%;margin-top:8px;">🔄 Limpar</button>
+                </div>
+            </div>
+
+            <!-- LISTA -->
+            <div>
+                <div class="busca-bar">
+                    <input type="text" id="buscaDoc" placeholder="🔍 Buscar..." oninput="filtrarDocumentos()">
+                    <select id="filtroTipo" onchange="filtrarDocumentos()"><option value="todos">Todos</option><option value="recibo">Recibos</option><option value="protocolo">Protocolos</option><option value="declaracao">Declarações</option><option value="termo">Termos</option></select>
+                    <select id="filtroStatus" onchange="filtrarDocumentos()"><option value="todos">Todos</option><option value="rascunho">Rascunhos</option><option value="emitido">Emitidos</option><option value="cancelado">Cancelados</option></select>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Documentos <span style="font-size:12px;color:#888;" id="totalLista"></span></h3>
+                    <div style="overflow-x:auto;"><table><thead><tr><th>Número</th><th>Tipo</th><th>Nome</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tabelaDocumentos"></tbody></table></div>
+                </div>
+
+                <div class="card"><h3>📝 Histórico</h3><div id="logAuditoria" style="max-height:200px;overflow-y:auto;"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DADOS ====================
+        let documentos = JSON.parse(localStorage.getItem('amovin_documentos_oficiais') || '[]');
+        let logs = JSON.parse(localStorage.getItem('amovin_documentos_logs') || '[]');
+        let bens = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
+        let beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
+        let pessoas = JSON.parse(localStorage.getItem('amovin_pessoas_beneficiarios') || '[]');
+        const todosBeneficiarios = [...beneficiarios, ...pessoas];
+        let editandoId = null;
+        const usuarioAtual = sessionStorage.getItem('amovin_nome') || 'Administrador';
+
+        if (documentos.length === 0) {
+            documentos = [
+                { id: 1, tipo: 'recibo', numero: 'REC-2026-000001', nome: 'João Silva', cpf: '123.456.789-00', valor: 500, data: '2026-06-20', texto: 'Recebi de João Silva...', status: 'emitido', obs: '', origem: '', destino: '', beneficiarioId: '', itemPatrimonioId: '', qtdEntregue: 1, criadoPor: 'Admin', criadoEm: '2026-06-20T10:00:00' },
+                { id: 2, tipo: 'termo', numero: 'TER-2026-000001', nome: 'Maria Souza', cpf: '987.654.321-00', valor: 0, data: '2026-06-22', texto: 'Termo de entrega de cadeira de rodas...', status: 'emitido', obs: '', origem: '', destino: '', beneficiarioId: '1', itemPatrimonioId: '3', qtdEntregue: 1, criadoPor: 'Admin', criadoEm: '2026-06-22T14:00:00' },
+            ];
+            salvarDados();
+        }
+
+        function salvarDados() { localStorage.setItem('amovin_documentos_oficiais', JSON.stringify(documentos)); localStorage.setItem('amovin_documentos_logs', JSON.stringify(logs)); }
+
+        // ==================== NUMERAÇÃO ====================
+        function calcularProximoNumero(tipo) {
+            const prefixos = { recibo: 'REC', protocolo: 'PRO', declaracao: 'DEC', termo: 'TER' };
+            const prefixo = prefixos[tipo] || 'DOC';
+            const ano = new Date().getFullYear();
+            const docsTipo = documentos.filter(d => d.tipo === tipo && d.numero && d.numero.includes(String(ano)));
+            if (docsTipo.length === 0) return `${prefixo}-${ano}-000001`;
+            const nums = docsTipo.map(d => parseInt(d.numero.split('-')[2])).filter(n => !isNaN(n));
+            return `${prefixo}-${ano}-${String(Math.max(...nums) + 1).padStart(6, '0')}`;
+        }
+
+        // ==================== POPULAR SELECTS ====================
+        function popularBeneficiarios() {
+            const sel = document.getElementById('beneficiarioDoc');
+            sel.innerHTML = '<option value="">Nenhum (documento avulso)</option>' +
+                todosBeneficiarios.map(b => `<option value="${b.id}">${b.nome || b.fullName || ''} - ${b.cpf || b.doc || ''}</option>`).join('');
+        }
+
+        function popularItensPatrimonio() {
+            const sel = document.getElementById('itemPatrimonio');
+            sel.innerHTML = '<option value="">Selecione um item...</option>' +
+                bens.filter(b => b.status === 'Em Operação' || b.status === 'Disponível').map(b => `<option value="${b.id}">${b.nome} (${b.numero || 'S/N'}) - Qtd: ${b.quantidade || 1}</option>`).join('');
+        }
+
+        // ==================== ATUALIZAR TIPO ====================
+        window.atualizarTipo = function() {
+            const tipo = document.getElementById('tipoDoc').value;
+            document.getElementById('camposRecibo').style.display = (tipo === 'recibo') ? 'block' : 'none';
+            document.getElementById('camposProtocolo').style.display = (tipo === 'protocolo') ? 'block' : 'none';
+            document.getElementById('vinculoPatrimonio').style.display = (tipo === 'termo') ? 'block' : 'none';
+            if (tipo === 'termo') popularItensPatrimonio();
+        };
+
+        // ==================== VINCULAR BENEFICIÁRIO ====================
+        window.vincularBeneficiario = function() {
+            const id = document.getElementById('beneficiarioDoc').value;
+            if (!id) return;
+            const ben = todosBeneficiarios.find(b => b.id == id);
+            if (ben) {
+                document.getElementById('nomeDoc').value = ben.nome || ben.fullName || '';
+                document.getElementById('cpfDoc').value = ben.cpf || ben.doc || '';
+            }
+        };
+
+        window.atualizarInfoItem = function() {
+            const id = document.getElementById('itemPatrimonio').value;
+            const info = document.getElementById('infoItem');
+            if (!id) { info.style.display = 'none'; return; }
+            const item = bens.find(b => b.id == id);
+            if (item) {
+                info.style.display = 'block';
+                info.innerHTML = `📦 <strong>${item.nome}</strong> | Disponível: ${item.quantidade || 1} | Local: ${item.localizacao || 'N/A'}`;
+            }
+        };
+
+        // ==================== SALVAR ====================
+        window.salvarDocumento = function() {
+            const tipo = document.getElementById('tipoDoc').value;
+            const nome = document.getElementById('nomeDoc').value.trim();
+            const cpf = document.getElementById('cpfDoc').value.trim();
+            const status = document.getElementById('statusDoc').value;
+            if (!nome || !cpf) { alert('❌ Nome e CPF/CNPJ são obrigatórios!'); return; }
+
+            const dados = {
+                tipo, nome, cpf, status,
+                valor: parseFloat(document.getElementById('valorDoc').value) || 0,
+                data: document.getElementById('dataDoc').value || new Date().toISOString().split('T')[0],
+                texto: document.getElementById('textoDoc').value.trim(),
+                obs: document.getElementById('obsDoc').value.trim(),
+                origem: document.getElementById('origemDoc').value.trim(),
+                destino: document.getElementById('destinoDoc').value.trim(),
+                beneficiarioId: document.getElementById('beneficiarioDoc').value,
+                itemPatrimonioId: document.getElementById('itemPatrimonio').value,
+                qtdEntregue: parseInt(document.getElementById('qtdEntregue').value) || 1,
+            };
+
+            if (editandoId) {
+                const idx = documentos.findIndex(d => d.id === editandoId);
+                if (idx >= 0) {
+                    if (documentos[idx].status !== 'rascunho') { alert('⚠️ Só rascunhos podem ser editados!'); return; }
+                    documentos[idx] = { ...documentos[idx], ...dados, atualizadoPor: usuarioAtual, atualizadoEm: new Date().toISOString() };
+                    addLog('✏️ Editou', documentos[idx].numero);
+                }
+                editandoId = null;
+            } else {
+                const numero = calcularProximoNumero(tipo);
+                const novoDoc = { id: Date.now(), numero, ...dados, criadoPor: usuarioAtual, criadoEm: new Date().toISOString() };
+                documentos.push(novoDoc);
+
+                // BAIXA AUTOMÁTICA DE ESTOQUE (Termo de Entrega)
+                if (tipo === 'termo' && dados.itemPatrimonioId && dados.status === 'emitido') {
+                    baixarEstoque(dados.itemPatrimonioId, dados.qtdEntregue, novoDoc.numero, nome);
+                }
+
+                addLog('➕ Criou', numero + ' - ' + nome);
+            }
+
+            salvarDados(); limparFormulario(); filtrarDocumentos(); atualizarKPIs();
+        };
+
+        // ==================== BAIXA AUTOMÁTICA DE ESTOQUE ====================
+        function baixarEstoque(itemId, qtd, docNumero, beneficiarioNome) {
+            const item = bens.find(b => b.id == itemId);
+            if (!item) return;
+            item.quantidade = Math.max(0, (item.quantidade || 1) - qtd);
+            if (!item.movimentacoes) item.movimentacoes = [];
+            item.movimentacoes.push({
+                data: new Date().toISOString(),
+                tipo: 'Saída',
+                qtd, docNumero,
+                beneficiario: beneficiarioNome,
+                usuario: usuarioAtual
+            });
+            localStorage.setItem('amovin_bens', JSON.stringify(bens));
+            addLog('📦 Baixa Estoque', `${item.nome} -${qtd} → ${beneficiarioNome}`);
+        }
+
+        function addLog(acao, detalhe) {
+            logs.unshift({ id: Date.now(), acao, detalhe, usuario: usuarioAtual, data: new Date().toISOString() });
+            if (logs.length > 100) logs = logs.slice(0, 100);
+            salvarDados();
+            renderizarLogs();
+        }
+
+        function renderizarLogs() {
+            const c = document.getElementById('logAuditoria');
+            c.innerHTML = logs.length === 0 ? '<div class="sem-dados">Nenhuma ação.</div>' :
+                logs.slice(0, 15).map(l => `<div class="log-item"><span><strong>${l.acao}</strong> - ${l.detalhe}</span><span style="color:#888;font-size:10px;">👤 ${l.usuario} • ${new Date(l.data).toLocaleString('pt-BR')}</span></div>`).join('');
+        }
+
+        // ==================== IA ====================
+        window.sugerirComIA = async function() {
+            const nome = document.getElementById('nomeDoc').value.trim();
+            const tipo = document.getElementById('tipoDoc').value;
+            if (!nome) { alert('⚠️ Preencha o Nome primeiro!'); return; }
+            const API_KEY = localStorage.getItem('amovin_gemini_key') || '';
+            if (!API_KEY) { alert('⚠️ Chave Gemini não configurada!'); return; }
+            document.getElementById('textoDoc').placeholder = '⏳ IA gerando...';
+            try {
+                const prompt = `Crie um documento "${tipo}" da AMOVIN para ${nome}. Use linguagem formal. Inclua local e data.`;
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await response.json();
+                document.getElementById('textoDoc').value = data.candidates[0].content.parts[0].text;
+            } catch (e) { alert('❌ Erro na IA. Digite manualmente.'); }
+            finally { document.getElementById('textoDoc').placeholder = 'Digite o conteúdo...'; }
+        };
+
+        // ==================== AÇÕES ====================
+        window.editarDocumento = function(id) {
+            const doc = documentos.find(d => d.id === id);
+            if (!doc || doc.status !== 'rascunho') { alert('⚠️ Só rascunhos podem ser editados!'); return; }
+            editandoId = id;
+            document.getElementById('tituloForm').textContent = '✏️ Editando ' + doc.numero;
+            document.getElementById('docId').value = doc.id;
+            document.getElementById('tipoDoc').value = doc.tipo;
+            document.getElementById('statusDoc').value = doc.status;
+            document.getElementById('beneficiarioDoc').value = doc.beneficiarioId || '';
+            document.getElementById('nomeDoc').value = doc.nome;
+            document.getElementById('cpfDoc').value = doc.cpf;
+            document.getElementById('valorDoc').value = doc.valor || '';
+            document.getElementById('dataDoc').value = doc.data || '';
+            document.getElementById('textoDoc').value = doc.texto || '';
+            document.getElementById('obsDoc').value = doc.obs || '';
+            document.getElementById('origemDoc').value = doc.origem || '';
+            document.getElementById('destinoDoc').value = doc.destino || '';
+            document.getElementById('itemPatrimonio').value = doc.itemPatrimonioId || '';
+            document.getElementById('qtdEntregue').value = doc.qtdEntregue || 1;
+            atualizarTipo(); atualizarInfoItem();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.cancelarDocumento = function(id) {
+            const doc = documentos.find(d => d.id === id);
+            if (!doc || doc.status === 'cancelado') return;
+            const motivo = prompt('Motivo do cancelamento:');
+            if (motivo === null) return;
+            doc.status = 'cancelado'; doc.motivoCancelamento = motivo; doc.canceladoPor = usuarioAtual; doc.canceladoEm = new Date().toISOString();
+            salvarDados(); filtrarDocumentos(); atualizarKPIs();
+            addLog('❌ Cancelou', doc.numero + ' - ' + motivo);
+        };
+
+        window.visualizarDocumento = function(id) {
+            const doc = documentos.find(d => d.id === id);
+            if (!doc) return;
+            const data = doc.data ? new Date(doc.data+'T00:00:00').toLocaleDateString('pt-BR') : '';
+            const conteudo = `AMOVIN ERP Social\n${doc.numero} | ${doc.tipo.toUpperCase()}\nData: ${data}\nNome: ${doc.nome}\nCPF/CNPJ: ${doc.cpf}\n${doc.valor ? 'Valor: R$ '+doc.valor.toFixed(2).replace('.',',') : ''}\n\n${doc.texto || ''}\n\nImpresso por: ${usuarioAtual} em ${new Date().toLocaleString('pt-BR')}`;
+            const win = window.open('','_blank');
+            win.document.write(`<pre style="font-family:monospace;padding:20px;">${conteudo}</pre><script>window.onload=function(){window.print()}</script>`);
+            win.document.close();
+            addLog('👁️ Visualizou', doc.numero);
+        };
+
+        window.duplicarDocumento = function(id) {
+            const doc = documentos.find(d => d.id === id);
+            if (!doc) return;
+            const novo = { ...doc, id: Date.now(), numero: calcularProximoNumero(doc.tipo), status: 'rascunho', criadoPor: usuarioAtual, criadoEm: new Date().toISOString() };
+            documentos.push(novo);
+            salvarDados(); filtrarDocumentos(); atualizarKPIs();
+            addLog('📋 Duplicou', `${doc.numero} → ${novo.numero}`);
+        };
+
+        // ==================== FILTRAR ====================
+        function filtrarDocumentos() {
+            const busca = document.getElementById('buscaDoc').value.toLowerCase();
+            const tipo = document.getElementById('filtroTipo').value;
+            const status = document.getElementById('filtroStatus').value;
+            let lista = [...documentos];
+            if (busca) lista = lista.filter(d => (d.nome||'').toLowerCase().includes(busca) || (d.cpf||'').includes(busca) || (d.numero||'').toLowerCase().includes(busca));
+            if (tipo !== 'todos') lista = lista.filter(d => d.tipo === tipo);
+            if (status !== 'todos') lista = lista.filter(d => d.status === status);
+            lista.sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm));
+            document.getElementById('totalLista').textContent = `(${lista.length})`;
+            document.getElementById('tabelaDocumentos').innerHTML = lista.length === 0 ? '<tr><td colspan="6" class="sem-dados">Nenhum documento.</td></tr>' :
+                lista.map(d => `<tr><td><strong>${d.numero}</strong></td><td><span class="badge badge-${d.tipo}">${d.tipo}</span></td><td>${d.nome}</td><td>${d.data?new Date(d.data+'T00:00:00').toLocaleDateString('pt-BR'):'-'}</td><td><span class="badge badge-${d.status}">${d.status}</span></td><td>${d.status==='rascunho'?`<button class="btn btn-editar" onclick="editarDocumento(${d.id})">✏️</button>`:''}<button class="btn btn-visualizar" onclick="visualizarDocumento(${d.id})">👁️</button><button class="btn btn-duplicar" onclick="duplicarDocumento(${d.id})">📋</button>${d.status!=='cancelado'?`<button class="btn btn-cancelar" onclick="cancelarDocumento(${d.id})">❌</button>`:''}</td></tr>`).join('');
+        }
+
+        function atualizarKPIs() {
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('kpiTotal').textContent = documentos.length;
+            document.getElementById('kpiRecibos').textContent = documentos.filter(d=>d.tipo==='recibo').length;
+            document.getElementById('kpiProtocolos').textContent = documentos.filter(d=>d.tipo==='protocolo').length;
+            document.getElementById('kpiDeclaracoes').textContent = documentos.filter(d=>d.tipo==='declaracao'||d.tipo==='termo').length;
+            document.getElementById('kpiHoje').textContent = documentos.filter(d=>d.data===hoje).length;
+            document.getElementById('kpiCancelados').textContent = documentos.filter(d=>d.status==='cancelado').length;
+        }
+
+        window.limparFormulario = function() {
+            editandoId = null;
+            document.getElementById('tituloForm').textContent = '📝 Novo Documento';
+            document.getElementById('docId').value = '';
+            document.getElementById('tipoDoc').value = 'recibo';
+            document.getElementById('statusDoc').value = 'rascunho';
+            document.getElementById('beneficiarioDoc').value = '';
+            document.getElementById('nomeDoc').value = '';
+            document.getElementById('cpfDoc').value = '';
+            document.getElementById('valorDoc').value = '';
+            document.getElementById('dataDoc').value = new Date().toISOString().split('T')[0];
+            document.getElementById('textoDoc').value = '';
+            document.getElementById('obsDoc').value = '';
+            document.getElementById('itemPatrimonio').value = '';
+            document.getElementById('qtdEntregue').value = '1';
+            document.getElementById('infoItem').style.display = 'none';
+            atualizarTipo();
+        };
+
+        // ==================== SEGURANÇA ====================
+        window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
+        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+        let timeout;
+        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
+        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
+
+        // Iniciar
+        document.getElementById('dataDoc').value = new Date().toISOString().split('T')[0];
+        popularBeneficiarios();
+        filtrarDocumentos();
+        atualizarKPIs();
+        renderizarLogs();
+    </script>
+</body>
+</html>

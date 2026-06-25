@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Assistente IA</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #1a237e; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 280px 1fr; gap: 20px; min-height: 500px; }
+        .card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .card h3 { color: #1a237e; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .comando { display: block; width: 100%; padding: 10px; margin-bottom: 8px; background: #e8eaf6; border: none; border-radius: 8px; cursor: pointer; text-align: left; font-size: 13px; }
+        .comando:hover { background: #c5cae9; }
+        .chat-mensagens { height: 350px; overflow-y: auto; background: #fafafa; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .msg { margin-bottom: 12px; display: flex; gap: 8px; }
+        .msg.usuario { justify-content: flex-end; }
+        .bolha { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 13px; line-height: 1.5; }
+        .msg.ia .bolha { background: #e8eaf6; color: #1a237e; }
+        .msg.usuario .bolha { background: #283593; color: white; }
+        .chat-input { display: flex; gap: 10px; }
+        .chat-input input { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 25px; font-size: 14px; }
+        .chat-input button { padding: 12px 22px; background: #283593; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="topo">
+    <strong>Assistente IA</strong>
+    <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
+</div>
+
+<div class="container">
+    <div class="grid">
+        <div class="card">
+            <h3>Comandos Rapidos</h3>
+            <button class="comando" onclick="perguntar('Criar um oficio para a Prefeitura solicitando apoio para projeto social')">Criar Oficio</button>
+            <button class="comando" onclick="perguntar('Gerar um projeto social para jovens em situacao de vulnerabilidade')">Criar Projeto</button>
+            <button class="comando" onclick="perguntar('Sugerir estrategias de captacao de recursos para ONG')">Captacao de Recursos</button>
+            <button class="comando" onclick="perguntar('Modelo de termo de parceria para profissionais voluntarios')">Termo de Parceria</button>
+            <button class="comando" onclick="perguntar('Como fazer prestacao de contas para editais')">Prestacao de Contas</button>
+        </div>
+
+        <div class="card">
+            <h3>Chat com IA</h3>
+            <div class="chat-mensagens" id="chatMensagens">
+                <div class="msg ia"><div class="bolha">Ola! Sou o assistente virtual da AMOVIN. Como posso ajudar?</div></div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="inputMsg" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter') enviarMensagem()">
+                <button onclick="enviarMensagem()">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function adicionarMensagem(texto, tipo) {
+    var div = document.createElement('div');
+    div.className = 'msg ' + tipo;
+    div.innerHTML = '<div class="bolha">' + texto + '</div>';
+    document.getElementById('chatMensagens').appendChild(div);
+    document.getElementById('chatMensagens').scrollTop = document.getElementById('chatMensagens').scrollHeight;
+}
+
+window.perguntar = function(texto) {
+    document.getElementById('inputMsg').value = texto;
+    enviarMensagem();
+};
+
+window.enviarMensagem = function() {
+    var texto = document.getElementById('inputMsg').value.trim();
+    if (!texto) return;
+    
+    adicionarMensagem(texto, 'usuario');
+    document.getElementById('inputMsg').value = '';
+    
+    var API_KEY = localStorage.getItem('amovin_gemini_key') || '';
+    if (!API_KEY) {
+        adicionarMensagem('Chave Gemini nao configurada. Acesse config-chave.html para configurar.', 'ia');
+        return;
+    }
+    
+    var prompt = 'Voce e o assistente virtual da AMOVIN (Associacao e Movimento pela Inclusao), Rio Paranaiba/MG. Seja prestativo e profissional. Responda: ' + texto;
+    
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        var resposta = data.candidates[0].content.parts[0].text;
+        adicionarMensagem(resposta, 'ia');
+    })
+    .catch(function() {
+        adicionarMensagem('Erro ao processar. Tente novamente.', 'ia');
+    });
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Voluntarios</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #0d47a1; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 3px; }
+        .btn-azul { background: #1565c0; color: white; }
+        .btn-amarelo { background: #ffc107; color: #333; }
+        .btn-vermelho { background: #f44336; color: white; }
+        .btn-verde { background: #4caf50; color: white; }
+        .btn-laranja { background: #ff9800; color: white; }
+        .card { background: white; padding: 18px; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0 0 4px 0; font-size: 16px; }
+        .card p { margin: 2px 0; color: #666; font-size: 13px; }
+        .busca { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .busca input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-width: 200px; }
+        .busca select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
+        .modal-box { background: white; padding: 30px; border-radius: 15px; width: 450px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
+        .modal-box input, .modal-box textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .modal-box label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 3px; }
+        .sem-dados { text-align: center; color: #bbb; padding: 30px; }
+        .abas { background: #f0f0f0; padding: 8px 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .aba { padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; color: white; }
+        .aba-voltar { background: #666; }
+        .aba-benef { background: #4a148c; }
+        .aba-prof { background: #4a148c; }
+        .aba-vol { background: #0d47a1; }
+        .foto-preview { width: 70px; height: 90px; border: 2px dashed #ccc; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; overflow: hidden; border-radius: 6px; }
+        .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .kpi-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .kpi-card { background: white; padding: 15px 20px; border-radius: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; min-width: 120px; }
+        .kpi-card .valor { font-size: 24px; font-weight: bold; color: #0d47a1; }
+        .kpi-card .label { font-size: 11px; color: #888; }
+    </style>
+</head>
+<body>
+
+    <div class="abas">
+        <button class="aba aba-voltar" onclick="window.location.href='pessoas.html'">Voltar para Pessoas</button>
+        <button class="aba aba-benef" onclick="window.location.href='pessoas.html'">Beneficiarios</button>
+        <button class="aba aba-prof" onclick="window.location.href='profissionais.html'">Profissionais</button>
+        <button class="aba aba-vol" style="background:#0d47a1;">Voluntarios</button>
+    </div>
+
+    <div class="topo">
+        <strong>Voluntarios</strong>
+        <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
+    </div>
+
+    <div class="container">
+        <div class="kpi-row">
+            <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div>
+        </div>
+
+        <div class="busca">
+            <input type="text" id="busca" placeholder="Buscar por nome, funcao..." oninput="filtrar()">
+            <select id="ordem" onchange="filtrar()">
+                <option value="az">Ordem A-Z</option>
+                <option value="za">Ordem Z-A</option>
+            </select>
+            <select id="filtroFuncao" onchange="filtrar()">
+                <option value="todas">Todas funcoes</option>
+            </select>
+            <button class="btn btn-azul" onclick="abrirForm()">+ Novo</button>
+        </div>
+        <div id="lista"></div>
+    </div>
+
+    <div class="modal" id="modalForm">
+        <div class="modal-box">
+            <h3 id="tituloModal">Novo Voluntario</h3>
+            <input type="hidden" id="volId">
+            
+            <div class="foto-preview" id="fotoPreview">3x4</div>
+            <input type="file" id="fotoUpload" accept="image/*" onchange="previewFoto()" style="font-size:12px;">
+            
+            <label>Nome completo *</label>
+            <input type="text" id="nomeVol" placeholder="Nome completo">
+            
+            <label>Nome de guerra (cracha)</label>
+            <input type="text" id="guerraVol" placeholder="Como quer ser chamado">
+            
+            <label>Funcao *</label>
+            <input type="text" id="funcaoVol" placeholder="Ex: Informatica, Esportes...">
+            
+            <label>Disponibilidade</label>
+            <input type="text" id="dispoVol" placeholder="Ex: Sabados, Tercas e Quintas">
+            
+            <label>Horas por mes</label>
+            <input type="text" id="horasVol" placeholder="Ex: 16h">
+            
+            <label>Telefone</label>
+            <input type="text" id="foneVol" placeholder="(34) 99999-0000">
+            
+            <label>Email</label>
+            <input type="text" id="emailVol" placeholder="email@exemplo.com">
+            
+            <label>Observacoes</label>
+            <textarea id="obsVol" rows="2" placeholder="Anotacoes internas..."></textarea>
+            
+            <button class="btn btn-azul" onclick="salvar()" style="width:100%;">Salvar</button>
+            <button class="btn btn-vermelho" onclick="fecharForm()" style="width:100%;">Cancelar</button>
+        </div>
+    </div>
+
+<script>
+var voluntarios = [];
+var editandoId = null;
+
+var dadosSalvos = localStorage.getItem('amovin_voluntarios');
+if (dadosSalvos) { voluntarios = JSON.parse(dadosSalvos); }
+
+if (voluntarios.length === 0) {
+    voluntarios.push({id:1, nome:'Fernanda Lima', guerra:'Fe', funcao:'Informatica', disponibilidade:'Sabados', horas:'16h', telefone:'(34) 99999-0001', email:'fernanda@email.com', obs:'', foto:''});
+    voluntarios.push({id:2, nome:'Rafael Costa', guerra:'Rafa', funcao:'Esportes', disponibilidade:'Tercas e Quintas', horas:'20h', telefone:'(34) 99999-0002', email:'rafael@email.com', obs:'', foto:''});
+    voluntarios.push({id:3, nome:'Juliana Martins', guerra:'Ju', funcao:'Artes', disponibilidade:'Quartas', horas:'8h', telefone:'(34) 99999-0003', email:'juliana@email.com', obs:'', foto:''});
+    salvarDados();
+}
+
+function salvarDados() { localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios)); }
+
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = voluntarios.length;
+    popularFiltroFuncao();
+}
+
+function popularFiltroFuncao() {
+    var funcoes = [];
+    for (var i = 0; i < voluntarios.length; i++) {
+        if (funcoes.indexOf(voluntarios[i].funcao) === -1) funcoes.push(voluntarios[i].funcao);
+    }
+    var sel = document.getElementById('filtroFuncao');
+    var html = '<option value="todas">Todas funcoes</option>';
+    for (var i = 0; i < funcoes.length; i++) html += '<option value="' + funcoes[i] + '">' + funcoes[i] + '</option>';
+    sel.innerHTML = html;
+}
+
+function filtrar() {
+    var busca = document.getElementById('busca').value.toLowerCase();
+    var ordem = document.getElementById('ordem').value;
+    var funcaoFiltro = document.getElementById('filtroFuncao').value;
+    var lista = [];
+    for (var i = 0; i < voluntarios.length; i++) {
+        var v = voluntarios[i];
+        var matchBusca = v.nome.toLowerCase().indexOf(busca) >= 0 || v.funcao.toLowerCase().indexOf(busca) >= 0 || (v.guerra||'').toLowerCase().indexOf(busca) >= 0;
+        var matchFuncao = funcaoFiltro === 'todas' || v.funcao === funcaoFiltro;
+        if (matchBusca && matchFuncao) lista.push(v);
+    }
+    lista.sort(function(a, b) { if (ordem === 'az') return a.nome.localeCompare(b.nome); else return b.nome.localeCompare(a.nome); });
+    mostrarLista(lista);
+}
+
+function mostrarLista(lista) {
+    if (!lista) { lista = voluntarios.slice(); lista.sort(function(a,b){ return a.nome.localeCompare(b.nome); }); }
+    var html = '';
+    if (lista.length === 0) html = '<div class="sem-dados">Nenhum voluntario encontrado.</div>';
+    for (var i = 0; i < lista.length; i++) {
+        var v = lista[i];
+        var apelido = v.guerra ? ' (' + v.guerra + ')' : '';
+        html += '<div class="card">';
+        if (v.foto) html += '<img src="' + v.foto + '" style="width:40px;height:50px;object-fit:cover;float:left;margin-right:10px;border-radius:4px;">';
+        html += '<h3>' + v.nome + apelido + '</h3>';
+        html += '<p>' + v.funcao + ' | ' + (v.disponibilidade||'') + ' | ' + (v.horas||'') + ' | Tel: ' + (v.telefone||'') + '</p>';
+        if (v.email) html += '<p>Email: ' + v.email + '</p>';
+        html += '<button class="btn btn-amarelo" onclick="editar(' + v.id + ')">Editar</button> ';
+        html += '<button class="btn btn-verde" onclick="cracha(' + v.id + ')">Cracha</button> ';
+        html += '<button class="btn btn-laranja" onclick="imprimirCadastro(' + v.id + ')">Imprimir</button> ';
+        html += '<button class="btn btn-vermelho" onclick="excluir(' + v.id + ')">Excluir</button>';
+        html += '</div>';
+    }
+    document.getElementById('lista').innerHTML = html;
+}
+
+window.previewFoto = function() {
+    var file = document.getElementById('fotoUpload').files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">'; };
+    reader.readAsDataURL(file);
+};
+
+window.abrirForm = function(id) {
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('tituloModal').textContent = id ? 'Editar Voluntario' : 'Novo Voluntario';
+    document.getElementById('fotoUpload').value = '';
+    document.getElementById('fotoPreview').innerHTML = '3x4';
+    if (id) {
+        var v = null;
+        for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } }
+        if (v) {
+            document.getElementById('volId').value = v.id;
+            document.getElementById('nomeVol').value = v.nome;
+            document.getElementById('guerraVol').value = v.guerra || '';
+            document.getElementById('funcaoVol').value = v.funcao;
+            document.getElementById('dispoVol').value = v.disponibilidade || '';
+            document.getElementById('horasVol').value = v.horas || '';
+            document.getElementById('foneVol').value = v.telefone || '';
+            document.getElementById('emailVol').value = v.email || '';
+            document.getElementById('obsVol').value = v.obs || '';
+            if (v.foto) document.getElementById('fotoPreview').innerHTML = '<img src="' + v.foto + '" style="width:100%;height:100%;object-fit:cover;">';
+        }
+    } else {
+        document.getElementById('volId').value = '';
+        document.getElementById('nomeVol').value = '';
+        document.getElementById('guerraVol').value = '';
+        document.getElementById('funcaoVol').value = '';
+        document.getElementById('dispoVol').value = '';
+        document.getElementById('horasVol').value = '';
+        document.getElementById('foneVol').value = '';
+        document.getElementById('emailVol').value = '';
+        document.getElementById('obsVol').value = '';
+    }
+};
+
+window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
+
+window.salvar = function() {
+    var nome = document.getElementById('nomeVol').value;
+    if (!nome) { alert('Preencha o nome!'); return; }
+    var fotoAtual = document.getElementById('fotoPreview').querySelector('img');
+    var dados = {
+        nome: nome, guerra: document.getElementById('guerraVol').value,
+        funcao: document.getElementById('funcaoVol').value,
+        disponibilidade: document.getElementById('dispoVol').value,
+        horas: document.getElementById('horasVol').value,
+        telefone: document.getElementById('foneVol').value,
+        email: document.getElementById('emailVol').value,
+        obs: document.getElementById('obsVol').value,
+        foto: fotoAtual ? fotoAtual.src : ''
+    };
+    if (editandoId) {
+        for (var i = 0; i < voluntarios.length; i++) {
+            if (voluntarios[i].id === editandoId) { for (var key in dados) { voluntarios[i][key] = dados[key]; } break; }
+        }
+    } else { dados.id = Date.now(); voluntarios.push(dados); }
+    salvarDados(); filtrar(); atualizarKPIs(); fecharForm();
+};
+
+window.editar = function(id) { abrirForm(id); };
+
+window.excluir = function(id) {
+    if (!confirm('Excluir?')) return;
+    var novo = [];
+    for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id !== id) novo.push(voluntarios[i]); }
+    voluntarios = novo;
+    salvarDados(); filtrar(); atualizarKPIs();
+};
+
+window.cracha = function(id) {
+    var v = null;
+    for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } }
+    if (!v) return;
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Cracha</title><style>body{font-family:Arial;text-align:center;padding:20px}.cracha{border:3px solid #0d47a1;padding:20px;width:300px;margin:0 auto;border-radius:10px}h2{color:#0d47a1}</style></head><body><div class="cracha"><h2>AMOVIN</h2>'+(v.foto?'<div style="width:80px;height:100px;border:1px solid #ccc;margin:0 auto 10px;overflow:hidden"><img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover"></div>':'')+'<h3>'+v.nome+'</h3><p><strong>'+(v.guerra||'')+'</strong></p><p>'+v.funcao+'</p><p>Voluntario</p></div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+window.imprimirCadastro = function(id) {
+    var v = null;
+    for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } }
+    if (!v) return;
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px;max-width:500px}</style></head><body><h2>AMOVIN - Voluntario</h2>'+(v.foto?'<img src="'+v.foto+'" style="width:3cm;height:4cm;float:right;border:1px solid #000;">':'')+'<p><strong>Nome:</strong> '+v.nome+'</p><p><strong>Guerra:</strong> '+(v.guerra||'-')+'</p><p><strong>Funcao:</strong> '+v.funcao+'</p><p><strong>Disponibilidade:</strong> '+(v.disponibilidade||'-')+'</p><p><strong>Horas/Mes:</strong> '+(v.horas||'-')+'</p><p><strong>Telefone:</strong> '+(v.telefone||'-')+'</p><p><strong>Email:</strong> '+(v.email||'-')+'</p><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+atualizarKPIs();
+filtrar();
+</script>
+</body>
+</html>

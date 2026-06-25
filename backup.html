@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Backup</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        .topo { background: #33691e; color: white; padding: 15px 25px; }
+        .topo a { color: white; text-decoration: none; margin-left: 15px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .card h3 { color: #33691e; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .card p { font-size: 13px; color: #666; margin-bottom: 15px; }
+        .btn { padding: 12px 22px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 5px; }
+        .btn-verde { background: #558b2f; color: white; }
+        .btn-azul { background: #1565c0; color: white; }
+        .btn-laranja { background: #ff9800; color: white; }
+        .btn-vermelho { background: #f44336; color: white; }
+        .btn-cinza { background: #666; color: white; }
+        .status { padding: 12px; border-radius: 8px; margin-top: 10px; display: none; font-weight: bold; font-size: 13px; }
+        .status.sucesso { background: #e8f5e9; color: #2e7d32; display: block; }
+        .status.erro { background: #ffebee; color: #c62828; display: block; }
+        .status.info { background: #e3f2fd; color: #1565c0; display: block; }
+        .alerta { background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; }
+        .alerta strong { color: #e65100; }
+        .backup-auto-info { background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 12px; color: #2e7d32; border-left: 4px solid #4caf50; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+        th { background: #f5f5f5; padding: 8px; text-align: left; font-weight: bold; }
+        td { padding: 8px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div class="topo">
+    <strong>Backup e Restauracao</strong>
+    <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
+</div>
+
+<div class="container">
+
+    <!-- BACKUP AUTOMATICO -->
+    <div class="card">
+        <h3>Backup Automatico</h3>
+        <p>O sistema faz backup automatico a cada <strong>30 minutos</strong>, sobrescrevendo o anterior.</p>
+        <div class="backup-auto-info" id="infoBackupAuto">Carregando...</div>
+    </div>
+
+    <!-- EXPORTAR -->
+    <div class="card">
+        <h3>Exportar Dados Manualmente</h3>
+        <p>Baixe todos os dados do sistema em formato JSON:</p>
+        
+        <button class="btn btn-verde" onclick="exportarBackup('json')">JSON (Backup Completo)</button>
+        <button class="btn btn-azul" onclick="exportarBackup('csv')">CSV (Abre no Excel)</button>
+        <button class="btn btn-laranja" onclick="exportarBackup('txt')">TXT (Leitura)</button>
+        
+        <div style="margin-top:15px;">
+            <p style="font-size:12px;color:#888;">Exportar apenas algumas bases:</p>
+            <div id="checkboxes"></div>
+            <button class="btn btn-cinza" onclick="exportarSelecionados()">Exportar Selecionados</button>
+        </div>
+        <div class="status" id="statusExport"></div>
+    </div>
+
+    <!-- RESTAURAR -->
+    <div class="card">
+        <h3>Restaurar Backup</h3>
+        <p style="color:#c62828;font-weight:bold;">Cuidado! Isso substituira todos os dados atuais.</p>
+        
+        <button class="btn btn-verde" onclick="restaurarBackupAuto()" style="margin-bottom:10px;">Restaurar Ultimo Backup Automatico</button>
+        
+        <p style="font-size:12px;color:#888;">Ou escolha um arquivo:</p>
+        <input type="file" id="arquivoBackup" accept=".json" style="margin-bottom:10px;">
+        <button class="btn btn-laranja" onclick="importarBackup()">Restaurar do Arquivo</button>
+        <div class="status" id="statusImport"></div>
+    </div>
+
+    <!-- DADOS ATUAIS -->
+    <div class="card">
+        <h3>Dados Atuais no Sistema</h3>
+        <div id="resumoDados"></div>
+    </div>
+
+    <!-- LIMPAR -->
+    <div class="card">
+        <h3>Limpar Todos os Dados</h3>
+        
+        <div class="alerta">
+            <strong>ATENCAO!</strong> Esta acao apagara <strong>TODOS</strong> os dados do sistema.<br>
+            O sistema voltara ao estado inicial (vazio).<br>
+            <strong>Recomendacao:</strong> faca um backup antes de limpar!
+        </div>
+        
+        <button class="btn btn-vermelho" onclick="limparTudo()">Limpar Todos os Dados</button>
+        <div class="status" id="statusLimpar"></div>
+    </div>
+</div>
+
+<script>
+var CHAVES = [
+    'amovin_financeiro', 'amovin_financeiro_logs', 'amovin_beneficiarios',
+    'amovin_profissionais', 'amovin_voluntarios', 'amovin_agendamentos',
+    'amovin_bens', 'amovin_prontuarios', 'amovin_documentos_oficiais',
+    'amovin_documentos_logs', 'amovin_orcamentos', 'amovin_estoque',
+    'amovin_chat', 'amovin_contatos', 'amovin_config',
+    'amovin_patrimonio_num', 'amovin_certificados'
+];
+
+var BACKUP_AUTO_KEY = 'amovin_backup_automatico';
+
+function getTodosDados() {
+    var dados = {};
+    for (var i = 0; i < CHAVES.length; i++) {
+        var valor = localStorage.getItem(CHAVES[i]);
+        if (valor) {
+            try { dados[CHAVES[i]] = JSON.parse(valor); }
+            catch(e) { dados[CHAVES[i]] = valor; }
+        }
+    }
+    return dados;
+}
+
+function resumo() {
+    var dados = getTodosDados();
+    var html = '<table><tr><th>Base</th><th>Registros</th><th>Tamanho</th></tr>';
+    var total = 0;
+    var keys = Object.keys(dados);
+    for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        var tam = JSON.stringify(dados[k]).length;
+        total += tam;
+        var qtd = Array.isArray(dados[k]) ? dados[k].length : Object.keys(dados[k]).length;
+        html += '<tr><td>' + k + '</td><td>' + qtd + '</td><td>' + (tam/1024).toFixed(1) + ' KB</td></tr>';
+    }
+    html += '<tr><td><strong>TOTAL</strong></td><td></td><td><strong>' + (total/1024).toFixed(1) + ' KB</strong></td></tr></table>';
+    document.getElementById('resumoDados').innerHTML = html;
+    
+    var div = document.getElementById('checkboxes');
+    var cbHtml = '';
+    for (var i = 0; i < CHAVES.length; i++) {
+        cbHtml += '<label style="display:block;margin:3px 0;font-size:12px;"><input type="checkbox" class="check-dado" value="' + CHAVES[i] + '" checked> ' + CHAVES[i] + '</label>';
+    }
+    div.innerHTML = cbHtml;
+}
+
+// ========== BACKUP AUTOMATICO ==========
+function backupAutomatico() {
+    var dados = getTodosDados();
+    var agora = new Date();
+    var info = {
+        data: agora.toISOString(),
+        dataFormatada: agora.toLocaleString('pt-BR'),
+        quem: sessionStorage.getItem('amovin_nome') || 'Sistema',
+        dados: dados
+    };
+    localStorage.setItem(BACKUP_AUTO_KEY, JSON.stringify(info));
+    atualizarInfoBackup();
+}
+
+function atualizarInfoBackup() {
+    var ultimo = localStorage.getItem(BACKUP_AUTO_KEY);
+    if (ultimo) {
+        var info = JSON.parse(ultimo);
+        var tamanho = JSON.stringify(info.dados).length;
+        document.getElementById('infoBackupAuto').innerHTML = 
+            'Ultimo backup: <strong>' + info.dataFormatada + '</strong><br>' +
+            'Tamanho: <strong>' + (tamanho/1024).toFixed(1) + ' KB</strong><br>' +
+            'Proximo backup em 30 minutos.';
+    } else {
+        document.getElementById('infoBackupAuto').textContent = 'Nenhum backup automatico realizado ainda. O primeiro sera feito em 30 minutos.';
+    }
+}
+
+setInterval(backupAutomatico, 30 * 60 * 1000);
+backupAutomatico();
+atualizarInfoBackup();
+
+// ========== RESTAURAR BACKUP AUTOMATICO ==========
+window.restaurarBackupAuto = function() {
+    var ultimo = localStorage.getItem(BACKUP_AUTO_KEY);
+    if (!ultimo) {
+        document.getElementById('statusImport').textContent = 'Nenhum backup automatico encontrado!';
+        document.getElementById('statusImport').className = 'status erro';
+        return;
+    }
+    
+    if (!confirm('Restaurar o ultimo backup automatico?\n\nIsso substituira todos os dados atuais.')) return;
+    
+    var senha = prompt('Digite a senha de administrador para confirmar:');
+    if (senha !== 'amovin2026') {
+        document.getElementById('statusImport').textContent = 'Senha incorreta!';
+        document.getElementById('statusImport').className = 'status erro';
+        return;
+    }
+    
+    var info = JSON.parse(ultimo);
+    var keys = Object.keys(info.dados);
+    var count = 0;
+    for (var i = 0; i < keys.length; i++) {
+        localStorage.setItem(keys[i], JSON.stringify(info.dados[keys[i]]));
+        count++;
+    }
+    
+    document.getElementById('statusImport').textContent = 'Backup restaurado! ' + count + ' bases recuperadas de ' + info.dataFormatada + '.';
+    document.getElementById('statusImport').className = 'status sucesso';
+    resumo();
+};
+
+// ========== EXPORTAR ==========
+window.exportarBackup = function(formato) {
+    var dados = getTodosDados();
+    var hoje = new Date().toISOString().split('T')[0];
+    var conteudo, nome, tipo;
+    
+    if (formato === 'json') {
+        conteudo = JSON.stringify(dados, null, 2);
+        nome = 'AMOVIN_Backup_' + hoje + '.json';
+        tipo = 'application/json';
+    } else if (formato === 'csv') {
+        var linhas = [];
+        var keys = Object.keys(dados);
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i];
+            var val = dados[k];
+            if (Array.isArray(val) && val.length > 0) {
+                linhas.push('=== ' + k + ' ===');
+                var cabecalho = Object.keys(val[0]);
+                linhas.push(cabecalho.join(';'));
+                for (var j = 0; j < val.length; j++) {
+                    var row = [];
+                    for (var h = 0; h < cabecalho.length; h++) {
+                        var cell = String(val[j][cabecalho[h]] || '');
+                        if (cell.indexOf(';') >= 0 || cell.indexOf('"') >= 0) cell = '"' + cell.replace(/"/g, '""') + '"';
+                        row.push(cell);
+                    }
+                    linhas.push(row.join(';'));
+                }
+                linhas.push('');
+            }
+        }
+        conteudo = '\uFEFF' + linhas.join('\n');
+        nome = 'AMOVIN_Backup_' + hoje + '.csv';
+        tipo = 'text/csv;charset=utf-8';
+    } else {
+        conteudo = JSON.stringify(dados, null, 2);
+        nome = 'AMOVIN_Backup_' + hoje + '.txt';
+        tipo = 'text/plain';
+    }
+    
+    var blob = new Blob([conteudo], {type: tipo});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = nome;
+    a.click();
+    
+    document.getElementById('statusExport').textContent = 'Backup ' + formato.toUpperCase() + ' baixado!';
+    document.getElementById('statusExport').className = 'status sucesso';
+};
+
+window.exportarSelecionados = function() {
+    var checks = document.querySelectorAll('.check-dado:checked');
+    var dados = {};
+    for (var i = 0; i < checks.length; i++) {
+        var chave = checks[i].value;
+        var valor = localStorage.getItem(chave);
+        if (valor) {
+            try { dados[chave] = JSON.parse(valor); }
+            catch(e) { dados[chave] = valor; }
+        }
+    }
+    var hoje = new Date().toISOString().split('T')[0];
+    var blob = new Blob([JSON.stringify(dados, null, 2)], {type: 'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'AMOVIN_Backup_Parcial_' + hoje + '.json';
+    a.click();
+    document.getElementById('statusExport').textContent = 'Backup parcial baixado!';
+    document.getElementById('statusExport').className = 'status sucesso';
+};
+
+window.importarBackup = function() {
+    var file = document.getElementById('arquivoBackup').files[0];
+    if (!file) { alert('Selecione um arquivo .json!'); return; }
+    
+    if (!confirm('Restaurar backup do arquivo? Isso substituira todos os dados atuais.')) return;
+    
+    var senha = prompt('Digite a senha de administrador:');
+    if (senha !== 'amovin2026') {
+        document.getElementById('statusImport').textContent = 'Senha incorreta!';
+        document.getElementById('statusImport').className = 'status erro';
+        return;
+    }
+    
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            var dados = JSON.parse(e.target.result);
+            var count = 0;
+            var keys = Object.keys(dados);
+            for (var i = 0; i < keys.length; i++) {
+                localStorage.setItem(keys[i], JSON.stringify(dados[keys[i]]));
+                count++;
+            }
+            document.getElementById('statusImport').textContent = count + ' bases restauradas!';
+            document.getElementById('statusImport').className = 'status sucesso';
+            resumo();
+        } catch(err) {
+            document.getElementById('statusImport').textContent = 'Arquivo invalido!';
+            document.getElementById('statusImport').className = 'status erro';
+        }
+    };
+    reader.readAsText(file);
+};
+
+// ========== LIMPAR TUDO ==========
+window.limparTudo = function() {
+    var explicacao = 'ATENCAO! Esta acao apagara TODOS os dados!\n\n' +
+        'O SISTEMA VOLTARA AO ESTADO INICIAL (VAZIO)!\n\n' +
+        'Recomendacao: faca um backup antes!\n\n' +
+        'Tem certeza absoluta?';
+    
+    if (!confirm(explicacao)) {
+        document.getElementById('statusLimpar').textContent = 'Cancelado.';
+        document.getElementById('statusLimpar').className = 'status info';
+        return;
+    }
+    
+    var senha = prompt('Digite a senha de administrador:');
+    if (senha !== 'amovin2026') {
+        document.getElementById('statusLimpar').textContent = 'Senha incorreta!';
+        document.getElementById('statusLimpar').className = 'status erro';
+        return;
+    }
+    
+    var conf = prompt('Digite APAGAR TUDO para confirmar:');
+    if (conf !== 'APAGAR TUDO') {
+        document.getElementById('statusLimpar').textContent = 'Cancelado.';
+        document.getElementById('statusLimpar').className = 'status info';
+        return;
+    }
+    
+    // Fazer backup antes de apagar
+    backupAutomatico();
+    
+    var quem = sessionStorage.getItem('amovin_nome') || 'Admin';
+    var quando = new Date().toLocaleString('pt-BR');
+    
+    for (var i = 0; i < CHAVES.length; i++) {
+        localStorage.removeItem(CHAVES[i]);
+    }
+    
+    document.getElementById('statusLimpar').textContent = 'Dados apagados por ' + quem + ' em ' + quando + '. Sistema reiniciado.';
+    document.getElementById('statusLimpar').className = 'status sucesso';
+    resumo();
+    atualizarInfoBackup();
+};
+
+resumo();
+</script>
+</body>
+</html>
