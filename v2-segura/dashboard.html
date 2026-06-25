@@ -4,82 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMOVIN ERP Social</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --laranja: #C65A11;
-            --amarelo: #F5C518;
-            --verde: #57C220;
-            --azul: #1E88E5;
-            --vermelho: #E53935;
-            --branco: #FFFFFF;
-            --cinza-claro: #F5F5F5;
-            --cinza-medio: #757575;
-            --preto: #1A1A1A;
+            --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
+            --azul: #1E88E5; --vermelho: #E53935; --preto: #0D0D0D;
+            --grafite: #1A1A1A; --cinza: #6B7280; --cinza-claro: #F3F4F6; --branco: #FFFFFF;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--cinza-claro); display: flex; min-height: 100vh; }
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--cinza-claro); display: flex; min-height: 100vh; }
 
-        .sidebar { width: 270px; background: var(--preto); color: white; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sidebar-logo { font-size: 40px; margin-bottom: 5px; }
-        .sidebar-header h3 { font-size: 14px; color: var(--amarelo); }
-        .sidebar-header small { font-size: 9px; opacity: 0.6; }
-        .sidebar-nav { flex: 1; padding: 10px 0; }
-        .nav-categoria { padding: 8px 20px; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.35); font-weight: 700; }
-        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 25px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 12px; transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent; }
-        .nav-item:hover { background: rgba(198,90,17,0.2); color: white; }
-        .nav-item.ativo { background: rgba(198,90,17,0.3); color: white; border-left-color: var(--laranja); font-weight: 600; }
-        .nav-item .icone { font-size: 15px; width: 22px; text-align: center; }
-        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .user-card { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; background: var(--laranja); color: white; }
-        .btn-sair { width: 100%; padding: 7px; background: rgba(255,255,255,0.08); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 10px; }
-
-        .main-content { flex: 1; margin-left: 270px; padding: 25px; }
-
-        .welcome {
-            background: linear-gradient(135deg, var(--laranja) 0%, #E67E22 100%);
-            color: white; padding: 40px; border-radius: 20px; margin-bottom: 25px;
-            position: relative; overflow: hidden; box-shadow: 0 15px 40px rgba(198,90,17,0.3);
+        .sidebar {
+            width: 280px; background: var(--preto); color: white; position: fixed;
+            left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
-        .welcome::before { content: ''; position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-        .welcome::after { content: ''; position: absolute; right: 80px; bottom: -40px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; }
-        .welcome-content { display: flex; align-items: center; gap: 30px; position: relative; z-index: 1; }
-        .welcome-logo { font-size: 80px; flex-shrink: 0; }
-        .welcome-text h1 { font-size: 28px; margin-bottom: 5px; }
-        .welcome-text p { opacity: 0.9; font-size: 14px; }
-        .welcome-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: relative; z-index: 1; margin-top: 20px; }
-        .data-card { background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; text-align: center; min-width: 100px; }
-        .data-card .dia { font-size: 30px; font-weight: bold; }
-        .data-card .mes { font-size: 10px; text-transform: uppercase; opacity: 0.8; }
+        .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .sidebar-logo { font-size: 45px; margin-bottom: 8px; }
+        .sidebar-header h3 { font-size: 15px; font-weight: 700; color: var(--amarelo); letter-spacing: -0.3px; }
+        .sidebar-header small { font-size: 9px; opacity: 0.5; text-transform: uppercase; letter-spacing: 2px; }
+        .sidebar-nav { flex: 1; padding: 15px 0; overflow-y: auto; }
+        .nav-categoria { padding: 15px 20px 5px; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.3); font-weight: 700; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 20px;
+            color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px;
+            transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent;
+            font-weight: 400;
+        }
+        .nav-item:hover { background: rgba(198,90,17,0.15); color: white; border-left-color: rgba(198,90,17,0.5); }
+        .nav-item.ativo { background: rgba(198,90,17,0.25); color: white; border-left-color: var(--laranja); font-weight: 600; }
+        .nav-item .icone { font-size: 16px; width: 24px; text-align: center; }
+        .sidebar-footer { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .user-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; background: var(--laranja); color: white; }
+        .user-info .nome { font-weight: 600; font-size: 13px; }
+        .user-info .cargo { font-size: 10px; opacity: 0.5; }
+        .btn-sair { width: 100%; padding: 8px; background: rgba(255,255,255,0.05); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 11px; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .btn-sair:hover { background: rgba(255,255,255,0.1); }
 
-        .status-bar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-        .status-item { background: white; padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-size: 12px; flex: 1; min-width: 180px; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .status-dot.on { background: var(--verde); }
-        .status-info .valor { font-weight: 700; font-size: 15px; }
-        .status-info .label { font-size: 10px; color: var(--cinza-medio); }
+        .main-content { flex: 1; margin-left: 280px; padding: 30px; }
 
-        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: white; padding: 22px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 20px; }
-        .card h3 { color: var(--preto); margin-bottom: 15px; font-size: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .card h3 .badge { font-size: 11px; font-weight: normal; padding: 3px 10px; border-radius: 20px; }
-        .badge-critico { background: #ffebee; color: var(--vermelho); }
-        .badge-ok { background: #e8f5e9; color: var(--verde); }
-        .badge-info { background: #e3f2fd; color: var(--azul); }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .saudacao h1 { font-size: 26px; font-weight: 700; color: var(--grafite); letter-spacing: -0.5px; }
+        .saudacao p { font-size: 13px; color: var(--cinza); margin-top: 3px; }
+        .top-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-top { padding: 10px 18px; border-radius: 10px; border: 1px solid #e0e0e0; background: white; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .btn-top:hover { border-color: var(--laranja); color: var(--laranja); }
+        .data-display { background: white; padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; color: var(--grafite); border: 1px solid #e0e0e0; }
 
-        .lista-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card {
+            background: white; padding: 22px; border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;
+            transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+        .stat-card .stat-icon { font-size: 28px; margin-bottom: 10px; }
+        .stat-card .stat-valor { font-size: 28px; font-weight: 800; color: var(--grafite); letter-spacing: -0.5px; }
+        .stat-card .stat-label { font-size: 11px; color: var(--cinza); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card {
+            background: white; padding: 25px; border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;
+        }
+        .card h3 { font-size: 15px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.3px; }
+        .card h3 .badge { font-size: 10px; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-laranja { background: #FFF3E0; color: var(--laranja); }
+        .badge-verde { background: #E8F5E9; color: var(--verde); }
+        .badge-azul { background: #E3F2FD; color: var(--azul); }
+        .badge-vermelho { background: #FFEBEE; color: var(--vermelho); }
+
+        .lista-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
         .lista-item:last-child { border-bottom: none; }
-        .lista-item .hora { font-weight: 700; color: var(--laranja); min-width: 45px; }
+        .lista-item .hora { font-weight: 700; color: var(--laranja); min-width: 50px; font-size: 14px; }
         .lista-item .info { flex: 1; }
-        .lista-item .info strong { display: block; }
-        .lista-item .info small { color: var(--cinza-medio); }
-        .sem-dados { text-align: center; padding: 25px; color: #bbb; font-size: 13px; }
+        .lista-item .info strong { display: block; font-weight: 600; }
+        .lista-item .info small { color: var(--cinza); font-size: 11px; }
+        .sem-dados { text-align: center; padding: 30px; color: var(--cinza); font-size: 13px; }
 
-        .rodape { background: var(--preto); color: white; text-align: center; padding: 12px; font-size: 10px; margin-top: 30px; border-radius: 10px; }
-        .rodape a { color: var(--amarelo); text-decoration: none; }
+        .rodape { text-align: center; padding: 20px; color: var(--cinza); font-size: 10px; margin-top: 20px; }
+        .rodape strong { color: var(--grafite); }
 
-        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; min-height: auto; } .main-content { margin-left: 0; } .grid-info { grid-template-columns: 1fr; } .status-bar { flex-direction: column; } .welcome-content { flex-direction: column; text-align: center; } }
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; position: relative; min-height: auto; }
+            .main-content { margin-left: 0; padding: 20px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .top-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -87,13 +100,13 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">🌻</div>
-            <h3>AMOVIN ERP</h3>
-            <small>Gestao Integrada</small>
+            <h3>AMOVIN</h3>
+            <small>ERP Social</small>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-categoria">Principal</div>
-            <a href="dashboard.html" class="nav-item ativo"><span class="icone">🏠</span> Dashboard</a>
-            <a href="bi.html" class="nav-item"><span class="icone">📊</span> BI Executivo</a>
+            <a href="dashboard.html" class="nav-item ativo"><span class="icone">📊</span> Dashboard</a>
+            <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
 
             <div class="nav-categoria">Captacao</div>
             <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
@@ -122,11 +135,11 @@
             <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
 
             <div class="nav-categoria">Comunicacao</div>
-            <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat Interno</a>
+            <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
             <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
 
             <div class="nav-categoria">Relatorios</div>
-            <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatorios</a>
+            <a href="relatorios.html" class="nav-item"><span class="icone">📋</span> Relatorios</a>
 
             <div class="nav-categoria">Sistema</div>
             <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configuracoes</a>
@@ -135,117 +148,99 @@
         <div class="sidebar-footer">
             <div class="user-card">
                 <div class="user-avatar">A</div>
-                <div><div style="font-weight:600;font-size:12px;">Admin</div><div style="font-size:9px;opacity:0.6;">Administrador</div></div>
+                <div class="user-info">
+                    <div class="nome">Administrador</div>
+                    <div class="cargo">Admin</div>
+                </div>
             </div>
-            <button class="btn-sair" onclick="window.location.href='index.html'">Sair</button>
+            <button class="btn-sair" onclick="window.location.href='index.html'">Sair do Sistema</button>
         </div>
     </aside>
 
     <main class="main-content">
-        <div class="welcome">
-            <div class="welcome-content">
-                <div class="welcome-logo">🌻</div>
-                <div class="welcome-text">
-                    <h1>Bem-vindo(a) à AMOVIN!</h1>
-                    <p>Associação e Movimento pela Inclusão - Rio Paranaíba/MG</p>
-                </div>
+        <div class="top-bar">
+            <div class="saudacao">
+                <h1>Bem-vindo(a) de volta! 👋</h1>
+                <p>Painel de Gestao - AMOVIN ERP Social</p>
             </div>
-            <div class="welcome-row">
-                <div></div>
-                <div class="data-card">
-                    <div class="dia" id="welcomeDia">25</div>
-                    <div class="mes" id="welcomeMes">Junho 2025</div>
-                </div>
+            <div class="top-actions">
+                <div class="data-display" id="dataHoje"></div>
             </div>
         </div>
 
-        <div class="status-bar">
-            <div class="status-item"><div class="status-dot on"></div><div class="status-info"><div class="valor">Conectado</div><div class="label">Status Firebase</div></div></div>
-            <div class="status-item"><div>📊</div><div class="status-info"><div class="valor"><span id="firebaseUso">3</span>%</div><div class="label">Firebase utilizado</div></div></div>
-            <div class="status-item"><div>📅</div><div class="status-info"><div class="valor" id="totalHoje">0</div><div class="label">Agendamentos hoje</div></div></div>
-            <div class="status-item"><div>⚠️</div><div class="status-info"><div class="valor" id="totalAlertas">0</div><div class="label">Alertas criticos</div></div></div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-valor" id="statBenef">--</div><div class="stat-label">Beneficiarios</div></div>
+            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-valor" id="statAgenda">--</div><div class="stat-label">Agendamentos Hoje</div></div>
+            <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-valor" id="statSaldo">--</div><div class="stat-label">Saldo Financeiro</div></div>
+            <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-valor" id="statAlertas">--</div><div class="stat-label">Alertas</div></div>
         </div>
 
-        <div class="grid-info">
-            <div class="card"><h3>Agendamentos de Hoje <span class="badge badge-info" id="countAgenda">0</span></h3><div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div></div>
-            <div class="card"><h3>Compras Pendentes <span class="badge badge-critico" id="countCompras">0</span></h3><div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div></div>
-            <div class="card"><h3>Estoque Critico</h3><div id="listaEstoqueCritico"><div class="sem-dados">Estoque esta OK.</div></div></div>
-            <div class="card"><h3>Ultimos Documentos</h3><div id="listaUltimosDocs"><div class="sem-dados">Nenhum documento recente.</div></div></div>
+        <div class="info-grid">
+            <div class="card">
+                <h3>📅 Agendamentos de Hoje <span class="badge badge-azul" id="countAgenda">0</span></h3>
+                <div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div>
+            </div>
+            <div class="card">
+                <h3>🛒 Compras Pendentes <span class="badge badge-laranja" id="countCompras">0</span></h3>
+                <div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div>
+            </div>
+            <div class="card">
+                <h3>⚠️ Estoque Critico</h3>
+                <div id="listaEstoque"><div class="sem-dados">Estoque OK.</div></div>
+            </div>
+            <div class="card">
+                <h3>📝 Ultimos Documentos</h3>
+                <div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div>
+            </div>
         </div>
 
         <div class="rodape">
             Desenvolvido por <strong>Vigorre Sistemas</strong> | Vigorre ERP Social™<br>
-            <a href="mailto:contato@vigorre.com.br">contato@vigorre.com.br</a> | (34) 99185-0735
+            contato@vigorre.com.br | (34) 99185-0735
         </div>
     </main>
 
     <script>
         var hoje = new Date();
-        document.getElementById('welcomeDia').textContent = hoje.getDate();
-        document.getElementById('welcomeMes').textContent = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-        document.getElementById('firebaseUso').textContent = Math.floor(Math.random() * 5) + 1;
+        document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+        var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
+        document.getElementById('statBenef').textContent = beneficiarios.length;
 
         var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
         var hojeStr = hoje.toISOString().split('T')[0];
-        var agendamentosHoje = [];
+        var hojeLista = [];
         for (var i = 0; i < agendamentos.length; i++) {
-            if (agendamentos[i].data === hojeStr) agendamentosHoje.push(agendamentos[i]);
+            if (agendamentos[i].data === hojeStr) hojeLista.push(agendamentos[i]);
         }
-        agendamentosHoje.sort(function(a,b){ return (a.hora||'').localeCompare(b.hora||''); });
-        document.getElementById('countAgenda').textContent = agendamentosHoje.length;
-        document.getElementById('totalHoje').textContent = agendamentosHoje.length;
-        if (agendamentosHoje.length > 0) {
-            var htmlAgenda = '';
-            for (var i = 0; i < agendamentosHoje.length; i++) {
-                var a = agendamentosHoje[i];
-                htmlAgenda += '<div class="lista-item"><span class="hora">' + (a.hora||'--:--') + '</span><div class="info"><strong>' + (a.nome||'Beneficiario') + '</strong><small>' + (a.profissional||'') + ' | ' + (a.obs||'') + '</small></div></div>';
+        hojeLista.sort(function(a,b){ return (a.hora||'').localeCompare(b.hora||''); });
+        document.getElementById('statAgenda').textContent = hojeLista.length;
+        document.getElementById('countAgenda').textContent = hojeLista.length;
+
+        if (hojeLista.length > 0) {
+            var html = '';
+            for (var i = 0; i < hojeLista.length; i++) {
+                var a = hojeLista[i];
+                html += '<div class="lista-item"><span class="hora">' + (a.hora||'--:--') + '</span><div class="info"><strong>' + (a.nome||'Beneficiario') + '</strong><small>' + (a.profissional||'') + '</small></div></div>';
             }
-            document.getElementById('listaAgenda').innerHTML = htmlAgenda;
+            document.getElementById('listaAgenda').innerHTML = html;
         }
 
         var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
         var pendentes = [];
-        for (var i = 0; i < orcamentos.length; i++) {
-            if (!orcamentos[i].vencedor) pendentes.push(orcamentos[i]);
-        }
-        pendentes = pendentes.slice(0, 5);
+        for (var i = 0; i < orcamentos.length; i++) { if (!orcamentos[i].vencedor) pendentes.push(orcamentos[i]); }
         document.getElementById('countCompras').textContent = pendentes.length;
-        document.getElementById('totalAlertas').textContent = pendentes.length;
-        if (pendentes.length > 0) {
-            var htmlCompras = '';
-            for (var i = 0; i < pendentes.length; i++) {
-                var o = pendentes[i];
-                htmlCompras += '<div class="lista-item"><span>📊</span><div class="info"><strong>' + (o.solicitacao||'Orcamento') + '</strong><small>' + (o.empresa||'') + ' - R$ ' + ((o.valor||0).toFixed(2)) + '</small></div></div>';
-            }
-            document.getElementById('listaCompras').innerHTML = htmlCompras;
-        }
 
-        var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
-        var criticos = [];
-        for (var i = 0; i < estoque.length; i++) {
-            if (estoque[i].qtdAtual <= (estoque[i].qtdMinima || 5)) criticos.push(estoque[i]);
+        var financeiro = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
+        var receitas = 0, despesas = 0;
+        for (var i = 0; i < financeiro.length; i++) {
+            if (financeiro[i].tipo === 'receita') receitas += (financeiro[i].valor||0);
+            else despesas += (financeiro[i].valor||0);
         }
-        criticos = criticos.slice(0, 5);
-        if (criticos.length > 0) {
-            var htmlEstoque = '';
-            for (var i = 0; i < criticos.length; i++) {
-                var e = criticos[i];
-                htmlEstoque += '<div class="lista-item" style="border-left:3px solid var(--vermelho);padding-left:8px;"><span>⚠️</span><div class="info"><strong>' + e.nome + '</strong><small>Qtd: ' + e.qtdAtual + ' | Min: ' + (e.qtdMinima||5) + '</small></div></div>';
-            }
-            document.getElementById('listaEstoqueCritico').innerHTML = htmlEstoque;
-        }
+        document.getElementById('statSaldo').textContent = 'R$ ' + (receitas - despesas).toFixed(0);
 
-        var docs = JSON.parse(localStorage.getItem('amovin_documentos_oficiais') || '[]');
-        docs.sort(function(a,b){ return new Date(b.criadoEm) - new Date(a.criadoEm); });
-        var ultimos = docs.slice(0, 5);
-        if (ultimos.length > 0) {
-            var htmlDocs = '';
-            for (var i = 0; i < ultimos.length; i++) {
-                var d = ultimos[i];
-                htmlDocs += '<div class="lista-item"><span>📝</span><div class="info"><strong>' + (d.numero||'-') + '</strong><small>' + (d.nome||'') + ' | ' + (d.tipo||'') + '</small></div></div>';
-            }
-            document.getElementById('listaUltimosDocs').innerHTML = htmlDocs;
-        }
+        var criticos = JSON.parse(localStorage.getItem('amovin_estoque') || '[]').filter(function(e){ return e.qtdAtual <= (e.qtdMinima||5); });
+        document.getElementById('statAlertas').textContent = criticos.length + pendentes.length;
 
         var timeout;
         function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(function() { alert('Sessao expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
