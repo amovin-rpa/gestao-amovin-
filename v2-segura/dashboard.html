@@ -5,104 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMOVIN ERP Social</title>
     <style>
+        :root {
+            --laranja: #C65A11;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --vermelho: #E53935;
+            --branco: #FFFFFF;
+            --cinza-claro: #F5F5F5;
+            --cinza-medio: #757575;
+            --preto: #1A1A1A;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; min-height: 100vh; }
-        .sidebar { width: 270px; background: linear-gradient(180deg, #0f1729 0%, #1a2744 100%); color: white; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .sidebar-logo { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 22px; font-weight: bold; color: #667eea; }
-        .sidebar-header h3 { font-size: 14px; } .sidebar-header small { font-size: 9px; opacity: 0.6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--cinza-claro); display: flex; min-height: 100vh; }
+
+        .sidebar { width: 270px; background: var(--preto); color: white; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-logo { font-size: 40px; margin-bottom: 5px; }
+        .sidebar-header h3 { font-size: 14px; color: var(--amarelo); }
+        .sidebar-header small { font-size: 9px; opacity: 0.6; }
         .sidebar-nav { flex: 1; padding: 10px 0; }
         .nav-categoria { padding: 8px 20px; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.35); font-weight: 700; }
-        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 25px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 12px; transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent; }
-        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
-        .nav-item.ativo { background: rgba(102,126,234,0.25); color: white; border-left-color: #667eea; font-weight: 600; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 25px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 12px; transition: all 0.2s; cursor: pointer; border-left: 3px solid transparent; }
+        .nav-item:hover { background: rgba(198,90,17,0.2); color: white; }
+        .nav-item.ativo { background: rgba(198,90,17,0.3); color: white; border-left-color: var(--laranja); font-weight: 600; }
         .nav-item .icone { font-size: 15px; width: 22px; text-align: center; }
-        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
         .user-card { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; background: #667eea; color: white; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; background: var(--laranja); color: white; }
         .btn-sair { width: 100%; padding: 7px; background: rgba(255,255,255,0.08); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 10px; }
+
         .main-content { flex: 1; margin-left: 270px; padding: 25px; }
-        .welcome { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 35px; border-radius: 20px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 15px 40px rgba(102,126,234,0.3); }
-        .welcome::before { content: ''; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-        .welcome::after { content: ''; position: absolute; right: 60px; bottom: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 50%; }
-        .welcome h1 { font-size: 26px; position: relative; z-index: 1; }
-        .welcome p { opacity: 0.85; position: relative; z-index: 1; font-size: 13px; margin-top: 5px; }
-        .welcome-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: relative; z-index: 1; }
+
+        .welcome {
+            background: linear-gradient(135deg, var(--laranja) 0%, #E67E22 100%);
+            color: white; padding: 40px; border-radius: 20px; margin-bottom: 25px;
+            position: relative; overflow: hidden; box-shadow: 0 15px 40px rgba(198,90,17,0.3);
+        }
+        .welcome::before { content: ''; position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+        .welcome::after { content: ''; position: absolute; right: 80px; bottom: -40px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .welcome-content { display: flex; align-items: center; gap: 30px; position: relative; z-index: 1; }
+        .welcome-logo { font-size: 80px; flex-shrink: 0; }
+        .welcome-text h1 { font-size: 28px; margin-bottom: 5px; }
+        .welcome-text p { opacity: 0.9; font-size: 14px; }
+        .welcome-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: relative; z-index: 1; margin-top: 20px; }
         .data-card { background: rgba(255,255,255,0.15); padding: 15px 20px; border-radius: 12px; text-align: center; min-width: 100px; }
         .data-card .dia { font-size: 30px; font-weight: bold; }
         .data-card .mes { font-size: 10px; text-transform: uppercase; opacity: 0.8; }
+
         .status-bar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
         .status-item { background: white; padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-size: 12px; flex: 1; min-width: 180px; }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .status-dot.on { background: #4caf50; }
+        .status-dot.on { background: var(--verde); }
         .status-info .valor { font-weight: 700; font-size: 15px; }
-        .status-info .label { font-size: 10px; color: #888; }
+        .status-info .label { font-size: 10px; color: var(--cinza-medio); }
+
         .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .card { background: white; padding: 22px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 20px; }
-        .card h3 { color: #333; margin-bottom: 15px; font-size: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .card h3 { color: var(--preto); margin-bottom: 15px; font-size: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .card h3 .badge { font-size: 11px; font-weight: normal; padding: 3px 10px; border-radius: 20px; }
-        .badge-critico { background: #ffebee; color: #c62828; }
-        .badge-ok { background: #e8f5e9; color: #2e7d32; }
-        .badge-info { background: #e3f2fd; color: #1565c0; }
+        .badge-critico { background: #ffebee; color: var(--vermelho); }
+        .badge-ok { background: #e8f5e9; color: var(--verde); }
+        .badge-info { background: #e3f2fd; color: var(--azul); }
+
         .lista-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
         .lista-item:last-child { border-bottom: none; }
-        .lista-item .hora { font-weight: 700; color: #667eea; min-width: 45px; }
+        .lista-item .hora { font-weight: 700; color: var(--laranja); min-width: 45px; }
         .lista-item .info { flex: 1; }
         .lista-item .info strong { display: block; }
-        .lista-item .info small { color: #888; }
+        .lista-item .info small { color: var(--cinza-medio); }
         .sem-dados { text-align: center; padding: 25px; color: #bbb; font-size: 13px; }
-        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; min-height: auto; } .main-content { margin-left: 0; } .grid-info { grid-template-columns: 1fr; } .status-bar { flex-direction: column; } }
+
+        .rodape { background: var(--preto); color: white; text-align: center; padding: 12px; font-size: 10px; margin-top: 30px; border-radius: 10px; }
+        .rodape a { color: var(--amarelo); text-decoration: none; }
+
+        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; min-height: auto; } .main-content { margin-left: 0; } .grid-info { grid-template-columns: 1fr; } .status-bar { flex-direction: column; } .welcome-content { flex-direction: column; text-align: center; } }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-logo">A</div>
+            <div class="sidebar-logo">🌻</div>
             <h3>AMOVIN ERP</h3>
             <small>Gestao Integrada</small>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-categoria">Principal</div>
-            <a href="dashboard.html" class="nav-item ativo"><span class="icone">&#127968;</span> Dashboard</a>
-            <a href="bi.html" class="nav-item"><span class="icone">&#128202;</span> BI Executivo</a>
+            <a href="dashboard.html" class="nav-item ativo"><span class="icone">🏠</span> Dashboard</a>
+            <a href="bi.html" class="nav-item"><span class="icone">📊</span> BI Executivo</a>
 
             <div class="nav-categoria">Captacao</div>
-            <a href="em-breve.html" class="nav-item"><span class="icone">&#128269;</span> Editais</a>
-            <a href="em-breve.html" class="nav-item"><span class="icone">&#128196;</span> Oficios IA</a>
-            <a href="em-breve.html" class="nav-item"><span class="icone">&#128203;</span> Projetos IA</a>
+            <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+            <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Oficios IA</a>
+            <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
 
             <div class="nav-categoria">Financeiro</div>
-            <a href="financeiro.html" class="nav-item"><span class="icone">&#128176;</span> Financeiro</a>
-            <a href="orcamentos.html" class="nav-item"><span class="icone">&#128202;</span> Orcamentos</a>
-            <a href="prestacao-contas.html" class="nav-item"><span class="icone">&#128203;</span> Prest. Contas</a>
+            <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+            <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orcamentos</a>
+            <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
 
             <div class="nav-categoria">Pessoas</div>
-            <a href="pessoas.html" class="nav-item"><span class="icone">&#128101;</span> Gestao de Pessoas</a>
-            <a href="agenda-telefonica.html" class="nav-item"><span class="icone">&#9742;</span> CRM Social</a>
+            <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestao de Pessoas</a>
+            <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
 
             <div class="nav-categoria">Atendimento</div>
-            <a href="agenda.html" class="nav-item"><span class="icone">&#128197;</span> Agenda</a>
+            <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
 
             <div class="nav-categoria">Documentos</div>
-            <a href="documentos.html" class="nav-item"><span class="icone">&#128221;</span> Documentos</a>
-            <a href="estoque.html" class="nav-item"><span class="icone">&#128230;</span> Estoque</a>
-            <a href="patrimonio.html" class="nav-item"><span class="icone">&#127983;</span> Patrimonio</a>
+            <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+            <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+            <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimonio</a>
 
             <div class="nav-categoria">Educacao</div>
-            <a href="biblioteca.html" class="nav-item"><span class="icone">&#128218;</span> Biblioteca</a>
-            <a href="certificados.html" class="nav-item"><span class="icone">&#127891;</span> Certificados</a>
+            <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+            <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
 
             <div class="nav-categoria">Comunicacao</div>
-            <a href="chat.html" class="nav-item"><span class="icone">&#128172;</span> Chat Interno</a>
-            <a href="assistente.html" class="nav-item"><span class="icone">&#129302;</span> Assistente IA</a>
+            <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat Interno</a>
+            <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
 
             <div class="nav-categoria">Relatorios</div>
-            <a href="relatorios.html" class="nav-item"><span class="icone">&#128200;</span> Relatorios</a>
+            <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatorios</a>
 
             <div class="nav-categoria">Sistema</div>
-            <a href="configuracoes.html" class="nav-item"><span class="icone">&#9881;</span> Configuracoes</a>
-            <a href="backup.html" class="nav-item"><span class="icone">&#128190;</span> Backup</a>
+            <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configuracoes</a>
+            <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
         </nav>
         <div class="sidebar-footer">
             <div class="user-card">
@@ -115,17 +143,27 @@
 
     <main class="main-content">
         <div class="welcome">
+            <div class="welcome-content">
+                <div class="welcome-logo">🌻</div>
+                <div class="welcome-text">
+                    <h1>Bem-vindo(a) à AMOVIN!</h1>
+                    <p>Associação e Movimento pela Inclusão - Rio Paranaíba/MG</p>
+                </div>
+            </div>
             <div class="welcome-row">
-                <div><h1>Bem-vindo(a)!</h1><p>Painel de Gestao - AMOVIN ERP Social</p></div>
-                <div class="data-card"><div class="dia" id="welcomeDia">24</div><div class="mes" id="welcomeMes">Junho 2026</div></div>
+                <div></div>
+                <div class="data-card">
+                    <div class="dia" id="welcomeDia">25</div>
+                    <div class="mes" id="welcomeMes">Junho 2025</div>
+                </div>
             </div>
         </div>
 
         <div class="status-bar">
             <div class="status-item"><div class="status-dot on"></div><div class="status-info"><div class="valor">Conectado</div><div class="label">Status Firebase</div></div></div>
-            <div class="status-item"><div>&#128202;</div><div class="status-info"><div class="valor"><span id="firebaseUso">3</span>%</div><div class="label">Firebase utilizado</div></div></div>
-            <div class="status-item"><div>&#128197;</div><div class="status-info"><div class="valor" id="totalHoje">0</div><div class="label">Agendamentos hoje</div></div></div>
-            <div class="status-item"><div>&#9888;</div><div class="status-info"><div class="valor" id="totalAlertas">0</div><div class="label">Alertas criticos</div></div></div>
+            <div class="status-item"><div>📊</div><div class="status-info"><div class="valor"><span id="firebaseUso">3</span>%</div><div class="label">Firebase utilizado</div></div></div>
+            <div class="status-item"><div>📅</div><div class="status-info"><div class="valor" id="totalHoje">0</div><div class="label">Agendamentos hoje</div></div></div>
+            <div class="status-item"><div>⚠️</div><div class="status-info"><div class="valor" id="totalAlertas">0</div><div class="label">Alertas criticos</div></div></div>
         </div>
 
         <div class="grid-info">
@@ -133,6 +171,11 @@
             <div class="card"><h3>Compras Pendentes <span class="badge badge-critico" id="countCompras">0</span></h3><div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div></div>
             <div class="card"><h3>Estoque Critico</h3><div id="listaEstoqueCritico"><div class="sem-dados">Estoque esta OK.</div></div></div>
             <div class="card"><h3>Ultimos Documentos</h3><div id="listaUltimosDocs"><div class="sem-dados">Nenhum documento recente.</div></div></div>
+        </div>
+
+        <div class="rodape">
+            Desenvolvido por <strong>Vigorre Sistemas</strong> | Vigorre ERP Social™<br>
+            <a href="mailto:contato@vigorre.com.br">contato@vigorre.com.br</a> | (34) 99185-0735
         </div>
     </main>
 
@@ -172,7 +215,7 @@
             var htmlCompras = '';
             for (var i = 0; i < pendentes.length; i++) {
                 var o = pendentes[i];
-                htmlCompras += '<div class="lista-item"><span>&#128202;</span><div class="info"><strong>' + (o.solicitacao||'Orcamento') + '</strong><small>' + (o.empresa||'') + ' - R$ ' + ((o.valor||0).toFixed(2)) + '</small></div></div>';
+                htmlCompras += '<div class="lista-item"><span>📊</span><div class="info"><strong>' + (o.solicitacao||'Orcamento') + '</strong><small>' + (o.empresa||'') + ' - R$ ' + ((o.valor||0).toFixed(2)) + '</small></div></div>';
             }
             document.getElementById('listaCompras').innerHTML = htmlCompras;
         }
@@ -187,7 +230,7 @@
             var htmlEstoque = '';
             for (var i = 0; i < criticos.length; i++) {
                 var e = criticos[i];
-                htmlEstoque += '<div class="lista-item" style="border-left:3px solid #c62828;padding-left:8px;"><span>&#9888;</span><div class="info"><strong>' + e.nome + '</strong><small>Qtd: ' + e.qtdAtual + ' | Min: ' + (e.qtdMinima||5) + '</small></div></div>';
+                htmlEstoque += '<div class="lista-item" style="border-left:3px solid var(--vermelho);padding-left:8px;"><span>⚠️</span><div class="info"><strong>' + e.nome + '</strong><small>Qtd: ' + e.qtdAtual + ' | Min: ' + (e.qtdMinima||5) + '</small></div></div>';
             }
             document.getElementById('listaEstoqueCritico').innerHTML = htmlEstoque;
         }
@@ -199,7 +242,7 @@
             var htmlDocs = '';
             for (var i = 0; i < ultimos.length; i++) {
                 var d = ultimos[i];
-                htmlDocs += '<div class="lista-item"><span>&#128221;</span><div class="info"><strong>' + (d.numero||'-') + '</strong><small>' + (d.nome||'') + ' | ' + (d.tipo||'') + '</small></div></div>';
+                htmlDocs += '<div class="lista-item"><span>📝</span><div class="info"><strong>' + (d.numero||'-') + '</strong><small>' + (d.nome||'') + ' | ' + (d.tipo||'') + '</small></div></div>';
             }
             document.getElementById('listaUltimosDocs').innerHTML = htmlDocs;
         }
