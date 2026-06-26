@@ -1,312 +1,207 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Profissionais</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; }
-        .topo { background: #4a148c; color: white; padding: 15px 25px; }
-        .topo a { color: white; text-decoration: none; margin-left: 15px; }
-        .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
-        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; margin: 3px; }
-        .btn-roxo { background: #7b1fa2; color: white; }
-        .btn-amarelo { background: #ffc107; color: #333; }
-        .btn-vermelho { background: #f44336; color: white; }
-        .btn-azul { background: #2196f3; color: white; }
-        .btn-laranja { background: #ff9800; color: white; }
-        .card { background: white; padding: 18px; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .card h3 { margin: 0 0 4px 0; font-size: 16px; }
-        .card p { margin: 2px 0; color: #666; font-size: 13px; }
-        .busca { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .busca input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-width: 200px; }
-        .busca select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
-        .modal-box { background: white; padding: 30px; border-radius: 15px; width: 500px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
-        .modal-box input, .modal-box select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        .modal-box label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 3px; }
-        .sem-dados { text-align: center; color: #bbb; padding: 30px; }
-        .abas { background: #f0f0f0; padding: 8px 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .aba { padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; color: white; }
-        .aba-voltar { background: #666; }
-        .aba-benef { background: #4a148c; }
-        .aba-prof { background: #7b1fa2; }
-        .aba-vol { background: #4a148c; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Profissionais</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
+  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
+  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
+.sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
+.sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
+.sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
+.nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
+.nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
+
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+.abas { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+.aba { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; border: 1px solid #F0E9DF; background: #FFFFFF; color: var(--cinza); }
+.aba-ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
+
+.busca { margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+.busca input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
+.busca select { padding: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; }
+.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; }
+.btn-roxo { background: var(--laranja); color: white; }
+.btn-amarelo { background: var(--amarelo); color: #1A1A1A; }
+.btn-vermelho { background: #E53935; color: white; }
+.btn-azul { background: var(--azul); color: white; }
+.btn-laranja { background: #F5A623; color: white; }
+
+.card { background: #FFFFFF; padding: 18px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #F0E9DF; }
+.card h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--grafite); }
+.card p { margin: 2px 0; color: var(--cinza); font-size: 13px; }
+.sem-dados { text-align: center; color: #9CA3AF; padding: 30px; }
+
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+.modal-box { background: white; padding: 28px; border-radius: 14px; width: 500px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
+.modal-box input, .modal-box select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; }
+.modal-box label { font-weight: 600; font-size: 11px; display: block; margin-bottom: 3px; color: var(--cinza); text-transform: uppercase; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-logo { flex-shrink: 0; }
+.rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; }
+.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
+.rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; }
+.rodape-info a { color: #C65A11; text-decoration: none; }
+.rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+
+@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
+</style>
 </head>
 <body>
 
-    <div class="abas">
-        <button class="aba aba-voltar" onclick="window.location.href='pessoas.html'">Voltar para Pessoas</button>
-        <button class="aba aba-benef" onclick="window.location.href='pessoas.html'">Beneficiarios</button>
-        <button class="aba aba-prof" style="background:#7b1fa2;">Profissionais</button>
-        <button class="aba aba-vol" onclick="window.location.href='voluntarios.html'">Voluntarios</button>
-    </div>
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="profissionais.html" class="nav-item ativo"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
 
-    <div class="topo">
-        <strong>Profissionais</strong>
-        <span><a href="dashboard.html">Dashboard</a> <a href="index.html">Sair</a></span>
-    </div>
+<main class="main-content">
+  <div class="topo-bar">
+    <h1>👨‍⚕️ Profissionais</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
 
-    <div class="container">
-        <div class="busca">
-            <input type="text" id="busca" placeholder="Buscar por nome ou especialidade..." oninput="filtrar()">
-            <select id="ordem" onchange="filtrar()">
-                <option value="az">Ordem A-Z</option>
-                <option value="za">Ordem Z-A</option>
-            </select>
-            <select id="filtroVinculo" onchange="filtrar()">
-                <option value="todos">Todos vinculos</option>
-            </select>
-            <button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button>
-        </div>
-        <div id="lista"></div>
-    </div>
+  <div class="abas">
+    <button class="aba" onclick="window.location.href='pessoas.html'">← Voltar</button>
+    <button class="aba" onclick="window.location.href='pessoas.html'">Beneficiários</button>
+    <button class="aba aba-ativo">Profissionais</button>
+    <button class="aba" onclick="window.location.href='voluntarios.html'">Voluntários</button>
+  </div>
 
-    <div class="modal" id="modalForm">
-        <div class="modal-box">
-            <h3 id="tituloModal">Novo Profissional</h3>
-            <input type="hidden" id="profId">
-            
-            <label>Nome completo *</label>
-            <input type="text" id="nomeProf" placeholder="Nome completo">
-            
-            <label>Especialidade *</label>
-            <select id="especialidadeProf">
-                <option value="">Selecione...</option>
-                <option>Psicologo</option>
-                <option>Assistente Social</option>
-                <option>Fisioterapeuta</option>
-                <option>Pedagogo</option>
-                <option>Educador Fisico</option>
-                <option>Nutricionista</option>
-                <option>Advogado</option>
-                <option>Administrador</option>
-            </select>
-            
-            <div class="form-row">
-                <div><label>CPF</label><input type="text" id="cpfProf" placeholder="000.000.000-00"></div>
-                <div><label>Telefone *</label><input type="text" id="telefoneProf" placeholder="(34) 99999-0000"></div>
-            </div>
-            
-            <label>Tem Registro Profissional?</label>
-            <select id="temRegistro" onchange="toggleRegistro()">
-                <option value="Nao">Nao</option>
-                <option value="Sim">Sim</option>
-            </select>
-            
-            <div id="campoConselho" style="display:none;"><label>Conselho</label><input type="text" id="conselhoProf" placeholder="Ex: CRP-MG, CRM-MG"></div>
-            <div id="campoRegistro" style="display:none;"><label>Numero do Registro</label><input type="text" id="registroProf" placeholder="Ex: 12345"></div>
-            
-            <label>Vinculo *</label>
-            <select id="vinculoProf">
-                <option value="">Selecione...</option>
-                <option>Contratado</option>
-                <option>Parceiro Social</option>
-                <option>Voluntario</option>
-                <option>Diretoria</option>
-            </select>
-            
-            <label>Ambiente de Acesso *</label>
-            <select id="acessoProf">
-                <option value="consulta">Consulta</option>
-                <option value="recepcao">Recepcao</option>
-                <option value="admin">Administrador</option>
-            </select>
-            
-            <div class="form-row">
-                <div><label>Login *</label><input type="text" id="loginProf" placeholder="Login"></div>
-                <div><label>Senha *</label><input type="password" id="senhaProf" placeholder="Senha"></div>
-            </div>
-            
-            <div style="display:flex;gap:10px;margin-top:10px;">
-                <button type="button" class="btn btn-laranja" onclick="gerarTermo('parceria')">Termo de Parceria</button>
-                <button type="button" class="btn btn-laranja" onclick="gerarTermo('voluntario')">Termo de Voluntario</button>
-            </div>
-            
-            <button class="btn btn-roxo" onclick="salvar()" style="width:100%;margin-top:10px;">Salvar</button>
-            <button class="btn btn-vermelho" onclick="fecharForm()" style="width:100%;">Cancelar</button>
-        </div>
+  <div class="busca">
+    <input type="text" id="busca" placeholder="Buscar por nome ou especialidade..." oninput="filtrar()">
+    <select id="ordem" onchange="filtrar()"><option value="az">A-Z</option><option value="za">Z-A</option></select>
+    <select id="filtroVinculo" onchange="filtrar()"><option value="todos">Todos vínculos</option></select>
+    <button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button>
+  </div>
+  <div id="lista"></div>
+
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
     </div>
+  </div>
+</main>
+
+<div class="modal" id="modalForm"><div class="modal-box">
+  <h3 id="tituloModal">Novo Profissional</h3><input type="hidden" id="profId">
+  <label>Nome completo *</label><input type="text" id="nomeProf">
+  <label>Especialidade *</label><select id="especialidadeProf"><option value="">Selecione...</option><option>Psicólogo</option><option>Assistente Social</option><option>Fisioterapeuta</option><option>Pedagogo</option><option>Nutricionista</option><option>Advogado</option></select>
+  <div class="form-row"><div><label>CPF</label><input type="text" id="cpfProf"></div><div><label>Telefone *</label><input type="text" id="telefoneProf"></div></div>
+  <label>Tem Registro?</label><select id="temRegistro" onchange="toggleRegistro()"><option value="Nao">Não</option><option value="Sim">Sim</option></select>
+  <div id="campoConselho" style="display:none;"><label>Conselho</label><input type="text" id="conselhoProf"></div>
+  <div id="campoRegistro" style="display:none;"><label>Nº Registro</label><input type="text" id="registroProf"></div>
+  <label>Vínculo *</label><select id="vinculoProf"><option value="">Selecione...</option><option>Contratado</option><option>Parceiro Social</option><option>Voluntário</option><option>Diretoria</option></select>
+  <label>Acesso *</label><select id="acessoProf"><option value="consulta">Consulta</option><option value="recepcao">Recepção</option><option value="admin">Administrador</option></select>
+  <div class="form-row"><div><label>Login *</label><input type="text" id="loginProf"></div><div><label>Senha *</label><input type="password" id="senhaProf"></div></div>
+  <div style="display:flex;gap:10px;margin-top:10px;"><button type="button" class="btn btn-laranja" onclick="gerarTermo('parceria')">Termo de Parceria</button><button type="button" class="btn btn-laranja" onclick="gerarTermo('voluntario')">Termo de Voluntário</button></div>
+  <button class="btn btn-roxo" onclick="salvar()" style="width:100%;margin-top:10px;">Salvar</button>
+  <button class="btn btn-vermelho" onclick="fecharForm()" style="width:100%;">Cancelar</button>
+</div></div>
 
 <script>
-var profissionais = [];
+var profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
 var editandoId = null;
-
-var dadosSalvos = localStorage.getItem('amovin_profissionais');
-if (dadosSalvos) { profissionais = JSON.parse(dadosSalvos); }
-
 if (profissionais.length === 0) {
-    profissionais.push({id:1, nome:'Dr. Carlos Mendes', especialidade:'Psicologo', cpf:'111.222.333-44', telefone:'(34) 99999-0001', temRegistro:'Sim', conselho:'CRP-MG', registro:'12345', vinculo:'Contratado', acesso:'consulta', login:'carlos', senha:'123456'});
-    profissionais.push({id:2, nome:'Dra. Lucia Ferreira', especialidade:'Assistente Social', cpf:'222.333.444-55', telefone:'(34) 99999-0002', temRegistro:'Sim', conselho:'CRESS-MG', registro:'54321', vinculo:'Contratado', acesso:'consulta', login:'lucia', senha:'123456'});
-    salvarDados();
+    profissionais.push({id:1,nome:'Dr. Carlos Mendes',especialidade:'Psicólogo',cpf:'111.222.333-44',telefone:'(34) 99999-0001',temRegistro:'Sim',conselho:'CRP-MG',registro:'12345',vinculo:'Contratado',acesso:'consulta',login:'carlos',senha:'123456'});
+    profissionais.push({id:2,nome:'Dra. Lucia Ferreira',especialidade:'Assistente Social',cpf:'222.333.444-55',telefone:'(34) 99999-0002',temRegistro:'Sim',conselho:'CRESS-MG',registro:'54321',vinculo:'Contratado',acesso:'consulta',login:'lucia',senha:'123456'});
+    salvar();
 }
+function salvar() { localStorage.setItem('amovin_profissionais', JSON.stringify(profissionais)); }
 
-function salvarDados() { localStorage.setItem('amovin_profissionais', JSON.stringify(profissionais)); }
-
-function popularFiltroVinculo() {
-    var vinculos = [];
-    for (var i = 0; i < profissionais.length; i++) {
-        if (vinculos.indexOf(profissionais[i].vinculo) === -1) vinculos.push(profissionais[i].vinculo);
-    }
-    var sel = document.getElementById('filtroVinculo');
-    var html = '<option value="todos">Todos vinculos</option>';
-    for (var i = 0; i < vinculos.length; i++) html += '<option value="' + vinculos[i] + '">' + vinculos[i] + '</option>';
-    sel.innerHTML = html;
+function popularFiltro() {
+    var v = []; for (var i = 0; i < profissionais.length; i++) { if (v.indexOf(profissionais[i].vinculo) === -1) v.push(profissionais[i].vinculo); }
+    var s = document.getElementById('filtroVinculo'); s.innerHTML = '<option value="todos">Todos vínculos</option>';
+    for (var i = 0; i < v.length; i++) s.innerHTML += '<option value="'+v[i]+'">'+v[i]+'</option>';
 }
 
 function filtrar() {
-    var busca = document.getElementById('busca').value.toLowerCase();
-    var ordem = document.getElementById('ordem').value;
-    var vinculoFiltro = document.getElementById('filtroVinculo').value;
-    var lista = [];
+    var busca = document.getElementById('busca').value.toLowerCase(), ordem = document.getElementById('ordem').value, vf = document.getElementById('filtroVinculo').value, lista = [];
     for (var i = 0; i < profissionais.length; i++) {
-        var p = profissionais[i];
-        var matchBusca = p.nome.toLowerCase().indexOf(busca) >= 0 || p.especialidade.toLowerCase().indexOf(busca) >= 0;
-        var matchVinculo = vinculoFiltro === 'todos' || p.vinculo === vinculoFiltro;
-        if (matchBusca && matchVinculo) lista.push(p);
+        if ((profissionais[i].nome.toLowerCase().indexOf(busca) >= 0 || profissionais[i].especialidade.toLowerCase().indexOf(busca) >= 0) && (vf === 'todos' || profissionais[i].vinculo === vf)) lista.push(profissionais[i]);
     }
-    lista.sort(function(a, b) { if (ordem === 'az') return a.nome.localeCompare(b.nome); else return b.nome.localeCompare(a.nome); });
-    mostrarLista(lista);
-}
-
-function mostrarLista(lista) {
-    if (!lista) { lista = profissionais.slice(); lista.sort(function(a,b){ return a.nome.localeCompare(b.nome); }); }
-    var html = '';
-    if (lista.length === 0) html = '<div class="sem-dados">Nenhum profissional encontrado.</div>';
+    lista.sort(function(a,b){ return ordem==='az' ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome); });
+    var h = ''; if (lista.length === 0) h = '<div class="sem-dados">Nenhum profissional.</div>';
     for (var i = 0; i < lista.length; i++) {
-        var p = lista[i];
-        var reg = p.temRegistro === 'Sim' ? ' | ' + (p.conselho||'') + ' ' + (p.registro||'') : '';
-        html += '<div class="card">';
-        html += '<h3>' + p.nome + '</h3>';
-        html += '<p>' + p.especialidade + reg + '</p>';
-        html += '<p>Tel: ' + p.telefone + ' | ' + p.vinculo + ' | Acesso: ' + p.acesso + '</p>';
-        html += '<button class="btn btn-amarelo" onclick="editar(' + p.id + ')">Editar</button> ';
-        html += '<button class="btn btn-laranja" onclick="gerarTermoProf(' + p.id + ')">Termo</button> ';
-        html += '<button class="btn btn-azul" onclick="imprimir(' + p.id + ')">Imprimir</button> ';
-        html += '<button class="btn btn-vermelho" onclick="excluir(' + p.id + ')">Excluir</button>';
-        html += '</div>';
+        var p = lista[i], reg = p.temRegistro==='Sim'?' | '+(p.conselho||'')+' '+(p.registro||''):'';
+        h += '<div class="card"><h3>'+p.nome+'</h3><p>'+p.especialidade+reg+'</p><p>Tel: '+p.telefone+' | '+p.vinculo+' | Acesso: '+p.acesso+'</p>';
+        h += '<button class="btn btn-amarelo" onclick="editar('+p.id+')">Editar</button> <button class="btn btn-laranja" onclick="gerarTermoProf('+p.id+')">Termo</button> <button class="btn btn-azul" onclick="imprimir('+p.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+p.id+')">Excluir</button></div>';
     }
-    document.getElementById('lista').innerHTML = html;
+    document.getElementById('lista').innerHTML = h;
 }
 
-window.toggleRegistro = function() {
-    var tem = document.getElementById('temRegistro').value === 'Sim';
-    document.getElementById('campoConselho').style.display = tem ? 'block' : 'none';
-    document.getElementById('campoRegistro').style.display = tem ? 'block' : 'none';
-};
-
+window.toggleRegistro = function() { var t = document.getElementById('temRegistro').value==='Sim'; document.getElementById('campoConselho').style.display = t?'block':'none'; document.getElementById('campoRegistro').style.display = t?'block':'none'; };
 window.abrirForm = function(id) {
-    editandoId = id || null;
-    document.getElementById('modalForm').style.display = 'block';
-    document.getElementById('tituloModal').textContent = id ? 'Editar Profissional' : 'Novo Profissional';
-    if (id) {
-        var p = null;
-        for (var i = 0; i < profissionais.length; i++) { if (profissionais[i].id === id) { p = profissionais[i]; break; } }
-        if (p) {
-            document.getElementById('profId').value = p.id;
-            document.getElementById('nomeProf').value = p.nome;
-            document.getElementById('especialidadeProf').value = p.especialidade;
-            document.getElementById('cpfProf').value = p.cpf || '';
-            document.getElementById('telefoneProf').value = p.telefone;
-            document.getElementById('temRegistro').value = p.temRegistro || 'Nao';
-            document.getElementById('conselhoProf').value = p.conselho || '';
-            document.getElementById('registroProf').value = p.registro || '';
-            document.getElementById('vinculoProf').value = p.vinculo;
-            document.getElementById('acessoProf').value = p.acesso || 'consulta';
-            document.getElementById('loginProf').value = p.login || '';
-            document.getElementById('senhaProf').value = p.senha || '';
-            toggleRegistro();
-        }
-    } else {
-        document.getElementById('profId').value = '';
-        document.getElementById('nomeProf').value = '';
-        document.getElementById('especialidadeProf').value = '';
-        document.getElementById('cpfProf').value = '';
-        document.getElementById('telefoneProf').value = '';
-        document.getElementById('temRegistro').value = 'Nao';
-        document.getElementById('conselhoProf').value = '';
-        document.getElementById('registroProf').value = '';
-        document.getElementById('vinculoProf').value = '';
-        document.getElementById('acessoProf').value = 'consulta';
-        document.getElementById('loginProf').value = '';
-        document.getElementById('senhaProf').value = '';
-        toggleRegistro();
-    }
+    editandoId = id || null; document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('tituloModal').textContent = id ? 'Editar' : 'Novo';
+    if (id) { var p = profissionais.find(function(x){return x.id===id;}); if (!p) return;
+        document.getElementById('profId').value=p.id;document.getElementById('nomeProf').value=p.nome;document.getElementById('especialidadeProf').value=p.especialidade;document.getElementById('cpfProf').value=p.cpf||'';document.getElementById('telefoneProf').value=p.telefone;document.getElementById('temRegistro').value=p.temRegistro||'Nao';document.getElementById('conselhoProf').value=p.conselho||'';document.getElementById('registroProf').value=p.registro||'';document.getElementById('vinculoProf').value=p.vinculo;document.getElementById('acessoProf').value=p.acesso||'consulta';document.getElementById('loginProf').value=p.login||'';document.getElementById('senhaProf').value=p.senha||'';
+    } else { document.getElementById('profId').value='';document.getElementById('nomeProf').value='';document.getElementById('especialidadeProf').value='';document.getElementById('cpfProf').value='';document.getElementById('telefoneProf').value='';document.getElementById('temRegistro').value='Nao';document.getElementById('vinculoProf').value='';document.getElementById('acessoProf').value='consulta';document.getElementById('loginProf').value='';document.getElementById('senhaProf').value=''; }
+    toggleRegistro();
 };
-
 window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
-
 window.salvar = function() {
-    var nome = document.getElementById('nomeProf').value;
-    if (!nome) { alert('Preencha o nome!'); return; }
-    var dados = {
-        nome: nome,
-        especialidade: document.getElementById('especialidadeProf').value,
-        cpf: document.getElementById('cpfProf').value,
-        telefone: document.getElementById('telefoneProf').value,
-        temRegistro: document.getElementById('temRegistro').value,
-        conselho: document.getElementById('conselhoProf').value,
-        registro: document.getElementById('registroProf').value,
-        vinculo: document.getElementById('vinculoProf').value,
-        acesso: document.getElementById('acessoProf').value,
-        login: document.getElementById('loginProf').value,
-        senha: document.getElementById('senhaProf').value
-    };
-    if (editandoId) {
-        for (var i = 0; i < profissionais.length; i++) {
-            if (profissionais[i].id === editandoId) {
-                for (var key in dados) { profissionais[i][key] = dados[key]; }
-                break;
-            }
-        }
-    } else {
-        dados.id = Date.now();
-        profissionais.push(dados);
-    }
-    salvarDados(); filtrar(); popularFiltroVinculo(); fecharForm();
+    var n = document.getElementById('nomeProf').value; if (!n) { alert('Preencha o nome!'); return; }
+    var d = { nome:n, especialidade:document.getElementById('especialidadeProf').value, cpf:document.getElementById('cpfProf').value, telefone:document.getElementById('telefoneProf').value, temRegistro:document.getElementById('temRegistro').value, conselho:document.getElementById('conselhoProf').value, registro:document.getElementById('registroProf').value, vinculo:document.getElementById('vinculoProf').value, acesso:document.getElementById('acessoProf').value, login:document.getElementById('loginProf').value, senha:document.getElementById('senhaProf').value };
+    if (editandoId) { var idx = profissionais.findIndex(function(x){return x.id===editandoId;}); if (idx>=0) for (var k in d) profissionais[idx][k]=d[k]; }
+    else { d.id = Date.now(); profissionais.push(d); }
+    salvar(); filtrar(); popularFiltro(); fecharForm();
 };
-
 window.editar = function(id) { abrirForm(id); };
-
-window.excluir = function(id) {
-    if (!confirm('Excluir?')) return;
-    var novo = [];
-    for (var i = 0; i < profissionais.length; i++) { if (profissionais[i].id !== id) novo.push(profissionais[i]); }
-    profissionais = novo;
-    salvarDados(); filtrar(); popularFiltroVinculo();
-};
-
-window.gerarTermoProf = function(id) {
-    var p = null;
-    for (var i = 0; i < profissionais.length; i++) { if (profissionais[i].id === id) { p = profissionais[i]; break; } }
-    if (!p) return;
-    var tipo = p.vinculo === 'Voluntario' ? 'voluntario' : 'parceria';
-    gerarTermo(tipo, p);
-};
-
+window.excluir = function(id) { if (!confirm('Excluir?')) return; profissionais = profissionais.filter(function(x){return x.id!==id;}); salvar(); filtrar(); popularFiltro(); };
+window.gerarTermoProf = function(id) { var p = profissionais.find(function(x){return x.id===id;}); if (!p) return; gerarTermo(p.vinculo==='Voluntário'?'voluntario':'parceria', p); };
 window.gerarTermo = function(tipo, p) {
-    var dados = p || { nome: document.getElementById('nomeProf').value || '___', especialidade: document.getElementById('especialidadeProf').value || '___' };
-    var hoje = new Date();
-    var data = hoje.toLocaleDateString('pt-BR');
-    var titulo = tipo === 'parceria' ? 'TERMO DE PARCERIA' : 'TERMO DE VOLUNTARIO';
-    var conteudo = '<h2>' + titulo + '</h2><p><strong>' + dados.nome + '</strong> - ' + dados.especialidade + '</p>';
+    var d = p || { nome: document.getElementById('nomeProf').value||'___', especialidade: document.getElementById('especialidadeProf').value||'___' };
+    var data = new Date().toLocaleDateString('pt-BR'), t2 = tipo==='parceria'?'TERMO DE PARCERIA':'TERMO DE VOLUNTÁRIO';
     var w = window.open('','_blank');
-    w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}</style></head><body><h3>AMOVIN</h3>'+conteudo+'<p>Rio Paranaiba, '+data+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura</div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}</style></head><body><h3>AMOVIN</h3><h2>'+t2+'</h2><p><strong>'+d.nome+'</strong> - '+d.especialidade+'</p><p>Rio Paranaíba, '+data+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura</div><script>window.onload=function(){window.print()}<\/script></body></html>');
     w.document.close();
 };
+window.imprimir = function(id) { var p = profissionais.find(function(x){return x.id===id;}); if (!p) return; var w = window.open('','_blank'); w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px}</style></head><body><h2>AMOVIN</h2><p>Nome: '+p.nome+'</p><p>Especialidade: '+p.especialidade+'</p><p>Telefone: '+p.telefone+'</p><p>Vínculo: '+p.vinculo+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 
-window.imprimir = function(id) {
-    var p = null;
-    for (var i = 0; i < profissionais.length; i++) { if (profissionais[i].id === id) { p = profissionais[i]; break; } }
-    if (!p) return;
-    var w = window.open('','_blank');
-    w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px}</style></head><body><h2>AMOVIN - Profissional</h2><p>Nome: '+p.nome+'</p><p>Especialidade: '+p.especialidade+'</p><p>Telefone: '+p.telefone+'</p><p>Vinculo: '+p.vinculo+'</p><script>window.onload=function(){window.print()}<\/script></body></html>');
-    w.document.close();
-};
-
-popularFiltroVinculo();
-filtrar();
+popularFiltro(); filtrar();
 </script>
 </body>
 </html>
