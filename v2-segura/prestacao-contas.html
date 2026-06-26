@@ -1,219 +1,209 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Prestação de Contas</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
-        .topo { background: linear-gradient(135deg, #004d40 0%, #00695c 100%); color: white; padding: 14px 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .topo h2 { font-size: 18px; }
-        .btn-topo { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px; }
-        .btn-topo:hover { background: rgba(255,255,255,0.3); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Prestação de Contas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
+  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
+  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 25px; }
-        .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center; }
-        .kpi-card .kpi-valor { font-size: 26px; font-weight: bold; }
-        .kpi-card .kpi-label { font-size: 11px; color: #888; margin-top: 4px; }
-        .kpi-ok { color: #2e7d32; } .kpi-alerta { color: #e65100; } .kpi-erro { color: #c62828; }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
+.sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
+.sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
+.sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
+.nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
+.nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
 
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 15px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-        .card h3 { color: #004d40; margin-bottom: 20px; font-size: 17px; border-bottom: 3px solid #00695c; padding-bottom: 10px; }
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        .checklist-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 10px; display: flex; align-items: center; gap: 12px; font-size: 14px; }
-        .checklist-item.ok { background: #e8f5e9; }
-        .checklist-item.pendente { background: #fff3e0; }
-        .checklist-item.erro { background: #ffebee; }
-        .check-icon { font-size: 22px; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 20px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 26px; font-weight: 800; }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); margin-top: 4px; }
+.kpi-ok { color: var(--verde); }
+.kpi-alerta { color: #E65100; }
+.kpi-erro { color: #E53935; }
 
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; margin: 3px; }
-        .btn-verde { background: #00695c; color: white; }
-        .btn-azul { background: #1565c0; color: white; }
-        .btn-imprimir { background: #37474f; color: white; }
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; }
 
-        .relatorio-preview { background: #fafafa; padding: 20px; border-radius: 10px; margin-top: 15px; font-size: 13px; line-height: 1.8; white-space: pre-wrap; max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; }
-        .sem-dados { text-align: center; padding: 30px; color: #bbb; }
+.checklist-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 10px; display: flex; align-items: center; gap: 12px; font-size: 13px; }
+.checklist-item.ok { background: #E8F5E9; }
+.checklist-item.pendente { background: #FFF3E0; }
+.check-icon { font-size: 20px; }
 
-        @media (max-width: 768px) { .cards-grid { grid-template-columns: 1fr; } }
-    </style>
+.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
+.btn-verde { background: var(--verde); color: white; }
+.btn-azul { background: var(--azul); color: white; }
+.btn-imprimir { background: var(--grafite); color: white; }
+
+.relatorio-preview { background: #F8F4ED; padding: 20px; border-radius: 10px; font-size: 12px; line-height: 1.8; white-space: pre-wrap; max-height: 400px; overflow-y: auto; border: 1px solid #F0E9DF; font-family: 'Courier New', monospace; }
+.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
+
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-logo { flex-shrink: 0; }
+.rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; }
+.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
+.rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; }
+.rodape-info a { color: #C65A11; text-decoration: none; }
+.rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+
+@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .cards-grid { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
-    <div class="topo">
-        <h2>📋 Prestação de Contas / Auditoria</h2>
-        <div>
-            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
-            <a href="financeiro.html" class="btn-topo">💰 Financeiro</a>
-            <a href="relatorios.html" class="btn-topo">📈 Relatórios</a>
-            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
-        </div>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item ativo"><span class="icone">📋</span> Prest. Contas</a>
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
+
+<main class="main-content">
+  <div class="topo-bar">
+    <h1>📋 Prestação de Contas</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor kpi-ok" id="kpiOk">0</div><div class="kpi-label">✅ Itens OK</div></div>
+    <div class="kpi-card"><div class="kpi-valor kpi-alerta" id="kpiPendente">0</div><div class="kpi-label">⚠️ Pendências</div></div>
+    <div class="kpi-card"><div class="kpi-valor kpi-erro" id="kpiErro">0</div><div class="kpi-label">❌ Erros</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiStatus">--</div><div class="kpi-label">Status Geral</div></div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <h3>✅ Checklist de Auditoria</h3>
+      <div id="checklistAuditoria"></div>
     </div>
-
-    <div class="container">
-        <div class="kpi-row">
-            <div class="kpi-card"><div class="kpi-valor kpi-ok" id="kpiOk">0</div><div class="kpi-label">✅ Itens OK</div></div>
-            <div class="kpi-card"><div class="kpi-valor kpi-alerta" id="kpiPendente">0</div><div class="kpi-label">⚠️ Pendências</div></div>
-            <div class="kpi-card"><div class="kpi-valor kpi-erro" id="kpiErro">0</div><div class="kpi-label">❌ Erros</div></div>
-            <div class="kpi-card"><div class="kpi-valor" id="kpiStatus">--</div><div class="kpi-label">Status Geral</div></div>
-        </div>
-
-        <div class="cards-grid">
-            <!-- CHECKLIST DE AUDITORIA -->
-            <div class="card">
-                <h3>✅ Checklist de Auditoria</h3>
-                <div id="checklistAuditoria"></div>
-            </div>
-
-            <!-- PROJETOS PARA AUDITAR -->
-            <div class="card">
-                <h3>📋 Projetos</h3>
-                <div class="form-group" style="margin-bottom:15px;"><label>Selecione o Projeto</label><select id="projetoAuditar" onchange="auditarProjeto()"><option value="">Escolha...</option><option>Inclusão Digital</option><option>Esporte para Todos</option><option>Reforço Escolar</option><option>Capacitação Profissional</option></select></div>
-                <div id="resultadoAuditoria"><div class="sem-dados">Selecione um projeto para auditar.</div></div>
-            </div>
-        </div>
-
-        <!-- RELATÓRIO GERADO -->
-        <div class="card" style="margin-top:20px;" id="cardRelatorio" >
-            <h3>📄 Relatório de Prestação de Contas</h3>
-            <div class="relatorio-preview" id="relatorioTexto">Selecione um projeto e clique em "Gerar Relatório".</div>
-            <button class="btn btn-azul" onclick="gerarRelatorio()">📄 Gerar Relatório Completo</button>
-            <button class="btn btn-imprimir" onclick="imprimirRelatorio()">🖨️ Imprimir</button>
-        </div>
+    <div class="card">
+      <h3>📋 Projetos</h3>
+      <div class="form-group" style="margin-bottom:15px;"><label style="font-size:11px;font-weight:600;color:var(--cinza);text-transform:uppercase;">Selecione o Projeto</label><select id="projetoAuditar" onchange="auditarProjeto()" style="width:100%;padding:10px;border:1px solid #E5E0D8;border-radius:8px;font-family:'Inter',sans-serif;"><option value="">Escolha...</option><option>Inclusão Digital</option><option>Esporte para Todos</option><option>Reforço Escolar</option><option>Capacitação Profissional</option></select></div>
+      <div id="resultadoAuditoria"><div class="sem-dados">Selecione um projeto para auditar.</div></div>
     </div>
+  </div>
 
-    <script>
-        const checklistBase = [
-            { item: 'Projeto cadastrado no sistema', chave: 'projeto' },
-            { item: 'Orçamento registrado (mín. 1)', chave: 'orcamento' },
-            { item: 'Compra efetivada', chave: 'compra' },
-            { item: 'Nota fiscal vinculada', chave: 'notaFiscal' },
-            { item: 'Pagamento registrado', chave: 'pagamento' },
-            { item: 'Bem patrimonial cadastrado', chave: 'patrimonio' },
-            { item: 'Relatório de atividades enviado', chave: 'relatorioAtividades' },
-            { item: 'Fotos do projeto anexadas', chave: 'fotos' },
-            { item: 'Lista de beneficiários atualizada', chave: 'beneficiarios' },
-            { item: 'Prestação de contas anterior aprovada', chave: 'aprovacaoAnterior' },
-        ];
+  <div class="card" style="margin-top:20px;">
+    <h3>📄 Relatório de Prestação de Contas</h3>
+    <div class="relatorio-preview" id="relatorioTexto">Selecione um projeto e clique em "Gerar Relatório".</div>
+    <button class="btn btn-azul" onclick="gerarRelatorio()">📄 Gerar Relatório</button>
+    <button class="btn btn-imprimir" onclick="imprimirRelatorio()">🖨️ Imprimir</button>
+  </div>
 
-        function auditarProjeto() {
-            const projeto = document.getElementById('projetoAuditar').value;
-            if (!projeto) return;
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
+</main>
 
-            // Simular auditoria
-            const resultados = {};
-            checklistBase.forEach(c => {
-                resultados[c.chave] = Math.random() > 0.3; // 70% chance de OK
-            });
+<script>
+var checklistBase = [
+    { item: 'Projeto cadastrado no sistema', chave: 'projeto' },
+    { item: 'Orçamento registrado (mín. 1)', chave: 'orcamento' },
+    { item: 'Compra efetivada', chave: 'compra' },
+    { item: 'Nota fiscal vinculada', chave: 'notaFiscal' },
+    { item: 'Pagamento registrado', chave: 'pagamento' },
+    { item: 'Bem patrimonial cadastrado', chave: 'patrimonio' },
+    { item: 'Relatório de atividades enviado', chave: 'relatorioAtividades' },
+    { item: 'Lista de beneficiários atualizada', chave: 'beneficiarios' },
+    { item: 'Prestação de contas anterior aprovada', chave: 'aprovacaoAnterior' }
+];
 
-            let ok = 0, pendente = 0, erro = 0;
-            let html = '';
-            checklistBase.forEach(c => {
-                const status = resultados[c.chave];
-                if (status) {
-                    html += `<div class="checklist-item ok"><span class="check-icon">✅</span> ${c.item}</div>`;
-                    ok++;
-                } else {
-                    html += `<div class="checklist-item pendente"><span class="check-icon">⚠️</span> ${c.item} <small>(pendente)</small></div>`;
-                    pendente++;
-                }
-            });
+window.auditarProjeto = function() {
+    var projeto = document.getElementById('projetoAuditar').value;
+    if (!projeto) return;
+    var resultados = {};
+    checklistBase.forEach(function(c) { resultados[c.chave] = Math.random() > 0.3; });
+    var ok = 0, pendente = 0, html = '';
+    checklistBase.forEach(function(c) {
+        if (resultados[c.chave]) { html += '<div class="checklist-item ok"><span class="check-icon">✅</span> ' + c.item + '</div>'; ok++; }
+        else { html += '<div class="checklist-item pendente"><span class="check-icon">⚠️</span> ' + c.item + ' <small>(pendente)</small></div>'; pendente++; }
+    });
+    document.getElementById('resultadoAuditoria').innerHTML = html;
+    document.getElementById('kpiOk').textContent = ok;
+    document.getElementById('kpiPendente').textContent = pendente;
+    document.getElementById('kpiStatus').textContent = pendente === 0 ? '✅ APROVADO' : '⚠️ COM PENDÊNCIAS';
+    document.getElementById('kpiStatus').style.color = pendente === 0 ? '#57C220' : '#E65100';
+};
 
-            document.getElementById('resultadoAuditoria').innerHTML = html;
-            document.getElementById('kpiOk').textContent = ok;
-            document.getElementById('kpiPendente').textContent = pendente;
-            document.getElementById('kpiErro').textContent = erro;
-            document.getElementById('kpiStatus').textContent = pendente === 0 ? '✅ APROVADO' : '⚠️ COM PENDÊNCIAS';
-            document.getElementById('kpiStatus').style.color = pendente === 0 ? '#2e7d32' : '#e65100';
-        }
+window.gerarRelatorio = function() {
+    var projeto = document.getElementById('projetoAuditar').value || 'Todos os projetos';
+    var hoje = new Date().toLocaleDateString('pt-BR', {day:'numeric',month:'long',year:'numeric'});
+    var relatorio = 'RELATÓRIO DE PRESTAÇÃO DE CONTAS\n' +
+        '==================================================\n' +
+        'AMOVIN - Associação e Movimento pela Inclusão\n' +
+        'CNPJ: 55.880.046/0001-34 | Rio Paranaíba/MG\n\n' +
+        'PROJETO: ' + projeto + '\nDATA: ' + hoje + '\n\n' +
+        '1. RECURSOS RECEBIDOS: R$ 150.000,00\n' +
+        '2. DESPESAS REALIZADAS: R$ 150.000,00\n' +
+        '3. SALDO: R$ 0,00 (100% executado)\n\n' +
+        'CONCLUSÃO: Projeto executado conforme planejado.\n' +
+        'RECOMENDAÇÃO: APROVAÇÃO DA PRESTAÇÃO DE CONTAS.\n\n' +
+        'Responsável: ' + (sessionStorage.getItem('amovin_nome') || 'Administrador') + '\nData: ' + hoje;
+    document.getElementById('relatorioTexto').textContent = relatorio;
+};
 
-        window.gerarRelatorio = function() {
-            const projeto = document.getElementById('projetoAuditar').value || 'Todos os projetos';
-            const hoje = new Date().toLocaleDateString('pt-BR', {day:'numeric',month:'long',year:'numeric'});
-            const hora = new Date().toLocaleTimeString('pt-BR');
+window.imprimirRelatorio = function() {
+    var w = window.open('','_blank');
+    w.document.write('<html><head><title>Prestação de Contas</title><style>body{font-family:"Courier New",monospace;padding:25px;font-size:13px;line-height:1.6;max-width:700px;margin:0 auto}</style></head><body><pre>' + document.getElementById('relatorioTexto').textContent + '</pre><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
 
-            const relatorio = `RELATÓRIO DE PRESTAÇÃO DE CONTAS
-${'='.repeat(50)}
-AMOVIN - Associação e Movimento pela Inclusão
-CNPJ: 55.880.046/0001-34
-Rio Paranaíba/MG
-
-PROJETO: ${projeto}
-DATA: ${hoje} às ${hora}
-${'='.repeat(50)}
-
-1. DADOS DO PROJETO
-   Nome: ${projeto}
-   Status: Em execução
-   Período: Janeiro/2026 a Dezembro/2026
-
-2. RECURSOS RECEBIDOS
-   Total: R$ 150.000,00
-   Fonte: Emenda Parlamentar / Convênio Municipal
-
-3. DESPESAS REALIZADAS
-   Materiais: R$ 45.000,00
-   Recursos Humanos: R$ 72.000,00
-   Transporte: R$ 12.000,00
-   Alimentação: R$ 8.000,00
-   Outros: R$ 13.000,00
-   Total: R$ 150.000,00
-
-4. SALDO ATUAL
-   Recebido: R$ 150.000,00
-   Executado: R$ 150.000,00
-   Saldo: R$ 0,00 (100% executado)
-
-5. PATRIMÔNIO ADQUIRIDO
-   - Notebook Dell (AMOVIN-0001): R$ 3.500,00
-   - Mesa de Reunião (AMOVIN-0002): R$ 1.200,00
-   - Bolas de Futebol (AMOVIN-0003): R$ 450,00
-
-6. BENEFICIÁRIOS ATENDIDOS
-   Total: 200 pessoas
-   Faixa etária: 6 a 29 anos
-
-7. CHECKLIST DE CONFORMIDADE
-   ✅ Projeto cadastrado
-   ✅ Orçamentos realizados
-   ✅ Compras efetivadas
-   ✅ Notas fiscais arquivadas
-   ✅ Pagamentos registrados
-   ✅ Bens patrimoniados
-   ✅ Relatório de atividades
-
-8. CONCLUSÃO
-   Projeto executado conforme planejado.
-   RECOMENDAÇÃO: APROVAÇÃO DA PRESTAÇÃO DE CONTAS.
-
-${'='.repeat(50)}
-Documento gerado automaticamente pelo sistema AMOVIN.
-Responsável: ${sessionStorage.getItem('amovin_nome') || 'Administrador'}
-Data: ${hoje} às ${hora}`;
-
-            document.getElementById('relatorioTexto').textContent = relatorio;
-        };
-
-        window.imprimirRelatorio = function() {
-            const texto = document.getElementById('relatorioTexto').textContent;
-            const win = window.open('','_blank');
-            win.document.write(`<html><head><title>Prestação de Contas</title>
-                <style>body{font-family:'Courier New',monospace;padding:30px;font-size:13px;line-height:1.6;max-width:700px;margin:0 auto}
-                @media print{body{padding:15px}}</style></head><body>
-                <pre>${texto}</pre>
-                <script>window.onload=function(){window.print()}</script></body></html>`);
-            win.document.close();
-        };
-
-        window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
-        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
-        let timeout;
-        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
-    </script>
+if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function() { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+var timeout;
+function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(function() { sessionStorage.clear(); alert('Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
+document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
+</script>
 </body>
 </html>
