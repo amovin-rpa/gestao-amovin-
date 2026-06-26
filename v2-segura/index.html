@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN ERP Social</title>
+    <title>Amovin ERP Social</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
 
         :root {
-            --primary: #C65A11;
-            --primary-dark: #9F470D;
-            --cream: #F9F4EB;
-            --beige: #F0E6D9;
-            --text-dark: #3F2A1F;
-            --text-soft: #5C4635;
-            --shadow: 0 25px 50px -12px rgb(198 90 17 / 0.12);
+            --primary: #B45309;
+            --primary-light: #D97706;
+            --cream: #FAF6F0;
+            --beige-soft: #F5EDE4;
+            --text-primary: #3C2A1F;
+            --text-secondary: #6B5A4A;
+            --gold-soft: #E8C78F;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,7 +25,7 @@
         body {
             font-family: 'Inter', system-ui, sans-serif;
             min-height: 100dvh;
-            background: linear-gradient(135deg, #F9F4EB 0%, #F0E6D9 100%);
+            background: linear-gradient(135deg, #FAF6F0 0%, #F2E8D9 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -37,79 +37,93 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 50% 20%, rgba(245, 197, 24, 0.08) 0%, transparent 60%);
+            background: radial-gradient(circle at 50% 15%, rgba(217, 119, 6, 0.07) 0%, transparent 50%);
             z-index: 0;
-            pointer-events: none;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 440px;
+            margin: 40px 20px;
+            z-index: 2;
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(28px);
-            border: 1px solid rgba(198, 90, 17, 0.15);
+            background: rgba(255, 255, 255, 0.975);
+            backdrop-filter: blur(32px);
+            border: 1px solid rgba(181, 101, 29, 0.12);
             border-radius: 32px;
-            width: 100%;
-            max-width: 480px;
-            padding: 60px 52px;
-            box-shadow: var(--shadow), 
-                        0 0 0 1px rgba(255,255,255,0.6) inset;
+            padding: 52px 48px 48px;
+            box-shadow: 0 30px 70px -15px rgba(181, 101, 29, 0.18),
+                        0 0 0 1px rgba(255,255,255,0.7) inset;
             position: relative;
-            z-index: 2;
         }
 
         .logo-container {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .logo {
-            font-size: 148px;
+            font-size: 138px;
             line-height: 1;
-            filter: drop-shadow(0 20px 30px rgba(198, 90, 17, 0.25));
-            margin-bottom: 12px;
-            animation: float 8s ease-in-out infinite;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 25px 35px rgba(181, 101, 29, 0.22));
+            animation: float 9s ease-in-out infinite;
         }
 
-        .brand-name {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -1.2px;
-            color: var(--text-dark);
-            margin-bottom: 4px;
+        .brand-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 29px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.8px;
+            margin-bottom: 6px;
         }
 
         .brand-subtitle {
+            font-size: 11.8px;
+            font-weight: 700;
+            letter-spacing: 4.2px;
+            color: var(--primary);
+            text-transform: uppercase;
+            opacity: 0.95;
+        }
+
+        .system-name {
+            text-align: center;
             font-size: 13.5px;
             font-weight: 600;
-            letter-spacing: 3.5px;
-            color: var(--primary);
-            opacity: 0.9;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            letter-spacing: 1.5px;
         }
 
         .tagline {
             text-align: center;
-            color: var(--text-soft);
-            font-size: 15.5px;
-            margin-top: 8px;
-            margin-bottom: 40px;
+            color: var(--text-secondary);
+            font-size: 15.2px;
+            margin: 32px 0 38px;
             font-weight: 400;
+            line-height: 1.4;
         }
 
         .tabs {
             display: flex;
-            background: var(--beige);
+            background: var(--beige-soft);
             padding: 6px;
-            border-radius: 20px;
-            margin-bottom: 32px;
+            border-radius: 22px;
+            margin-bottom: 36px;
         }
 
         .tab {
             flex: 1;
-            padding: 14px 10px;
+            padding: 13px 8px;
             border: none;
-            border-radius: 16px;
+            border-radius: 18px;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-soft);
+            font-size: 0.89rem;
+            color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -117,78 +131,78 @@
         .tab.ativo {
             background: white;
             color: var(--primary);
-            box-shadow: 0 10px 15px -3px rgb(198 90 17 / 0.15);
+            box-shadow: 0 8px 20px -6px rgba(181, 101, 29, 0.18);
         }
 
         .form-group {
-            margin-bottom: 26px;
+            margin-bottom: 24px;
             position: relative;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.76rem;
+            font-size: 0.73rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 8px;
+            color: var(--text-primary);
+            margin-bottom: 9px;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.4px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 18px 22px;
-            border: 2px solid #EDE0CF;
+            padding: 17px 22px;
+            border: 2px solid #EDE3D2;
             border-radius: 18px;
-            font-size: 1.05rem;
+            font-size: 1.06rem;
             transition: all 0.35s ease;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 6px rgba(198, 90, 17, 0.09);
+            box-shadow: 0 0 0 6px rgba(181, 101, 29, 0.11);
         }
 
         .olho-magico {
             position: absolute;
-            right: 22px;
-            top: 42px;
-            font-size: 1.45rem;
+            right: 20px;
+            top: 41px;
+            font-size: 1.5rem;
             background: none;
             border: none;
             cursor: pointer;
-            color: #8C6F55;
-            opacity: 0.5;
+            color: #9C7A5F;
+            opacity: 0.55;
         }
 
         .btn-entrar {
             width: 100%;
             padding: 18px;
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(90deg, var(--primary), #9C3F0A);
             color: white;
             border: none;
             border-radius: 18px;
-            font-size: 1.1rem;
+            font-size: 1.08rem;
             font-weight: 700;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.4px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 15px 35px -10px rgba(198, 90, 17, 0.35);
+            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 35px -8px rgba(181, 101, 29, 0.35);
         }
 
         .btn-entrar:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 22px 45px -8px rgba(198, 90, 17, 0.45);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 25px 45px -10px rgba(181, 101, 29, 0.45);
         }
 
         .erro-msg {
             background: #FEF2F2;
-            color: #9F1F1F;
+            color: #9F2A2A;
             padding: 14px 18px;
             border-radius: 14px;
-            font-size: 0.9rem;
-            border-left: 5px solid #C65A11;
+            font-size: 0.88rem;
+            border-left: 5px solid var(--primary);
             display: none;
             margin-bottom: 24px;
         }
@@ -197,60 +211,60 @@
 
         .footer {
             text-align: center;
-            margin-top: 40px;
-            font-size: 0.73rem;
-            color: #8C6F55;
-            opacity: 0.65;
+            margin-top: 42px;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-18px); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-22px); }
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
+            25% { transform: translateX(-7px); }
+            75% { transform: translateX(7px); }
         }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <div class="logo-container">
-            <!-- Substitua o src pela sua logo real (com nome da associação) -->
-            <!-- <img src="logo-amovin.png" alt="AMOVIN" style="width: 260px; height: auto;"> -->
-            <div class="logo">🌻</div>
-            <div class="brand-name">AMOVIN</div>
-            <div class="brand-subtitle">ERP SOCIAL</div>
-        </div>
-
-        <p class="tagline">Gestão inteligente com propósito e inclusão</p>
-
-        <div class="erro-msg" id="erroMsg"></div>
-
-        <div class="tabs">
-            <button class="tab ativo" onclick="mudarTab('admin', this)">Admin</button>
-            <button class="tab" onclick="mudarTab('recepcao', this)">Recepção</button>
-            <button class="tab" onclick="mudarTab('consulta', this)">Consulta</button>
-        </div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Usuário</label>
-                <input type="text" id="nome" placeholder="Digite seu usuário" autocomplete="off">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="logo-container">
+                <div class="logo">🌻</div>
+                <div class="brand-main">Amovin ERP Social</div>
+                <div class="system-name">SISTEMA DE GESTÃO</div>
             </div>
-            <div class="form-group" id="grupoSenha">
-                <label>Senha</label>
-                <input type="password" id="senha" placeholder="••••••••">
-                <button type="button" class="olho-magico" onclick="toggleSenha()">👁️</button>
-            </div>
-            <button type="submit" class="btn-entrar">Entrar no Sistema</button>
-        </form>
 
-        <div class="footer">
-            Desenvolvido por Vigorre Sistemas • 2026
+            <p class="tagline">Transformando inclusão em excelência de gestão</p>
+
+            <div class="erro-msg" id="erroMsg"></div>
+
+            <div class="tabs">
+                <button class="tab ativo" onclick="mudarTab('admin', this)">Admin</button>
+                <button class="tab" onclick="mudarTab('recepcao', this)">Recepção</button>
+                <button class="tab" onclick="mudarTab('consulta', this)">Consulta</button>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Usuário</label>
+                    <input type="text" id="nome" placeholder="Digite seu usuário" autocomplete="off">
+                </div>
+                <div class="form-group" id="grupoSenha">
+                    <label>Senha</label>
+                    <input type="password" id="senha" placeholder="••••••••">
+                    <button type="button" class="olho-magico" onclick="toggleSenha()">👁️</button>
+                </div>
+                <button type="submit" class="btn-entrar">Entrar no Sistema</button>
+            </form>
+
+            <div class="footer">
+                Desenvolvido com excelência por Vigorre Sistemas • 2026
+            </div>
         </div>
     </div>
 
