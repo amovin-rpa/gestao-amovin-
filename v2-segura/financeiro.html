@@ -1,529 +1,307 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMOVIN - Financeiro Completo</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Financeiro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
+  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
+  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-        .topo {
-            background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
-            color: white; padding: 14px 25px; display: flex;
-            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-        }
-        .topo h2 { font-size: 18px; }
-        .btn-topo {
-            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 4px;
-        }
-        .btn-topo:hover { background: rgba(255,255,255,0.3); }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
+.sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
+.sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
+.sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
+.nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
+.nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
 
-        .container { max-width: 1500px; margin: 0 auto; padding: 20px; }
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn-sair-topo:hover { background: #F0E9DF; }
 
-        /* KPIs */
-        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .kpi-card {
-            background: white; padding: 22px; border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 16px;
-        }
-        .kpi-icon {
-            width: 55px; height: 55px; border-radius: 14px; display: flex;
-            align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;
-        }
-        .kpi-green { background: #e8f5e9; color: #2e7d32; }
-        .kpi-red { background: #ffebee; color: #c62828; }
-        .kpi-blue { background: #e3f2fd; color: #1565c0; }
-        .kpi-purple { background: #f3e5f5; color: #7b1fa2; }
-        .kpi-orange { background: #fff3e0; color: #e65100; }
-        .kpi-info .kpi-valor { font-size: 24px; font-weight: bold; color: #333; }
-        .kpi-info .kpi-label { font-size: 11px; color: #888; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 20px; border-radius: 14px; border: 1px solid #F0E9DF; display: flex; align-items: center; gap: 14px; }
+.kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.kpi-green { background: #E8F5E9; color: #2E7D32; }
+.kpi-red { background: #FFEBEE; color: #C62828; }
+.kpi-blue { background: #E3F2FD; color: #1565C0; }
+.kpi-purple { background: #F3E5F5; color: #7B1FA2; }
+.kpi-info .kpi-valor { font-size: 22px; font-weight: 800; color: var(--grafite); }
+.kpi-info .kpi-label { font-size: 11px; color: var(--cinza); }
 
-        /* Filtros */
-        .filtros-bar {
-            background: white; padding: 18px; border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 20px;
-            display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
-        }
-        .filtro-group { display: flex; flex-direction: column; gap: 4px; }
-        .filtro-group label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-        .filtro-group select, .filtro-group input {
-            padding: 9px 12px; border: 2px solid #e0e0e0; border-radius: 8px;
-            font-size: 13px; min-width: 120px;
-        }
-        .filtro-group select:focus, .filtro-group input:focus { border-color: #00897b; outline: none; }
-        .btn-filtro {
-            padding: 9px 18px; border-radius: 8px; font-weight: 600; font-size: 12px;
-            cursor: pointer; border: none; white-space: nowrap;
-        }
-        .btn-limpar { background: #eee; color: #555; }
-        .btn-limpar:hover { background: #ddd; }
-        .btn-novo { background: #00897b; color: white; }
-        .btn-novo:hover { background: #00695c; }
-        .btn-export { background: #1565c0; color: white; }
-        .btn-export:hover { background: #0d47a1; }
+.filtros-bar { background: #FFFFFF; padding: 16px 20px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.filtro-group { display: flex; flex-direction: column; gap: 4px; }
+.filtro-group label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; }
+.filtro-group select, .filtro-group input { padding: 9px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; background: white; min-width: 110px; }
+.btn-filtro { padding: 9px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; border: none; }
+.btn-limpar { background: #F0E9DF; color: #4B5563; }
+.btn-novo { background: var(--laranja); color: white; }
+.btn-export { background: var(--azul); color: white; }
 
-        /* Tabela */
-        .tabela-container {
-            background: white; border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04); overflow: hidden; margin-bottom: 20px;
-        }
-        .tabela-header {
-            padding: 16px 20px; font-weight: 700; font-size: 16px;
-            border-bottom: 2px solid #eee; display: flex; justify-content: space-between;
-        }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f5f5f5; padding: 12px 14px; text-align: left; font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-        td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-        tr:hover { background: #fafafa; }
-        .entrada { color: #2e7d32; font-weight: 700; }
-        .saida { color: #c62828; font-weight: 700; }
-        .badge-pago { background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .badge-pendente { background: #fff3e0; color: #e65100; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .badge-sim { background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-        .badge-nao { background: #ffebee; color: #c62828; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+.tabela-container { background: #FFFFFF; border-radius: 14px; border: 1px solid #F0E9DF; overflow: hidden; margin-bottom: 20px; }
+.tabela-header { padding: 16px 20px; font-weight: 700; font-size: 15px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #F8F4ED; padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 700; color: var(--cinza); text-transform: uppercase; }
+td { padding: 10px 12px; border-bottom: 1px solid #F0E9DF; font-size: 13px; }
+tr:hover { background: #FFF8E7; }
+.entrada { color: #2E7D32; font-weight: 700; }
+.saida { color: #C62828; font-weight: 700; }
+.badge { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+.badge-pago { background: #E8F5E9; color: #2E7D32; }
+.badge-pendente { background: #FFF3E0; color: #E65100; }
+.badge-sim { background: #E8F5E9; color: #2E7D32; }
+.badge-nao { background: #FFEBEE; color: #C62828; }
+.btn-acao { padding: 5px 8px; border-radius: 5px; border: none; cursor: pointer; font-size: 10px; font-weight: 700; margin: 1px; }
+.btn-editar { background: #F5C518; color: #1A1A1A; }
+.btn-excluir { background: #E53935; color: white; }
+.btn-historico { background: #7B1FA2; color: white; }
 
-        .btn-acao {
-            padding: 5px 9px; border-radius: 5px; border: none; cursor: pointer;
-            font-size: 10px; font-weight: 700; margin: 1px;
-        }
-        .btn-editar { background: #ffc107; color: #333; }
-        .btn-excluir { background: #f44336; color: white; }
-        .btn-historico { background: #9c27b0; color: white; }
+.log-container { background: #FFFFFF; border-radius: 14px; border: 1px solid #F0E9DF; overflow: hidden; margin-top: 20px; }
+.log-container h3 { padding: 16px 20px; font-size: 15px; border-bottom: 1px solid #F0E9DF; }
+.log-item { padding: 10px 20px; border-bottom: 1px solid #F0E9DF; font-size: 12px; display: flex; justify-content: space-between; }
+.log-acao { font-weight: 600; }
 
-        /* Modal */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000;
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal {
-            background: white; border-radius: 20px; width: 100%; max-width: 650px;
-            max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .modal-header {
-            padding: 20px; border-bottom: 2px solid #eee; display: flex;
-            justify-content: space-between; align-items: center; position: sticky; top: 0;
-            background: white; z-index: 10; border-radius: 20px 20px 0 0;
-        }
-        .modal-header h3 { color: #00695c; }
-        .modal-body { padding: 25px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-full { grid-column: 1 / -1; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 12px; color: #444; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0;
-            border-radius: 8px; font-size: 14px; font-family: inherit;
-        }
-        .form-group input:focus, .form-group select:focus { border-color: #00897b; outline: none; }
-        .btn-salvar { width: 100%; padding: 14px; background: #00897b; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-salvar:hover { background: #00695c; }
-        .btn-fechar { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
-        .btn-fechar:hover { color: #f44336; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; }
+.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { color: var(--grafite); }
+.modal-body { padding: 22px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-full { grid-column: 1 / -1; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-weight: 600; font-size: 11px; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+.toggle-group { display: flex; gap: 6px; }
+.toggle-btn { flex: 1; padding: 10px; border: 2px solid #E5E0D8; border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600; font-size: 12px; background: white; }
+.toggle-btn.ativo { border-color: var(--laranja); background: #FFF3E0; color: var(--laranja); }
+.btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
 
-        .toggle-group { display: flex; gap: 8px; }
-        .toggle-btn {
-            flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;
-            text-align: center; cursor: pointer; font-weight: 600; font-size: 13px; background: white;
-        }
-        .toggle-btn.ativo { border-color: #00897b; background: #e0f2f1; color: #00695c; }
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-logo { flex-shrink: 0; }
+.rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; }
+.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
+.rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; }
+.rodape-info a { color: #C65A11; text-decoration: none; }
+.rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
-        /* Log */
-        .log-container {
-            background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-            overflow: hidden; margin-top: 20px;
-        }
-        .log-container h3 { padding: 16px 20px; font-size: 16px; border-bottom: 2px solid #eee; }
-        .log-item {
-            padding: 10px 20px; border-bottom: 1px solid #f0f0f0; font-size: 12px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .log-item:hover { background: #fafafa; }
-        .log-acao { font-weight: 600; }
-        .log-data { color: #888; font-size: 11px; }
-
-        .sem-dados { text-align: center; padding: 40px; color: #bbb; }
-
-        @media (max-width: 768px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .kpi-row { grid-template-columns: 1fr 1fr; }
-            table { font-size: 11px; }
-            th, td { padding: 8px 6px; }
-        }
-    </style>
+@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .form-grid { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
-    <div class="topo">
-        <h2>💰 Gestão Financeira Completa</h2>
-        <div>
-            <a href="dashboard.html" class="btn-topo">🏠 Dashboard</a>
-            <a href="oficios.html" class="btn-topo">📄 Ofícios</a>
-            <a href="relatorios.html" class="btn-topo">📈 Relatórios</a>
-            <button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button>
-        </div>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item ativo"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📋</span> Relatórios</a>
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
+
+<main class="main-content">
+  <div class="topo-bar">
+    <h1>💰 Gestão Financeira</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-icon kpi-green">📥</div><div class="kpi-info"><div class="kpi-valor" id="kpiReceitas">R$ 0</div><div class="kpi-label">Receitas</div></div></div>
+    <div class="kpi-card"><div class="kpi-icon kpi-red">📤</div><div class="kpi-info"><div class="kpi-valor" id="kpiDespesas">R$ 0</div><div class="kpi-label">Despesas</div></div></div>
+    <div class="kpi-card"><div class="kpi-icon kpi-blue">📊</div><div class="kpi-info"><div class="kpi-valor" id="kpiSaldo">R$ 0</div><div class="kpi-label">Saldo</div></div></div>
+    <div class="kpi-card"><div class="kpi-icon kpi-purple">📋</div><div class="kpi-info"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Lançamentos</div></div></div>
+  </div>
+
+  <div class="filtros-bar">
+    <div class="filtro-group"><label>Ano</label><select id="filtroAno" onchange="filtrar()"><option value="todos">Todos</option></select></div>
+    <div class="filtro-group"><label>Mês</label><select id="filtroMes" onchange="filtrar()"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
+    <div class="filtro-group"><label>Tipo</label><select id="filtroTipo" onchange="filtrar()"><option value="todos">Todos</option><option value="receita">Receitas</option><option value="despesa">Despesas</option></select></div>
+    <div class="filtro-group"><label>Categoria</label><select id="filtroCategoria" onchange="filtrar()"><option value="todos">Todas</option></select></div>
+    <div class="filtro-group"><label>Status</label><select id="filtroStatus" onchange="filtrar()"><option value="todos">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
+    <div class="filtro-group"><label>Comprov.</label><select id="filtroComprovante" onchange="filtrar()"><option value="todos">Todos</option><option value="sim">Sim</option><option value="nao">Não</option></select></div>
+    <div class="filtro-group"><label>Buscar</label><input type="text" id="filtroBusca" placeholder="Descrição ou empresa..." oninput="filtrar()"></div>
+    <button class="btn-filtro btn-limpar" onclick="limparFiltros()">🔄 Limpar</button>
+    <button class="btn-filtro btn-novo" onclick="abrirForm()">➕ Novo</button>
+    <button class="btn-filtro btn-export" onclick="exportarCSV()">📥 Excel</button>
+  </div>
+
+  <div class="tabela-container">
+    <div class="tabela-header">📋 Lançamentos <span style="font-size:12px;color:var(--cinza);" id="totalRegistros">0</span></div>
+    <div style="overflow-x:auto;"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Empresa</th><th>Valor</th><th>Status</th><th>Comp.</th><th>Ações</th></tr></thead><tbody id="tabelaBody"></tbody></table></div>
+  </div>
+
+  <div class="log-container"><h3>📝 Histórico</h3><div id="logBody"></div></div>
+
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
     </div>
+  </div>
+</main>
 
-    <div class="container">
-        <!-- KPIs -->
-        <div class="kpi-row">
-            <div class="kpi-card"><div class="kpi-icon kpi-green">📥</div><div class="kpi-info"><div class="kpi-valor" id="kpiReceitas">R$ 0,00</div><div class="kpi-label">Receitas Totais</div></div></div>
-            <div class="kpi-card"><div class="kpi-icon kpi-red">📤</div><div class="kpi-info"><div class="kpi-valor" id="kpiDespesas">R$ 0,00</div><div class="kpi-label">Despesas Totais</div></div></div>
-            <div class="kpi-card"><div class="kpi-icon kpi-blue">📊</div><div class="kpi-info"><div class="kpi-valor" id="kpiSaldo">R$ 0,00</div><div class="kpi-label">Saldo Atual</div></div></div>
-            <div class="kpi-card"><div class="kpi-icon kpi-purple">📋</div><div class="kpi-info"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Lançamentos</div></div></div>
-        </div>
+<div class="modal-overlay" id="modalForm" style="display:none;"><div class="modal"><div class="modal-header"><h3 id="tituloModal">Novo Lançamento</h3><button class="btn-fechar" onclick="fecharForm()">✕</button></div><div class="modal-body"><input type="hidden" id="transacaoId"><div class="form-grid">
+  <div class="form-group"><label>Tipo</label><div class="toggle-group"><div class="toggle-btn ativo" id="toggleReceita" onclick="setTipo('receita')">📥 Receita</div><div class="toggle-btn" id="toggleDespesa" onclick="setTipo('despesa')">📤 Despesa</div></div></div>
+  <div class="form-group"><label>Status</label><select id="statusTransacao"><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
+  <div class="form-group"><label>Categoria</label><select id="categoriaTransacao"><option value="">Selecione...</option><option>Doação</option><option>Evento</option><option>Subvenção</option><option>Material</option><option>Serviços</option><option>Convênio</option><option>Emenda</option><option>Patrocínio</option><option>Salário</option><option>Aluguel</option><option>Transporte</option><option>Outros</option></select></div>
+  <div class="form-group"><label>Empresa</label><input type="text" id="empresaTransacao"></div>
+  <div class="form-group"><label>Descrição *</label><input type="text" id="descricaoTransacao" required></div>
+  <div class="form-group"><label>Data *</label><input type="date" id="dataTransacao" required></div>
+  <div class="form-group"><label>Valor (R$) *</label><input type="number" id="valorTransacao" step="0.01" min="0.01"></div>
+  <div class="form-full"><label>Comprovante Fiscal</label><div class="toggle-group"><div class="toggle-btn ativo" id="toggleCompSim" onclick="setComprovante(true)">✅ Sim</div><div class="toggle-btn" id="toggleCompNao" onclick="setComprovante(false)">❌ Não</div></div></div>
+  <div class="form-full"><label>Observações</label><textarea id="obsTransacao" rows="2"></textarea></div>
+</div><button class="btn-salvar" onclick="salvarTransacao()">💾 Salvar</button></div></div></div>
 
-        <!-- Filtros -->
-        <div class="filtros-bar">
-            <div class="filtro-group"><label>Ano</label><select id="filtroAno" onchange="filtrar()"><option value="todos">Todos</option></select></div>
-            <div class="filtro-group"><label>Mês</label><select id="filtroMes" onchange="filtrar()"><option value="todos">Todos</option><option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option><option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option><option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select></div>
-            <div class="filtro-group"><label>Tipo</label><select id="filtroTipo" onchange="filtrar()"><option value="todos">Todos</option><option value="receita">Receitas</option><option value="despesa">Despesas</option></select></div>
-            <div class="filtro-group"><label>Categoria</label><select id="filtroCategoria" onchange="filtrar()"><option value="todos">Todas</option></select></div>
-            <div class="filtro-group"><label>Status</label><select id="filtroStatus" onchange="filtrar()"><option value="todos">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
-            <div class="filtro-group"><label>Comprovante</label><select id="filtroComprovante" onchange="filtrar()"><option value="todos">Todos</option><option value="sim">Com comprovante</option><option value="nao">Sem comprovante</option></select></div>
-            <div class="filtro-group"><label>Buscar</label><input type="text" id="filtroBusca" placeholder="Descrição ou empresa..." oninput="filtrar()"></div>
-            <button class="btn-filtro btn-limpar" onclick="limparFiltros()">🔄 Limpar</button>
-            <button class="btn-filtro btn-novo" onclick="abrirForm()">➕ Novo</button>
-            <button class="btn-filtro btn-export" onclick="exportarCSV()">📥 Excel</button>
-        </div>
+<script>
+var transacoes = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
+var logs = JSON.parse(localStorage.getItem('amovin_financeiro_logs') || '[]');
+var editandoId = null, tipoAtual = 'receita', comprovanteAtual = true;
+var usuarioAtual = sessionStorage.getItem('amovin_nome') || 'Administrador';
 
-        <!-- Tabela -->
-        <div class="tabela-container">
-            <div class="tabela-header">📋 Lançamentos Financeiros <span style="font-size:12px;color:#888;" id="totalRegistros">0 registros</span></div>
-            <div style="overflow-x:auto;">
-                <table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Empresa</th><th>Valor</th><th>Status</th><th>Comprov.</th><th>Ações</th></tr></thead>
-                <tbody id="tabelaBody"><tr><td colspan="8" class="sem-dados">Nenhum lançamento encontrado.</td></tr></tbody></table>
-            </div>
-        </div>
+if (transacoes.length === 0) {
+    transacoes = [
+        {id:1,tipo:'receita',descricao:'Emenda Parlamentar',categoria:'Emenda',empresa:'Câmara Federal',valor:50000,data:'2026-06-15',status:'Pago',comprovante:true,obs:'',criadoPor:'Admin',criadoEm:'2026-06-15T10:00:00'},
+        {id:2,tipo:'receita',descricao:'Doação Empresa ABC',categoria:'Doação',empresa:'Empresa ABC',valor:20000,data:'2026-06-10',status:'Pago',comprovante:true,obs:'',criadoPor:'Admin',criadoEm:'2026-06-10T14:00:00'},
+        {id:3,tipo:'despesa',descricao:'Salários',categoria:'Salário',empresa:'',valor:12000,data:'2026-06-14',status:'Pago',comprovante:true,obs:'',criadoPor:'Admin',criadoEm:'2026-06-14T09:00:00'},
+        {id:4,tipo:'despesa',descricao:'Material Inclusão',categoria:'Material',empresa:'Papelaria',valor:5200,data:'2026-06-16',status:'Pendente',comprovante:false,obs:'',criadoPor:'Financeiro',criadoEm:'2026-06-16T11:00:00'}
+    ];
+    salvar();
+}
 
-        <!-- Log de Auditoria -->
-        <div class="log-container">
-            <h3>📝 Histórico de Alterações</h3>
-            <div id="logBody"><div class="sem-dados">Nenhuma alteração registrada.</div></div>
-        </div>
-    </div>
+function salvar() { localStorage.setItem('amovin_financeiro', JSON.stringify(transacoes)); localStorage.setItem('amovin_financeiro_logs', JSON.stringify(logs)); }
+function addLog(a,d) { logs.unshift({id:Date.now(),acao:a,detalhes:d,usuario:usuarioAtual,data:new Date().toISOString()}); if(logs.length>100)logs=logs.slice(0,100); salvar(); renderizarLogs(); }
+function fm(v){ return 'R$ '+v.toFixed(2).replace('.',','); }
+function fd(d){ if(!d)return'-'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
 
-    <!-- Modal Formulário -->
-    <div class="modal-overlay" id="modalForm" style="display:none;">
-        <div class="modal"><div class="modal-header"><h3 id="tituloModal">📝 Novo Lançamento</h3><button class="btn-fechar" onclick="fecharForm()">✕</button></div>
-        <div class="modal-body">
-            <input type="hidden" id="transacaoId">
-            <div class="form-grid">
-                <div class="form-group"><label>Tipo *</label>
-                    <div class="toggle-group">
-                        <div class="toggle-btn ativo" id="toggleReceita" onclick="setTipo('receita')">📥 Receita</div>
-                        <div class="toggle-btn" id="toggleDespesa" onclick="setTipo('despesa')">📤 Despesa</div>
-                    </div>
-                </div>
-                <div class="form-group"><label>Status *</label>
-                    <select id="statusTransacao"><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select>
-                </div>
-                <div class="form-group"><label>Categoria *</label>
-                    <select id="categoriaTransacao"><option value="">Selecione...</option><option>Doação</option><option>Evento</option><option>Subvenção</option><option>Material</option><option>Serviços</option><option>Convênio</option><option>Emenda</option><option>Patrocínio</option><option>Salário</option><option>Aluguel</option><option>Transporte</option><option>Outros</option></select>
-                </div>
-                <div class="form-group"><label>Empresa/Pessoa</label><input type="text" id="empresaTransacao" placeholder="Ex: Empresa XYZ"></div>
-                <div class="form-group"><label>Descrição *</label><input type="text" id="descricaoTransacao" required></div>
-                <div class="form-group"><label>Data *</label><input type="date" id="dataTransacao" required></div>
-                <div class="form-group"><label>Valor (R$) *</label><input type="number" id="valorTransacao" step="0.01" min="0.01" placeholder="0,00" required></div>
-                <div class="form-full"><label>Possui Comprovante Fiscal?</label>
-                    <div class="toggle-group">
-                        <div class="toggle-btn ativo" id="toggleCompSim" onclick="setComprovante(true)">✅ Sim</div>
-                        <div class="toggle-btn" id="toggleCompNao" onclick="setComprovante(false)">❌ Não</div>
-                    </div>
-                </div>
-                <div class="form-full"><label>Observações</label><textarea id="obsTransacao" rows="2" placeholder="Detalhes adicionais..."></textarea></div>
-            </div>
-            <button class="btn-salvar" onclick="salvarTransacao()">💾 Salvar Lançamento</button>
-        </div></div>
-    </div>
+function filtrar() {
+    var a=document.getElementById('filtroAno').value,m=document.getElementById('filtroMes').value,t=document.getElementById('filtroTipo').value,c=document.getElementById('filtroCategoria').value,s=document.getElementById('filtroStatus').value,cp=document.getElementById('filtroComprovante').value,b=document.getElementById('filtroBusca').value.toLowerCase();
+    var l=[...transacoes];
+    if(a!=='todos')l=l.filter(function(x){return (x.data||'').startsWith(a);});
+    if(m!=='todos')l=l.filter(function(x){return (x.data||'').substring(5,7)===m;});
+    if(t!=='todos')l=l.filter(function(x){return x.tipo===t;});
+    if(c!=='todos')l=l.filter(function(x){return x.categoria===c;});
+    if(s!=='todos')l=l.filter(function(x){return x.status===s;});
+    if(cp==='sim')l=l.filter(function(x){return x.comprovante===true;});
+    if(cp==='nao')l=l.filter(function(x){return !x.comprovante;});
+    if(b)l=l.filter(function(x){return (x.descricao||'').toLowerCase().indexOf(b)>=0||(x.empresa||'').toLowerCase().indexOf(b)>=0;});
+    l.sort(function(a,b){return new Date(b.data)-new Date(a.data);});
+    var tb=document.getElementById('tabelaBody'),html='';
+    if(l.length===0)html='<tr><td colspan="8" class="sem-dados">Nenhum lançamento.</td></tr>';
+    else for(var i=0;i<l.length;i++){var x=l[i];html+='<tr><td>'+fd(x.data)+'</td><td><strong>'+x.descricao+'</strong>'+(x.obs?'<br><small>'+x.obs+'</small>':'')+'</td><td>'+x.categoria+'</td><td>'+(x.empresa||'-')+'</td><td class="'+(x.tipo==='receita'?'entrada':'saida')+'">'+(x.tipo==='receita'?'+':'-')+' '+fm(x.valor)+'</td><td><span class="badge '+(x.status==='Pago'?'badge-pago':'badge-pendente')+'">'+x.status+'</span></td><td><span class="badge '+(x.comprovante?'badge-sim':'badge-nao')+'">'+(x.comprovante?'Sim':'Não')+'</span></td><td><button class="btn-acao btn-editar" onclick="editar('+x.id+')">✏️</button> <button class="btn-acao btn-excluir" onclick="excluir('+x.id+')">🗑️</button></td></tr>';}
+    tb.innerHTML=html;
+    var rec=l.filter(function(x){return x.tipo==='receita';}).reduce(function(s,x){return s+x.valor;},0);
+    var desp=l.filter(function(x){return x.tipo==='despesa';}).reduce(function(s,x){return s+x.valor;},0);
+    document.getElementById('kpiReceitas').textContent=fm(rec);
+    document.getElementById('kpiDespesas').textContent=fm(desp);
+    document.getElementById('kpiSaldo').textContent=fm(rec-desp);
+    document.getElementById('kpiTotal').textContent=l.length;
+    document.getElementById('totalRegistros').textContent=l.length+' registros';
+}
 
-    <!-- Modal Histórico -->
-    <div class="modal-overlay" id="modalHistorico" style="display:none;">
-        <div class="modal" style="max-width:500px;"><div class="modal-header"><h3>📝 Histórico do Lançamento</h3><button class="btn-fechar" onclick="document.getElementById('modalHistorico').style.display='none'">✕</button></div>
-        <div class="modal-body" id="historicoBody"></div></div>
-    </div>
+function renderizarLogs() {
+    var c=document.getElementById('logBody');
+    if(logs.length===0){c.innerHTML='<div class="sem-dados">Nenhuma alteração.</div>';return;}
+    c.innerHTML=logs.slice(0,15).map(function(l){return '<div class="log-item"><span><strong>'+l.acao+'</strong> - '+l.detalhes+'</span><span style="color:var(--cinza);font-size:10px;">👤 '+l.usuario+' • '+new Date(l.data).toLocaleString('pt-BR')+'</span></div>';}).join('');
+}
 
-    <script>
-        let transacoes = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
-        let logs = JSON.parse(localStorage.getItem('amovin_financeiro_logs') || '[]');
-        let editandoId = null;
-        let tipoAtual = 'receita';
-        let comprovanteAtual = true;
+function popularFiltros() {
+    var anos=new Set(transacoes.map(function(t){return (t.data||'').substring(0,4);}).filter(Boolean));
+    document.getElementById('filtroAno').innerHTML='<option value="todos">Todos</option>'+[...anos].sort().reverse().map(function(a){return '<option>'+a+'</option>';}).join('');
+    var cats=new Set(transacoes.map(function(t){return t.categoria;}).filter(Boolean));
+    document.getElementById('filtroCategoria').innerHTML='<option value="todos">Todas</option>'+[...cats].sort().map(function(c){return '<option>'+c+'</option>';}).join('');
+}
 
-        const usuarioAtual = sessionStorage.getItem('amovin_nome') || 'Administrador';
-        const categorias = ['Doação','Evento','Subvenção','Material','Serviços','Convênio','Emenda','Patrocínio','Salário','Aluguel','Transporte','Outros'];
+window.abrirForm=function(id){
+    editandoId=id||null;
+    document.getElementById('modalForm').style.display='flex';
+    document.getElementById('tituloModal').textContent=id?'Editar Lançamento':'Novo Lançamento';
+    document.getElementById('dataTransacao').value=new Date().toISOString().split('T')[0];
+    if(id){var t=transacoes.find(function(t){return t.id===id;});if(!t)return;
+        document.getElementById('transacaoId').value=t.id;document.getElementById('descricaoTransacao').value=t.descricao;
+        document.getElementById('categoriaTransacao').value=t.categoria;document.getElementById('empresaTransacao').value=t.empresa||'';
+        document.getElementById('valorTransacao').value=t.valor;document.getElementById('dataTransacao').value=t.data;
+        document.getElementById('statusTransacao').value=t.status||'Pendente';document.getElementById('obsTransacao').value=t.obs||'';
+        setTipo(t.tipo);setComprovante(t.comprovante!==false);
+    }else{
+        document.getElementById('transacaoId').value='';document.getElementById('descricaoTransacao').value='';
+        document.getElementById('categoriaTransacao').value='';document.getElementById('empresaTransacao').value='';
+        document.getElementById('valorTransacao').value='';document.getElementById('statusTransacao').value='Pendente';
+        document.getElementById('obsTransacao').value='';setTipo('receita');setComprovante(true);
+    }
+};
+window.fecharForm=function(){document.getElementById('modalForm').style.display='none';};
+window.setTipo=function(t){tipoAtual=t;document.getElementById('toggleReceita').classList.toggle('ativo',t==='receita');document.getElementById('toggleDespesa').classList.toggle('ativo',t==='despesa');};
+window.setComprovante=function(v){comprovanteAtual=v;document.getElementById('toggleCompSim').classList.toggle('ativo',v);document.getElementById('toggleCompNao').classList.toggle('ativo',!v);};
+window.salvarTransacao=function(){
+    var d=document.getElementById('descricaoTransacao').value.trim(),c=document.getElementById('categoriaTransacao').value,v=parseFloat(document.getElementById('valorTransacao').value),dt=document.getElementById('dataTransacao').value;
+    if(!d||!c||!v||!dt){alert('Preencha os campos obrigatórios!');return;}
+    var dados={tipo:tipoAtual,descricao:d,categoria:c,empresa:document.getElementById('empresaTransacao').value.trim(),valor:v,data:dt,status:document.getElementById('statusTransacao').value,comprovante:comprovanteAtual,obs:document.getElementById('obsTransacao').value.trim()};
+    if(editandoId){var idx=transacoes.findIndex(function(t){return t.id===editandoId;});if(idx>=0){transacoes[idx]=Object.assign({},transacoes[idx],dados,{atualizadoPor:usuarioAtual,atualizadoEm:new Date().toISOString()});addLog('✏️ Editou','"'+d+'" - R$ '+v.toFixed(2));}}
+    else{var novo=Object.assign({id:Date.now()},dados,{criadoPor:usuarioAtual,criadoEm:new Date().toISOString()});transacoes.push(novo);addLog('➕ Criou','"'+d+'" - R$ '+v.toFixed(2));}
+    salvar();fecharForm();popularFiltros();filtrar();renderizarLogs();
+};
+window.editar=function(id){abrirForm(id);};
+window.excluir=function(id){var t=transacoes.find(function(t){return t.id===id;});if(!t||!confirm('Excluir?'))return;addLog('🗑️ Excluiu','"'+t.descricao+'"');transacoes=transacoes.filter(function(t){return t.id!==id;});salvar();popularFiltros();filtrar();renderizarLogs();};
+window.limparFiltros=function(){document.getElementById('filtroAno').value='todos';document.getElementById('filtroMes').value='todos';document.getElementById('filtroTipo').value='todos';document.getElementById('filtroCategoria').value='todos';document.getElementById('filtroStatus').value='todos';document.getElementById('filtroComprovante').value='todos';document.getElementById('filtroBusca').value='';filtrar();};
+window.exportarCSV=function(){var l=[...transacoes].sort(function(a,b){return new Date(b.data)-new Date(a.data);});var csv='Data;Tipo;Categoria;Empresa;Descrição;Valor;Status;Comprovante\n';l.forEach(function(t){csv+=fd(t.data)+';'+(t.tipo==='receita'?'Receita':'Despesa')+';'+t.categoria+';'+(t.empresa||'')+';"'+t.descricao+'";'+t.valor.toFixed(2).replace('.',',')+';'+t.status+';'+(t.comprovante?'Sim':'Não')+'\n';});var blob=new Blob(['\uFEFF'+csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AMOVIN_Financeiro.csv';a.click();};
 
-        if (transacoes.length === 0) {
-            transacoes = [
-                {id:1,tipo:'receita',descricao:'Emenda Parlamentar Dep. X',categoria:'Emenda',empresa:'Câmara Federal',valor:50000,data:'2026-06-15',status:'Pago',comprovante:true,obs:'',criadoPor:'Admin',criadoEm:'2026-06-15T10:00:00'},
-                {id:2,tipo:'receita',descricao:'Doação Empresa ABC',categoria:'Doação',empresa:'Empresa ABC',valor:20000,data:'2026-06-10',status:'Pago',comprovante:true,obs:'',criadoPor:'Admin',criadoEm:'2026-06-10T14:00:00'},
-                {id:3,tipo:'despesa',descricao:'Salário Profissionais',categoria:'Salário',empresa:'',valor:12000,data:'2026-06-14',status:'Pago',comprovante:true,obs:'Folha de pagamento',criadoPor:'Admin',criadoEm:'2026-06-14T09:00:00'},
-                {id:4,tipo:'despesa',descricao:'Material Inclusão Digital',categoria:'Material',empresa:'Papelaria Central',valor:5200,data:'2026-06-16',status:'Pendente',comprovante:false,obs:'',criadoPor:'Financeiro',criadoEm:'2026-06-16T11:00:00'},
-            ];
-            salvarDados();
-        }
+if(!sessionStorage.getItem('amovin_logado'))window.location.href='index.html';
+history.pushState(null,null,location.href);
+window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
+var timeout;function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
+document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
 
-        function salvarDados() {
-            localStorage.setItem('amovin_financeiro', JSON.stringify(transacoes));
-            localStorage.setItem('amovin_financeiro_logs', JSON.stringify(logs));
-        }
-
-        function addLog(acao, detalhes, transacaoId) {
-            logs.unshift({
-                id: Date.now(),
-                acao, detalhes, transacaoId,
-                usuario: usuarioAtual,
-                data: new Date().toISOString()
-            });
-            if (logs.length > 100) logs = logs.slice(0, 100);
-            salvarDados();
-            renderizarLogs();
-        }
-
-        function formatarMoeda(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
-
-        function atualizarKPIs(lista) {
-            const receitas = lista.filter(t => t.tipo === 'receita').reduce((s,t) => s + t.valor, 0);
-            const despesas = lista.filter(t => t.tipo === 'despesa').reduce((s,t) => s + t.valor, 0);
-            document.getElementById('kpiReceitas').textContent = formatarMoeda(receitas);
-            document.getElementById('kpiDespesas').textContent = formatarMoeda(despesas);
-            document.getElementById('kpiSaldo').textContent = formatarMoeda(receitas - despesas);
-            document.getElementById('kpiTotal').textContent = lista.length;
-        }
-
-        function formatarData(d) { if(!d) return '-'; const [a,m,dia] = d.split('-'); return `${dia}/${m}/${a}`; }
-
-        function filtrar() {
-            const ano = document.getElementById('filtroAno').value;
-            const mes = document.getElementById('filtroMes').value;
-            const tipo = document.getElementById('filtroTipo').value;
-            const cat = document.getElementById('filtroCategoria').value;
-            const status = document.getElementById('filtroStatus').value;
-            const comp = document.getElementById('filtroComprovante').value;
-            const busca = document.getElementById('filtroBusca').value.toLowerCase();
-
-            let lista = [...transacoes];
-
-            if (ano !== 'todos') lista = lista.filter(t => (t.data || '').startsWith(ano));
-            if (mes !== 'todos') lista = lista.filter(t => (t.data || '').substring(5,7) === mes);
-            if (tipo !== 'todos') lista = lista.filter(t => t.tipo === tipo);
-            if (cat !== 'todos') lista = lista.filter(t => t.categoria === cat);
-            if (status !== 'todos') lista = lista.filter(t => t.status === status);
-            if (comp === 'sim') lista = lista.filter(t => t.comprovante === true);
-            if (comp === 'nao') lista = lista.filter(t => !t.comprovante);
-            if (busca) lista = lista.filter(t => (t.descricao||'').toLowerCase().includes(busca) || (t.empresa||'').toLowerCase().includes(busca));
-
-            lista.sort((a,b) => new Date(b.data) - new Date(a.data));
-
-            renderizarTabela(lista);
-            atualizarKPIs(lista);
-            document.getElementById('totalRegistros').textContent = lista.length + ' registros';
-        }
-
-        function renderizarTabela(lista) {
-            const tbody = document.getElementById('tabelaBody');
-            if (!lista) lista = [...transacoes].sort((a,b) => new Date(b.data) - new Date(a.data));
-
-            if (lista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="sem-dados">Nenhum lançamento encontrado.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = lista.map(t => `
-                <tr>
-                    <td>${formatarData(t.data)}</td>
-                    <td><strong>${t.descricao}</strong>${t.obs ? '<br><small style="color:#888;">'+t.obs+'</small>' : ''}</td>
-                    <td>${t.categoria}</td>
-                    <td>${t.empresa || '-'}</td>
-                    <td class="${t.tipo === 'receita' ? 'entrada' : 'saida'}">${t.tipo === 'receita' ? '+' : '-'} ${formatarMoeda(t.valor)}</td>
-                    <td><span class="${t.status === 'Pago' ? 'badge-pago' : 'badge-pendente'}">${t.status}</span></td>
-                    <td><span class="${t.comprovante ? 'badge-sim' : 'badge-nao'}">${t.comprovante ? 'Sim' : 'Não'}</span></td>
-                    <td>
-                        <button class="btn-acao btn-editar" onclick="editarTransacao(${t.id})">✏️</button>
-                        <button class="btn-acao btn-excluir" onclick="excluirTransacao(${t.id})">🗑️</button>
-                        <button class="btn-acao btn-historico" onclick="verHistorico(${t.id})">📝</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function renderizarLogs() {
-            const container = document.getElementById('logBody');
-            if (logs.length === 0) { container.innerHTML = '<div class="sem-dados">Nenhuma alteração registrada.</div>'; return; }
-            container.innerHTML = logs.slice(0, 20).map(l => `
-                <div class="log-item">
-                    <div><span class="log-acao">${l.acao}</span> - ${l.detalhes}</div>
-                    <div class="log-data">👤 ${l.usuario} • ${new Date(l.data).toLocaleString('pt-BR')}</div>
-                </div>
-            `).join('');
-        }
-
-        function popularFiltros() {
-            const anos = new Set(transacoes.map(t => (t.data||'').substring(0,4)).filter(Boolean));
-            const selAno = document.getElementById('filtroAno');
-            selAno.innerHTML = '<option value="todos">Todos</option>' + [...anos].sort().reverse().map(a => `<option value="${a}">${a}</option>`).join('');
-
-            const cats = new Set(transacoes.map(t => t.categoria).filter(Boolean));
-            const selCat = document.getElementById('filtroCategoria');
-            selCat.innerHTML = '<option value="todos">Todas</option>' + [...cats].sort().map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-
-        window.abrirForm = function(id = null) {
-            editandoId = id;
-            document.getElementById('modalForm').style.display = 'flex';
-            document.getElementById('tituloModal').textContent = id ? '✏️ Editar Lançamento' : '📝 Novo Lançamento';
-            document.getElementById('dataTransacao').value = new Date().toISOString().split('T')[0];
-
-            if (id) {
-                const t = transacoes.find(t => t.id === id);
-                if (!t) return;
-                document.getElementById('transacaoId').value = t.id;
-                document.getElementById('descricaoTransacao').value = t.descricao;
-                document.getElementById('categoriaTransacao').value = t.categoria;
-                document.getElementById('empresaTransacao').value = t.empresa || '';
-                document.getElementById('valorTransacao').value = t.valor;
-                document.getElementById('dataTransacao').value = t.data;
-                document.getElementById('statusTransacao').value = t.status || 'Pendente';
-                document.getElementById('obsTransacao').value = t.obs || '';
-                setTipo(t.tipo);
-                setComprovante(t.comprovante !== false);
-            } else {
-                document.getElementById('transacaoId').value = '';
-                document.getElementById('descricaoTransacao').value = '';
-                document.getElementById('categoriaTransacao').value = '';
-                document.getElementById('empresaTransacao').value = '';
-                document.getElementById('valorTransacao').value = '';
-                document.getElementById('dataTransacao').value = new Date().toISOString().split('T')[0];
-                document.getElementById('statusTransacao').value = 'Pendente';
-                document.getElementById('obsTransacao').value = '';
-                setTipo('receita');
-                setComprovante(true);
-            }
-        };
-
-        window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; editandoId = null; };
-
-        window.setTipo = function(t) {
-            tipoAtual = t;
-            document.getElementById('toggleReceita').classList.toggle('ativo', t === 'receita');
-            document.getElementById('toggleDespesa').classList.toggle('ativo', t === 'despesa');
-        };
-
-        window.setComprovante = function(v) {
-            comprovanteAtual = v;
-            document.getElementById('toggleCompSim').classList.toggle('ativo', v);
-            document.getElementById('toggleCompNao').classList.toggle('ativo', !v);
-        };
-
-        window.salvarTransacao = function() {
-            const desc = document.getElementById('descricaoTransacao').value.trim();
-            const cat = document.getElementById('categoriaTransacao').value;
-            const val = parseFloat(document.getElementById('valorTransacao').value);
-            const data = document.getElementById('dataTransacao').value;
-
-            if (!desc || !cat || !val || !data) { alert('❌ Preencha todos os campos obrigatórios!'); return; }
-
-            const dados = {
-                tipo: tipoAtual,
-                descricao: desc,
-                categoria: cat,
-                empresa: document.getElementById('empresaTransacao').value.trim(),
-                valor: val,
-                data: data,
-                status: document.getElementById('statusTransacao').value,
-                comprovante: comprovanteAtual,
-                obs: document.getElementById('obsTransacao').value.trim()
-            };
-
-            if (editandoId) {
-                const idx = transacoes.findIndex(t => t.id === editandoId);
-                if (idx >= 0) {
-                    const antigo = transacoes[idx];
-                    transacoes[idx] = { ...antigo, ...dados, atualizadoPor: usuarioAtual, atualizadoEm: new Date().toISOString() };
-                    addLog('✏️ Editou', `"${desc}" - R$ ${val.toFixed(2)}`, editandoId);
-                }
-            } else {
-                const novo = { id: Date.now(), ...dados, criadoPor: usuarioAtual, criadoEm: new Date().toISOString() };
-                transacoes.push(novo);
-                addLog('➕ Criou', `"${desc}" - R$ ${val.toFixed(2)}`, novo.id);
-            }
-
-            salvarDados(); fecharForm(); popularFiltros(); filtrar(); renderizarLogs();
-            alert('✅ Lançamento salvo!');
-        };
-
-        window.editarTransacao = function(id) { abrirForm(id); };
-
-        window.excluirTransacao = function(id) {
-            const t = transacoes.find(t => t.id === id);
-            if (!t) return;
-            if (!confirm(`Excluir lançamento?\n\n"${t.descricao}"\nValor: ${formatarMoeda(t.valor)}\n\n⚠️ Esta ação não pode ser desfeita.`)) return;
-            addLog('🗑️ Excluiu', `"${t.descricao}" - R$ ${t.valor.toFixed(2)}`, id);
-            transacoes = transacoes.filter(t => t.id !== id);
-            salvarDados(); popularFiltros(); filtrar(); renderizarLogs();
-            alert('✅ Lançamento excluído!');
-        };
-
-        window.verHistorico = function(id) {
-            const t = transacoes.find(t => t.id === id);
-            const historico = logs.filter(l => l.transacaoId === id);
-            const body = document.getElementById('historicoBody');
-            body.innerHTML = `<p style="margin-bottom:15px;"><strong>Lançamento:</strong> ${t ? t.descricao : 'N/A'}</p>
-                <p style="margin-bottom:15px;"><strong>Criado por:</strong> ${t?.criadoPor || 'N/A'} em ${t?.criadoEm ? new Date(t.criadoEm).toLocaleString('pt-BR') : 'N/A'}</p>
-                ${t?.atualizadoPor ? `<p style="margin-bottom:15px;"><strong>Última alteração:</strong> ${t.atualizadoPor} em ${new Date(t.atualizadoEm).toLocaleString('pt-BR')}</p>` : ''}
-                <hr><h4 style="margin:15px 0;">Histórico de Ações:</h4>
-                ${historico.length === 0 ? '<p style="color:#888;">Nenhuma ação registrada.</p>' : historico.map(l => `<div class="log-item"><div><span class="log-acao">${l.acao}</span> - ${l.detalhes}</div><div class="log-data">👤 ${l.usuario} • ${new Date(l.data).toLocaleString('pt-BR')}</div></div>`).join('')}`;
-            document.getElementById('modalHistorico').style.display = 'flex';
-        };
-
-        window.limparFiltros = function() {
-            document.getElementById('filtroAno').value = 'todos';
-            document.getElementById('filtroMes').value = 'todos';
-            document.getElementById('filtroTipo').value = 'todos';
-            document.getElementById('filtroCategoria').value = 'todos';
-            document.getElementById('filtroStatus').value = 'todos';
-            document.getElementById('filtroComprovante').value = 'todos';
-            document.getElementById('filtroBusca').value = '';
-            filtrar();
-        };
-
-        window.exportarCSV = function() {
-            const lista = [...transacoes].sort((a,b) => new Date(b.data) - new Date(a.data));
-            let csv = 'Data;Tipo;Categoria;Empresa;Descrição;Valor;Status;Comprovante;Obs;Criado por;Criado em;Atualizado por\n';
-            lista.forEach(t => {
-                csv += `${formatarData(t.data)};${t.tipo==='receita'?'Receita':'Despesa'};${t.categoria};${t.empresa||''};"${t.descricao}";${t.valor.toFixed(2).replace('.',',')};${t.status};${t.comprovante?'Sim':'Não'};"${t.obs||''}";${t.criadoPor||''};${t.criadoEm||''};${t.atualizadoPor||''}\n`;
-            });
-            const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'AMOVIN_Financeiro.csv'; a.click();
-            addLog('📥 Exportou', 'CSV/Excel', null);
-            renderizarLogs();
-        };
-
-        // IMPRESSÃO com rodapé de quem imprimiu
-        window.addEventListener('beforeprint', function() {
-            const rodape = document.createElement('div');
-            rodape.id = 'rodapeImpressao';
-            rodape.style.cssText = 'position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:10px;color:#666;padding:8px;border-top:1px solid #ccc;background:white;';
-            rodape.textContent = `Documento impresso por: ${usuarioAtual} • ${new Date().toLocaleString('pt-BR')} • AMOVIN`;
-            document.body.appendChild(rodape);
-        });
-        window.addEventListener('afterprint', function() {
-            const rodape = document.getElementById('rodapeImpressao');
-            if (rodape) rodape.remove();
-        });
-
-        window.fazerLogout = function() { sessionStorage.clear(); window.location.href = 'index.html'; };
-        if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
-        let timeout;
-        function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
-
-        popularFiltros();
-        filtrar();
-        renderizarLogs();
-    </script>
+popularFiltros();filtrar();renderizarLogs();
+</script>
 </body>
 </html>
