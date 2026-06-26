@@ -46,9 +46,19 @@ body {
   border-bottom: 1px solid #F0E9DF;
 }
 
-.sidebar-logo {
+.sidebar-logo-img {
+  width: 80px;
+  height: auto;
+  margin-bottom: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sidebar-logo-fallback {
   font-size: 48px;
   margin-bottom: 8px;
+  display: none;
 }
 
 .sidebar-header .brand {
@@ -154,6 +164,9 @@ body {
   flex: 1;
   margin-left: 270px;
   padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .top-bar {
@@ -218,6 +231,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
+  flex: 1;
 }
 
 .card {
@@ -263,11 +277,84 @@ body {
   font-size: 13.5px;
 }
 
+/* ==================== RODAPÉ ==================== */
 .rodape {
-  text-align: center;
-  padding: 30px 0 10px;
-  color: #9CA3AF;
-  font-size: 11px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 12px 18px;
+  border: 1px solid #F0E9DF;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  margin-top: 30px;
+}
+
+.rodape-grid {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rodape-logo {
+  flex-shrink: 0;
+}
+
+.rodape-logo .logo-vigorre {
+  width: 50px;
+  height: auto;
+}
+
+.rodape-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.rodape-info .copyright {
+  font-size: 8px;
+  color: #8A8F98;
+  letter-spacing: 0.2px;
+  margin-bottom: 3px;
+}
+
+.rodape-info .tm {
+  font-size: 6px;
+  vertical-align: super;
+}
+
+.rodape-info .contato {
+  font-size: 9px;
+  color: #8A8F98;
+  margin-bottom: 2px;
+}
+
+.rodape-info a {
+  color: #C65A11;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.rodape-info .divider {
+  color: #D1D5DB;
+  margin: 0 6px;
+}
+
+.rodape-info .email {
+  font-size: 8px;
+  color: #aaa;
+}
+
+.logo-vigorre-fallback {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--grafite);
+  display: none;
+}
+
+/* ==================== RESPONSIVO ==================== */
+@media (max-width: 768px) {
+  .sidebar { width: 100%; position: relative; min-height: auto; }
+  .main-content { margin-left: 0; padding: 20px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .top-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
 </style>
 </head>
@@ -276,7 +363,8 @@ body {
 <!-- SIDEBAR CLARA -->
 <aside class="sidebar">
   <div class="sidebar-header">
-    <div class="sidebar-logo">🌻</div>
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
     <div class="brand">Amovin ERP Social</div>
   </div>
 
@@ -345,109 +433,64 @@ body {
     <div class="data-display" id="dataHoje"></div>
   </div>
 
-  <!-- Stats -->
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon">👥</div>
-      <div class="stat-valor" id="statBenef">--</div>
-      <div class="stat-label">Beneficiários Ativos</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">📅</div>
-      <div class="stat-valor" id="statAgenda">--</div>
-      <div class="stat-label">Agendamentos Hoje</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">💰</div>
-      <div class="stat-valor" id="statSaldo">--</div>
-      <div class="stat-label">Saldo Financeiro</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">⚠️</div>
-      <div class="stat-valor" id="statAlertas">--</div>
-      <div class="stat-label">Alertas Pendentes</div>
-    </div>
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-valor" id="statBenef">--</div><div class="stat-label">Beneficiários Ativos</div></div>
+    <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-valor" id="statAgenda">--</div><div class="stat-label">Agendamentos Hoje</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-valor" id="statSaldo">--</div><div class="stat-label">Saldo Financeiro</div></div>
+    <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-valor" id="statAlertas">--</div><div class="stat-label">Alertas Pendentes</div></div>
   </div>
 
-  <!-- Cards -->
   <div class="info-grid">
-    <div class="card">
-      <h3>📅 Agendamentos de Hoje</h3>
-      <div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div>
-    </div>
-
-    <div class="card">
-      <h3>🛒 Compras Pendentes</h3>
-      <div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div>
-    </div>
-
-    <div class="card">
-      <h3>📦 Estoque Crítico</h3>
-      <div id="listaEstoque"><div class="sem-dados">Estoque em níveis normais.</div></div>
-    </div>
-
-    <div class="card">
-      <h3>📝 Últimos Documentos</h3>
-      <div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div>
-    </div>
+    <div class="card"><h3>📅 Agendamentos de Hoje</h3><div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div></div>
+    <div class="card"><h3>🛒 Compras Pendentes</h3><div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div></div>
+    <div class="card"><h3>📦 Estoque Crítico</h3><div id="listaEstoque"><div class="sem-dados">Estoque em níveis normais.</div></div></div>
+    <div class="card"><h3>📝 Últimos Documentos</h3><div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div></div>
   </div>
 
+  <!-- Rodapé Vigorre -->
   <div class="rodape">
-    Desenvolvido por <strong>Vigorre Sistemas</strong> • Amovin ERP Social
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
+        <div class="contato">
+          <a href="https://www.vigorre.com.br" target="_blank">www.vigorre.com.br</a>
+          <span class="divider">|</span>
+          <a href="https://wa.me/5534991850735" target="_blank">(34) 99185-0735</a>
+        </div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
   </div>
 </main>
 
 <script>
-  // Data
   const hoje = new Date();
-  document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { 
-    weekday:'long', day:'numeric', month:'long', year:'numeric' 
-  });
+  document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
-  // Beneficiários
   const beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
   document.getElementById('statBenef').textContent = beneficiarios.length;
 
-  // Agendamentos
   const agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
   const hojeStr = hoje.toISOString().split('T')[0];
-  const hojeLista = agendamentos.filter(a => a.data === hojeStr);
-  hojeLista.sort((a,b) => (a.hora || '').localeCompare(b.hora || ''));
-
+  const hojeLista = agendamentos.filter(a => a.data === hojeStr).sort((a,b) => (a.hora||'').localeCompare(b.hora||''));
   document.getElementById('statAgenda').textContent = hojeLista.length;
-
   if (hojeLista.length > 0) {
     let html = '';
-    hojeLista.forEach(a => {
-      html += `<div class="lista-item">
-        <span class="hora">${a.hora || '--:--'}</span>
-        <div class="info">
-          <strong>${a.nome || 'Beneficiário'}</strong>
-          <small>${a.profissional || ''}</small>
-        </div>
-      </div>`;
-    });
+    hojeLista.forEach(a => { html += `<div class="lista-item"><span class="hora">${a.hora||'--:--'}</span><div class="info"><strong>${a.nome||'Beneficiário'}</strong><small>${a.profissional||''}</small></div></div>`; });
     document.getElementById('listaAgenda').innerHTML = html;
   }
 
-  // Financeiro
   const financeiro = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
   let receitas = 0, despesas = 0;
-  financeiro.forEach(f => {
-    if (f.tipo === 'receita') receitas += (f.valor || 0);
-    else despesas += (f.valor || 0);
-  });
+  financeiro.forEach(f => { if (f.tipo === 'receita') receitas += (f.valor||0); else despesas += (f.valor||0); });
   document.getElementById('statSaldo').textContent = 'R$ ' + (receitas - despesas).toFixed(0);
 
-  // Timeout de sessão
   let timeout;
-  function resetTimeout() {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      alert('Sessão expirada por inatividade.');
-      window.location.href = 'index.html';
-    }, 30 * 60 * 1000);
-  }
+  function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { alert('Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
   document.addEventListener('mousemove', resetTimeout);
   document.addEventListener('keypress', resetTimeout);
   document.addEventListener('click', resetTimeout);
