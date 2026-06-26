@@ -1,476 +1,467 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amovin ERP Social</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMOVIN ERP Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --amarelo: #E8B923;
+  --amarelo-escuro: #D4A017;
+  --grafite: #1F2937;
+  --cinza: #6B7280;
+  --fundo: #F8F4ED;
+  --preto: #111111;
+}
 
-        :root {
-            --gold: #F5B800;
-            --gold-dark: #D97706;
-            --cream: #FFF8EB;
-            --beige: #F9EFD9;
-            --text: #3F2A1F;
-            --text-soft: #6B5A46;
-            --success: #10B981;
-            --shadow: 0 25px 50px -12px rgb(245 184 0 / 0.15);
-        }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #F8F4ED;
+  display: flex;
+  min-height: 100vh;
+}
 
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: linear-gradient(135deg, #FFF8EB 0%, #F9EFD9 100%);
-            min-height: 100vh;
-            display: flex;
-            color: var(--text);
-            overflow: hidden;
-        }
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  width: 270px;
+  background: #111111;
+  color: #fff;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
 
-        /* ===================== SIDEBAR ===================== */
-        .sidebar {
-            width: 280px;
-            background: #1C160F;
-            color: white;
-            position: fixed;
-            left: 0; top: 0; bottom: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid rgba(245, 184, 0, 0.15);
-            box-shadow: 4px 0 25px rgba(0,0,0,0.12);
-        }
+.sidebar-header {
+  padding: 28px 24px 24px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
 
-        .sidebar-header {
-            padding: 28px 24px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(245, 184, 0, 0.1);
-        }
+.sidebar-logo {
+  font-size: 52px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 4px 12px rgba(232,185,35,0.2));
+}
 
-        .sidebar-logo {
-            font-size: 52px;
-            margin-bottom: 8px;
-            display: inline-block;
-            animation: float 7s ease-in-out infinite;
-        }
+.sidebar-header h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #E8B923;
+  letter-spacing: -0.3px;
+}
 
-        .sidebar-header h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            color: var(--gold);
-            letter-spacing: -0.8px;
-        }
+.sidebar-header small {
+  font-size: 9.5px;
+  opacity: 0.45;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
 
-        .sidebar-header small {
-            font-size: 10px;
-            letter-spacing: 3px;
-            opacity: 0.6;
-            font-weight: 500;
-        }
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+}
 
-        .sidebar-nav {
-            flex: 1;
-            padding: 20px 0;
-            overflow-y: auto;
-        }
+.nav-categoria {
+  padding: 16px 24px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
 
-        .nav-categoria {
-            padding: 16px 24px 6px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.8px;
-            color: rgba(245, 184, 0, 0.55);
-        }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 24px;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 11px 24px;
-            color: rgba(255,255,255,0.75);
-            text-decoration: none;
-            font-size: 13.5px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 3px solid transparent;
-        }
+.nav-item:hover {
+  background: rgba(232,185,35,0.08);
+  color: #fff;
+  border-left-color: #E8B923;
+}
 
-        .nav-item:hover {
-            background: rgba(245, 184, 0, 0.12);
-            color: white;
-            border-left-color: var(--gold);
-        }
+.nav-item.ativo {
+  background: rgba(232,185,35,0.15);
+  color: #fff;
+  border-left-color: #E8B923;
+  font-weight: 600;
+}
 
-        .nav-item.ativo {
-            background: rgba(245, 184, 0, 0.18);
-            color: white;
-            border-left-color: var(--gold);
-            font-weight: 600;
-        }
+.nav-item .icone {
+  font-size: 17px;
+  width: 24px;
+  text-align: center;
+}
 
-        .nav-item .icone { font-size: 18px; width: 26px; }
+.sidebar-footer {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
 
-        .sidebar-footer {
-            padding: 20px 24px;
-            border-top: 1px solid rgba(245, 184, 0, 0.1);
-        }
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
 
-        .user-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 16px;
-            margin-bottom: 12px;
-        }
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  background: #E8B923;
+  color: #111;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+}
 
-        .user-avatar {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), #E89B00);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 16px; color: #1C160F;
-        }
+.user-info .nome { font-weight: 600; font-size: 13.5px; }
+.user-info .cargo { font-size: 11px; opacity: 0.5; }
 
-        .btn-sair {
-            width: 100%;
-            padding: 10px;
-            background: rgba(255,255,255,0.08);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 12.5px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+.btn-sair {
+  width: 100%;
+  padding: 9px;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 
-        .btn-sair:hover { background: rgba(255,255,255,0.15); }
+.btn-sair:hover { background: rgba(255,255,255,0.1); }
 
-        /* ===================== MAIN CONTENT ===================== */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 40px 50px;
-            overflow-y: auto;
-        }
+/* ==================== MAIN CONTENT ==================== */
+.main-content {
+  flex: 1;
+  margin-left: 270px;
+  padding: 32px 40px;
+}
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
 
-        .saudacao h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text);
-            letter-spacing: -1.2px;
-        }
+.saudacao h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1F2937;
+  letter-spacing: -0.6px;
+}
 
-        .saudacao p {
-            color: var(--text-soft);
-            font-size: 15px;
-            margin-top: 4px;
-        }
+.saudacao p {
+  font-size: 14px;
+  color: #6B7280;
+  margin-top: 4px;
+}
 
-        .top-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+.data-display {
+  background: #fff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #1F2937;
+  border: 1px solid #EDE5D9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
 
-        .data-display {
-            background: white;
-            padding: 12px 24px;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text);
-            box-shadow: var(--shadow);
-        }
+/* ==================== STATS ==================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
 
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
+.stat-card {
+  background: #fff;
+  padding: 24px 26px;
+  border-radius: 18px;
+  border: 1px solid #F0E9DF;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
 
-        .stat-card {
-            background: white;
-            padding: 28px;
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(245, 184, 0, 0.12);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.07);
+}
 
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 35px 70px -15px rgba(245, 184, 0, 0.25);
-        }
+.stat-icon { font-size: 26px; margin-bottom: 12px; }
+.stat-valor { font-size: 29px; font-weight: 800; color: #1F2937; letter-spacing: -0.8px; }
+.stat-label { font-size: 12px; color: #6B7280; margin-top: 5px; font-weight: 600; }
 
-        .stat-icon {
-            font-size: 32px;
-            margin-bottom: 16px;
-            display: block;
-        }
+/* ==================== CARDS ==================== */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
 
-        .stat-valor {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            color: var(--text);
-        }
+.card {
+  background: #fff;
+  padding: 26px;
+  border-radius: 18px;
+  border: 1px solid #F0E9DF;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
 
-        .stat-label {
-            font-size: 12.5px;
-            color: var(--text-soft);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 6px;
-        }
+.card h3 {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-        /* Cards */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
+.lista-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid #F5F0E8;
+  font-size: 13.5px;
+}
 
-        .card {
-            background: white;
-            padding: 28px;
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(245, 184, 0, 0.1);
-        }
+.lista-item:last-child { border-bottom: none; }
 
-        .card h3 {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text);
-        }
+.lista-item .hora {
+  font-weight: 700;
+  color: #E8B923;
+  min-width: 52px;
+  font-size: 14px;
+}
 
-        .badge {
-            font-size: 11px;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-weight: 700;
-        }
+.lista-item .info strong { display: block; font-weight: 600; color: #1F2937; }
+.lista-item .info small { color: #6B7280; font-size: 12px; }
 
-        .badge-azul { background: #E0F2FE; color: #0369A1; }
-        .badge-laranja { background: #FEF3C7; color: #B45309; }
+.sem-dados {
+  text-align: center;
+  padding: 32px 0;
+  color: #9CA3AF;
+  font-size: 13.5px;
+}
 
-        .lista-item {
-            padding: 14px 0;
-            border-bottom: 1px solid #F5EDE4;
-            display: flex;
-            gap: 16px;
-            font-size: 14px;
-        }
-
-        .lista-item:last-child { border-bottom: none; }
-
-        .hora {
-            font-weight: 700;
-            color: var(--gold-dark);
-            min-width: 60px;
-        }
-
-        .sem-dados {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--text-soft);
-            font-size: 14px;
-        }
-
-        .rodape {
-            text-align: center;
-            margin-top: 60px;
-            color: var(--text-soft);
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        @media (max-width: 1024px) {
-            .sidebar { width: 260px; }
-            .main-content { margin-left: 260px; padding: 30px; }
-            .info-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+.rodape {
+  text-align: center;
+  padding: 30px 0 10px;
+  color: #9CA3AF;
+  font-size: 11px;
+}
+</style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">🌻</div>
-            <h3>AMOVIN</h3>
-            <small>ERP SOCIAL</small>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🌻</div>
+    <h3>AMOVIN</h3>
+    <small>ERP Social</small>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item ativo"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📋</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">A</div>
+      <div class="user-info">
+        <div class="nome">Administrador</div>
+        <div class="cargo">Admin</div>
+      </div>
+    </div>
+    <button class="btn-sair" onclick="window.location.href='index.html'">Sair do Sistema</button>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+  <div class="top-bar">
+    <div class="saudacao">
+      <h1>Bem-vindo(a) de volta</h1>
+      <p>Painel de Gestão • AMOVIN ERP Social</p>
+    </div>
+    <div class="data-display" id="dataHoje"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-valor" id="statBenef">--</div>
+      <div class="stat-label">Beneficiários Ativos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-valor" id="statAgenda">--</div>
+      <div class="stat-label">Agendamentos Hoje</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-valor" id="statSaldo">--</div>
+      <div class="stat-label">Saldo Financeiro</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-valor" id="statAlertas">--</div>
+      <div class="stat-label">Alertas Pendentes</div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="info-grid">
+    <div class="card">
+      <h3>📅 Agendamentos de Hoje</h3>
+      <div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>🛒 Compras Pendentes</h3>
+      <div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>📦 Estoque Crítico</h3>
+      <div id="listaEstoque"><div class="sem-dados">Estoque em níveis normais.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>📝 Últimos Documentos</h3>
+      <div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div>
+    </div>
+  </div>
+
+  <div class="rodape">
+    Desenvolvido por <strong>Vigorre Sistemas</strong> • Vigorre ERP Social
+  </div>
+</main>
+
+<script>
+  // Data
+  const hoje = new Date();
+  document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { 
+    weekday:'long', day:'numeric', month:'long', year:'numeric' 
+  });
+
+  // Beneficiários
+  const beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
+  document.getElementById('statBenef').textContent = beneficiarios.length;
+
+  // Agendamentos
+  const agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
+  const hojeStr = hoje.toISOString().split('T')[0];
+  const hojeLista = agendamentos.filter(a => a.data === hojeStr);
+  hojeLista.sort((a,b) => (a.hora || '').localeCompare(b.hora || ''));
+
+  document.getElementById('statAgenda').textContent = hojeLista.length;
+
+  if (hojeLista.length > 0) {
+    let html = '';
+    hojeLista.forEach(a => {
+      html += `<div class="lista-item">
+        <span class="hora">${a.hora || '--:--'}</span>
+        <div class="info">
+          <strong>${a.nome || 'Beneficiário'}</strong>
+          <small>${a.profissional || ''}</small>
         </div>
-        <nav class="sidebar-nav">
-            <div class="nav-categoria">Principal</div>
-            <a href="dashboard.html" class="nav-item ativo"><span class="icone">📊</span> Dashboard</a>
-            <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+      </div>`;
+    });
+    document.getElementById('listaAgenda').innerHTML = html;
+  }
 
-            <div class="nav-categoria">Captação</div>
-            <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
-            <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
-            <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+  // Financeiro
+  const financeiro = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
+  let receitas = 0, despesas = 0;
+  financeiro.forEach(f => {
+    if (f.tipo === 'receita') receitas += (f.valor || 0);
+    else despesas += (f.valor || 0);
+  });
+  document.getElementById('statSaldo').textContent = 'R$ ' + (receitas - despesas).toFixed(0);
 
-            <div class="nav-categoria">Financeiro</div>
-            <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
-            <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
-            <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-
-            <div class="nav-categoria">Pessoas</div>
-            <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
-            <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-
-            <div class="nav-categoria">Atendimento</div>
-            <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-
-            <div class="nav-categoria">Documentos</div>
-            <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
-            <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
-            <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-
-            <div class="nav-categoria">Educação</div>
-            <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
-            <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-
-            <div class="nav-categoria">Comunicação</div>
-            <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
-            <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-
-            <div class="nav-categoria">Relatórios</div>
-            <a href="relatorios.html" class="nav-item"><span class="icone">📋</span> Relatórios</a>
-
-            <div class="nav-categoria">Sistema</div>
-            <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
-            <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
-        </nav>
-        <div class="sidebar-footer">
-            <div class="user-card">
-                <div class="user-avatar">A</div>
-                <div>
-                    <div style="font-weight:600; font-size:14px;">Administrador</div>
-                    <div style="font-size:11px; opacity:0.6;">Perfil Admin</div>
-                </div>
-            </div>
-            <button class="btn-sair" onclick="window.location.href='index.html'">Sair do Sistema</button>
-        </div>
-    </aside>
-
-    <main class="main-content">
-        <div class="top-bar">
-            <div class="saudacao">
-                <h1>Bem-vindo de volta, Administrador</h1>
-                <p>Hoje é um dia de impacto. Vamos transformar vidas.</p>
-            </div>
-            <div class="top-actions">
-                <div class="data-display" id="dataHoje"></div>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-valor" id="statBenef">--</div><div class="stat-label">Beneficiários Ativos</div></div>
-            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-valor" id="statAgenda">--</div><div class="stat-label">Agendamentos Hoje</div></div>
-            <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-valor" id="statSaldo">--</div><div class="stat-label">Saldo Financeiro</div></div>
-            <div class="stat-card"><div class="stat-icon">🌟</div><div class="stat-valor" id="statAlertas">--</div><div class="stat-label">Impacto do Dia</div></div>
-        </div>
-
-        <div class="info-grid">
-            <div class="card">
-                <h3>📅 Agendamentos de Hoje <span class="badge badge-azul" id="countAgenda">0</span></h3>
-                <div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div>
-            </div>
-            <div class="card">
-                <h3>🛒 Compras Pendentes <span class="badge badge-laranja" id="countCompras">0</span></h3>
-                <div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div>
-            </div>
-            <div class="card">
-                <h3>⚠️ Estoque Crítico</h3>
-                <div id="listaEstoque"><div class="sem-dados">Estoque dentro dos padrões.</div></div>
-            </div>
-            <div class="card">
-                <h3>📝 Últimos Documentos</h3>
-                <div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div>
-            </div>
-        </div>
-
-        <div class="rodape">
-            Desenvolvido com excelência por <strong>Vigorre Sistemas</strong> • Amovin ERP Social 2026
-        </div>
-    </main>
-
-    <script>
-        // === JS ORIGINAL MANTIDO INTEGRALMENTE ===
-        var hoje = new Date();
-        document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-
-        var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
-        document.getElementById('statBenef').textContent = beneficiarios.length || "248";
-
-        var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
-        var hojeStr = hoje.toISOString().split('T')[0];
-        var hojeLista = agendamentos.filter(a => a.data === hojeStr);
-        hojeLista.sort((a,b) => (a.hora||'').localeCompare(b.hora||''));
-        
-        document.getElementById('statAgenda').textContent = hojeLista.length || "12";
-        document.getElementById('countAgenda').textContent = hojeLista.length || "12";
-
-        if (hojeLista.length > 0) {
-            var html = '';
-            hojeLista.forEach(a => {
-                html += `<div class="lista-item"><span class="hora">${a.hora||'--:--'}</span><div><strong>${a.nome||'Beneficiário'}</strong><small>${a.profissional||''}</small></div></div>`;
-            });
-            document.getElementById('listaAgenda').innerHTML = html;
-        }
-
-        var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
-        var pendentes = orcamentos.filter(o => !o.vencedor);
-        document.getElementById('countCompras').textContent = pendentes.length || "7";
-
-        var financeiro = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
-        var receitas = financeiro.filter(f => f.tipo === 'receita').reduce((acc, f) => acc + (f.valor||0), 0);
-        var despesas = financeiro.filter(f => f.tipo === 'despesa').reduce((acc, f) => acc + (f.valor||0), 0);
-        document.getElementById('statSaldo').textContent = 'R$ ' + (receitas - despesas).toLocaleString('pt-BR');
-
-        document.getElementById('statAlertas').textContent = "94%";
-
-        // Timeout de sessão
-        let timeout;
-        function resetTimeout() {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                alert('Sessão expirada por inatividade.');
-                window.location.href = 'index.html';
-            }, 30 * 60 * 1000);
-        }
-        document.addEventListener('mousemove', resetTimeout);
-        document.addEventListener('keypress', resetTimeout);
-        document.addEventListener('click', resetTimeout);
-        resetTimeout();
-    </script>
+  // Timeout de sessão
+  let timeout;
+  function resetTimeout() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      alert('Sessão expirada por inatividade.');
+      window.location.href = 'index.html';
+    }, 30 * 60 * 1000);
+  }
+  document.addEventListener('mousemove', resetTimeout);
+  document.addEventListener('keypress', resetTimeout);
+  document.addEventListener('click', resetTimeout);
+  resetTimeout();
+</script>
 </body>
 </html>
