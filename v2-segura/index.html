@@ -27,6 +27,8 @@ body {
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .login-card {
@@ -43,10 +45,20 @@ body {
 
 /* Logo e Identidade */
 .logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.logo-fallback {
   font-size: 88px;
   margin-bottom: 2px;
   line-height: 1;
   filter: drop-shadow(0 4px 14px rgba(232, 185, 35, 0.18));
+  display: none;
 }
 
 .brand {
@@ -90,7 +102,7 @@ body {
 
 .tab.active {
   background: #E8B923;
-  color: #2C2C2C; /* Cor da letra NÃO muda */
+  color: #2C2C2C;
   box-shadow: 0 2px 8px rgba(232, 185, 35, 0.25);
   font-weight: 700;
 }
@@ -160,18 +172,120 @@ body {
 }
 
 .erro.show { display: block; }
+
+/* Rodapé */
+.rodape {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid #F0E9DF;
+  text-align: center;
+}
+
+.rodape .logo-vigorre {
+  width: 110px;
+  height: auto;
+  margin-bottom: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rodape .logo-vigorre-fallback {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--grafite);
+  display: none;
+}
+
+.rodape .copyright {
+  font-size: 9px;
+  color: #8A8F98;
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
+.rodape .marca {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--grafite);
+  margin-bottom: 8px;
+}
+
+.rodape .marca .tm {
+  font-size: 7px;
+  vertical-align: super;
+}
+
+.rodape p {
+  font-size: 10px;
+  color: #8A8F98;
+  margin: 2px 0;
+  line-height: 1.5;
+}
+
+.rodape a {
+  color: #C65A11;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.rodape .divider {
+  color: #D1D5DB;
+  margin: 0 6px;
+}
+
+/* LGPD */
+.lgpd-banner {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 14px;
+  padding: 12px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid #F0E9DF;
+  font-size: 10px;
+  color: #6B7280;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lgpd-banner button {
+  background: #E8B923;
+  color: #2C2C2C;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 10px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.lgpd-banner button:hover {
+  background: #D4A017;
+}
 </style>
 </head>
 <body>
 
 <div class="login-card">
   
-  <!-- Logo e Identidade -->
-  <div class="logo">🌻</div>
+  <!-- Logo AMOVIN -->
+  <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+  <div class="logo-fallback">🌻</div>
+  
   <div class="brand">Amovin ERP Social</div>
   <div class="tagline">SISTEMA DE GESTÃO</div>
 
-  <!-- Tabs com Background Colorido -->
+  <!-- Tabs -->
   <div class="tabs">
     <button class="tab active" data-tab="admin">Administrador</button>
     <button class="tab" data-tab="recepcao">Recepção</button>
@@ -197,6 +311,28 @@ body {
 
 </div>
 
+<!-- LGPD -->
+<div class="lgpd-banner" id="lgpdBanner">
+  <span>🍪 Cookies essenciais. Ao continuar, você concorda com a <strong>LGPD</strong>.</span>
+  <button onclick="document.getElementById('lgpdBanner').style.display='none';localStorage.setItem('lgpd_aceito','true');">ENTENDI</button>
+</div>
+
+<!-- Rodapé Vigorre -->
+<div class="rodape">
+  <img src="images/logo-vigorre.png" alt="Vigorre Sistemas" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+  <div class="logo-vigorre-fallback">Vigorre Sistemas</div>
+  
+  <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
+  <div class="marca">Vigorre ERP Social<span class="tm">™</span></div>
+  
+  <p>
+    <a href="https://www.vigorre.com.br" target="_blank">www.vigorre.com.br</a>
+    <span class="divider">|</span>
+    <a href="https://wa.me/5534991850735" target="_blank">(34) 99185-0735</a>
+  </p>
+  <p style="font-size:9px;color:#aaa;">contato@vigorre.com.br</p>
+</div>
+
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -215,7 +351,10 @@ body {
 
   let tabAtiva = 'admin';
 
-  // Tabs - Apenas background muda
+  if (localStorage.getItem('lgpd_aceito') === 'true') {
+    document.getElementById('lgpdBanner').style.display = 'none';
+  }
+
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -225,7 +364,6 @@ body {
     });
   });
 
-  // Login
   document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const nome = document.getElementById('nome').value.trim();
