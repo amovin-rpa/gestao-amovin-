@@ -3,311 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AMOVIN ERP Social - Gestão inteligente para inclusão social">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
     <title>AMOVIN • ERP Social</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        :root {
-            --laranja: #C65A11;
-            --laranja-escuro: #8F3F0D;
-            --amarelo: #F5C518;
-            --amarelo-glow: #FFDB4D;
-            --terra: #3F2A1E;
-            --cinza-escuro: #1F252E;
-            --branco: #FFFFFF;
+        @layer base {
+            :root {
+                /* Design Tokens - Paleta Extraída e Refinada */
+                --color-terracotta-600: #9F470D;
+                --color-terracotta-500: #C65A11;
+                --color-sunflower-500: #F4A01D;
+                --color-sunflower-400: #F5C518;
+                --color-emerald-500: #10B981;
+                --color-slate-950: #0F172A;
+                --color-slate-900: #1A2333;
+                --color-slate-800: #242E42;
+                --color-neutral-700: #475569;
+                --color-neutral-200: #E2E8F0;
+                --color-neutral-100: #F8FAFC;
+                --color-surface: #FFFFFF;
+                --color-surface-glass: rgba(255, 255, 255, 0.965);
+                --color-error: #DC2626;
+
+                /* Functional Tokens */
+                --radius-lg: 20px;
+                --radius-md: 12px;
+                --shadow-sm: 0 10px 15px -3px rgb(0 0 0 / 0.05);
+                --shadow-lg: 0 25px 50px -12px rgb(15 23 42 / 0.15);
+                --transition: cubic-bezier(0.42, 0, 0.17, 1);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Inter', system-ui, sans-serif;
+                background: linear-gradient(135deg, #FFF7ED 0%, #FEF3E8 100%);
+                min-height: 100dvh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--color-slate-950);
+                line-height: 1.5;
+                font-feature-settings: "cv02","cv03","cv04","cv11";
+            }
+
+            .login-container {
+                display: flex;
+                width: 100%;
+                max-width: 1280px;
+                min-height: 100dvh;
+                box-shadow: var(--shadow-lg);
+                overflow: hidden;
+                border-radius: 0;
+            }
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @layer components {
+            .login-image {
+                flex: 1;
+                position: relative;
+                background: linear-gradient(135deg, var(--color-slate-950) 0%, #1E2937 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                contain: layout paint;
+            }
 
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            min-height: 100dvh;
-            background: radial-gradient(circle at 50% 30%, rgba(245, 197, 24, 0.12) 0%, transparent 50%),
-                        linear-gradient(135deg, #2B1D12 0%, #1A120C 50%, #3F2A1E 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
+            .login-image::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: var(--gradient-overlay, linear-gradient(135deg, rgba(198,90,17,0.78) 0%, rgba(244,160,29,0.45) 100%));
+                z-index: 1;
+            }
+
+            .login-image .content {
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                max-width: 460px;
+                padding: 3rem;
+            }
+
+            .logo-grande {
+                font-size: 9.5rem;
+                line-height: 1;
+                margin-bottom: 1.5rem;
+                filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.3));
+                animation: float 6s ease-in-out infinite;
+            }
+
+            .login-image h1 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                color: white;
+                line-height: 1.1;
+                margin-bottom: 1rem;
+                letter-spacing: -0.04em;
+            }
+
+            .login-form {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--color-surface);
+                padding: 2.5rem;
+                position: relative;
+            }
+
+            .form-card {
+                background: var(--color-surface-glass);
+                backdrop-filter: blur(24px);
+                border: 1px solid var(--color-neutral-200);
+                border-radius: var(--radius-lg);
+                padding: 3rem 2.5rem;
+                width: 100%;
+                max-width: 440px;
+                box-shadow: var(--shadow-lg);
+                contain: layout style paint;
+            }
+
+            .tabs {
+                display: flex;
+                background: #F1F5F9;
+                padding: 6px;
+                border-radius: 14px;
+                margin-bottom: 2rem;
+                gap: 6px;
+            }
+
+            .tab {
+                flex: 1;
+                padding: 12px 16px;
+                border: none;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 0.875rem;
+                cursor: pointer;
+                transition: all 0.3s var(--transition);
+                color: var(--color-neutral-700);
+            }
+
+            .tab.ativo {
+                background: white;
+                color: var(--color-terracotta-500);
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            }
+
+            .form-group {
+                margin-bottom: 1.25rem;
+                position: relative;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: var(--color-neutral-700);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 14px 16px;
+                border: 2px solid var(--color-neutral-200);
+                border-radius: var(--radius-md);
+                font-size: 1rem;
+                transition: all 0.25s var(--transition);
+                background: white;
+            }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: var(--color-terracotta-500);
+                box-shadow: 0 0 0 4px rgba(198, 90, 17, 0.12);
+            }
+
+            .btn-entrar {
+                width: 100%;
+                padding: 16px;
+                margin-top: 1.25rem;
+                background: var(--color-terracotta-500);
+                color: white;
+                border: none;
+                border-radius: var(--radius-md);
+                font-size: 1.05rem;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+                cursor: pointer;
+                transition: all 0.3s var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-entrar:hover {
+                background: var(--color-terracotta-600);
+                transform: translateY(-2px);
+            }
+
+            .toast {
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #1E2937;
+                color: white;
+                padding: 14px 24px;
+                border-radius: 9999px;
+                font-size: 0.875rem;
+                box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+                display: none;
+                align-items: center;
+                gap: 12px;
+                z-index: 10000;
+                white-space: nowrap;
+            }
         }
 
-        /* Fundo decorativo premium */
-        body::before {
-            content: '🌻';
-            position: absolute;
-            font-size: 620px;
-            opacity: 0.04;
-            top: -120px;
-            left: 50%;
-            transform: translateX(-50%);
-            filter: blur(12px);
-            z-index: 0;
-            animation: float-slow 35s ease-in-out infinite;
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(32px);
-            border: 1px solid rgba(245, 197, 24, 0.25);
-            border-radius: 32px;
-            width: 100%;
-            max-width: 460px;
-            padding: 52px 48px;
-            box-shadow: 
-                0 40px 80px -15px rgba(198, 90, 17, 0.25),
-                0 0 0 1px rgba(255, 255, 255, 0.6) inset,
-                0 0 60px -10px rgba(245, 197, 24, 0.3);
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo-central {
-            font-size: 68px;
-            text-align: center;
-            margin-bottom: 16px;
-            display: block;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--terra);
-            margin-bottom: 6px;
-            letter-spacing: -0.8px;
-        }
-
-        .subtitulo {
-            text-align: center;
-            color: #5C4635;
-            font-size: 15px;
-            margin-bottom: 32px;
-            font-weight: 500;
-        }
-
-        .tabs {
-            display: flex;
-            background: #F5EDE4;
-            padding: 6px;
-            border-radius: 18px;
-            margin-bottom: 32px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            color: #6B5A4A;
-        }
-
-        .tab.ativo {
-            background: white;
-            color: var(--laranja);
-            box-shadow: 0 8px 20px -6px rgba(198, 90, 17, 0.25);
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #3F2A1E;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 18px 20px;
-            border: 2px solid #EDE0D0;
-            border-radius: 16px;
-            font-size: 1.05rem;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--laranja);
-            box-shadow: 0 0 0 6px rgba(198, 90, 17, 0.15);
-        }
-
-        .olho-magico {
-            position: absolute;
-            right: 20px;
-            top: 42px;
-            font-size: 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            opacity: 0.5;
-        }
-
-        .btn-entrar {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(90deg, var(--laranja), var(--laranja-escuro));
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 15px 35px -10px rgba(198, 90, 17, 0.45);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-entrar:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 22px 45px -8px rgba(198, 90, 17, 0.55);
-        }
-
-        .btn-entrar:active {
-            transform: scale(0.98);
-        }
-
-        .erro-msg {
-            background: #FEF2F2;
-            color: #9F1F1F;
-            padding: 14px 18px;
-            border-radius: 14px;
-            font-size: 0.9rem;
-            border-left: 5px solid #B91C1C;
-            display: none;
-            margin-bottom: 20px;
-        }
-
-        .erro-msg.show { display: block; animation: shake 0.5s; }
-
-        .rodape {
-            text-align: center;
-            margin-top: 32px;
-            font-size: 0.75rem;
-            color: #6B5A4A;
-            opacity: 0.7;
+        @layer utilities {
+            .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+            .text-balance { text-wrap: balance; }
+            @media (max-width: 768px) {
+                .login-container { flex-direction: column; }
+                .login-image { min-height: 38vh; }
+                .logo-grande { font-size: 6rem; }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+            }
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-18px); }
         }
-
-        @keyframes float-slow {
-            0%, 100% { transform: translateX(-50%) rotate(0deg); }
-            50% { transform: translateX(-50%) rotate(12deg); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <div class="logo-central">🌻</div>
-        <h1>AMOVIN</h1>
-        <p class="subtitulo">Associação e Movimento pela Inclusão</p>
+<div id="toast" class="toast" role="alert" aria-live="polite"></div>
 
-        <div class="erro-msg" id="erroMsg"></div>
-
-        <div class="tabs">
-            <button class="tab ativo" onclick="mudarTab('admin', this)">Admin</button>
-            <button class="tab" onclick="mudarTab('recepcao', this)">Recepção</button>
-            <button class="tab" onclick="mudarTab('consulta', this)">Consulta</button>
-        </div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Usuário</label>
-                <input type="text" id="nome" placeholder="Digite seu usuário" autocomplete="off">
-            </div>
-            <div class="form-group" id="grupoSenha">
-                <label>Senha</label>
-                <input type="password" id="senha" placeholder="••••••••">
-                <button type="button" class="olho-magico" onclick="toggleSenha()">👁️</button>
-            </div>
-            <button type="submit" class="btn-entrar" id="btnEntrar">Entrar no Sistema</button>
-        </form>
-
-        <div class="rodape">
-            Desenvolvido por <strong>Vigorre Sistemas</strong><br>
-            AMOVIN ERP Social • 2026
+<div class="login-container">
+    <!-- Lado Esquerdo - Hero -->
+    <div class="login-image">
+        <div class="content">
+            <div class="logo-grande" aria-hidden="true">🌻</div>
+            <h1 class="text-balance">Transformando vidas<br>através da inclusão</h1>
+            <p style="color: rgba(255,255,255,0.85); font-size: 1.1rem; margin-top: 1rem;">
+                Gestão inteligente, transparente e com impacto real.
+            </p>
         </div>
     </div>
 
-<script>
-    let tabAtiva = 'admin';
+    <!-- Lado Direito - Formulário -->
+    <div class="login-form">
+        <div class="form-card">
+            <div style="text-align:center; margin-bottom: 1.5rem;">
+                <div style="font-size: 3.25rem; margin-bottom: 0.5rem;">🌻</div>
+                <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--color-slate-950);">AMOVIN</h2>
+                <p style="color: var(--color-neutral-700); font-size: 0.95rem;">Associação e Movimento pela Inclusão</p>
+            </div>
 
-    window.mudarTab = function(tab, botao) {
-        tabAtiva = tab;
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
-        botao.classList.add('ativo');
-        
-        document.getElementById('erroMsg').classList.remove('show');
-        document.getElementById('grupoSenha').style.display = (tab === 'recepcao') ? 'none' : 'block';
-    };
+            <div id="errorMessage" aria-live="polite" style="display:none; background:#FEE2E2; color:#B91C1C; padding:12px 16px; border-radius:12px; font-size:0.875rem; margin-bottom:1.25rem; border-left:4px solid #B91C1C;"></div>
 
-    window.toggleSenha = function() {
-        const senha = document.getElementById('senha');
-        const olho = document.querySelector('.olho-magico');
-        if (senha.type === 'password') {
-            senha.type = 'text';
-            olho.textContent = '🙈';
-        } else {
-            senha.type = 'password';
-            olho.textContent = '👁️';
+            <div class="tabs" role="tablist">
+                <button class="tab ativo" data-tab="admin" onclick="controller.switchTab(this)">Admin</button>
+                <button class="tab" data-tab="recepcao" onclick="controller.switchTab(this)">Recepção</button>
+                <button class="tab" data-tab="consulta" onclick="controller.switchTab(this)">Consulta</button>
+            </div>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" autocomplete="username" required placeholder="Digite seu usuário">
+                </div>
+
+                <div class="form-group" id="passwordGroup">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" autocomplete="current-password" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-entrar">
+                    <span id="btnText">Entrar no Sistema</span>
+                </button>
+            </form>
+
+            <p style="text-align:center; margin-top: 2rem; font-size: 0.75rem; color: var(--color-neutral-700);">
+                Desenvolvido por <strong>Vigorre Sistemas</strong><br>
+                <span style="font-size: 0.7rem; opacity: 0.6;">AMOVIN ERP Social v2.1.4 • Build 2025.12</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    // ====================== LOGIN CONTROLLER (Clean Architecture) ======================
+    class LoginController {
+        constructor() {
+            this.currentTab = 'admin';
+            this.isLoading = false;
+            this.init();
         }
-    };
 
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const nome = document.getElementById('nome').value.trim();
-        const senha = document.getElementById('senha').value;
-        const erro = document.getElementById('erroMsg');
+        init() {
+            const form = document.getElementById('loginForm');
+            form.addEventListener('submit', (e) => this.handleSubmit(e));
+            
+            // Keyboard support
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.isLoading) this.cancelLoading();
+            });
 
-        if (!nome) {
-            erro.textContent = 'Por favor, informe o usuário.';
-            erro.classList.add('show');
-            return;
+            this.showToast('Bem-vindo ao AMOVIN ERP Social', 2200);
         }
 
-        if (tabAtiva === 'admin' && nome.toLowerCase() === 'admin' && senha === 'amovin2026') {
-            sessionStorage.setItem('amovin_logado', 'true');
-            sessionStorage.setItem('amovin_perfil', 'admin');
-            window.location.href = 'dashboard.html';
-            return;
+        switchTab(button) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('ativo'));
+            button.classList.add('ativo');
+            this.currentTab = button.dataset.tab;
+
+            const passwordGroup = document.getElementById('passwordGroup');
+            passwordGroup.style.display = (this.currentTab === 'recepcao') ? 'none' : 'block';
         }
 
-        if (tabAtiva === 'recepcao') {
-            sessionStorage.setItem('amovin_logado', 'true');
-            sessionStorage.setItem('amovin_perfil', 'recepcao');
-            sessionStorage.setItem('amovin_nome', nome || 'Recepcionista');
-            window.location.href = 'dashboard.html';
-            return;
+        async handleSubmit(e) {
+            e.preventDefault();
+            if (this.isLoading) return;
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('errorMessage');
+
+            if (!username) {
+                this.showError('O campo usuário é obrigatório.');
+                return;
+            }
+
+            this.setLoading(true);
+
+            // Simulação de latência realista + lógica de negócio
+            await new Promise(r => setTimeout(r, 680));
+
+            let success = false;
+            let userData = {};
+
+            if (this.currentTab === 'admin') {
+                if (username.toLowerCase() === 'admin' && password === 'amovin2026') {
+                    success = true;
+                    userData = { perfil: 'admin', nome: 'Administrador' };
+                }
+            } else if (this.currentTab === 'recepcao') {
+                success = true;
+                userData = { perfil: 'recepcao', nome: username || 'Recepcionista' };
+            } else if (this.currentTab === 'consulta') {
+                success = true;
+                userData = { perfil: 'consulta', nome: username || 'Consultor' };
+            }
+
+            if (success) {
+                sessionStorage.setItem('amovin_logado', 'true');
+                sessionStorage.setItem('amovin_perfil', userData.perfil);
+                sessionStorage.setItem('amovin_nome', userData.nome);
+                
+                this.showToast('Autenticação bem-sucedida. Redirecionando...', 1200);
+                setTimeout(() => window.location.href = 'dashboard.html', 800);
+            } else {
+                this.showError('Credenciais inválidas ou perfil incompatível.');
+                this.setLoading(false);
+            }
         }
 
-        erro.textContent = 'Credenciais inválidas.';
-        erro.classList.add('show');
-    });
+        setLoading(state) {
+            this.isLoading = state;
+            const btn = document.getElementById('submitBtn');
+            const text = document.getElementById('btnText');
+            
+            if (state) {
+                btn.disabled = true;
+                text.innerHTML = `
+                    <span style="display:inline-block; animation: spin 1s linear infinite; margin-right:8px;">⟳</span>
+                    Autenticando...
+                `;
+            } else {
+                btn.disabled = false;
+                text.textContent = 'Entrar no Sistema';
+            }
+        }
+
+        showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 4800);
+        }
+
+        showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'flex';
+            setTimeout(() => toast.style.display = 'none', duration);
+        }
+
+        cancelLoading() {
+            this.setLoading(false);
+        }
+    }
+
+    // Inicialização
+    const controller = new LoginController();
+    window.controller = controller; // Necessário apenas para onclick dos tabs (em produção usaria event delegation)
 </script>
 </body>
 </html>
