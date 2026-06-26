@@ -1,326 +1,268 @@
+**Versão Premium Refinada – Login Centralizado e Compacto**
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amovin ERP Social</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMOVIN • Acesso</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #B85C38;
+  --laranja-hover: #9C4B2E;
+  --grafite: #2C2C2C;
+  --cinza: #6B7280;
+  --fundo: #F8F4ED;
+}
 
-        :root {
-            --primary: #B45309;
-            --primary-light: #D97706;
-            --cream: #FAF6F0;
-            --beige-soft: #F5EDE4;
-            --text-primary: #3C2A1F;
-            --text-secondary: #6B5A4A;
-            --gold-soft: #E8C78F;
-        }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(145deg, #F8F4ED 0%, #F1E9DD 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            min-height: 100dvh;
-            background: linear-gradient(135deg, #FAF6F0 0%, #F2E8D9 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
+.login-card {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 20px;
+  padding: 42px 38px 38px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.07),
+              0 0 0 1px rgba(0, 0, 0, 0.03);
+  border: 1px solid #F0E9DF;
+  text-align: center;
+}
 
-        body::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 15%, rgba(217, 119, 6, 0.07) 0%, transparent 50%);
-            z-index: 0;
-        }
+/* Logo e Identidade */
+.logo {
+  font-size: 78px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 3px 10px rgba(184, 92, 56, 0.1));
+}
 
-        .login-wrapper {
-            width: 100%;
-            max-width: 440px;
-            margin: 40px 20px;
-            z-index: 2;
-        }
+.brand {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--grafite);
+  letter-spacing: -0.3px;
+  margin-bottom: 2px;
+}
 
-        .login-card {
-            background: rgba(255, 255, 255, 0.975);
-            backdrop-filter: blur(32px);
-            border: 1px solid rgba(181, 101, 29, 0.12);
-            border-radius: 32px;
-            padding: 52px 48px 48px;
-            box-shadow: 0 30px 70px -15px rgba(181, 101, 29, 0.18),
-                        0 0 0 1px rgba(255,255,255,0.7) inset;
-            position: relative;
-        }
+.tagline {
+  font-size: 11px;
+  color: #8A8F98;
+  letter-spacing: 1.5px;
+  margin-bottom: 32px;
+}
 
-        .logo-container {
-            text-align: center;
-            margin-bottom: 28px;
-        }
+/* Tabs */
+.tabs {
+  display: flex;
+  background: #F8F4ED;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 26px;
+}
 
-        .logo {
-            font-size: 138px;
-            line-height: 1;
-            margin-bottom: 16px;
-            filter: drop-shadow(0 25px 35px rgba(181, 101, 29, 0.22));
-            animation: float 9s ease-in-out infinite;
-        }
+.tab {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8A8F98;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-        .brand-main {
-            font-family: 'Playfair Display', serif;
-            font-size: 29px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.8px;
-            margin-bottom: 6px;
-        }
+.tab.active {
+  background: #FFFFFF;
+  color: var(--laranja);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  font-weight: 700;
+}
 
-        .brand-subtitle {
-            font-size: 11.8px;
-            font-weight: 700;
-            letter-spacing: 4.2px;
-            color: var(--primary);
-            text-transform: uppercase;
-            opacity: 0.95;
-        }
+/* Formulário */
+.form-group {
+  margin-bottom: 16px;
+  text-align: left;
+}
 
-        .system-name {
-            text-align: center;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            letter-spacing: 1.5px;
-        }
+.form-group label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+}
 
-        .tagline {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 15.2px;
-            margin: 32px 0 38px;
-            font-weight: 400;
-            line-height: 1.4;
-        }
+.form-group input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid #EDE5D9;
+  border-radius: 12px;
+  font-size: 14.5px;
+  transition: all 0.2s ease;
+  background: #fff;
+}
 
-        .tabs {
-            display: flex;
-            background: var(--beige-soft);
-            padding: 6px;
-            border-radius: 22px;
-            margin-bottom: 36px;
-        }
+.form-group input:focus {
+  border-color: var(--laranja);
+  box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.08);
+  outline: none;
+}
 
-        .tab {
-            flex: 1;
-            padding: 13px 8px;
-            border: none;
-            border-radius: 18px;
-            font-weight: 600;
-            font-size: 0.89rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+.btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--laranja);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
 
-        .tab.ativo {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 8px 20px -6px rgba(181, 101, 29, 0.18);
-        }
+.btn:hover {
+  background: var(--laranja-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(184, 92, 56, 0.25);
+}
 
-        .form-group {
-            margin-bottom: 24px;
-            position: relative;
-        }
+.erro {
+  background: #FFF5F5;
+  color: #B91C1C;
+  padding: 11px 13px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  margin-bottom: 16px;
+  display: none;
+  border-left: 3px solid #B91C1C;
+  text-align: left;
+}
 
-        .form-group label {
-            display: block;
-            font-size: 0.73rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 9px;
-            text-transform: uppercase;
-            letter-spacing: 1.4px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 17px 22px;
-            border: 2px solid #EDE3D2;
-            border-radius: 18px;
-            font-size: 1.06rem;
-            transition: all 0.35s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 6px rgba(181, 101, 29, 0.11);
-        }
-
-        .olho-magico {
-            position: absolute;
-            right: 20px;
-            top: 41px;
-            font-size: 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #9C7A5F;
-            opacity: 0.55;
-        }
-
-        .btn-entrar {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(90deg, var(--primary), #9C3F0A);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 1.08rem;
-            font-weight: 700;
-            letter-spacing: -0.4px;
-            cursor: pointer;
-            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 15px 35px -8px rgba(181, 101, 29, 0.35);
-        }
-
-        .btn-entrar:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 25px 45px -10px rgba(181, 101, 29, 0.45);
-        }
-
-        .erro-msg {
-            background: #FEF2F2;
-            color: #9F2A2A;
-            padding: 14px 18px;
-            border-radius: 14px;
-            font-size: 0.88rem;
-            border-left: 5px solid var(--primary);
-            display: none;
-            margin-bottom: 24px;
-        }
-
-        .erro-msg.show { display: block; animation: shake 0.5s; }
-
-        .footer {
-            text-align: center;
-            margin-top: 42px;
-            font-size: 0.72rem;
-            color: var(--text-secondary);
-            opacity: 0.6;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-22px); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-7px); }
-            75% { transform: translateX(7px); }
-        }
-    </style>
+.erro.show { display: block; }
+</style>
 </head>
 <body>
 
-    <div class="login-wrapper">
-        <div class="login-card">
-            <div class="logo-container">
-                <div class="logo">🌻</div>
-                <div class="brand-main">Amovin ERP Social</div>
-                <div class="system-name">SISTEMA DE GESTÃO</div>
-            </div>
+<div class="login-card">
+  
+  <!-- Logo e Identidade -->
+  <div class="logo">🌻</div>
+  <div class="brand">Amovin ERP Social</div>
+  <div class="tagline">SISTEMA DE GESTÃO</div>
 
-            <p class="tagline">Transformando inclusão em excelência de gestão</p>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="admin">Administrador</button>
+    <button class="tab" data-tab="recepcao">Recepção</button>
+    <button class="tab" data-tab="consulta">Consulta</button>
+  </div>
 
-            <div class="erro-msg" id="erroMsg"></div>
+  <div class="erro" id="erroMsg"></div>
 
-            <div class="tabs">
-                <button class="tab ativo" onclick="mudarTab('admin', this)">Admin</button>
-                <button class="tab" onclick="mudarTab('recepcao', this)">Recepção</button>
-                <button class="tab" onclick="mudarTab('consulta', this)">Consulta</button>
-            </div>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Usuário</label>
-                    <input type="text" id="nome" placeholder="Digite seu usuário" autocomplete="off">
-                </div>
-                <div class="form-group" id="grupoSenha">
-                    <label>Senha</label>
-                    <input type="password" id="senha" placeholder="••••••••">
-                    <button type="button" class="olho-magico" onclick="toggleSenha()">👁️</button>
-                </div>
-                <button type="submit" class="btn-entrar">Entrar no Sistema</button>
-            </form>
-
-            <div class="footer">
-                Desenvolvido com excelência por Vigorre Sistemas • 2026
-            </div>
-        </div>
+  <!-- Formulário -->
+  <form id="loginForm">
+    <div class="form-group">
+      <label>Login</label>
+      <input type="text" id="nome" required placeholder="Seu login">
+    </div>
+    
+    <div class="form-group" id="grupoSenha">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="••••••••">
     </div>
 
-<script>
-    let tabAtiva = 'admin';
+    <button type="submit" class="btn">Entrar no Sistema</button>
+  </form>
 
-    window.mudarTab = function(tab, botao) {
-        tabAtiva = tab;
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
-        botao.classList.add('ativo');
-        document.getElementById('erroMsg').classList.remove('show');
-        document.getElementById('grupoSenha').style.display = (tab === 'recepcao') ? 'none' : 'block';
-    };
+</div>
 
-    window.toggleSenha = function() {
-        const senha = document.getElementById('senha');
-        const olho = document.querySelector('.olho-magico');
-        if (senha.type === 'password') {
-            senha.type = 'text';
-            olho.textContent = '🙈';
-        } else {
-            senha.type = 'password';
-            olho.textContent = '👁️';
-        }
-    };
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const nome = document.getElementById('nome').value.trim();
-        const senha = document.getElementById('senha').value;
-        const erro = document.getElementById('erroMsg');
+  const firebaseConfig = {
+    apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
+    authDomain: "amovin-oficios-teste.firebaseapp.com",
+    projectId: "amovin-oficios-teste",
+    storageBucket: "amovin-oficios-teste.firebasestorage.app",
+    messagingSenderId: "901387183295",
+    appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
+  };
 
-        if (!nome) {
-            erro.textContent = 'Por favor, informe o usuário.';
-            erro.classList.add('show');
-            return;
-        }
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-        if (tabAtiva === 'admin' && nome.toLowerCase() === 'admin' && senha === 'amovin2026') {
-            sessionStorage.setItem('amovin_logado', 'true');
-            sessionStorage.setItem('amovin_perfil', 'admin');
-            window.location.href = 'dashboard.html';
-            return;
-        }
+  let tabAtiva = 'admin';
 
-        if (tabAtiva === 'recepcao') {
-            sessionStorage.setItem('amovin_logado', 'true');
-            sessionStorage.setItem('amovin_perfil', 'recepcao');
-            sessionStorage.setItem('amovin_nome', nome || 'Recepcionista');
-            window.location.href = 'dashboard.html';
-            return;
-        }
-
-        erro.textContent = 'Credenciais inválidas.';
-        erro.classList.add('show');
+  // Controle das Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      tabAtiva = tab.dataset.tab;
+      document.getElementById('erroMsg').classList.remove('show');
     });
+  });
+
+  // Login
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('nome').value.trim();
+    const senha = document.getElementById('senha').value;
+    const erro = document.getElementById('erroMsg');
+
+    if (!nome) {
+      erro.textContent = 'Por favor, informe seu login.';
+      erro.classList.add('show');
+      return;
+    }
+
+    if (tabAtiva === 'admin' && nome.toLowerCase() === 'admin' && senha === 'amovin2026') {
+      sessionStorage.setItem('amovin_logado', 'true');
+      sessionStorage.setItem('amovin_perfil', 'admin');
+      sessionStorage.setItem('amovin_nome', 'Administrador');
+      window.location.href = 'dashboard.html';
+      return;
+    }
+
+    if (tabAtiva === 'recepcao' && !senha) {
+      sessionStorage.setItem('amovin_logado', 'true');
+      sessionStorage.setItem('amovin_perfil', 'recepcao');
+      sessionStorage.setItem('amovin_nome', nome);
+      window.location.href = 'dashboard.html';
+      return;
+    }
+
+    erro.textContent = 'Credenciais inválidas. Tente novamente.';
+    erro.classList.add('show');
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) window.location.href = 'dashboard.html';
+  });
 </script>
 </body>
 </html>
+```
