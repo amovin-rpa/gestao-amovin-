@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================
-   RESET E BASE - CORES AMOVIN
+   RESET E BASE
    ============================================ */
 * {
   margin: 0;
@@ -21,14 +21,12 @@
   --laranja-claro: #E8A04A;
   --amarelo: #F5C518;
   --grafite: #1A1A1A;
-  --grafite-claro: #2D2D2D;
   --cinza: #6B7280;
-  --cinza-claro: #F5F2ED;
+  --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
-  --fundo: #F8F4ED;
   --verde: #57C220;
   --vermelho: #E53935;
-  --sombra-forte: 0 25px 80px rgba(0, 0, 0, 0.12);
+  --sombra-forte: 0 25px 80px rgba(0, 0, 0, 0.15);
   --sombra-media: 0 8px 32px rgba(0, 0, 0, 0.08);
   --raio: 16px;
   --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -41,10 +39,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: var(--fundo);
+  background: var(--cinza-claro);
   background-image: 
     radial-gradient(ellipse at 30% 40%, rgba(198, 90, 17, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse at 70% 60%, rgba(245, 197, 24, 0.05) 0%, transparent 60%);
+    radial-gradient(ellipse at 70% 60%, rgba(245, 197, 24, 0.04) 0%, transparent 60%);
   color: var(--grafite);
   line-height: 1.6;
 }
@@ -57,16 +55,6 @@ body {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(40px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
 }
 
 @keyframes spin {
@@ -89,224 +77,80 @@ body {
 }
 
 /* ============================================
-   CONTAINER PRINCIPAL
+   CONTAINER PRINCIPAL - CENTRALIZADO
    ============================================ */
-.login-container {
+.login-wrapper {
   width: 100%;
-  max-width: 1150px;
-  min-height: 650px;
-  display: flex;
-  border-radius: 24px;
-  overflow: hidden;
-  background: var(--branco);
-  box-shadow: var(--sombra-forte);
-  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  position: relative;
+  max-width: 440px;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ============================================
-   PAINEL ESQUERDO - BRANDING AMOVIN
+   CARD DE LOGIN - ÚNICO
    ============================================ */
-.brand-panel {
-  flex: 1.2;
-  background: linear-gradient(160deg, var(--grafite) 0%, #2A2A2A 50%, var(--grafite-claro) 100%);
-  padding: 55px 45px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.login-card {
+  background: var(--branco);
+  border-radius: var(--raio);
+  padding: 48px 40px 36px;
+  box-shadow: var(--sombra-forte);
+  border: 1px solid rgba(0, 0, 0, 0.04);
   position: relative;
   overflow: hidden;
-  min-height: 650px;
 }
 
-.brand-panel::before {
+.login-card::before {
   content: '';
   position: absolute;
-  top: -30%;
-  right: -20%;
-  width: 80%;
-  height: 80%;
-  background: radial-gradient(circle, rgba(198, 90, 17, 0.12) 0%, transparent 70%);
-  animation: float 8s ease-in-out infinite;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--laranja), var(--amarelo), var(--laranja));
 }
 
-.brand-panel::after {
-  content: '';
-  position: absolute;
-  bottom: -20%;
-  left: -10%;
-  width: 60%;
-  height: 60%;
-  background: radial-gradient(circle, rgba(245, 197, 24, 0.06) 0%, transparent 70%);
-  animation: float 10s ease-in-out infinite reverse;
+/* ============================================
+   LOGO E IDENTIDADE
+   ============================================ */
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
 }
 
-.brand-content {
-  position: relative;
-  z-index: 2;
-}
-
-.brand-logo {
+.logo-container {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 55px;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-.brand-logo-img {
-  width: 52px;
-  height: 52px;
+.logo-img {
+  width: 48px;
+  height: 48px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 20px rgba(198, 90, 17, 0.25));
+  filter: drop-shadow(0 4px 12px rgba(198, 90, 17, 0.15));
 }
 
-.brand-logo-text {
-  color: var(--branco);
+.logo-text {
   font-weight: 700;
-  font-size: 20px;
+  font-size: 22px;
+  color: var(--grafite);
   letter-spacing: -0.5px;
 }
 
-.brand-logo-text span {
-  color: var(--amarelo);
+.logo-text span {
+  color: var(--laranja);
 }
 
-.brand-logo-text small {
-  display: block;
-  font-size: 9px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-.brand-title {
-  color: var(--branco);
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 10px;
-  letter-spacing: -1px;
-}
-
-.brand-title span {
-  color: var(--amarelo);
-}
-
-.brand-subtitle {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 14px;
-  font-weight: 400;
-  margin-bottom: 35px;
-  max-width: 85%;
-}
-
-.brand-quote {
-  font-size: 16px;
-  font-style: italic;
-  color: var(--amarelo);
-  padding-left: 18px;
-  border-left: 3px solid var(--amarelo);
-  margin-bottom: 40px;
-  opacity: 0.9;
-  line-height: 1.7;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 35px;
-}
-
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  font-weight: 400;
-  transition: var(--transicao);
-  padding: 5px 0;
-}
-
-.feature-item:hover {
-  color: var(--amarelo);
-  transform: translateX(4px);
-}
-
-.feature-icon {
-  width: 24px;
-  height: 24px;
-  background: rgba(245, 197, 24, 0.10);
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--amarelo);
-  flex-shrink: 0;
-}
-
-.brand-status {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--verde);
-  border-radius: 50%;
-  animation: blink 2s infinite;
-}
-
-.status-text {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.3);
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-.brand-footer {
-  position: relative;
-  z-index: 2;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.2);
-  letter-spacing: 0.3px;
-}
-
-/* ============================================
-   PAINEL DIREITO - LOGIN (FUNDO CLARO)
-   ============================================ */
-.login-panel {
-  flex: 1;
-  padding: 55px 45px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: var(--branco);
-  position: relative;
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 35px;
-}
-
-.login-header .logo-mobile {
+.logo-text small {
   display: none;
 }
 
 .login-header h2 {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--grafite);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   letter-spacing: -0.5px;
 }
 
@@ -315,17 +159,34 @@ body {
 }
 
 .login-header p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--cinza);
   font-weight: 400;
+}
+
+/* ============================================
+   MENSAGEM DE ERRO
+   ============================================ */
+.error-message {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-left: 4px solid var(--vermelho);
+  color: #991B1B;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
 }
 
 /* ============================================
    FORMULÁRIO
    ============================================ */
 .login-form {
-  max-width: 360px;
-  margin: 0 auto;
   width: 100%;
 }
 
@@ -338,7 +199,7 @@ body {
   font-size: 11px;
   font-weight: 600;
   color: var(--grafite);
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   letter-spacing: 0.3px;
   text-transform: uppercase;
 }
@@ -350,7 +211,7 @@ body {
 .form-input {
   width: 100%;
   padding: 13px 16px 13px 44px;
-  border: 1.5px solid #E8E4DE;
+  border: 1.5px solid #E5E0D8;
   border-radius: 10px;
   font-size: 14px;
   transition: var(--transicao);
@@ -405,6 +266,9 @@ body {
   opacity: 1;
 }
 
+/* ============================================
+   OPÇÕES
+   ============================================ */
 .form-options {
   display: flex;
   justify-content: space-between;
@@ -443,7 +307,7 @@ body {
 }
 
 /* ============================================
-   BOTÃO ENTRAR - COR LARANJA
+   BOTÃO ENTRAR
    ============================================ */
 .btn-primary {
   width: 100%;
@@ -538,24 +402,8 @@ body {
   font-weight: 600;
 }
 
-.error-message {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  border-left: 4px solid var(--vermelho);
-  color: #991B1B;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  margin-bottom: 16px;
-  display: none;
-}
-
-.error-message.show {
-  display: block;
-}
-
 /* ============================================
-   RODAPÉ DO LOGIN
+   RODAPÉ VIGORRE - PADRONIZADO
    ============================================ */
 .login-footer {
   margin-top: 28px;
@@ -564,14 +412,49 @@ body {
   text-align: center;
 }
 
-.login-footer .footer-links {
+.footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.footer-logo-img {
+  width: 32px;
+  height: auto;
+  opacity: 0.5;
+  transition: var(--transicao);
+}
+
+.footer-logo-img:hover {
+  opacity: 1;
+}
+
+.footer-logo-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cinza);
+  letter-spacing: 0.3px;
+}
+
+.footer-logo-text span {
+  color: var(--laranja);
+}
+
+.footer-divider {
+  display: none;
+}
+
+.footer-links {
   display: flex;
   gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 6px;
 }
 
-.login-footer .footer-links a {
+.footer-links a {
   color: var(--cinza);
   text-decoration: none;
   font-size: 11px;
@@ -579,20 +462,29 @@ body {
   transition: var(--transicao);
 }
 
-.login-footer .footer-links a:hover {
+.footer-links a:hover {
   color: var(--laranja);
   text-decoration: underline;
 }
 
-.login-footer .footer-copy {
+.footer-copy {
   font-size: 10px;
   color: #B0A99F;
-  margin-top: 10px;
   letter-spacing: 0.3px;
 }
 
+.footer-copy a {
+  color: var(--laranja);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-copy a:hover {
+  text-decoration: underline;
+}
+
 /* ============================================
-   MODAL LGPD - CORES AMOVIN
+   MODAL LGPD
    ============================================ */
 .modal-overlay {
   position: fixed;
@@ -617,7 +509,7 @@ body {
 .lgpd-modal {
   background: var(--branco);
   border-radius: 18px;
-  max-width: 540px;
+  max-width: 520px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -626,7 +518,7 @@ body {
 }
 
 .modal-header {
-  padding: 24px 28px 18px;
+  padding: 24px 28px 16px;
   border-bottom: 1px solid #F0EDE8;
 }
 
@@ -634,7 +526,7 @@ body {
   font-size: 19px;
   font-weight: 700;
   color: var(--grafite);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .modal-title span {
@@ -647,26 +539,26 @@ body {
 }
 
 .modal-body {
-  padding: 24px 28px 18px;
+  padding: 22px 28px 16px;
 }
 
 .lgpd-content {
   font-size: 12px;
   line-height: 1.8;
   color: var(--grafite);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .lgpd-content h4 {
   font-size: 13px;
   font-weight: 600;
-  margin: 14px 0 6px;
+  margin: 12px 0 4px;
   color: var(--grafite);
 }
 
 .lgpd-content ul {
   margin-left: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .lgpd-content li {
@@ -677,7 +569,7 @@ body {
 .lgpd-links {
   display: flex;
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
@@ -701,7 +593,7 @@ body {
   padding: 14px;
   background: #F8F6F3;
   border-radius: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .checkbox-agreement input[type="checkbox"] {
@@ -757,33 +649,18 @@ body {
 /* ============================================
    RESPONSIVO
    ============================================ */
-@media (max-width: 1024px) {
-  .brand-panel { display: none; }
-  .login-panel { padding: 40px 30px; }
-  .login-container { max-width: 460px; min-height: auto; }
-  .login-header .logo-mobile { display: block; margin-bottom: 20px; }
-  .login-header .logo-mobile img { width: 48px; height: 48px; object-fit: contain; }
-  .login-header h2 { font-size: 20px; }
-}
-
-@media (max-width: 768px) {
-  .login-container { max-width: 100%; border-radius: 16px; }
-  .login-panel { padding: 28px 20px; }
-  .login-header h2 { font-size: 18px; }
-  .login-form { max-width: 100%; }
-  .features-grid { grid-template-columns: 1fr; }
-  .lgpd-modal { margin: 10px; }
-  .modal-header, .modal-body, .modal-footer { padding: 16px 18px; }
-}
-
 @media (max-width: 480px) {
-  body { padding: 0; }
-  .login-container { border-radius: 0; min-height: 100vh; }
-  .login-panel { padding: 20px 14px; }
-  .login-header h2 { font-size: 16px; }
+  body { padding: 12px; }
+  .login-card { padding: 32px 20px 24px; }
+  .logo-img { width: 40px; height: 40px; }
+  .logo-text { font-size: 18px; }
+  .login-header h2 { font-size: 17px; }
+  .login-header p { font-size: 12px; }
   .form-input { padding: 11px 12px 11px 36px; font-size: 13px; }
   .btn-primary { padding: 12px; font-size: 13px; }
-  .brand-panel { display: none; }
+  .modal-header, .modal-body, .modal-footer { padding: 16px 18px; }
+  .footer-links { gap: 10px; }
+  .footer-links a { font-size: 10px; }
 }
 
 .sr-only {
@@ -861,62 +738,26 @@ body {
 </div>
 
 <!-- ============================================
-     CONTAINER PRINCIPAL
+     CONTAINER PRINCIPAL - CENTRALIZADO
      ============================================ -->
-<div class="login-container">
+<div class="login-wrapper">
 
-  <!-- PAINEL ESQUERDO - BRANDING AMOVIN -->
-  <aside class="brand-panel">
-    <div class="brand-content">
-      <div class="brand-logo">
-        <img src="images/amovin-logo.png" alt="AMOVIN" class="brand-logo-img" onerror="this.style.display='none'">
-        <div class="brand-logo-text">
-          AMOVIN<span>ERP</span>
-          <small>Sistema Integrado de Gestão</small>
-        </div>
-      </div>
+  <div class="login-card">
 
-      <div>
-        <h1 class="brand-title">Bem-vindo ao<br><span>Ecossistema AMOVIN</span></h1>
-        <p class="brand-subtitle">Plataforma corporativa para gestão de instituições sociais com inteligência e excelência operacional.</p>
-        <blockquote class="brand-quote">"Transformando gestão em excelência, beneficiário em protagonista."</blockquote>
-      </div>
-
-      <ul class="features-grid">
-        <li class="feature-item"><span class="feature-icon">◆</span> Gestão de Beneficiários</li>
-        <li class="feature-item"><span class="feature-icon">◆</span> Gestão Financeira</li>
-        <li class="feature-item"><span class="feature-icon">◆</span> Patrimônio e Estoque</li>
-        <li class="feature-item"><span class="feature-icon">◆</span> Projetos e Captação</li>
-        <li class="feature-item"><span class="feature-icon">◆</span> Documentos e Ofícios</li>
-        <li class="feature-item"><span class="feature-icon">◆</span> Prestação de Contas</li>
-        <li class="feature-item"><span class="feature-icon">◆</span> QR Code Dinâmico</li>
-        <li class="feature-item"><span class="feature-icon">◆</span> Business Intelligence</li>
-      </ul>
-
-      <div class="brand-status">
-        <span class="status-dot"></span>
-        <span class="status-text">Sistema Online • Ambiente Produção</span>
-      </div>
-    </div>
-
-    <div class="brand-footer">
-      © 2026 AMOVIN - Todos os direitos reservados
-    </div>
-  </aside>
-
-  <!-- PAINEL DIREITO - LOGIN -->
-  <main class="login-panel">
-
+    <!-- HEADER -->
     <div class="login-header">
-      <div class="logo-mobile">
-        <img src="images/amovin-logo.png" alt="AMOVIN" style="width:48px;height:48px;object-fit:contain;" onerror="this.style.display='none'">
+      <div class="logo-container">
+        <img src="images/amovin-logo.png" alt="AMOVIN" class="logo-img" onerror="this.style.display='none'">
+        <span class="logo-text">AMOVIN<span>ERP</span></span>
       </div>
       <h2>Acesso ao <span>Sistema</span></h2>
       <p>Informe suas credenciais para continuar</p>
     </div>
 
+    <!-- ERRO -->
     <div class="error-message" id="errorMessage" role="alert"></div>
 
+    <!-- FORMULÁRIO -->
     <form class="login-form" id="loginForm" novalidate>
 
       <div class="form-group">
@@ -958,18 +799,27 @@ body {
 
     </form>
 
+    <!-- RODAPÉ VIGORRE -->
     <div class="login-footer">
+      <div class="footer-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="footer-logo-img" onerror="this.style.display='none'">
+        <span class="footer-logo-text"><span>VIGORRE</span> DESIGNER™</span>
+      </div>
       <div class="footer-links">
         <a href="#" id="footerPolitica">Política de Privacidade</a>
         <a href="#" id="footerTermos">Termos de Uso</a>
         <a href="#" id="footerLgpd">LGPD</a>
+        <a href="https://www.vigorre.com.br" target="_blank">www.vigorre.com.br</a>
+        <a href="https://wa.me/5534991850735" target="_blank">(34) 99185-0735</a>
       </div>
       <div class="footer-copy">
-        <span>VIGORRE DESIGNER™</span> • (34) 99185-0735 • contato@vigorre.com.br
+        © 2026 <a href="https://www.vigorre.com.br" target="_blank">VIGORRE DESIGNER™</a> - Todos os direitos reservados
+        <br>
+        <a href="mailto:contato@vigorre.com.br">contato@vigorre.com.br</a>
       </div>
     </div>
 
-  </main>
+  </div>
 
 </div>
 
@@ -1139,7 +989,7 @@ function handleLogin(e) {
 }
 
 // ============================================
-// EVENTOS - TODOS VIA JavaScript
+// EVENTOS
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 AMOVIN ERP - Sistema Corporativo inicializado');
