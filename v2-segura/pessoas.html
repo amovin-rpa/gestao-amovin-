@@ -47,12 +47,17 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
 
 .pessoa-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.pessoa-card.inativo { opacity: 0.6; border-left: 4px solid var(--vermelho); }
+.pessoa-card.status-inativo { opacity: 0.7; border-left: 4px solid var(--amarelo); }
+.pessoa-card.status-descredenciado { opacity: 0.5; border-left: 4px solid var(--vermelho); }
 .pessoa-info { display: flex; align-items: center; gap: 14px; flex: 1; }
 .pessoa-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; border: 2px solid #F0E9DF; font-weight: 700; }
 .pessoa-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .pessoa-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
 .pessoa-dados p { font-size: 11px; color: var(--cinza); margin: 1px 0; }
+.status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 9px; font-weight: 600; }
+.status-ativo { background: #E8F5E9; color: #2E7D32; }
+.status-inativo { background: #FFF3E0; color: #E65100; }
+.status-descredenciado { background: #FFEBEE; color: #C62828; }
 .btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
 .btn-editar { background: #F5A623; color: white; }
 .btn-excluir { background: var(--vermelho); color: white; }
@@ -164,6 +169,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
     <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiInativos">0</div><div class="kpi-label">⚠️ Inativos</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiDescredenciados">0</div><div class="kpi-label">🚫 Descredenciados</div></div>
     <div class="kpi-card"><div class="kpi-valor" id="kpiEstudantes">0</div><div class="kpi-label">📚 Estudantes</div></div>
   </div>
 
@@ -473,10 +480,26 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
           </div>
         </div>
 
+        <!-- ============================================ -->
+        <!-- STATUS -->
+        <!-- ============================================ -->
+        <div class="section-title">📌 STATUS DO BENEFICIÁRIO</div>
+
         <div class="form-full">
-          <div class="form-group" style="display:flex;align-items:center;gap:10px;">
-            <input type="checkbox" id="ativoPessoa" checked>
-            <label for="ativoPessoa" style="text-transform:none;font-weight:400;color:var(--grafite);">✅ Ativo</label>
+          <div class="form-group">
+            <label>Status <span class="campo-obrigatorio">*</span></label>
+            <select id="statusPessoa" onchange="toggleMotivoDescredenciado()">
+              <option value="Ativo">✅ Ativo</option>
+              <option value="Inativo">⚠️ Inativo</option>
+              <option value="Descredenciado">🚫 Descredenciado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-full sub-campo" id="subMotivoDescredenciado">
+          <div class="form-group">
+            <label>Motivo do Descredenciamento <span class="campo-obrigatorio">*</span></label>
+            <textarea id="motivoDescredenciado" rows="3" placeholder="Descreva o motivo do descredenciamento..."></textarea>
           </div>
         </div>
       </div>
@@ -496,7 +519,7 @@ var fotoDataURL = null;
 // Dados iniciais
 if (pessoas.length === 0) {
     pessoas = [
-        { id: 1, nome: 'João Silva', matricula: '123456', cpf: '12345678900', dataNasc: '2010-05-15', sexo: 'Masculino', rg: 'MG-12.345.678', diagnostico: 'TEA', cid: 'F84.0', nivelSuporte: 'Sim', nivelSuporteTexto: '3', comorbidades: 'Sim', comorbidadesTexto: 'Epilepsia', estudante: 'Sim', escola: 'Apae', serie: '5º ANO', alergia: 'Sim', alergiaTexto: 'Sardinha', medicacao: 'Sim', medicacaoTexto: 'Varios', atendimentos: ['Terapias', 'Lazer/Socialização'], responsavel: 'Maria Silva', telefone: '(34) 99999-1111', vinculo: 'Mãe', rgResponsavel: 'MG-12.345.678', cpfResponsavel: '98765432100', endereco: 'Rua das Flores, 123', renda: 'Até 2.000', irpf: 'Não', ativo: true, dataCadastro: '2026-07-01', foto: null }
+        { id: 1, nome: 'João Silva', matricula: '123456', cpf: '12345678900', dataNasc: '2010-05-15', sexo: 'Masculino', rg: 'MG-12.345.678', diagnostico: 'TEA', cid: 'F84.0', nivelSuporte: 'Sim', nivelSuporteTexto: '3', comorbidades: 'Sim', comorbidadesTexto: 'Epilepsia', estudante: 'Sim', escola: 'Apae', serie: '5º ANO', alergia: 'Sim', alergiaTexto: 'Sardinha', medicacao: 'Sim', medicacaoTexto: 'Varios', atendimentos: ['Terapias', 'Lazer/Socialização'], responsavel: 'Maria Silva', telefone: '(34) 99999-1111', vinculo: 'Mãe', rgResponsavel: 'MG-12.345.678', cpfResponsavel: '98765432100', endereco: 'Rua das Flores, 123', renda: 'Até 2.000', irpf: 'Não', status: 'Ativo', motivoDescredenciado: '', dataCadastro: '2026-07-01', foto: null }
     ];
     salvar();
 }
@@ -534,6 +557,19 @@ function getAvatarHtml(pessoa) {
     var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
     var cor = cores[pessoa.id % cores.length] || '#C65A11';
     return '<div class="pessoa-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
+}
+
+function getStatusBadge(status) {
+    if (status === 'Ativo') return '<span class="status-badge status-ativo">✅ Ativo</span>';
+    if (status === 'Inativo') return '<span class="status-badge status-inativo">⚠️ Inativo</span>';
+    if (status === 'Descredenciado') return '<span class="status-badge status-descredenciado">🚫 Descredenciado</span>';
+    return '<span class="status-badge status-ativo">✅ Ativo</span>';
+}
+
+function getStatusClass(status) {
+    if (status === 'Inativo') return 'status-inativo';
+    if (status === 'Descredenciado') return 'status-descredenciado';
+    return '';
 }
 
 // ============================================================
@@ -589,6 +625,17 @@ function toggleSubCampo(tipo) {
         sub.classList.add('visible');
     } else {
         sub.classList.remove('visible');
+    }
+}
+
+function toggleMotivoDescredenciado() {
+    var status = document.getElementById('statusPessoa').value;
+    var sub = document.getElementById('subMotivoDescredenciado');
+    if (status === 'Descredenciado') {
+        sub.classList.add('visible');
+    } else {
+        sub.classList.remove('visible');
+        document.getElementById('motivoDescredenciado').value = '';
     }
 }
 
@@ -652,7 +699,9 @@ function importarParaCRM(pessoa) {
             obs: pessoa.diagnostico || '',
             favorito: false,
             origem: 'pessoas',
-            ativo: true,
+            ativo: pessoa.status === 'Ativo',
+            status: pessoa.status || 'Ativo',
+            motivoDescredenciado: pessoa.motivoDescredenciado || '',
             foto: pessoa.foto || null,
             dataCadastro: new Date().toISOString().split('T')[0]
         };
@@ -689,15 +738,17 @@ function filtrar() {
     } else {
         container.innerHTML = lista.map(function(p) {
             var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
-            var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
+            var statusBadge = getStatusBadge(p.status || 'Ativo');
+            var statusClass = getStatusClass(p.status || 'Ativo');
+            var motivoInfo = p.status === 'Descredenciado' && p.motivoDescredenciado ? ' | Motivo: ' + p.motivoDescredenciado : '';
 
-            return '<div class="pessoa-card' + (p.ativo === false ? ' inativo' : '') + '">' +
+            return '<div class="pessoa-card ' + statusClass + '">' +
                 '<div class="pessoa-info">' +
                 getAvatarHtml(p) +
                 '<div class="pessoa-dados">' +
                 '<h4>' + p.nome + ' | Matrícula: ' + (p.matricula || '-') + ' | ' + idade + '</h4>' +
                 '<p>👤 Responsável: ' + (p.responsavel || '-') + ' | 📞 ' + (p.telefone || '-') + '</p>' +
-                '<p>' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
+                '<p>' + statusBadge + motivoInfo + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
                 '</div></div>' +
                 '<div class="contato-acoes">' +
                 '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
@@ -712,7 +763,9 @@ function filtrar() {
 
 function atualizarKPIs() {
     document.getElementById('kpiTotal').textContent = pessoas.length;
-    document.getElementById('kpiAtivos').textContent = pessoas.filter(function(p) { return p.ativo !== false; }).length;
+    document.getElementById('kpiAtivos').textContent = pessoas.filter(function(p) { return p.status === 'Ativo' || !p.status; }).length;
+    document.getElementById('kpiInativos').textContent = pessoas.filter(function(p) { return p.status === 'Inativo'; }).length;
+    document.getElementById('kpiDescredenciados').textContent = pessoas.filter(function(p) { return p.status === 'Descredenciado'; }).length;
     document.getElementById('kpiEstudantes').textContent = pessoas.filter(function(p) { return p.estudante === 'Sim'; }).length;
 }
 
@@ -757,7 +810,8 @@ window.abrirForm = function(id) {
         document.getElementById('enderecoPessoa').value = p.endereco || '';
         document.getElementById('rendaPessoa').value = p.renda || '';
         document.getElementById('irpfPessoa').value = p.irpf || '';
-        document.getElementById('ativoPessoa').checked = p.ativo !== false;
+        document.getElementById('statusPessoa').value = p.status || 'Ativo';
+        document.getElementById('motivoDescredenciado').value = p.motivoDescredenciado || '';
 
         document.querySelectorAll('.atendimento-check').forEach(function(cb) {
             cb.checked = p.atendimentos && p.atendimentos.indexOf(cb.value) >= 0;
@@ -767,6 +821,7 @@ window.abrirForm = function(id) {
         ['nivelSuporte', 'comorbidades', 'estudante', 'alergia', 'medicacao'].forEach(function(tipo) {
             toggleSubCampo(tipo);
         });
+        toggleMotivoDescredenciado();
 
         if (p.foto) {
             fotoDataURL = p.foto;
@@ -804,12 +859,14 @@ window.abrirForm = function(id) {
         document.getElementById('enderecoPessoa').value = '';
         document.getElementById('rendaPessoa').value = '';
         document.getElementById('irpfPessoa').value = '';
-        document.getElementById('ativoPessoa').checked = true;
+        document.getElementById('statusPessoa').value = 'Ativo';
+        document.getElementById('motivoDescredenciado').value = '';
         document.querySelectorAll('.atendimento-check').forEach(function(cb) { cb.checked = false; });
         document.getElementById('idadeDisplay').textContent = '';
         ['nivelSuporte', 'comorbidades', 'estudante', 'alergia', 'medicacao'].forEach(function(tipo) {
             toggleSubCampo(tipo);
         });
+        toggleMotivoDescredenciado();
     }
 };
 
@@ -856,6 +913,16 @@ window.salvarPessoa = function() {
         return;
     }
 
+    var status = document.getElementById('statusPessoa').value;
+    var motivoDescredenciado = '';
+    if (status === 'Descredenciado') {
+        motivoDescredenciado = document.getElementById('motivoDescredenciado').value.trim();
+        if (!motivoDescredenciado) {
+            alert('⚠️ Para descredenciar, informe o motivo!');
+            return;
+        }
+    }
+
     var atendimentos = [];
     document.querySelectorAll('.atendimento-check:checked').forEach(function(cb) {
         atendimentos.push(cb.value);
@@ -891,7 +958,8 @@ window.salvarPessoa = function() {
         endereco: document.getElementById('enderecoPessoa').value.trim(),
         renda: document.getElementById('rendaPessoa').value,
         irpf: document.getElementById('irpfPessoa').value,
-        ativo: document.getElementById('ativoPessoa').checked
+        status: status,
+        motivoDescredenciado: motivoDescredenciado
     };
 
     if (fotoDataURL) {
@@ -948,15 +1016,15 @@ window.enviarParaCRM = function(id) {
 };
 
 // ============================================================
-// EXCLUIR
+// EXCLUIR (apenas marca como inativo)
 // ============================================================
 window.excluirPessoa = function(id) {
     var p = pessoas.find(function(x) { return x.id === id; });
     if (!p) return;
 
-    if (!confirm('⚠️ Tem certeza que deseja excluir ' + p.nome + '?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social.')) return;
+    if (!confirm('⚠️ Tem certeza que deseja marcar ' + p.nome + ' como INATIVO?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social.')) return;
 
-    p.ativo = false;
+    p.status = 'Inativo';
     salvar();
     filtrar();
     alert('✅ ' + p.nome + ' foi marcado como INATIVO.');
