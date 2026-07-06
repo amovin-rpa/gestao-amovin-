@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amovin ERP Social</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
   --laranja: #C65A11;
@@ -200,7 +200,6 @@ body {
   border: 1px solid #F0E9DF;
 }
 
-/* ==================== STATS ==================== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -227,7 +226,6 @@ body {
 .stat-valor { font-size: 28px; font-weight: 800; color: #1A1A1A; letter-spacing: -0.8px; }
 .stat-label { font-size: 11px; color: #6B7280; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
 
-/* ==================== CARDS ==================== */
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -284,7 +282,6 @@ body {
   font-size: 13px;
 }
 
-/* ==================== RODAPÉ ==================== */
 .rodape {
   background: #FFFFFF;
   border-radius: 14px;
@@ -355,7 +352,6 @@ body {
   display: none;
 }
 
-/* ==================== RESPONSIVO ==================== */
 @media (max-width: 768px) {
   .sidebar { width: 100%; position: relative; min-height: auto; }
   .main-content { margin-left: 0; padding: 20px; }
@@ -380,7 +376,6 @@ body {
     <div class="data-display" id="dataHoje"></div>
   </div>
 
-  <!-- STATS GRID -->
   <div class="stats-grid">
     <div class="stat-card" onclick="window.location.href='pessoas.html'">
       <div class="stat-icon">👥</div>
@@ -414,7 +409,6 @@ body {
     </div>
   </div>
 
-  <!-- INFO GRID -->
   <div class="info-grid">
     <div class="card">
       <h3>📅 Agendamentos de Hoje</h3>
@@ -434,7 +428,6 @@ body {
     </div>
   </div>
 
-  <!-- Rodapé Vigorre -->
   <div class="rodape">
     <div class="rodape-grid">
       <div class="rodape-logo">
@@ -463,7 +456,6 @@ var nomeUsuario = sessionStorage.getItem('amovin_nome') || 'Administrador';
 var cargoUsuario = sessionStorage.getItem('amovin_perfil') || 'Admin';
 var primeiraLetra = nomeUsuario.charAt(0).toUpperCase();
 
-// Aguardar o menu carregar para atualizar o avatar
 setTimeout(function() {
     var avatar = document.getElementById('userAvatarMenu');
     var nomeEl = document.getElementById('userNomeMenu');
@@ -473,7 +465,6 @@ setTimeout(function() {
     if (cargoEl) cargoEl.textContent = cargoUsuario;
 }, 100);
 
-// Saudação personalizada
 var hora = new Date().getHours();
 var saudacao = 'Bem-vindo(a) de volta';
 if (hora < 6) saudacao = '🌙 Boa madrugada';
@@ -482,9 +473,6 @@ else if (hora < 18) saudacao = '☀️ Boa tarde';
 else saudacao = '🌙 Boa noite';
 document.getElementById('saudacaoTexto').textContent = saudacao;
 
-// ============================================================
-// DATA
-// ============================================================
 var hoje = new Date();
 document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { 
   weekday: 'long', 
@@ -493,30 +481,21 @@ document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR
   year: 'numeric' 
 });
 
-// ============================================================
-// CARREGAR DADOS DOS MÓDULOS
-// ============================================================
-
-// 1. BENEFICIÁRIOS
 var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
 var ativos = beneficiarios.filter(function(p) { return p.status === 'Ativo' || !p.status; });
 document.getElementById('statBenef').textContent = ativos.length;
 
-// 2. PROFISSIONAIS
 var profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
 var profAtivos = profissionais.filter(function(p) { return p.status === 'Ativo' || !p.status; });
 document.getElementById('statProfissionais').textContent = profAtivos.length;
 
-// 3. VOLUNTÁRIOS
 var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
 var volAtivos = voluntarios.filter(function(p) { return p.status === 'Ativo' || !p.status; });
 document.getElementById('statVoluntarios').textContent = volAtivos.length;
 
-// 4. QR CODES
 var qrCodes = JSON.parse(localStorage.getItem('amovin_qrcodes') || '[]');
 document.getElementById('statQR').textContent = qrCodes.length;
 
-// 5. AGENDAMENTOS HOJE
 var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
 var hojeStr = hoje.toISOString().split('T')[0];
 var hojeLista = agendamentos.filter(function(a) { return a.data === hojeStr && a.status !== 'cancelado'; });
@@ -535,7 +514,6 @@ if (hojeLista.length > 0) {
   containerAgenda.innerHTML = htmlAgenda;
 }
 
-// 6. ESTOQUE CRÍTICO
 var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
 var criticos = estoque.filter(function(i) { return i.qtdAtual <= i.qtdMinima; });
 document.getElementById('statEstoque').textContent = estoque.length;
@@ -552,7 +530,6 @@ if (criticos.length > 0) {
   containerEstoque.innerHTML = htmlEstoque;
 }
 
-// 7. ÚLTIMOS DOCUMENTOS
 var documentos = JSON.parse(localStorage.getItem('amovin_documentos') || '[]');
 var containerDocs = document.getElementById('listaDocs');
 if (documentos.length > 0) {
@@ -567,7 +544,6 @@ if (documentos.length > 0) {
   containerDocs.innerHTML = htmlDocs;
 }
 
-// 8. QR CODES RECENTES
 var containerQR = document.getElementById('listaQR');
 if (qrCodes.length > 0) {
   var qrRecentes = qrCodes.slice().sort(function(a, b) { 
@@ -582,17 +558,11 @@ if (qrCodes.length > 0) {
   containerQR.innerHTML = htmlQR;
 }
 
-// ============================================================
-// LOGOUT
-// ============================================================
 function fazerLogout() {
   sessionStorage.clear();
   window.location.href = 'index.html';
 }
 
-// ============================================================
-// SESSÃO
-// ============================================================
 if (!sessionStorage.getItem('amovin_logado')) {
   window.location.href = 'index.html';
 }
