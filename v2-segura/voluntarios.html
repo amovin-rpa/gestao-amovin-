@@ -31,14 +31,14 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.abas { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
-.aba { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; border: 1px solid #F0E9DF; background: #FFFFFF; color: var(--cinza); }
-.aba-ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
-
-.kpi-row { display: flex; gap: 15px; margin-bottom: 18px; }
-.kpi-card { background: #FFFFFF; padding: 16px 22px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; flex: 1; }
+.kpi-row { display: flex; gap: 15px; margin-bottom: 22px; flex-wrap: wrap; }
+.kpi-card { background: #FFFFFF; padding: 16px 22px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; flex: 1; min-width: 120px; }
 .kpi-card .valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
 .kpi-card .label { font-size: 11px; color: var(--cinza); }
+
+.tabs { display: flex; gap: 6px; margin-bottom: 22px; }
+.tab { padding: 10px 20px; background: #FFFFFF; border: 1px solid #F0E9DF; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--cinza); transition: all 0.2s; text-decoration: none; }
+.tab.ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
 
 .busca { margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
 .busca input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
@@ -53,6 +53,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .card { background: #FFFFFF; padding: 18px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #F0E9DF; }
 .card h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--grafite); }
 .card p { margin: 2px 0; color: var(--cinza); font-size: 13px; }
+.status-ativo { background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
+.status-inativo { background: #FFEBEE; color: #C62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
 .sem-dados { text-align: center; color: #9CA3AF; padding: 30px; }
 
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
@@ -119,14 +121,17 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <main class="main-content">
   <div class="topo-bar"><h1>💪 Voluntários</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
-  <div class="abas">
-    <button class="aba" onclick="window.location.href='pessoas.html'">← Voltar</button>
-    <button class="aba" onclick="window.location.href='pessoas.html'">Beneficiários</button>
-    <button class="aba" onclick="window.location.href='profissionais.html'">Profissionais</button>
-    <button class="aba aba-ativo">Voluntários</button>
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total de Cadastros</div></div>
+    <div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Ativos</div></div>
+    <div class="kpi-card"><div class="valor" id="kpiHoras">0h</div><div class="label">Horas Totais</div></div>
   </div>
 
-  <div class="kpi-row"><div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div></div>
+  <div class="tabs">
+    <a href="pessoas.html" class="tab">👥 Beneficiários</a>
+    <a href="profissionais.html" class="tab">👨‍⚕️ Profissionais</a>
+    <a href="voluntarios.html" class="tab ativo">💪 Voluntários</a>
+  </div>
 
   <div class="busca">
     <input type="text" id="busca" placeholder="Buscar por nome ou função..." oninput="filtrar()">
@@ -159,7 +164,13 @@ var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]')
 var editandoId = null;
 if (voluntarios.length === 0) { voluntarios.push({id:1,nome:'Fernanda Lima',guerra:'Fê',funcao:'Informática',disponibilidade:'Sábados',horas:'16h',telefone:'(34) 99999-0001',foto:''}); voluntarios.push({id:2,nome:'Rafael Costa',guerra:'Rafa',funcao:'Esportes',disponibilidade:'Terças e Quintas',horas:'20h',telefone:'(34) 99999-0002',foto:''}); salvar(); }
 function salvar() { localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios)); }
-function atualizarKPIs() { document.getElementById('kpiTotal').textContent = voluntarios.length; popularFiltro(); }
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = voluntarios.length;
+    document.getElementById('kpiAtivos').textContent = voluntarios.length;
+    var totalHoras = 0; for (var i = 0; i < voluntarios.length; i++) { var h = parseInt(voluntarios[i].horas) || 0; totalHoras += h; }
+    document.getElementById('kpiHoras').textContent = totalHoras + 'h';
+    popularFiltro();
+}
 function popularFiltro() { var f = []; for (var i = 0; i < voluntarios.length; i++) { if (f.indexOf(voluntarios[i].funcao) === -1) f.push(voluntarios[i].funcao); } var s = document.getElementById('filtroFuncao'); s.innerHTML = '<option value="todas">Todas funções</option>'; for (var i = 0; i < f.length; i++) s.innerHTML += '<option value="'+f[i]+'">'+f[i]+'</option>'; }
 function filtrar() {
     var b = document.getElementById('busca').value.toLowerCase(), o = document.getElementById('ordem').value, ff = document.getElementById('filtroFuncao').value, l = [];
@@ -190,7 +201,6 @@ window.excluir = function(id) { if (!confirm('Excluir?')) return; voluntarios = 
 window.cracha = function(id) { var v = voluntarios.find(function(x){return x.id===id;}); if (!v) return; var w = window.open('','_blank'); w.document.write('<html><body style="font-family:Arial;text-align:center;padding:20px"><div style="border:3px solid #C65A11;padding:20px;width:300px;margin:0 auto;border-radius:10px"><h2>AMOVIN</h2>'+(v.foto?'<div style="width:80px;height:100px;overflow:hidden;margin:0 auto 10px"><img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover"></div>':'')+'<h3>'+v.nome+'</h3><p><strong>'+(v.guerra||'')+'</strong></p><p>'+v.funcao+'</p><p>Voluntário</p></div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 window.imprimirCadastro = function(id) { var v = voluntarios.find(function(x){return x.id===id;}); if (!v) return; var w = window.open('','_blank'); w.document.write('<html><body style="font-family:Arial;padding:20px"><h2>AMOVIN</h2><p>Nome: '+v.nome+'</p><p>Guerra: '+(v.guerra||'-')+'</p><p>Função: '+v.funcao+'</p><p>Disponibilidade: '+(v.disponibilidade||'-')+'</p><p>Horas: '+(v.horas||'-')+'</p><p>Tel: '+(v.telefone||'-')+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 
-// Controle de perfil
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = { admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'], recepcao: ['dashboard','pessoas','profissionais','voluntarios','agenda','documentos'], consulta: ['dashboard','agenda','assistente'], financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'], voluntario: ['dashboard','agenda'] };
 var permitidos = modulosPermitidos[perfil] || modulosPermitidos['admin'];
