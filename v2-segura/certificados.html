@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -37,7 +43,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; }
 .btn-roxo { background: var(--laranja); color: white; }
 .btn-azul { background: var(--azul); color: white; }
-.btn-vermelho { background: #E53935; color: white; }
+.btn-vermelho { background: var(--vermelho); color: white; }
 .form-group { margin-bottom: 12px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
@@ -60,9 +66,46 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <aside class="sidebar">
   <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <div class="nav-categoria">Educação</div><a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a><a href="certificados.html" class="nav-item ativo"><span class="icone">🎓</span> Certificados</a>
-    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item ativo"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
@@ -73,10 +116,24 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <div class="card">
       <h3>Emitir Certificado</h3>
       <div class="form-group"><label>Nome *</label><input type="text" id="nomeCert"></div>
-      <div class="form-group"><label>Tipo *</label><select id="tipoCert"><option>Horas Voluntárias</option><option>Participação em Evento</option><option>Curso/Oficina</option><option>Palestra</option><option>Outros</option></select></div>
+      <div class="form-group"><label>Tipo *</label>
+        <select id="tipoCert">
+          <option>Horas Voluntárias</option>
+          <option>Participação em Evento</option>
+          <option>Curso/Oficina</option>
+          <option>Palestra</option>
+          <option>Empresa Parceira</option>
+          <option>Reconhecimento</option>
+          <option>Embaixador da ONG</option>
+          <option>Formação Profissional</option>
+          <option>Protagonismo Comunitário</option>
+          <option>Outros</option>
+        </select>
+      </div>
       <div class="form-group"><label>Descrição *</label><input type="text" id="descricaoCert"></div>
       <div class="form-group"><label>Carga Horária</label><input type="text" id="cargaCert"></div>
       <div class="form-group"><label>Data</label><input type="date" id="dataCert"></div>
+      <div class="form-group"><label>Validade (opcional)</label><input type="date" id="validadeCert"></div>
       <button class="btn btn-roxo" onclick="gerarCertificado()">Gerar Certificado</button>
     </div>
     <div class="card">
@@ -90,21 +147,21 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 <script>
 var certificados = JSON.parse(localStorage.getItem('amovin_certificados') || '[]');
-if (certificados.length === 0) { certificados.push({id:1,nome:'Fernanda Lima',tipo:'Horas Voluntárias',descricao:'Oficina de Informática',carga:'40 horas',data:'2026-06-23'}); salvar(); }
+if (certificados.length === 0) { certificados.push({id:1,nome:'Fernanda Lima',tipo:'Horas Voluntárias',descricao:'Oficina de Informática',carga:'40 horas',data:'2026-06-23',validade:'2027-06-23'}); salvar(); }
 function salvar() { localStorage.setItem('amovin_certificados',JSON.stringify(certificados)); }
 
 function renderizar() {
     var c = document.getElementById('listaCertificados');
     if (certificados.length === 0) { c.innerHTML = '<div class="sem-dados">Nenhum certificado.</div>'; return; }
-    c.innerHTML = certificados.map(function(x){ return '<div class="cert-card"><h4>'+x.nome+'</h4><p>'+x.tipo+' - '+x.descricao+' | '+(x.carga||'')+'</p><p>Data: '+(x.data?new Date(x.data+'T00:00:00').toLocaleDateString('pt-BR'):'-')+'</p><button class="btn btn-azul" onclick="imprimir('+x.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+x.id+')">Excluir</button></div>'; }).join('');
+    c.innerHTML = certificados.map(function(x){ return '<div class="cert-card"><h4>'+x.nome+'</h4><p>'+x.tipo+' - '+x.descricao+' | '+(x.carga||'')+'</p><p>Data: '+(x.data?new Date(x.data+'T00:00:00').toLocaleDateString('pt-BR'):'-')+(x.validade?' | Validade: '+new Date(x.validade+'T00:00:00').toLocaleDateString('pt-BR'):'')+'</p><button class="btn btn-azul" onclick="imprimir('+x.id+')">🖨️ Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+x.id+')">🗑️ Excluir</button></div>'; }).join('');
 }
 
 window.gerarCertificado = function() {
     var n = document.getElementById('nomeCert').value.trim(), d = document.getElementById('descricaoCert').value.trim();
     if (!n || !d) { alert('Preencha os campos!'); return; }
-    var x = { id: Date.now(), nome: n, tipo: document.getElementById('tipoCert').value, descricao: d, carga: document.getElementById('cargaCert').value, data: document.getElementById('dataCert').value || new Date().toISOString().split('T')[0] };
+    var x = { id: Date.now(), nome: n, tipo: document.getElementById('tipoCert').value, descricao: d, carga: document.getElementById('cargaCert').value, data: document.getElementById('dataCert').value || new Date().toISOString().split('T')[0], validade: document.getElementById('validadeCert').value || '' };
     certificados.push(x); salvar(); renderizar();
-    document.getElementById('nomeCert').value = ''; document.getElementById('descricaoCert').value = ''; document.getElementById('cargaCert').value = '';
+    document.getElementById('nomeCert').value = ''; document.getElementById('descricaoCert').value = ''; document.getElementById('cargaCert').value = ''; document.getElementById('validadeCert').value = '';
     imprimirAgora(x);
 };
 
@@ -112,14 +169,42 @@ window.imprimir = function(id) { var x = certificados.find(function(c){return c.
 
 function imprimirAgora(x) {
     var d = x.data ? new Date(x.data+'T00:00:00').toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}) : '';
+    var v = x.validade ? new Date(x.validade+'T00:00:00').toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}) : '';
     var w = window.open('','_blank');
-    w.document.write('<html><head><title>Certificado</title><style>body{font-family:Georgia,serif;text-align:center;padding:40px}.cert{border:6px double #C65A11;padding:40px;max-width:600px;margin:0 auto}h1{color:#C65A11;font-size:26px}h2{font-size:18px;margin:15px 0}p{font-size:14px;line-height:1.8}.assinatura{margin-top:50px}.linha{width:250px;border-top:1px solid #000;margin:0 auto 8px}</style></head><body><div class="cert"><h1>AMOVIN</h1><p>Associação e Movimento pela Inclusão</p><h2>CERTIFICADO</h2><p>Certificamos que <strong>'+x.nome+'</strong></p><p>participou da atividade <strong>'+x.descricao+'</strong></p><p>'+x.tipo+(x.carga?' | Carga Horária: '+x.carga:'')+'</p><p>Rio Paranaíba/MG, '+d+'</p><div class="assinatura"><div class="linha"></div><p>Presidência AMOVIN</p></div></div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.write('<html><head><title>Certificado</title><style>body{font-family:Georgia,serif;text-align:center;padding:40px}.cert{border:6px double #C65A11;padding:40px;max-width:600px;margin:0 auto;background:white}h1{color:#C65A11;font-size:26px;margin:0;letter-spacing:2px}h2{font-size:18px;margin:8px 0;color:#1A1A1A}p{font-size:14px;line-height:1.8;margin:6px 0}.assinatura{margin-top:40px}.linha{width:280px;border-top:1px solid #000;margin:0 auto 8px}.cargo{font-size:12px;color:#666}.validade{font-size:11px;color:#888;margin-top:20px;border-top:1px solid #ddd;padding-top:15px}</style></head><body><div class="cert"><h1>AMOVIN</h1><p style="font-size:12px;color:#666;">Associação e Movimento pela Inclusão</p><h2>CERTIFICADO</h2><p>Certificamos que <strong>'+x.nome+'</strong></p><p>participou da atividade <strong>'+x.descricao+'</strong></p><p>'+x.tipo+(x.carga?' | Carga Horária: '+x.carga:'')+'</p><p style="margin-top:15px;">Rio Paranaíba/MG, '+d+'</p>'+(v?'<p style="font-size:12px;color:#666;">Válido até: '+v+'</p>':'')+'<div class="assinatura"><div class="linha"></div><p style="margin:4px 0;">Presidência AMOVIN</p><p class="cargo">CNPJ: XX.XXX.XXX/XXXX-XX</p></div></div><script>window.onload=function(){window.print()}<\/script></body></html>');
     w.document.close();
 }
 
 window.excluir = function(id) { if (!confirm('Excluir?')) return; certificados = certificados.filter(function(x){return x.id!==id;}); salvar(); renderizar(); };
 
 document.getElementById('dataCert').value = new Date().toISOString().split('T')[0];
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+history.pushState(null,null,location.href); window.addEventListener('popstate',function(){ history.pushState(null,null,location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+var timeout; function resetTimeout(){ clearTimeout(timeout); timeout = setTimeout(function(){ sessionStorage.clear(); alert('Sessão expirada.'); window.location.href = 'index.html'; },30*60*1000); }
+document.addEventListener('mousemove',resetTimeout); document.addEventListener('keypress',resetTimeout); document.addEventListener('click',resetTimeout); resetTimeout();
+
 renderizar();
 </script>
 </body>
