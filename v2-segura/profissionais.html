@@ -31,9 +31,14 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.abas { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
-.aba { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; border: 1px solid #F0E9DF; background: #FFFFFF; color: var(--cinza); }
-.aba-ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
+.kpi-row { display: flex; gap: 15px; margin-bottom: 22px; flex-wrap: wrap; }
+.kpi-card { background: #FFFFFF; padding: 16px 22px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; flex: 1; min-width: 120px; }
+.kpi-card .valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .label { font-size: 11px; color: var(--cinza); }
+
+.tabs { display: flex; gap: 6px; margin-bottom: 22px; }
+.tab { padding: 10px 20px; background: #FFFFFF; border: 1px solid #F0E9DF; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--cinza); transition: all 0.2s; text-decoration: none; }
+.tab.ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
 
 .busca { margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
 .busca input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
@@ -48,6 +53,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .card { background: #FFFFFF; padding: 18px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #F0E9DF; }
 .card h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--grafite); }
 .card p { margin: 2px 0; color: var(--cinza); font-size: 13px; }
+.status-ativo { background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
+.status-inativo { background: #FFEBEE; color: #C62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
 .sem-dados { text-align: center; color: #9CA3AF; padding: 30px; }
 
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
@@ -57,15 +64,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; }
-.rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; }
-.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
-.rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; }
-.rodape-info a { color: #C65A11; text-decoration: none; }
-.rodape-info .email { font-size: 8px; color: #aaa; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; } .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
 @media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
@@ -117,16 +118,18 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 </aside>
 
 <main class="main-content">
-  <div class="topo-bar">
-    <h1>👨‍⚕️ Profissionais</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  <div class="topo-bar"><h1>👨‍⚕️ Profissionais</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total de Cadastros</div></div>
+    <div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Contratados</div></div>
+    <div class="kpi-card"><div class="valor" id="kpiVoluntarios">0</div><div class="label">Voluntários</div></div>
   </div>
 
-  <div class="abas">
-    <button class="aba" onclick="window.location.href='pessoas.html'">← Voltar</button>
-    <button class="aba" onclick="window.location.href='pessoas.html'">Beneficiários</button>
-    <button class="aba aba-ativo">Profissionais</button>
-    <button class="aba" onclick="window.location.href='voluntarios.html'">Voluntários</button>
+  <div class="tabs">
+    <a href="pessoas.html" class="tab">👥 Beneficiários</a>
+    <a href="profissionais.html" class="tab ativo">👨‍⚕️ Profissionais</a>
+    <a href="voluntarios.html" class="tab">💪 Voluntários</a>
   </div>
 
   <div class="busca">
@@ -137,16 +140,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
   <div id="lista"></div>
 
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
+  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
 <div class="modal" id="modalForm"><div class="modal-box">
@@ -174,6 +168,11 @@ if (profissionais.length === 0) {
     salvar();
 }
 function salvar() { localStorage.setItem('amovin_profissionais', JSON.stringify(profissionais)); }
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = profissionais.length;
+    document.getElementById('kpiAtivos').textContent = profissionais.filter(function(p){return p.vinculo==='Contratado';}).length;
+    document.getElementById('kpiVoluntarios').textContent = profissionais.filter(function(p){return p.vinculo==='Voluntário';}).length;
+}
 function popularFiltro() { var v = []; for (var i = 0; i < profissionais.length; i++) { if (v.indexOf(profissionais[i].vinculo) === -1) v.push(profissionais[i].vinculo); } var s = document.getElementById('filtroVinculo'); s.innerHTML = '<option value="todos">Todos vínculos</option>'; for (var i = 0; i < v.length; i++) s.innerHTML += '<option value="'+v[i]+'">'+v[i]+'</option>'; }
 function filtrar() {
     var busca = document.getElementById('busca').value.toLowerCase(), ordem = document.getElementById('ordem').value, vf = document.getElementById('filtroVinculo').value, lista = [];
@@ -197,15 +196,14 @@ window.salvar = function() {
     var d = { nome:n, especialidade:document.getElementById('especialidadeProf').value, cpf:document.getElementById('cpfProf').value, telefone:document.getElementById('telefoneProf').value, temRegistro:document.getElementById('temRegistro').value, conselho:document.getElementById('conselhoProf').value, registro:document.getElementById('registroProf').value, vinculo:document.getElementById('vinculoProf').value, acesso:document.getElementById('acessoProf').value, login:document.getElementById('loginProf').value, senha:document.getElementById('senhaProf').value };
     if (editandoId) { var idx = profissionais.findIndex(function(x){return x.id===editandoId;}); if (idx>=0) for (var k in d) profissionais[idx][k]=d[k]; }
     else { d.id = Date.now(); profissionais.push(d); }
-    salvar(); filtrar(); popularFiltro(); fecharForm();
+    salvar(); filtrar(); popularFiltro(); atualizarKPIs(); fecharForm();
 };
 window.editar = function(id) { abrirForm(id); };
-window.excluir = function(id) { if (!confirm('Excluir?')) return; profissionais = profissionais.filter(function(x){return x.id!==id;}); salvar(); filtrar(); popularFiltro(); };
+window.excluir = function(id) { if (!confirm('Excluir?')) return; profissionais = profissionais.filter(function(x){return x.id!==id;}); salvar(); filtrar(); popularFiltro(); atualizarKPIs(); };
 window.gerarTermoProf = function(id) { var p = profissionais.find(function(x){return x.id===id;}); if (!p) return; gerarTermo(p.vinculo==='Voluntário'?'voluntario':'parceria', p); };
 window.gerarTermo = function(tipo, p) { var d = p || { nome: document.getElementById('nomeProf').value||'___', especialidade: document.getElementById('especialidadeProf').value||'___' }; var data = new Date().toLocaleDateString('pt-BR'), t2 = tipo==='parceria'?'TERMO DE PARCERIA':'TERMO DE VOLUNTÁRIO'; var w = window.open('','_blank'); w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}</style></head><body><h3>AMOVIN</h3><h2>'+t2+'</h2><p><strong>'+d.nome+'</strong> - '+d.especialidade+'</p><p>Rio Paranaíba, '+data+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura</div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 window.imprimir = function(id) { var p = profissionais.find(function(x){return x.id===id;}); if (!p) return; var w = window.open('','_blank'); w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px}</style></head><body><h2>AMOVIN</h2><p>Nome: '+p.nome+'</p><p>Especialidade: '+p.especialidade+'</p><p>Telefone: '+p.telefone+'</p><p>Vínculo: '+p.vinculo+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 
-// Controle de perfil
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = { admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'], recepcao: ['dashboard','pessoas','profissionais','voluntarios','agenda','documentos'], consulta: ['dashboard','agenda','assistente'], financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'], voluntario: ['dashboard','agenda'] };
 var permitidos = modulosPermitidos[perfil] || modulosPermitidos['admin'];
@@ -217,7 +215,7 @@ window.addEventListener('popstate',function(){history.pushState(null,null,locati
 var timeout;function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
 document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
 
-popularFiltro();filtrar();
+popularFiltro();filtrar();atualizarKPIs();
 </script>
 </body>
 </html>
