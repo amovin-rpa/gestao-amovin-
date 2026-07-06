@@ -20,18 +20,27 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
+/* ==================== SIDEBAR (vem do menu.js) ==================== */
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
 .sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
 .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
 .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.4px; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
 .nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
 .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
 .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
+.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
+.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
+.user-info .nome { font-weight: 600; font-size: 13.5px; }
+.user-info .cargo { font-size: 11px; color: #6B7280; }
+.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-sair:hover { background: #F0E9DF; }
 
+/* ==================== MAIN CONTENT ==================== */
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
@@ -108,57 +117,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-    <div class="sidebar-logo-fallback">🌻</div>
-    <div class="brand">Amovin ERP Social</div>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div>
-    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-
-    <div class="nav-categoria">Captação</div>
-    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
-    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
-    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
-
-    <div class="nav-categoria">Financeiro</div>
-    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
-    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
-    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-
-    <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item ativo"><span class="icone">👥</span> Beneficiários</a>
-    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
-    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
-    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-
-    <div class="nav-categoria">Atendimento</div>
-    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-
-    <div class="nav-categoria">Documentos</div>
-    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
-    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
-    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-
-    <div class="nav-categoria">Educação</div>
-    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
-    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-
-    <div class="nav-categoria">Comunicação</div>
-    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
-    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-
-    <div class="nav-categoria">Relatórios</div>
-    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
-
-    <div class="nav-categoria">Sistema</div>
-    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
-    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
-  </nav>
-</aside>
+<!-- ==================== MENU LATERAL ==================== -->
+<div id="menu-container"></div>
 
 <main class="main-content">
   <div class="topo-bar">
@@ -508,6 +468,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </div>
 
+<script src="menu.js"></script>
 <script>
 // ============================================================
 // BANCO DE DADOS LOCAL
@@ -1036,26 +997,8 @@ window.excluirPessoa = function(id) {
 filtrar();
 
 // ============================================================
-// CONTROLE DE PERFIL
+// VERIFICAÇÃO DE SESSÃO
 // ============================================================
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
-        item.style.display = 'none';
-    }
-});
-
 if (!sessionStorage.getItem('amovin_logado')) {
     window.location.href = 'index.html';
 }
