@@ -220,16 +220,17 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         <div class="checkbox-grid" id="modulosPermissoes">
           <label><input type="checkbox" value="dashboard" checked> 📊 Dashboard</label>
           <label><input type="checkbox" value="bi"> 📈 BI Executivo</label>
-          <label><input type="checkbox" value="editais"> 🔍 Editais</label>
-          <label><input type="checkbox" value="oficios"> 📄 Ofícios IA</label>
-          <label><input type="checkbox" value="projetos"> 📋 Projetos IA</label>
+          <label><input type="checkbox" value="capta"> 🚀 Amovin Capta+</label>
           <label><input type="checkbox" value="financeiro"> 💰 Financeiro</label>
           <label><input type="checkbox" value="orcamentos"> 📊 Orçamentos</label>
           <label><input type="checkbox" value="prestacao-contas"> 📋 Prest. Contas</label>
-          <label><input type="checkbox" value="pessoas"> 👥 Gestão de Pessoas</label>
+          <label><input type="checkbox" value="pessoas"> 👥 Beneficiários</label>
+          <label><input type="checkbox" value="profissionais"> 👨‍⚕️ Profissionais</label>
+          <label><input type="checkbox" value="voluntarios"> 💪 Voluntários</label>
           <label><input type="checkbox" value="agenda-telefonica"> ☎️ CRM Social</label>
           <label><input type="checkbox" value="agenda"> 📅 Agenda</label>
           <label><input type="checkbox" value="documentos"> 📝 Documentos</label>
+          <label><input type="checkbox" value="qrcodes"> 📱 QR Codes</label>
           <label><input type="checkbox" value="estoque"> 📦 Estoque</label>
           <label><input type="checkbox" value="patrimonio"> 🏢 Patrimônio</label>
           <label><input type="checkbox" value="biblioteca"> 📚 Biblioteca</label>
@@ -256,11 +257,11 @@ var editandoPerfilId = null;
 
 if (perfis.length === 0) {
     perfis = [
-        { id: 'admin', nome: 'Administrador Master', modulos: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'] },
+        { id: 'admin', nome: 'Administrador Master', modulos: ['dashboard','bi','capta','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'] },
         { id: 'recepcao', nome: 'Recepção', modulos: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'] },
         { id: 'consulta', nome: 'Consulta', modulos: ['dashboard','agenda','agenda-telefonica','assistente'] },
         { id: 'financeiro', nome: 'Financeiro', modulos: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'] },
-        { id: 'voluntario', nome: 'Voluntário', modulos: ['dashboard','agenda','agenda-telefonica'] }
+        { id: 'voluntario', nome: 'Voluntário', modulos: ['dashboard','agenda','voluntarios','agenda-telefonica'] }
     ];
     salvarPerfis();
 }
