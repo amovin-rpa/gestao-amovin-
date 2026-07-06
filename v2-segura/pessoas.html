@@ -422,6 +422,39 @@ function getAvatarHtml(pessoa) {
 }
 
 // ============================================================
+// PRÉ-VISUALIZAÇÃO DA FOTO
+// ============================================================
+window.previewFoto = function(event) {
+    var file = event.target.files[0];
+    if (!file) {
+        removerFoto();
+        return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+        alert('⚠️ A foto não pode ter mais que 5MB.');
+        document.getElementById('fotoPessoa').value = '';
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        fotoDataURL = e.target.result;
+        var preview = document.getElementById('fotoPreview');
+        preview.src = fotoDataURL;
+        preview.className = 'foto-preview visible';
+        document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
+    };
+    reader.readAsDataURL(file);
+};
+
+window.removerFoto = function() {
+    fotoDataURL = null;
+    document.getElementById('fotoPessoa').value = '';
+    document.getElementById('fotoPreview').className = 'foto-preview';
+    document.getElementById('fotoPreview').src = '';
+    document.getElementById('fotoPlaceholder').className = 'foto-placeholder';
+};
+
+// ============================================================
 // IMPORTAR PARA CRM
 // ============================================================
 function importarParaCRM(pessoa) {
@@ -458,41 +491,6 @@ function importarParaCRM(pessoa) {
     }
     return false;
 }
-
-// ============================================================
-// PRÉ-VISUALIZAÇÃO DA FOTO
-// ============================================================
-window.previewFoto = function(event) {
-    var file = event.target.files[0];
-    if (!file) {
-        removerFoto();
-        return;
-    }
-    
-    if (file.size > 5 * 1024 * 1024) {
-        alert('⚠️ A foto não pode ter mais que 5MB.');
-        document.getElementById('fotoPessoa').value = '';
-        return;
-    }
-    
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        fotoDataURL = e.target.result;
-        var preview = document.getElementById('fotoPreview');
-        preview.src = fotoDataURL;
-        preview.className = 'foto-preview visible';
-        document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
-    };
-    reader.readAsDataURL(file);
-};
-
-window.removerFoto = function() {
-    fotoDataURL = null;
-    document.getElementById('fotoPessoa').value = '';
-    document.getElementById('fotoPreview').className = 'foto-preview';
-    document.getElementById('fotoPreview').src = '';
-    document.getElementById('fotoPlaceholder').className = 'foto-placeholder';
-};
 
 // ============================================================
 // RENDERIZAÇÃO
@@ -541,7 +539,13 @@ function filtrar() {
             else if (p.tipo === 'profissional') badge = '<span class="badge-tipo badge-profissional">👨‍⚕️ Profissional</span>';
             else if (p.tipo === 'voluntario') badge = '<span class="badge-tipo badge-voluntario">💪 Voluntário</span>';
 
-            var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
+            // IDADE: só para beneficiários
+            var idadeInfo = '';
+            if (p.tipo === 'beneficiario') {
+                var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
+                idadeInfo = ' | ' + idade;
+            }
+
             var responsavel = p.responsavel || '-';
             var telefone = p.telefone || p.whatsapp || '-';
             var cidadeEstado = (p.cidade || '') + (p.estado ? '/' + p.estado : '');
@@ -552,7 +556,7 @@ function filtrar() {
                 '<div class="pessoa-info">' +
                 getAvatarHtml(p) +
                 '<div class="pessoa-dados">' +
-                '<h4>' + p.nome + ' ' + badge + ' | ' + idade + '</h4>' +
+                '<h4>' + p.nome + ' ' + badge + idadeInfo + '</h4>' +
                 '<p>👤 Responsável: ' + responsavel + ' | 📞 ' + telefone + '</p>' +
                 '<p>📍 ' + cidadeEstado + ' | ' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
                 '</div></div>' +
