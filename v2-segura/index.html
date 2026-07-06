@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AMOVIN • Acesso ao Sistema</title>
+<title>AMOVIN • Acesso Corporativo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ============================================
+   RESET E BASE
+   ============================================ */
 * {
   margin: 0;
   padding: 0;
@@ -14,55 +17,64 @@
 
 :root {
   --laranja: #C65A11;
+  --laranja-claro: #E8A04A;
+  --laranja-gradiente: #D47B2A;
   --amarelo: #F5C518;
-  --verde: #57C220;
-  --azul: #1E88E5;
   --grafite: #1A1A1A;
+  --grafite-claro: #2D2D2D;
   --cinza: #6B7280;
-  --cinza-claro: #F8F4ED;
+  --cinza-claro: #F5F2ED;
   --branco: #FFFFFF;
+  --verde: #57C220;
   --vermelho: #E53935;
-  --sombra-suave: 0 4px 24px rgba(0, 0, 0, 0.06);
-  --sombra-media: 0 8px 40px rgba(0, 0, 0, 0.1);
-  --sombra-forte: 0 20px 60px rgba(0, 0, 0, 0.15);
+  --sombra-forte: 0 25px 80px rgba(0, 0, 0, 0.20);
+  --sombra-media: 0 8px 32px rgba(0, 0, 0, 0.10);
   --raio: 16px;
+  --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--cinza-claro);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background: var(--grafite);
+  background-image: 
+    radial-gradient(ellipse at 20% 50%, rgba(198, 90, 17, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(245, 197, 24, 0.08) 0%, transparent 60%),
+    linear-gradient(135deg, var(--grafite) 0%, #0D0D0D 100%);
   color: var(--grafite);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* ============================================
+   ANIMAÇÕES GLOBAIS
+   ============================================ */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes scaleIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideInRight {
@@ -75,99 +87,157 @@ body {
   to { transform: translateX(400px); opacity: 0; }
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 0.8; }
-}
-
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
 
+/* ============================================
+   CONTAINER PRINCIPAL
+   ============================================ */
 .login-container {
-  display: flex;
   width: 100%;
-  max-width: 1400px;
-  min-height: 600px;
-  background: var(--branco);
+  max-width: 1200px;
+  min-height: 680px;
+  display: flex;
   border-radius: 24px;
-  box-shadow: var(--sombra-forte);
   overflow: hidden;
-  animation: fadeInUp 0.6s ease-out;
+  background: var(--branco);
+  box-shadow: var(--sombra-forte);
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  position: relative;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, var(--laranja), var(--amarelo), var(--laranja));
+  border-radius: 26px;
+  z-index: -1;
+  opacity: 0.3;
+  animation: pulse 4s ease-in-out infinite;
 }
 
 /* ============================================
-   PAINEL LATERAL (DESKTOP) - CORES AMOVIN
+   PAINEL ESQUERDO - BRANDING (MAIS ELEGANTE)
    ============================================ */
-.institutional-panel {
-  flex: 1;
-  background: linear-gradient(135deg, var(--grafite) 0%, #2C2C2C 100%);
-  color: var(--branco);
+.brand-panel {
+  flex: 1.2;
+  background: linear-gradient(160deg, var(--grafite) 0%, #121212 50%, var(--grafite-claro) 100%);
   padding: 60px 50px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+  min-height: 680px;
 }
 
-.institutional-panel::before {
+.brand-panel::before {
   content: '';
   position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(245, 197, 24, 0.08) 0%, transparent 70%);
-  animation: pulse 8s ease-in-out infinite;
+  top: -30%;
+  right: -20%;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(198, 90, 17, 0.10) 0%, transparent 70%);
+  animation: float 8s ease-in-out infinite;
 }
 
-.institutional-content {
+.brand-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(245, 197, 24, 0.06) 0%, transparent 70%);
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+.brand-content {
   position: relative;
   z-index: 2;
 }
 
-.institutional-logo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 40px;
-  filter: drop-shadow(0 8px 20px rgba(198, 90, 17, 0.3));
+/* Logo */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 60px;
 }
 
-.institutional-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  line-height: 1.2;
+.brand-logo-img {
+  width: 56px;
+  height: 56px;
+  filter: drop-shadow(0 4px 20px rgba(198, 90, 17, 0.3));
+}
+
+.brand-logo-text {
   color: var(--branco);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.5px;
 }
 
-.institutional-title span {
+.brand-logo-text span {
   color: var(--amarelo);
 }
 
-.institutional-subtitle {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 40px;
-  line-height: 1.6;
+.brand-logo-text small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
-.institutional-quote {
-  font-size: 18px;
+/* Título Principal */
+.brand-title {
+  color: var(--branco);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.brand-title span {
+  color: var(--amarelo);
+}
+
+.brand-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  font-weight: 400;
+  margin-bottom: 40px;
+  max-width: 80%;
+}
+
+/* Citação */
+.brand-quote {
+  font-size: 17px;
   font-style: italic;
   color: var(--amarelo);
-  margin-bottom: 50px;
   padding-left: 20px;
   border-left: 3px solid var(--amarelo);
+  margin-bottom: 48px;
+  opacity: 0.9;
+  line-height: 1.7;
 }
 
-.features-list {
-  list-style: none;
+/* Features Grid */
+.features-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
   margin-bottom: 40px;
 }
 
@@ -175,107 +245,122 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: rgba(255, 255, 255, 0.75);
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  transition: all 0.3s ease;
+  font-weight: 400;
+  transition: var(--transicao);
+  padding: 6px 0;
 }
 
 .feature-item:hover {
   color: var(--amarelo);
-  transform: translateX(5px);
+  transform: translateX(4px);
 }
 
 .feature-icon {
-  width: 24px;
-  height: 24px;
-  background: rgba(245, 197, 24, 0.15);
+  width: 26px;
+  height: 26px;
+  background: rgba(245, 197, 24, 0.10);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
+  font-size: 13px;
   color: var(--amarelo);
+  flex-shrink: 0;
 }
 
-.institutional-footer {
+/* Status do Sistema */
+.brand-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--verde);
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+
+.status-text {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.brand-footer {
   position: relative;
   z-index: 2;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.3px;
 }
 
 /* ============================================
-   CARD DE LOGIN
+   PAINEL DIREITO - LOGIN (MAIS LIMPO)
    ============================================ */
-.login-card {
+.login-panel {
   flex: 1;
   padding: 60px 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
   background: var(--branco);
+  position: relative;
 }
 
-.logo-container {
+.login-header {
   text-align: center;
   margin-bottom: 40px;
 }
 
-.logo {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 16px;
-  display: block;
-  filter: drop-shadow(0 4px 12px rgba(198, 90, 17, 0.2));
-}
-
-.logo-fallback {
-  font-size: 64px;
+.login-header .logo-mobile {
   display: none;
-  filter: drop-shadow(0 4px 12px rgba(198, 90, 17, 0.2));
 }
 
-.brand-name {
-  font-size: 28px;
+.login-header h2 {
+  font-size: 24px;
   font-weight: 700;
   color: var(--grafite);
   margin-bottom: 4px;
   letter-spacing: -0.5px;
 }
 
-.brand-name span {
+.login-header h2 span {
   color: var(--laranja);
 }
 
-.brand-subtitle {
+.login-header p {
   font-size: 13px;
   color: var(--cinza);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* ============================================
    FORMULÁRIO
    ============================================ */
 .login-form {
-  max-width: 400px;
+  max-width: 380px;
   margin: 0 auto;
   width: 100%;
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .form-label {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--grafite);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   letter-spacing: 0.3px;
 }
 
@@ -285,23 +370,24 @@ body {
 
 .form-input {
   width: 100%;
-  padding: 14px 16px 14px 48px;
-  border: 2px solid #E5E7EB;
-  border-radius: var(--raio);
-  font-size: 15px;
-  transition: all 0.3s ease;
+  padding: 14px 16px 14px 46px;
+  border: 1.5px solid #E8E4DE;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: var(--transicao);
   background: var(--branco);
   color: var(--grafite);
+  font-family: 'Inter', sans-serif;
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--laranja);
-  box-shadow: 0 0 0 4px rgba(198, 90, 17, 0.1);
+  box-shadow: 0 0 0 4px rgba(198, 90, 17, 0.08);
 }
 
 .form-input::placeholder {
-  color: #9CA3AF;
+  color: #B0A99F;
 }
 
 .input-icon {
@@ -310,32 +396,37 @@ body {
   top: 50%;
   transform: translateY(-50%);
   color: var(--cinza);
-  font-size: 18px;
-  transition: all 0.3s ease;
+  font-size: 17px;
+  transition: var(--transicao);
+  opacity: 0.6;
 }
 
 .form-input:focus ~ .input-icon {
   color: var(--laranja);
+  opacity: 1;
 }
 
 .password-toggle {
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--cinza);
   cursor: pointer;
-  font-size: 18px;
-  transition: all 0.3s ease;
+  font-size: 17px;
+  transition: var(--transicao);
   padding: 4px;
+  opacity: 0.5;
 }
 
 .password-toggle:hover {
   color: var(--laranja);
+  opacity: 1;
 }
 
+/* Opções */
 .form-options {
   display: flex;
   justify-content: space-between;
@@ -349,20 +440,23 @@ body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  color: var(--cinza);
+  font-weight: 500;
 }
 
 .checkbox-wrapper input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
+  width: 17px;
+  height: 17px;
   accent-color: var(--laranja);
+  cursor: pointer;
 }
 
 .forgot-link {
   color: var(--laranja);
   text-decoration: none;
   font-weight: 600;
-  transition: all 0.3s ease;
+  font-size: 13px;
+  transition: var(--transicao);
 }
 
 .forgot-link:hover {
@@ -370,24 +464,23 @@ body {
   text-decoration: underline;
 }
 
-/* ============================================
-   BOTÃO PRINCIPAL
-   ============================================ */
+/* Botão Entrar */
 .btn-primary {
   width: 100%;
-  padding: 16px;
+  padding: 15px;
   background: var(--laranja);
   color: var(--branco);
   border: none;
-  border-radius: var(--raio);
-  font-size: 16px;
+  border-radius: 12px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transicao);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(198, 90, 17, 0.3);
+  box-shadow: 0 4px 20px rgba(198, 90, 17, 0.25);
   letter-spacing: 0.3px;
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-primary::before {
@@ -398,28 +491,24 @@ body {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
 }
 
 .btn-primary:hover:not(:disabled)::before {
-  width: 300px;
-  height: 300px;
+  width: 400px;
+  height: 400px;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #A04A0E;
+  background: var(--laranja-gradiente);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(198, 90, 17, 0.4);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(0);
+  box-shadow: 0 8px 30px rgba(198, 90, 17, 0.35);
 }
 
 .btn-primary:disabled {
-  background: #D1D5DB;
+  background: #D1CCC4;
   color: #9CA3AF;
   cursor: not-allowed;
   box-shadow: none;
@@ -442,10 +531,10 @@ body {
 .spinner {
   width: 20px;
   height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.2);
+  border: 2.5px solid rgba(255, 255, 255, 0.25);
   border-top-color: var(--branco);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.7s linear infinite;
   display: none;
 }
 
@@ -455,7 +544,7 @@ body {
 
 .btn-hint {
   text-align: center;
-  margin-top: 16px;
+  margin-top: 14px;
   font-size: 12px;
   color: var(--cinza);
   display: flex;
@@ -469,20 +558,17 @@ body {
   font-weight: 600;
 }
 
-/* ============================================
-   MENSAGEM DE ERRO
-   ============================================ */
+/* Mensagem de Erro */
 .error-message {
   background: #FEF2F2;
   border: 1px solid #FECACA;
   border-left: 4px solid var(--vermelho);
   color: #991B1B;
-  padding: 14px 16px;
+  padding: 12px 16px;
   border-radius: 10px;
   font-size: 13px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   display: none;
-  animation: slideDown 0.3s ease;
 }
 
 .error-message.show {
@@ -490,73 +576,40 @@ body {
 }
 
 /* ============================================
-   RODAPÉ
+   RODAPÉ DO LOGIN
    ============================================ */
-.footer {
-  margin-top: 40px;
-  padding-top: 30px;
-  border-top: 1px solid #E5E7EB;
+.login-footer {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #F0EDE8;
   text-align: center;
 }
 
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
-
-.footer-logo {
-  width: 60px;
-  height: auto;
-  opacity: 0.5;
-  transition: all 0.3s ease;
-}
-
-.footer-logo:hover {
-  opacity: 1;
-}
-
-.footer-info {
-  font-size: 11px;
-  color: var(--cinza);
-  line-height: 1.8;
-}
-
-.footer-links {
+.login-footer .footer-links {
   display: flex;
   gap: 16px;
-  flex-wrap: wrap;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
-.footer-links a {
-  color: var(--laranja);
+.login-footer .footer-links a {
+  color: var(--cinza);
   text-decoration: none;
-  transition: all 0.3s ease;
+  font-size: 12px;
   font-weight: 500;
+  transition: var(--transicao);
 }
 
-.footer-links a:hover {
-  color: var(--amarelo);
+.login-footer .footer-links a:hover {
+  color: var(--laranja);
   text-decoration: underline;
 }
 
-.footer-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.login-footer .footer-copy {
   font-size: 10px;
-  color: var(--verde);
-  font-weight: 600;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--verde);
-  border-radius: 50%;
-  animation: blink 2s infinite;
+  color: #B0A99F;
+  margin-top: 12px;
+  letter-spacing: 0.3px;
 }
 
 /* ============================================
@@ -568,13 +621,14 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10000;
   animation: fadeIn 0.3s ease;
+  padding: 20px;
 }
 
 .modal-overlay.hidden {
@@ -584,24 +638,24 @@ body {
 .lgpd-modal {
   background: var(--branco);
   border-radius: 20px;
-  max-width: 600px;
-  width: 90%;
+  max-width: 560px;
+  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--sombra-forte);
-  animation: scaleIn 0.3s ease;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-header {
-  padding: 32px 32px 24px;
-  border-bottom: 1px solid #E5E7EB;
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid #F0EDE8;
 }
 
 .modal-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--grafite);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .modal-title span {
@@ -609,42 +663,42 @@ body {
 }
 
 .modal-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--cinza);
 }
 
 .modal-body {
-  padding: 32px;
+  padding: 28px 32px 20px;
 }
 
 .lgpd-content {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.8;
   color: var(--grafite);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .lgpd-content h4 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  margin: 20px 0 10px;
+  margin: 16px 0 8px;
   color: var(--grafite);
 }
 
 .lgpd-content ul {
-  margin-left: 20px;
-  margin-bottom: 16px;
+  margin-left: 18px;
+  margin-bottom: 12px;
 }
 
 .lgpd-content li {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--cinza);
 }
 
 .lgpd-links {
   display: flex;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
@@ -652,8 +706,8 @@ body {
   color: var(--laranja);
   text-decoration: none;
   font-weight: 600;
-  font-size: 13px;
-  transition: all 0.3s ease;
+  font-size: 12px;
+  transition: var(--transicao);
 }
 
 .lgpd-links a:hover {
@@ -665,97 +719,111 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 20px;
-  background: #F9FAFB;
-  border-radius: 12px;
-  margin-bottom: 24px;
+  padding: 16px;
+  background: #F8F6F3;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
 .checkbox-agreement input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+  width: 18px;
+  height: 18px;
   accent-color: var(--laranja);
   flex-shrink: 0;
   margin-top: 2px;
+  cursor: pointer;
 }
 
 .checkbox-agreement label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--grafite);
   line-height: 1.6;
   cursor: pointer;
 }
 
 .modal-footer {
-  padding: 24px 32px 32px;
+  padding: 16px 32px 28px;
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid #F0EDE8;
 }
 
 .btn-secondary {
-  padding: 12px 32px;
-  background: #D1D5DB;
-  color: #6B7280;
+  padding: 12px 36px;
+  background: #E8E4DE;
+  color: #9CA3AF;
   border: none;
-  border-radius: var(--raio);
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
   cursor: not-allowed;
-  transition: all 0.3s ease;
+  transition: var(--transicao);
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-secondary.enabled {
   background: var(--laranja);
   color: var(--branco);
   cursor: pointer;
+  box-shadow: 0 4px 16px rgba(198, 90, 17, 0.2);
 }
 
 .btn-secondary.enabled:hover {
-  background: #A04A0E;
+  background: var(--laranja-gradiente);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(198, 90, 17, 0.3);
+  box-shadow: 0 8px 24px rgba(198, 90, 17, 0.3);
 }
 
 /* ============================================
-   RESPONSIVIDADE
+   RESPONSIVO
    ============================================ */
 @media (max-width: 1024px) {
-  .institutional-panel {
+  .brand-panel {
     display: none;
   }
-  .login-card {
+  .login-panel {
     padding: 40px 30px;
+  }
+  .login-container {
+    max-width: 500px;
+    min-height: auto;
+  }
+  .login-header .logo-mobile {
+    display: block;
+    margin-bottom: 24px;
+  }
+  .login-header .logo-mobile img {
+    width: 56px;
+    height: 56px;
+  }
+  .login-header h2 {
+    font-size: 22px;
   }
 }
 
 @media (max-width: 768px) {
   .login-container {
-    flex-direction: column;
-    min-height: auto;
+    max-width: 100%;
+    border-radius: 16px;
   }
-  .institutional-panel {
-    display: none !important;
+  .login-panel {
+    padding: 32px 24px;
   }
-  .login-card {
-    padding: 30px 20px;
+  .login-header h2 {
+    font-size: 20px;
   }
-  .brand-name {
-    font-size: 24px;
+  .login-form {
+    max-width: 100%;
   }
-  .features-list {
+  .features-grid {
     grid-template-columns: 1fr;
   }
-  .modal-body {
-    padding: 24px;
+  .lgpd-modal {
+    margin: 10px;
   }
-  .modal-header {
-    padding: 24px;
-  }
-  .modal-footer {
-    padding: 20px 24px 24px;
+  .modal-header, .modal-body, .modal-footer {
+    padding: 20px;
   }
 }
 
@@ -767,26 +835,28 @@ body {
     border-radius: 0;
     min-height: 100vh;
   }
-  .login-card {
+  .login-panel {
     padding: 24px 16px;
   }
-  .logo {
-    width: 60px;
-    height: 60px;
-  }
-  .brand-name {
-    font-size: 20px;
+  .login-header h2 {
+    font-size: 18px;
   }
   .form-input {
     padding: 12px 14px 12px 40px;
-    font-size: 14px;
+    font-size: 13px;
   }
   .btn-primary {
-    padding: 14px;
+    padding: 13px;
     font-size: 14px;
+  }
+  .brand-panel {
+    display: none;
   }
 }
 
+/* ============================================
+   UTILITÁRIOS
+   ============================================ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -800,57 +870,42 @@ body {
 }
 
 *:focus-visible {
-  outline: 3px solid var(--laranja);
+  outline: 2px solid var(--laranja);
   outline-offset: 2px;
 }
 
 .hidden {
   display: none !important;
 }
-
-.text-center {
-  text-align: center;
-}
-
-.mt-20 {
-  margin-top: 20px;
-}
 </style>
 </head>
 <body>
 
 <!-- ============================================
-     MODAL LGPD (OBRIGATÓRIO)
+     MODAL LGPD
      ============================================ -->
 <div class="modal-overlay" id="lgpdModal" role="dialog" aria-labelledby="lgpdTitle" aria-modal="true">
   <div class="lgpd-modal">
     <div class="modal-header">
-      <h2 class="modal-title" id="lgpdTitle">Política de Privacidade e <span>LGPD</span></h2>
+      <h2 class="modal-title" id="lgpdTitle">Política de Privacidade <span>LGPD</span></h2>
       <p class="modal-subtitle">AMOVIN ERP Social - Proteção de Dados</p>
     </div>
-    
     <div class="modal-body">
       <div class="lgpd-content">
-        <p>A <strong>AMOVIN</strong> está comprometida com a proteção da sua privacidade e com o tratamento seguro dos seus dados pessoais, em conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018)</strong>.</p>
-        
+        <p>A <strong>AMOVIN</strong> está comprometida com a proteção da sua privacidade e com o tratamento seguro dos seus dados pessoais, em conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD)</strong>.</p>
         <h4>📋 Tratamento dos Dados</h4>
         <ul>
           <li>Coletamos apenas dados necessários para o funcionamento do sistema</li>
           <li>Seus dados são utilizados exclusivamente para gestão institucional</li>
           <li>Não compartilhamos informações com terceiros sem autorização</li>
         </ul>
-        
         <h4>🔒 Segurança</h4>
         <ul>
           <li>Criptografia de dados em trânsito e em repouso</li>
           <li>Controle de acesso baseado em perfis e permissões</li>
           <li>Auditoria completa de todas as operações</li>
-          <li>Backups automáticos e redundância de dados</li>
+          <li>Backups automáticos e redundância</li>
         </ul>
-        
-        <h4>🍪 Cookies Essenciais</h4>
-        <p>Utilizamos cookies essenciais para manter sua sessão ativa e garantir a segurança do acesso. Não utilizamos cookies de rastreamento ou publicidade.</p>
-        
         <h4>👤 Seus Direitos</h4>
         <ul>
           <li>Acessar seus dados pessoais a qualquer momento</li>
@@ -859,25 +914,19 @@ body {
           <li>Revogar consentimento a qualquer momento</li>
         </ul>
       </div>
-      
       <div class="lgpd-links">
         <a href="#" onclick="alert('Política de Privacidade completa'); return false;">📄 Política de Privacidade</a>
         <a href="#" onclick="alert('Termos de Uso completos'); return false;">📋 Termos de Uso</a>
       </div>
-      
       <div class="checkbox-agreement">
-        <input type="checkbox" id="lgpdCheckbox" aria-label="Li e concordo com a Política de Privacidade e LGPD">
+        <input type="checkbox" id="lgpdCheckbox">
         <label for="lgpdCheckbox">
-          Li e concordo com a <strong>Política de Privacidade</strong> e com os termos da <strong>LGPD</strong>. 
-          Compreendo que meus dados serão tratados conforme descrito e que tenho direitos garantidos pela legislação vigente.
+          Li e concordo com a <strong>Política de Privacidade</strong> e com os termos da <strong>LGPD</strong>.
         </label>
       </div>
     </div>
-    
     <div class="modal-footer">
-      <button type="button" class="btn-secondary" id="btnContinuar" disabled>
-        ✅ Continuar
-      </button>
+      <button type="button" class="btn-secondary" id="btnContinuar" disabled>Continuar</button>
     </div>
   </div>
 </div>
@@ -886,126 +935,113 @@ body {
      CONTAINER PRINCIPAL
      ============================================ -->
 <div class="login-container">
-  
-  <!-- PAINEL LATERAL (DESKTOP) -->
-  <aside class="institutional-panel" aria-label="Informações institucionais">
-    <div class="institutional-content">
+
+  <!-- PAINEL ESQUERDO - BRANDING -->
+  <aside class="brand-panel">
+    <div class="brand-content">
+      <div class="brand-logo">
+        <img src="images/amovin-logo.png" alt="AMOVIN" class="brand-logo-img" onerror="this.style.display='none'">
+        <div class="brand-logo-text">
+          AMOVIN<span>ERP</span>
+          <small>Sistema Integrado de Gestão</small>
+        </div>
+      </div>
+
       <div>
-        <img src="images/amovin-logo.png" alt="Logo AMOVIN" class="institutional-logo" onerror="this.style.display='none'">
-        
-        <h1 class="institutional-title">AMOVIN <span>ERP Social</span></h1>
-        <p class="institutional-subtitle">Sistema Integrado de Gestão Institucional</p>
-        
-        <blockquote class="institutional-quote">
-          "Transformando gestão em excelência, beneficiário em protagonista."
-        </blockquote>
-        
-        <ul class="features-list">
-          <li class="feature-item"><span class="feature-icon">✓</span><span>Gestão de Beneficiários</span></li>
-          <li class="feature-item"><span class="feature-icon">✓</span><span>Gestão Financeira</span></li>
-          <li class="feature-item"><span class="feature-icon">✓</span><span>Patrimônio</span></li>
-          <li class="feature-item"><span class="feature-icon">✓</span><span>Projetos</span></li>
-          <li class="feature-item"><span class="feature-icon">✓</span><span>Documentos</span></li>
-          <li class="feature-item"><span class="feature-icon">✓</span><span>Prestação de Contas</span></li>
-          <li class="feature-item"><span class="feature-icon">✓</span><span>QR Code Inteligente</span></li>
-          <li class="feature-item"><span class="feature-icon">✓</span><span>Business Intelligence</span></li>
-        </ul>
+        <h1 class="brand-title">Bem-vindo ao<br><span>Ecossistema AMOVIN</span></h1>
+        <p class="brand-subtitle">Plataforma corporativa para gestão de instituições sociais com inteligência e excelência operacional.</p>
+        <blockquote class="brand-quote">"Transformando gestão em excelência, beneficiário em protagonista."</blockquote>
       </div>
-      
-      <div class="institutional-footer">
-        <p>© 2026 AMOVIN - Todos os direitos reservados</p>
+
+      <ul class="features-grid">
+        <li class="feature-item"><span class="feature-icon">◆</span> Gestão de Beneficiários</li>
+        <li class="feature-item"><span class="feature-icon">◆</span> Gestão Financeira</li>
+        <li class="feature-item"><span class="feature-icon">◆</span> Patrimônio e Estoque</li>
+        <li class="feature-item"><span class="feature-icon">◆</span> Projetos e Captação</li>
+        <li class="feature-item"><span class="feature-icon">◆</span> Documentos e Ofícios</li>
+        <li class="feature-item"><span class="feature-icon">◆</span> Prestação de Contas</li>
+        <li class="feature-item"><span class="feature-icon">◆</span> QR Code Dinâmico</li>
+        <li class="feature-item"><span class="feature-icon">◆</span> Business Intelligence</li>
+      </ul>
+
+      <div class="brand-status">
+        <span class="status-dot"></span>
+        <span class="status-text">Sistema Online • Ambiente Produção</span>
       </div>
+    </div>
+
+    <div class="brand-footer">
+      © 2026 AMOVIN - Todos os direitos reservados
     </div>
   </aside>
-  
-  <!-- CARD DE LOGIN -->
-  <main class="login-card">
-    
-    <!-- Logo e Identidade -->
-    <div class="logo-container">
-      <img src="images/amovin-logo.png" alt="AMOVIN ERP Social" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <div class="logo-fallback">🌻</div>
-      
-      <h1 class="brand-name">AMOVIN <span>ERP Social</span></h1>
-      <p class="brand-subtitle">Sistema Integrado de Gestão</p>
+
+  <!-- PAINEL DIREITO - LOGIN -->
+  <main class="login-panel">
+
+    <div class="login-header">
+      <div class="logo-mobile">
+        <img src="images/amovin-logo.png" alt="AMOVIN" style="width:56px;height:56px;" onerror="this.style.display='none'">
+      </div>
+      <h2>Acesso ao <span>Sistema</span></h2>
+      <p>Informe suas credenciais para continuar</p>
     </div>
-    
-    <!-- Mensagem de Erro -->
-    <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
-    
-    <!-- Formulário -->
+
+    <div class="error-message" id="errorMessage" role="alert"></div>
+
     <form class="login-form" id="loginForm" novalidate>
-      
+
       <div class="form-group">
         <label for="username" class="form-label">Login / Usuário</label>
         <div class="input-wrapper">
           <span class="input-icon" aria-hidden="true">👤</span>
-          <input type="text" id="username" class="form-input" placeholder="Digite seu login" autocomplete="username" required aria-required="true">
+          <input type="text" id="username" class="form-input" placeholder="Digite seu login" autocomplete="username" required>
         </div>
       </div>
-      
+
       <div class="form-group">
         <label for="password" class="form-label">Senha</label>
         <div class="input-wrapper">
           <span class="input-icon" aria-hidden="true">🔒</span>
-          <input type="password" id="password" class="form-input" placeholder="Digite sua senha" autocomplete="current-password" required aria-required="true">
-          <button type="button" class="password-toggle" id="togglePassword" aria-label="Mostrar ou ocultar senha">👁️</button>
+          <input type="password" id="password" class="form-input" placeholder="Digite sua senha" autocomplete="current-password" required>
+          <button type="button" class="password-toggle" id="togglePassword" aria-label="Mostrar senha">👁️</button>
         </div>
       </div>
-      
+
       <div class="form-options">
         <label class="checkbox-wrapper">
-          <input type="checkbox" id="rememberMe" aria-label="Lembrar meus dados">
+          <input type="checkbox" id="rememberMe">
           <span>Lembrar-me</span>
         </label>
-        <a href="#" class="forgot-link" onclick="alert('Funcionalidade de recuperação de senha será implementada em breve.'); return false;">Esqueci minha senha</a>
+        <a href="#" class="forgot-link" onclick="alert('Funcionalidade em breve.'); return false;">Esqueci minha senha</a>
       </div>
-      
+
       <button type="submit" class="btn-primary" id="btnEntrar" disabled>
         <span class="btn-text">
-          <span class="spinner" aria-hidden="true"></span>
+          <span class="spinner"></span>
           <span>Entrar no Sistema</span>
         </span>
       </button>
-      
+
       <div class="btn-hint" id="btnHint">
-        <span aria-hidden="true">⚠️</span>
+        <span>⚠️</span>
         <span>É necessário aceitar a Política de Privacidade para continuar.</span>
       </div>
-      
+
     </form>
-    
-    <!-- Rodapé -->
-    <footer class="footer">
-      <div class="footer-content">
-        <img src="images/logo-vigorre.png" alt="Vigorre Designer" class="footer-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <span class="logo-vigorre-fallback" style="display: none;">Vigorre</span>
-        
-        <div class="footer-info">
-          <div>© 2026 VIGORRE DESIGNER™ - Todos os direitos reservados</div>
-          <div class="footer-links">
-            <a href="https://www.vigorre.com.br" target="_blank" rel="noopener">www.vigorre.com.br</a>
-            <span style="color: #D1D5DB;">|</span>
-            <a href="https://wa.me/5534991850735" target="_blank" rel="noopener">(34) 99185-0735</a>
-            <span style="color: #D1D5DB;">|</span>
-            <a href="mailto:contato@vigorre.com.br">contato@vigorre.com.br</a>
-          </div>
-          <div class="footer-links">
-            <a href="#" onclick="alert('Política de Privacidade'); return false;">Política de Privacidade</a>
-            <a href="#" onclick="alert('Termos de Uso'); return false;">Termos de Uso</a>
-            <a href="#" onclick="alert('LGPD'); return false;">LGPD</a>
-          </div>
-        </div>
-        
-        <div class="footer-status">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span>Ambiente: Produção | Servidor: Online</span>
-        </div>
+
+    <div class="login-footer">
+      <div class="footer-links">
+        <a href="#" onclick="alert('Política de Privacidade'); return false;">Política de Privacidade</a>
+        <a href="#" onclick="alert('Termos de Uso'); return false;">Termos de Uso</a>
+        <a href="#" onclick="alert('LGPD'); return false;">LGPD</a>
       </div>
-    </footer>
-    
+      <div class="footer-copy">
+        <span>VIGORRE DESIGNER™</span> • (34) 99185-0735 • contato@vigorre.com.br
+      </div>
+    </div>
+
   </main>
-  
+
 </div>
 
 <!-- ============================================
@@ -1023,7 +1059,7 @@ var CONFIG = {
 };
 
 // ============================================
-// ELEMENTOS DO DOM
+// ELEMENTOS
 // ============================================
 var elements = {
   modal: document.getElementById('lgpdModal'),
@@ -1040,58 +1076,21 @@ var elements = {
 };
 
 // ============================================
-// FUNÇÕES DE SEGURANÇA
-// ============================================
-function sanitizeInput(input) {
-  return input.replace(/[<>]/g, '').replace(/javascript:/gi, '').replace(/on\w+=/gi, '').trim().substring(0, 100);
-}
-
-function validateCredentials(username, password) {
-  var errors = [];
-  if (!username || username.trim().length === 0) errors.push('Por favor, informe seu login.');
-  if (!password || password.length < 1) errors.push('Por favor, informe sua senha.');
-  if (username && username.length > 100) errors.push('Login muito longo. Máximo 100 caracteres.');
-  if (password && password.length > 50) errors.push('Senha muito longa. Máximo 50 caracteres.');
-  return errors;
-}
-
-// ============================================
-// FUNÇÕES DE LGPD
+// FUNÇÕES LGPD
 // ============================================
 function getLGPDData() {
   try {
     var data = localStorage.getItem(CONFIG.LGPD_STORAGE_KEY);
     return data ? JSON.parse(data) : null;
-  } catch (e) {
-    console.error('Erro ao ler dados da LGPD:', e);
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
 function saveLGPDData() {
   try {
-    var data = {
-      aceito: true,
-      data: new Date().toISOString(),
-      versao: CONFIG.LGPD_VERSION,
-      idioma: navigator.language || 'pt-BR'
-    };
+    var data = { aceito: true, data: new Date().toISOString(), versao: CONFIG.LGPD_VERSION };
     localStorage.setItem(CONFIG.LGPD_STORAGE_KEY, JSON.stringify(data));
     return data;
-  } catch (e) {
-    console.error('Erro ao salvar dados da LGPD:', e);
-    return null;
-  }
-}
-
-function checkLGPDStatus() {
-  var lgpdData = getLGPDData();
-  if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
-    showLGPDModal();
-    return false;
-  }
-  enableLogin();
-  return true;
+  } catch (e) { return null; }
 }
 
 function showLGPDModal() {
@@ -1107,28 +1106,14 @@ function hideLGPDModal() {
   document.body.style.overflow = '';
 }
 
-// ============================================
-// FUNÇÃO PRINCIPAL - ACEITAR LGPD (GLOBAL)
-// ============================================
-function aceitarLGPD() {
-  console.log('🔵 Função aceitarLGPD chamada!');
-  
-  if (!elements.checkbox.checked) {
-    alert('⚠️ Por favor, marque a caixa para concordar com a Política de Privacidade.');
-    return;
+function checkLGPDStatus() {
+  var data = getLGPDData();
+  if (!data || data.versao !== CONFIG.LGPD_VERSION) {
+    showLGPDModal();
+    return false;
   }
-  
-  console.log('✅ Checkbox marcado. Salvando dados...');
-  
-  var data = saveLGPDData();
-  if (data) {
-    hideLGPDModal();
-    enableLogin();
-    showNotification('✅ Política de Privacidade aceita com sucesso!', 'success');
-    console.log('✅ LGPD aceita com sucesso!');
-  } else {
-    showNotification('❌ Erro ao salvar aceite. Tente novamente.', 'error');
-  }
+  enableLogin();
+  return true;
 }
 
 function enableLogin() {
@@ -1136,73 +1121,27 @@ function enableLogin() {
   elements.btnHint.classList.remove('show');
 }
 
-function disableLogin() {
-  elements.btnEntrar.disabled = true;
-  elements.btnHint.classList.add('show');
-}
-
 // ============================================
-// FUNÇÕES DE LOGIN
+// FUNÇÃO ACEITAR LGPD (GLOBAL)
 // ============================================
-function handleLogin(e) {
-  e.preventDefault();
-  
-  var lgpdData = getLGPDData();
-  if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
-    showError('É necessário aceitar a Política de Privacidade para continuar.');
-    showLGPDModal();
+function aceitarLGPD() {
+  if (!elements.checkbox.checked) {
+    alert('⚠️ Marque a caixa para concordar com a Política de Privacidade.');
     return;
   }
-  
-  var username = sanitizeInput(elements.username.value);
-  var password = elements.password.value;
-  
-  var errors = validateCredentials(username, password);
-  if (errors.length > 0) {
-    showError(errors.join(' '));
-    return;
-  }
-  
-  setLoading(true);
-  hideError();
-  
-  try {
-    setTimeout(function() {
-      if (username.toLowerCase() === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
-        sessionStorage.setItem('amovin_logado', 'true');
-        sessionStorage.setItem('amovin_perfil', 'admin');
-        sessionStorage.setItem('amovin_nome', 'Administrador');
-        if (elements.rememberMe.checked) {
-          localStorage.setItem('amovin_lembrar', username);
-        } else {
-          localStorage.removeItem('amovin_lembrar');
-        }
-        showNotification('Login realizado com sucesso! Redirecionando...', 'success');
-        setTimeout(function() { window.location.href = 'dashboard.html'; }, 1000);
-      } else {
-        sessionStorage.setItem('amovin_logado', 'true');
-        sessionStorage.setItem('amovin_perfil', 'recepcao');
-        sessionStorage.setItem('amovin_nome', username);
-        if (elements.rememberMe.checked) {
-          localStorage.setItem('amovin_lembrar', username);
-        }
-        showNotification('Bem-vindo(a)! Redirecionando...', 'success');
-        setTimeout(function() { window.location.href = 'dashboard.html'; }, 1000);
-      }
-      setLoading(false);
-    }, 1500);
-  } catch (error) {
-    console.error('Erro no login:', error);
-    showError('Erro ao processar login. Tente novamente.');
-    setLoading(false);
+  var data = saveLGPDData();
+  if (data) {
+    hideLGPDModal();
+    enableLogin();
+    showNotification('✅ Política de Privacidade aceita!', 'success');
   }
 }
 
 // ============================================
-// FUNÇÕES DE UI
+// FUNÇÕES UI
 // ============================================
-function showError(message) {
-  elements.errorMessage.textContent = message;
+function showError(msg) {
+  elements.errorMessage.textContent = msg;
   elements.errorMessage.classList.add('show');
 }
 
@@ -1216,88 +1155,89 @@ function setLoading(isLoading) {
     elements.btnEntrar.disabled = true;
   } else {
     elements.btnEntrar.classList.remove('loading');
-    var lgpdData = getLGPDData();
-    if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
-      elements.btnEntrar.disabled = true;
-    } else {
-      elements.btnEntrar.disabled = false;
-    }
+    var data = getLGPDData();
+    elements.btnEntrar.disabled = !(data && data.versao === CONFIG.LGPD_VERSION);
   }
 }
 
-function showNotification(message, type) {
-  type = type || 'info';
-  var notification = document.createElement('div');
-  var bgColor = type === 'success' ? '#059669' : type === 'error' ? '#DC2626' : '#E8B923';
-  notification.style.cssText = 'position:fixed;top:20px;right:20px;padding:16px 24px;background:' + bgColor + ';color:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:400px;';
-  notification.textContent = message;
-  document.body.appendChild(notification);
+function showNotification(msg, type) {
+  var bg = type === 'success' ? '#57C220' : '#E53935';
+  var n = document.createElement('div');
+  n.style.cssText = 'position:fixed;top:24px;right:24px;padding:16px 24px;background:'+bg+';color:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:400px;';
+  n.textContent = msg;
+  document.body.appendChild(n);
   setTimeout(function() {
-    notification.style.animation = 'slideOutRight 0.3s ease';
-    setTimeout(function() { notification.remove(); }, 300);
+    n.style.animation = 'slideOutRight 0.3s ease';
+    setTimeout(function() { n.remove(); }, 300);
   }, 3000);
 }
 
 // ============================================
-// EVENT LISTENERS
+// LOGIN
+// ============================================
+function handleLogin(e) {
+  e.preventDefault();
+  var data = getLGPDData();
+  if (!data || data.versao !== CONFIG.LGPD_VERSION) {
+    showError('Aceite a Política de Privacidade para continuar.');
+    showLGPDModal();
+    return;
+  }
+  var user = elements.username.value.trim();
+  var pass = elements.password.value;
+  if (!user || !pass) { showError('Preencha todos os campos.'); return; }
+  setLoading(true);
+  hideError();
+  setTimeout(function() {
+    if (user.toLowerCase() === CONFIG.ADMIN_USER && pass === CONFIG.ADMIN_PASS) {
+      sessionStorage.setItem('amovin_logado', 'true');
+      sessionStorage.setItem('amovin_perfil', 'admin');
+      sessionStorage.setItem('amovin_nome', 'Administrador');
+      if (elements.rememberMe.checked) localStorage.setItem('amovin_lembrar', user);
+      else localStorage.removeItem('amovin_lembrar');
+      showNotification('✅ Bem-vindo(a)!', 'success');
+      setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+    } else {
+      sessionStorage.setItem('amovin_logado', 'true');
+      sessionStorage.setItem('amovin_perfil', 'recepcao');
+      sessionStorage.setItem('amovin_nome', user);
+      if (elements.rememberMe.checked) localStorage.setItem('amovin_lembrar', user);
+      showNotification('✅ Bem-vindo(a)!', 'success');
+      setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+    }
+    setLoading(false);
+  }, 1200);
+}
+
+// ============================================
+// EVENTOS
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 Documento carregado!');
-  
   checkLGPDStatus();
-  
   var lembrar = localStorage.getItem('amovin_lembrar');
-  if (lembrar) {
-    elements.username.value = lembrar;
-    elements.rememberMe.checked = true;
-  }
-  
+  if (lembrar) { elements.username.value = lembrar; elements.rememberMe.checked = true; }
+
   elements.checkbox.addEventListener('change', function() {
-    console.log('🔵 Checkbox alterado! Marcado:', this.checked);
     if (this.checked) {
       elements.btnContinuar.disabled = false;
       elements.btnContinuar.classList.add('enabled');
-      console.log('✅ Botão CONTINUAR habilitado!');
     } else {
       elements.btnContinuar.disabled = true;
       elements.btnContinuar.classList.remove('enabled');
-      console.log('❌ Botão CONTINUAR desabilitado.');
     }
   });
-  
-  elements.btnContinuar.addEventListener('click', function(e) {
-    console.log('🔵 Botão CONTINUAR clicado!');
-    aceitarLGPD();
-  });
-  
+
+  elements.btnContinuar.addEventListener('click', aceitarLGPD);
   elements.togglePassword.addEventListener('click', function() {
-    var type = elements.password.type === 'password' ? 'text' : 'password';
-    elements.password.type = type;
-    this.textContent = type === 'password' ? '👁️' : '🙈';
+    var t = elements.password.type === 'password' ? 'text' : 'password';
+    elements.password.type = t;
+    this.textContent = t === 'password' ? '👁️' : '🙈';
   });
-  
   elements.loginForm.addEventListener('submit', handleLogin);
-  
-  elements.modal.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  });
-  
-  elements.modal.addEventListener('click', function(e) {
-    if (e.target === elements.modal) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  });
-  
-  var style = document.createElement('style');
-  style.textContent = '@keyframes slideInRight{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}@keyframes slideOutRight{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}';
-  document.head.appendChild(style);
-  
-  console.log('✅ AMOVIN ERP - Sistema inicializado com sucesso');
-  console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
+  elements.modal.addEventListener('keydown', function(e) { if (e.key === 'Escape') e.preventDefault(); });
+  elements.modal.addEventListener('click', function(e) { if (e.target === elements.modal) e.preventDefault(); });
+
+  console.log('🚀 AMOVIN ERP - Sistema Corporativo inicializado');
 });
 </script>
 
