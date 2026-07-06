@@ -21,6 +21,7 @@
   --amarelo: #F5C518;
   --grafite: #1A1A1A;
   --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
   --verde: #57C220;
   --vermelho: #E53935;
@@ -67,6 +68,11 @@ body {
 @keyframes shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ============================================
@@ -175,6 +181,27 @@ body {
 }
 
 /* ============================================
+   MENSAGEM DE ERRO
+   ============================================ */
+.error-message {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-left: 4px solid var(--vermelho);
+  color: #991B1B;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 18px;
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+
+.error-message.show {
+  display: block;
+}
+
+/* ============================================
    FORMULÁRIO
    ============================================ */
 .login-form {
@@ -231,6 +258,7 @@ body {
   color: var(--cinza);
   font-size: 17px;
   opacity: 0.5;
+  transition: var(--transicao);
 }
 
 .form-input:focus ~ .input-icon {
@@ -250,6 +278,7 @@ body {
   font-size: 17px;
   padding: 4px;
   opacity: 0.5;
+  transition: var(--transicao);
 }
 
 .password-toggle:hover {
@@ -393,99 +422,76 @@ body {
   font-weight: 600;
 }
 
-.error-message {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  border-left: 4px solid var(--vermelho);
-  color: #991B1B;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  margin-bottom: 18px;
-  display: none;
-}
-
-.error-message.show {
-  display: block;
-}
-
 /* ============================================
-   RODAPÉ VIGORRE
+   RODAPÉ VIGORRE - IGUAL AO DASHBOARD
    ============================================ */
 .login-footer {
   margin-top: 28px;
   padding-top: 20px;
   border-top: 1px solid #F0EDE8;
-  text-align: center;
   position: relative;
   z-index: 1;
 }
 
-.footer-logo {
+.rodape-grid {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.footer-logo-img {
-  width: 28px;
-  height: auto;
-  opacity: 0.4;
-  transition: var(--transicao);
-}
-
-.footer-logo-img:hover {
-  opacity: 0.8;
-}
-
-.footer-logo-text {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--cinza);
-  letter-spacing: 0.3px;
-}
-
-.footer-logo-text span {
-  color: var(--laranja);
-}
-
-.footer-links {
-  display: flex;
   gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
 }
 
-.footer-links a {
-  color: var(--cinza);
-  text-decoration: none;
-  font-size: 10px;
-  font-weight: 500;
-  transition: var(--transicao);
+.rodape-logo {
+  flex-shrink: 0;
 }
 
-.footer-links a:hover {
-  color: var(--laranja);
-  text-decoration: underline;
+.rodape-logo .logo-vigorre {
+  width: 50px;
+  height: auto;
 }
 
-.footer-copy {
+.rodape-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.rodape-info .copyright {
+  font-size: 8px;
+  color: #8A8F98;
+  letter-spacing: 0.2px;
+  margin-bottom: 3px;
+}
+
+.rodape-info .tm {
+  font-size: 6px;
+  vertical-align: super;
+}
+
+.rodape-info .contato {
   font-size: 9px;
-  color: #B0A99F;
-  letter-spacing: 0.3px;
+  color: #8A8F98;
+  margin-bottom: 2px;
 }
 
-.footer-copy a {
-  color: var(--laranja);
+.rodape-info a {
+  color: #C65A11;
   text-decoration: none;
   font-weight: 500;
 }
 
-.footer-copy a:hover {
-  text-decoration: underline;
+.rodape-info .divider {
+  color: #D1D5DB;
+  margin: 0 6px;
+}
+
+.rodape-info .email {
+  font-size: 8px;
+  color: #aaa;
+}
+
+.logo-vigorre-fallback {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--grafite);
+  display: none;
 }
 
 /* ============================================
@@ -663,6 +669,7 @@ body {
   .form-input { padding: 12px 12px 12px 38px; font-size: 13px; }
   .btn-primary { padding: 13px; font-size: 13px; }
   .modal-header, .modal-body, .modal-footer { padding: 16px 18px; }
+  .rodape-grid { flex-direction: column; text-align: center; }
 }
 
 *:focus-visible {
@@ -673,16 +680,13 @@ body {
 .hidden {
   display: none !important;
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
 </style>
 </head>
 <body>
 
-<!-- MODAL LGPD -->
+<!-- ============================================
+     MODAL LGPD
+     ============================================ -->
 <div class="modal-overlay" id="lgpdModal" role="dialog" aria-labelledby="lgpdTitle" aria-modal="true">
   <div class="lgpd-modal">
     <div class="modal-header">
@@ -730,8 +734,11 @@ body {
   </div>
 </div>
 
-<!-- CONTAINER PRINCIPAL -->
+<!-- ============================================
+     CONTAINER PRINCIPAL
+     ============================================ -->
 <div class="login-wrapper">
+
   <div class="login-card">
 
     <!-- HEADER -->
@@ -792,29 +799,34 @@ body {
 
     </form>
 
-    <!-- RODAPÉ VIGORRE -->
+    <!-- ============================================
+         RODAPÉ VIGORRE - IGUAL AO DASHBOARD
+         ============================================ -->
     <div class="login-footer">
-      <div class="footer-logo">
-        <img src="images/logo-vigorre.png" alt="Vigorre" class="footer-logo-img" onerror="this.style.display='none'">
-        <span class="footer-logo-text"><span>VIGORRE</span> DESIGNER™</span>
-      </div>
-      <div class="footer-links">
-        <a href="#" id="footerPolitica">Política de Privacidade</a>
-        <a href="#" id="footerTermos">Termos de Uso</a>
-        <a href="#" id="footerLgpd">LGPD</a>
-        <a href="https://www.vigorre.com.br" target="_blank">www.vigorre.com.br</a>
-        <a href="https://wa.me/5534991850735" target="_blank">(34) 99185-0735</a>
-      </div>
-      <div class="footer-copy">
-        © 2026 <a href="https://www.vigorre.com.br" target="_blank">VIGORRE DESIGNER™</a> - Todos os direitos reservados
-        <br>
-        <a href="mailto:contato@vigorre.com.br">contato@vigorre.com.br</a>
+      <div class="rodape-grid">
+        <div class="rodape-logo">
+          <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+          <span class="logo-vigorre-fallback">Vigorre</span>
+        </div>
+        <div class="rodape-info">
+          <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
+          <div class="contato">
+            <a href="https://www.vigorre.com.br" target="_blank">www.vigorre.com.br</a>
+            <span class="divider">|</span>
+            <a href="https://wa.me/5534991850735" target="_blank">(34) 99185-0735</a>
+          </div>
+          <div class="email">contato@vigorre.com.br</div>
+        </div>
       </div>
     </div>
 
   </div>
+
 </div>
 
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
 <script>
 // ============================================
 // CONFIGURAÇÕES
@@ -889,6 +901,9 @@ function enableLogin() {
   elements.btnHint.classList.remove('show');
 }
 
+// ============================================
+// FUNÇÃO ACEITAR LGPD (GLOBAL)
+// ============================================
 function aceitarLGPD() {
   if (!elements.checkbox.checked) {
     alert('⚠️ Marque a caixa para concordar com a Política de Privacidade.');
@@ -1045,9 +1060,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('linkPolitica').addEventListener('click', function(e) { e.preventDefault(); alert('Política de Privacidade completa'); });
   document.getElementById('linkTermos').addEventListener('click', function(e) { e.preventDefault(); alert('Termos de Uso completos'); });
-  document.getElementById('footerPolitica').addEventListener('click', function(e) { e.preventDefault(); alert('Política de Privacidade'); });
-  document.getElementById('footerTermos').addEventListener('click', function(e) { e.preventDefault(); alert('Termos de Uso'); });
-  document.getElementById('footerLgpd').addEventListener('click', function(e) { e.preventDefault(); alert('LGPD - Lei Geral de Proteção de Dados'); });
 
   console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
 });
