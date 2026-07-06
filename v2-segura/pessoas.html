@@ -69,7 +69,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal { background: white; border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; }
 .modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
 .modal-header h3 { font-size: 18px; }
 .modal-body { padding: 22px; }
@@ -78,9 +78,10 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
-.form-group textarea { resize: vertical; min-height: 60px; }
+.form-group textarea { resize: vertical; min-height: 50px; }
 .form-group .campo-obrigatorio { color: var(--vermelho); }
 .form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
+.form-group .campo-ajuda { color: var(--cinza); font-weight: 400; font-size: 9px; display: block; margin-top: 2px; }
 .foto-container { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0; }
 .foto-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #F0E9DF; display: none; }
 .foto-preview.visible { display: block; }
@@ -90,6 +91,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-salvar:hover { background: #A04A0E; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
 .section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
+.idade-info { font-size: 13px; font-weight: 400; color: var(--verde); margin-left: 6px; }
+.sub-campo { display: none; }
+.sub-campo.visible { display: block; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
@@ -98,8 +102,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
+.checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+.checkbox-group label { font-size: 12px; font-weight: 400; text-transform: none; color: var(--grafite); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.checkbox-group input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+
 @media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
-@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } .checkbox-group { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -201,17 +209,17 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <div class="modal-overlay" id="modalForm" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="tituloModal">Novo Cadastro</h3>
+      <h3 id="tituloModal">📝 Novo Cadastro - Beneficiário</h3>
       <button class="btn-fechar" onclick="fecharForm()">✕</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="pessoaId">
       <div class="form-grid">
+        
         <!-- ============================================ -->
-        <!-- SEÇÃO: FOTO (NO ALTO) -->
+        <!-- FOTO -->
         <!-- ============================================ -->
         <div class="section-title">📸 Foto <span class="campo-opcional">(opcional)</span></div>
-        
         <div class="form-full">
           <div class="form-group" style="text-align:center;">
             <div class="foto-container">
@@ -228,130 +236,252 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         </div>
 
         <!-- ============================================ -->
-        <!-- SEÇÃO: DADOS PESSOAIS -->
+        <!-- DADOS DO BENEFICIÁRIO -->
         <!-- ============================================ -->
-        <div class="section-title">👤 Dados Pessoais</div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Tipo de Cadastro <span class="campo-obrigatorio">*</span></label>
-            <select id="tipoPessoa">
-              <option value="beneficiario">👥 Beneficiário</option>
-              <option value="profissional">👨‍⚕️ Profissional</option>
-              <option value="voluntario">💪 Voluntário</option>
-            </select>
-          </div>
-        </div>
+        <div class="section-title">👤 DADOS DO BENEFICIÁRIO</div>
 
         <div class="form-full">
           <div class="form-group">
             <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="nomePessoa" placeholder="Nome completo">
+            <input type="text" id="nomePessoa" placeholder="Nome completo do beneficiário">
           </div>
         </div>
 
         <div class="form-group">
-          <label>CPF</label>
-          <input type="text" id="cpfPessoa" placeholder="123.456.789-00">
-        </div>
-
-        <div class="form-group">
-          <label>RG</label>
-          <input type="text" id="rgPessoa" placeholder="RG">
-        </div>
-
-        <div class="form-group">
-          <label>Data de Nascimento</label>
-          <input type="date" id="dataNascimentoPessoa">
-        </div>
-
-        <div class="form-group">
-          <label>Sexo</label>
-          <select id="sexoPessoa">
-            <option value="">Selecione...</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: CONTATO -->
-        <!-- ============================================ -->
-        <div class="section-title">📞 Contato</div>
-
-        <div class="form-group">
-          <label>Telefone</label>
-          <input type="text" id="telefonePessoa" placeholder="(34) 99999-9999">
-        </div>
-
-        <div class="form-group">
-          <label>WhatsApp</label>
-          <input type="text" id="whatsappPessoa" placeholder="(34) 99999-9999">
-        </div>
-
-        <div class="form-full">
           <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" id="emailPessoa" placeholder="email@exemplo.com">
-          </div>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: ENDEREÇO -->
-        <!-- ============================================ -->
-        <div class="section-title">📍 Endereço</div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Endereço</label>
-            <input type="text" id="enderecoPessoa" placeholder="Rua, número, bairro">
+            <label>Matrícula <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="matriculaPessoa" placeholder="6 primeiros dígitos do CPF" readonly style="background:#F8F4ED;">
+            <span class="campo-ajuda">Gerada automaticamente pelos 6 primeiros dígitos do CPF</span>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Cidade</label>
-          <input type="text" id="cidadePessoa" placeholder="Cidade">
+          <div class="form-group">
+            <label>CPF <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="cpfPessoa" placeholder="000.000.000-00" oninput="gerarMatricula()">
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Estado</label>
-          <select id="estadoPessoa">
-            <option value="">Selecione...</option>
-            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
-            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
-            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
-            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
-            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
-            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
-            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
-            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
-            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-          </select>
+          <div class="form-group">
+            <label>Data de Nascimento <span class="campo-obrigatorio">*</span></label>
+            <input type="date" id="dataNascimentoPessoa" onchange="calcularIdadeDisplay()">
+            <span id="idadeDisplay" class="idade-info"></span>
+          </div>
         </div>
 
-        <!-- ============================================ -->
-        <!-- SEÇÃO: RESPONSÁVEL (para beneficiários) -->
-        <!-- ============================================ -->
-        <div class="section-title">👨‍👩‍👦 Responsável <span class="campo-opcional">(para beneficiários)</span></div>
+        <div class="form-group">
+          <div class="form-group">
+            <label>Gênero <span class="campo-obrigatorio">*</span></label>
+            <select id="sexoPessoa">
+              <option value="">Selecione...</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+              <option value="NaoBinario">Não Binário</option>
+              <option value="PrefiroNaoResponder">Prefiro não responder</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>RG</label>
+            <input type="text" id="rgPessoa" placeholder="RG do beneficiário">
+          </div>
+        </div>
 
         <div class="form-full">
           <div class="form-group">
-            <label>Responsável</label>
-            <input type="text" id="responsavelPessoa" placeholder="Ex: Mãe do beneficiário João Silva">
-            <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">Preencher quando o cadastro for beneficiário</small>
+            <label>Diagnóstico/Condição</label>
+            <input type="text" id="diagnosticoPessoa" placeholder="Ex: TEA / DI / TDAH / TC">
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>CID (Código Internacional de Doença)</label>
+            <input type="text" id="cidPessoa" placeholder="Ex: CID-10:F84.0">
+          </div>
+        </div>
+
+        <!-- Nível de Suporte -->
+        <div class="form-full">
+          <div class="form-group">
+            <label>Nível de Suporte <span class="campo-obrigatorio">*</span></label>
+            <select id="nivelSuportePessoa" onchange="toggleSubCampo('nivelSuporte')">
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full sub-campo" id="subNivelSuporte">
+          <div class="form-group">
+            <label>Qual nível de suporte?</label>
+            <input type="text" id="nivelSuporteTexto" placeholder="Ex: 1, 2, 3">
+          </div>
+        </div>
+
+        <!-- Comorbidades -->
+        <div class="form-full">
+          <div class="form-group">
+            <label>Comorbidades <span class="campo-obrigatorio">*</span></label>
+            <select id="comorbidadesPessoa" onchange="toggleSubCampo('comorbidades')">
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full sub-campo" id="subComorbidades">
+          <div class="form-group">
+            <label>Quais comorbidades?</label>
+            <input type="text" id="comorbidadesTexto" placeholder="Ex: Epilepsia, Diabetes">
+          </div>
+        </div>
+
+        <!-- Estudante -->
+        <div class="form-full">
+          <div class="form-group">
+            <label>Estudante? <span class="campo-obrigatorio">*</span></label>
+            <select id="estudantePessoa" onchange="toggleSubCampo('estudante')">
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full sub-campo" id="subEstudante">
+          <div class="form-group">
+            <label>Escola</label>
+            <input type="text" id="escolaPessoa" placeholder="Nome da escola">
+          </div>
+          <div class="form-group">
+            <label>Série</label>
+            <input type="text" id="seriePessoa" placeholder="Ex: 5º ANO">
+          </div>
+        </div>
+
+        <!-- Alergia -->
+        <div class="form-full">
+          <div class="form-group">
+            <label>Possui alergia ou restrição alimentar? <span class="campo-obrigatorio">*</span></label>
+            <select id="alergiaPessoa" onchange="toggleSubCampo('alergia')">
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full sub-campo" id="subAlergia">
+          <div class="form-group">
+            <label>Qual alergia?</label>
+            <input type="text" id="alergiaTexto" placeholder="Ex: Sardinha, Lactose, Glúten">
+          </div>
+        </div>
+
+        <!-- Medicação -->
+        <div class="form-full">
+          <div class="form-group">
+            <label>Faz uso de medicação contínua? <span class="campo-obrigatorio">*</span></label>
+            <select id="medicacaoPessoa" onchange="toggleSubCampo('medicacao')">
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full sub-campo" id="subMedicacao">
+          <div class="form-group">
+            <label>Qual medicação?</label>
+            <input type="text" id="medicacaoTexto" placeholder="Ex: Ritalina, Depakene">
+          </div>
+        </div>
+
+        <!-- Atendimentos -->
+        <div class="section-title">📋 Atendimentos/Atividades que busca</div>
+        <div class="form-full">
+          <div class="form-group">
+            <label>Quais atendimentos ou atividades você mais busca na associação hoje:</label>
+            <div class="checkbox-group">
+              <label><input type="checkbox" class="atendimento-check" value="Apoio Informativo Jurídico/Direitos"> Apoio Informativo Jurídico/Direitos</label>
+              <label><input type="checkbox" class="atendimento-check" value="Oficinas Pedagógicas"> Oficinas Pedagógicas</label>
+              <label><input type="checkbox" class="atendimento-check" value="Terapias"> Terapias</label>
+              <label><input type="checkbox" class="atendimento-check" value="Lazer/Socialização"> Lazer/Socialização</label>
+              <label><input type="checkbox" class="atendimento-check" value="Acolhimento Familiar"> Acolhimento Familiar</label>
+            </div>
           </div>
         </div>
 
         <!-- ============================================ -->
-        <!-- SEÇÃO: INFORMAÇÕES ADICIONAIS -->
+        <!-- DADOS DO RESPONSÁVEL -->
         <!-- ============================================ -->
-        <div class="section-title">📋 Informações Adicionais</div>
+        <div class="section-title">👨‍👩‍👦 DADOS DO RESPONSÁVEL</div>
 
         <div class="form-full">
           <div class="form-group">
-            <label>Observações</label>
-            <textarea id="obsPessoa" rows="3" placeholder="Informações adicionais..."></textarea>
+            <label>Nome completo do responsável <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="responsavelPessoa" placeholder="Nome completo do responsável">
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Telefone/WhatsApp <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="telefonePessoa" placeholder="(34) 99999-9999">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Vínculo com Beneficiário <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="vinculoPessoa" placeholder="Ex: Mãe, Pai, Avó, Tio">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>RG do Responsável</label>
+            <input type="text" id="rgResponsavel" placeholder="RG do responsável">
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>CPF do Responsável</label>
+            <input type="text" id="cpfResponsavel" placeholder="000.000.000-00">
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Endereço completo</label>
+            <input type="text" id="enderecoPessoa" placeholder="Rua, número, bairro, cidade">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Renda familiar</label>
+            <select id="rendaPessoa">
+              <option value="">Selecione...</option>
+              <option value="Ate 2.000">Até 2.000</option>
+              <option value="2.001 a 5.000">2.001 a 5.000</option>
+              <option value="5.001 a 10.000">5.001 a 10.000</option>
+              <option value="Acima de 10.001">Acima de 10.001</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Incluída no IRPF</label>
+            <select id="irpfPessoa">
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+              <option value="NaoSeiDizer">Não sei dizer</option>
+            </select>
           </div>
         </div>
 
@@ -379,9 +509,9 @@ var fotoDataURL = null;
 // Dados iniciais
 if (pessoas.length === 0) {
     pessoas = [
-        { id: 1, nome: 'João Silva', tipo: 'beneficiario', cpf: '123.456.789-00', rg: 'MG-12.345.678', dataNasc: '2010-05-15', sexo: 'Masculino', telefone: '(34) 99999-1111', whatsapp: '(34) 99999-1111', email: 'joao@email.com', endereco: 'Rua das Flores, 123', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: 'Mãe do beneficiário João Silva', obs: 'Atendimento semanal', ativo: true, dataCadastro: '2026-07-01', foto: null },
-        { id: 2, nome: 'Dra. Lucia Ferreira', tipo: 'profissional', cpf: '987.654.321-00', rg: 'MG-98.765.432', dataNasc: '1985-03-20', sexo: 'Feminino', telefone: '(34) 99999-2222', whatsapp: '(34) 99999-2222', email: 'lucia@clinica.com', endereco: 'Rua Saúde, 456', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Assistente Social - CRESS MG 12345', ativo: true, dataCadastro: '2026-07-01', foto: null },
-        { id: 3, nome: 'Carlos Oliveira', tipo: 'voluntario', cpf: '456.789.123-00', rg: 'MG-45.678.901', dataNasc: '1990-11-10', sexo: 'Masculino', telefone: '(34) 99999-3333', whatsapp: '(34) 99999-3333', email: 'carlos@email.com', endereco: 'Rua Voluntários, 789', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Disponível fins de semana', ativo: true, dataCadastro: '2026-07-01', foto: null }
+        { id: 1, nome: 'João Silva', tipo: 'beneficiario', cpf: '12345678900', matricula: '123456', rg: 'MG-12.345.678', dataNasc: '2010-05-15', sexo: 'Masculino', diagnostico: 'TEA', cid: 'F84.0', nivelSuporte: 'Sim', nivelSuporteTexto: '3', comorbidades: 'Sim', comorbidadesTexto: 'Epilepsia', estudante: 'Sim', escola: 'Apae', serie: '5º ANO', alergia: 'Sim', alergiaTexto: 'Sardinha', medicacao: 'Sim', medicacaoTexto: 'Varios', atendimentos: ['Terapias', 'Lazer/Socialização'], responsavel: 'Mãe do beneficiário João Silva', telefone: '(34) 99999-1111', vinculo: 'Mãe', rgResponsavel: 'MG-12.345.678', cpfResponsavel: '98765432100', endereco: 'Rua das Flores, 123', renda: 'Até 2.000', irpf: 'Não', ativo: true, dataCadastro: '2026-07-01', foto: null },
+        { id: 2, nome: 'Dra. Lucia Ferreira', tipo: 'profissional', cpf: '98765432100', dataNasc: '1985-03-20', sexo: 'Feminino', telefone: '(34) 99999-2222', email: 'lucia@clinica.com', endereco: 'Rua Saúde, 456', cidade: 'Rio Paranaíba', estado: 'MG', obs: 'Assistente Social - CRESS MG 12345', ativo: true, dataCadastro: '2026-07-01', foto: null },
+        { id: 3, nome: 'Carlos Oliveira', tipo: 'voluntario', cpf: '45678912300', dataNasc: '1990-11-10', sexo: 'Masculino', telefone: '(34) 99999-3333', email: 'carlos@email.com', endereco: 'Rua Voluntários, 789', cidade: 'Rio Paranaíba', estado: 'MG', obs: 'Disponível fins de semana', ativo: true, dataCadastro: '2026-07-01', foto: null }
     ];
     salvar();
 }
@@ -419,6 +549,64 @@ function getAvatarHtml(pessoa) {
     var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
     var cor = cores[pessoa.id % cores.length] || '#C65A11';
     return '<div class="pessoa-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
+}
+
+// ============================================================
+// MATRÍCULA AUTOMÁTICA
+// ============================================================
+function gerarMatricula() {
+    var cpf = document.getElementById('cpfPessoa').value.replace(/\D/g, '');
+    if (cpf.length >= 6) {
+        var base = cpf.substring(0, 6);
+        var matricula = base;
+        var count = 0;
+        pessoas.forEach(function(p) {
+            if (p.matricula && p.matricula.indexOf(base) === 0 && p.id !== editandoId) {
+                count++;
+            }
+        });
+        if (count > 0) {
+            matricula = base + '-' + count;
+        }
+        document.getElementById('matriculaPessoa').value = matricula;
+    }
+}
+
+// ============================================================
+// IDADE AUTOMÁTICA
+// ============================================================
+function calcularIdadeDisplay() {
+    var data = document.getElementById('dataNascimentoPessoa').value;
+    if (data) {
+        var idade = calcularIdade(data);
+        document.getElementById('idadeDisplay').textContent = idade + ' anos';
+    } else {
+        document.getElementById('idadeDisplay').textContent = '';
+    }
+}
+
+// ============================================================
+// SUB-CAMPOS (mostrar/esconder)
+// ============================================================
+function toggleSubCampo(tipo) {
+    var selectId = '';
+    var subId = '';
+    var map = {
+        'nivelSuporte': { select: 'nivelSuportePessoa', sub: 'subNivelSuporte' },
+        'comorbidades': { select: 'comorbidadesPessoa', sub: 'subComorbidades' },
+        'estudante': { select: 'estudantePessoa', sub: 'subEstudante' },
+        'alergia': { select: 'alergiaPessoa', sub: 'subAlergia' },
+        'medicacao': { select: 'medicacaoPessoa', sub: 'subMedicacao' }
+    };
+    var item = map[tipo];
+    if (!item) return;
+    var select = document.getElementById(item.select);
+    var sub = document.getElementById(item.sub);
+    if (select.value === 'Sim') {
+        sub.classList.add('visible');
+    } else {
+        sub.classList.remove('visible');
+    }
 }
 
 // ============================================================
@@ -471,11 +659,11 @@ function importarParaCRM(pessoa) {
             cpf: pessoa.cpf || '',
             rg: pessoa.rg || '',
             tel1: pessoa.telefone || '',
-            whatsapp: pessoa.whatsapp || pessoa.telefone || '',
+            whatsapp: pessoa.telefone || '',
             email: pessoa.email || '',
             endereco: pessoa.endereco || '',
-            cidade: pessoa.cidade || '',
-            estado: pessoa.estado || '',
+            cidade: '',
+            estado: '',
             responsavel: pessoa.responsavel || '',
             categoria: pessoa.tipo === 'beneficiario' ? 'Beneficiário' : pessoa.tipo === 'profissional' ? 'Profissional' : 'Voluntário',
             obs: pessoa.obs || '',
@@ -539,7 +727,6 @@ function filtrar() {
             else if (p.tipo === 'profissional') badge = '<span class="badge-tipo badge-profissional">👨‍⚕️ Profissional</span>';
             else if (p.tipo === 'voluntario') badge = '<span class="badge-tipo badge-voluntario">💪 Voluntário</span>';
 
-            // IDADE: só para beneficiários
             var idadeInfo = '';
             if (p.tipo === 'beneficiario') {
                 var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
@@ -547,18 +734,17 @@ function filtrar() {
             }
 
             var responsavel = p.responsavel || '-';
-            var telefone = p.telefone || p.whatsapp || '-';
-            var cidadeEstado = (p.cidade || '') + (p.estado ? '/' + p.estado : '');
-            if (!cidadeEstado) cidadeEstado = '-';
+            var telefone = p.telefone || '-';
+            var cidadeEstado = '-';
             var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
 
             return '<div class="pessoa-card' + (p.ativo === false ? ' inativo' : '') + '">' +
                 '<div class="pessoa-info">' +
                 getAvatarHtml(p) +
                 '<div class="pessoa-dados">' +
-                '<h4>' + p.nome + ' ' + badge + idadeInfo + '</h4>' +
+                '<h4>' + p.nome + ' ' + badge + idadeInfo + ' | Matrícula: ' + (p.matricula || '-') + '</h4>' +
                 '<p>👤 Responsável: ' + responsavel + ' | 📞 ' + telefone + '</p>' +
-                '<p>📍 ' + cidadeEstado + ' | ' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
+                '<p>' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
                 '</div></div>' +
                 '<div class="contato-acoes">' +
                 '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
@@ -585,7 +771,7 @@ function atualizarKPIs() {
 window.abrirForm = function(id) {
     editandoId = id || null;
     document.getElementById('modalForm').style.display = 'flex';
-    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Cadastro' : '📝 Novo Cadastro';
+    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Cadastro' : '📝 Novo Cadastro - Beneficiário';
 
     removerFoto();
 
@@ -596,18 +782,46 @@ window.abrirForm = function(id) {
         document.getElementById('tipoPessoa').value = p.tipo || 'beneficiario';
         document.getElementById('nomePessoa').value = p.nome || '';
         document.getElementById('cpfPessoa').value = p.cpf || '';
-        document.getElementById('rgPessoa').value = p.rg || '';
+        document.getElementById('matriculaPessoa').value = p.matricula || '';
         document.getElementById('dataNascimentoPessoa').value = p.dataNasc || '';
         document.getElementById('sexoPessoa').value = p.sexo || '';
-        document.getElementById('telefonePessoa').value = p.telefone || '';
-        document.getElementById('whatsappPessoa').value = p.whatsapp || '';
-        document.getElementById('emailPessoa').value = p.email || '';
-        document.getElementById('enderecoPessoa').value = p.endereco || '';
-        document.getElementById('cidadePessoa').value = p.cidade || '';
-        document.getElementById('estadoPessoa').value = p.estado || '';
+        document.getElementById('rgPessoa').value = p.rg || '';
+        document.getElementById('diagnosticoPessoa').value = p.diagnostico || '';
+        document.getElementById('cidPessoa').value = p.cid || '';
+        document.getElementById('nivelSuportePessoa').value = p.nivelSuporte || '';
+        document.getElementById('nivelSuporteTexto').value = p.nivelSuporteTexto || '';
+        document.getElementById('comorbidadesPessoa').value = p.comorbidades || '';
+        document.getElementById('comorbidadesTexto').value = p.comorbidadesTexto || '';
+        document.getElementById('estudantePessoa').value = p.estudante || '';
+        document.getElementById('escolaPessoa').value = p.escola || '';
+        document.getElementById('seriePessoa').value = p.serie || '';
+        document.getElementById('alergiaPessoa').value = p.alergia || '';
+        document.getElementById('alergiaTexto').value = p.alergiaTexto || '';
+        document.getElementById('medicacaoPessoa').value = p.medicacao || '';
+        document.getElementById('medicacaoTexto').value = p.medicacaoTexto || '';
         document.getElementById('responsavelPessoa').value = p.responsavel || '';
-        document.getElementById('obsPessoa').value = p.obs || '';
+        document.getElementById('telefonePessoa').value = p.telefone || '';
+        document.getElementById('vinculoPessoa').value = p.vinculo || '';
+        document.getElementById('rgResponsavel').value = p.rgResponsavel || '';
+        document.getElementById('cpfResponsavel').value = p.cpfResponsavel || '';
+        document.getElementById('enderecoPessoa').value = p.endereco || '';
+        document.getElementById('rendaPessoa').value = p.renda || '';
+        document.getElementById('irpfPessoa').value = p.irpf || '';
         document.getElementById('ativoPessoa').checked = p.ativo !== false;
+
+        // Atendimentos
+        document.querySelectorAll('.atendimento-check').forEach(function(cb) {
+            cb.checked = p.atendimentos && p.atendimentos.indexOf(cb.value) >= 0;
+        });
+
+        // Recalcular idade
+        calcularIdadeDisplay();
+
+        // Sub-campos
+        ['nivelSuporte', 'comorbidades', 'estudante', 'alergia', 'medicacao'].forEach(function(tipo) {
+            toggleSubCampo(tipo);
+        });
+
         if (p.foto) {
             fotoDataURL = p.foto;
             var preview = document.getElementById('fotoPreview');
@@ -620,18 +834,37 @@ window.abrirForm = function(id) {
         document.getElementById('tipoPessoa').value = 'beneficiario';
         document.getElementById('nomePessoa').value = '';
         document.getElementById('cpfPessoa').value = '';
-        document.getElementById('rgPessoa').value = '';
+        document.getElementById('matriculaPessoa').value = '';
         document.getElementById('dataNascimentoPessoa').value = '';
         document.getElementById('sexoPessoa').value = '';
-        document.getElementById('telefonePessoa').value = '';
-        document.getElementById('whatsappPessoa').value = '';
-        document.getElementById('emailPessoa').value = '';
-        document.getElementById('enderecoPessoa').value = '';
-        document.getElementById('cidadePessoa').value = '';
-        document.getElementById('estadoPessoa').value = '';
+        document.getElementById('rgPessoa').value = '';
+        document.getElementById('diagnosticoPessoa').value = '';
+        document.getElementById('cidPessoa').value = '';
+        document.getElementById('nivelSuportePessoa').value = '';
+        document.getElementById('nivelSuporteTexto').value = '';
+        document.getElementById('comorbidadesPessoa').value = '';
+        document.getElementById('comorbidadesTexto').value = '';
+        document.getElementById('estudantePessoa').value = '';
+        document.getElementById('escolaPessoa').value = '';
+        document.getElementById('seriePessoa').value = '';
+        document.getElementById('alergiaPessoa').value = '';
+        document.getElementById('alergiaTexto').value = '';
+        document.getElementById('medicacaoPessoa').value = '';
+        document.getElementById('medicacaoTexto').value = '';
         document.getElementById('responsavelPessoa').value = '';
-        document.getElementById('obsPessoa').value = '';
+        document.getElementById('telefonePessoa').value = '';
+        document.getElementById('vinculoPessoa').value = '';
+        document.getElementById('rgResponsavel').value = '';
+        document.getElementById('cpfResponsavel').value = '';
+        document.getElementById('enderecoPessoa').value = '';
+        document.getElementById('rendaPessoa').value = '';
+        document.getElementById('irpfPessoa').value = '';
         document.getElementById('ativoPessoa').checked = true;
+        document.querySelectorAll('.atendimento-check').forEach(function(cb) { cb.checked = false; });
+        document.getElementById('idadeDisplay').textContent = '';
+        ['nivelSuporte', 'comorbidades', 'estudante', 'alergia', 'medicacao'].forEach(function(tipo) {
+            toggleSubCampo(tipo);
+        });
     }
 };
 
@@ -648,29 +881,62 @@ window.salvarPessoa = function() {
         return; 
     }
 
-    var tipo = document.getElementById('tipoPessoa').value;
-    var responsavel = document.getElementById('responsavelPessoa').value.trim();
-
-    if (tipo === 'beneficiario' && !responsavel) {
-        alert('⚠️ Para beneficiários, preencha o campo "Responsável" (ex: Mãe do beneficiário João)');
+    var tipo = document.getElementById('tipoPessoa').value || 'beneficiario';
+    var cpf = document.getElementById('cpfPessoa').value.replace(/\D/g, '');
+    if (!cpf || cpf.length < 6) {
+        alert('⚠️ CPF inválido! Digite um CPF válido.');
         return;
     }
+
+    var dataNasc = document.getElementById('dataNascimentoPessoa').value;
+    if (!dataNasc) {
+        alert('⚠️ Data de nascimento é obrigatória!');
+        return;
+    }
+
+    // Verificar matrícula
+    var matricula = document.getElementById('matriculaPessoa').value;
+    if (!matricula) {
+        alert('⚠️ Matrícula não gerada. Verifique o CPF.');
+        return;
+    }
+
+    // Atendimentos selecionados
+    var atendimentos = [];
+    document.querySelectorAll('.atendimento-check:checked').forEach(function(cb) {
+        atendimentos.push(cb.value);
+    });
 
     var dados = {
         nome: nome,
         tipo: tipo,
-        cpf: document.getElementById('cpfPessoa').value.trim(),
-        rg: document.getElementById('rgPessoa').value.trim(),
-        dataNasc: document.getElementById('dataNascimentoPessoa').value,
+        cpf: cpf,
+        matricula: matricula,
+        dataNasc: dataNasc,
         sexo: document.getElementById('sexoPessoa').value,
+        rg: document.getElementById('rgPessoa').value.trim(),
+        diagnostico: document.getElementById('diagnosticoPessoa').value.trim(),
+        cid: document.getElementById('cidPessoa').value.trim(),
+        nivelSuporte: document.getElementById('nivelSuportePessoa').value,
+        nivelSuporteTexto: document.getElementById('nivelSuporteTexto').value.trim(),
+        comorbidades: document.getElementById('comorbidadesPessoa').value,
+        comorbidadesTexto: document.getElementById('comorbidadesTexto').value.trim(),
+        estudante: document.getElementById('estudantePessoa').value,
+        escola: document.getElementById('escolaPessoa').value.trim(),
+        serie: document.getElementById('seriePessoa').value.trim(),
+        alergia: document.getElementById('alergiaPessoa').value,
+        alergiaTexto: document.getElementById('alergiaTexto').value.trim(),
+        medicacao: document.getElementById('medicacaoPessoa').value,
+        medicacaoTexto: document.getElementById('medicacaoTexto').value.trim(),
+        atendimentos: atendimentos,
+        responsavel: document.getElementById('responsavelPessoa').value.trim(),
         telefone: document.getElementById('telefonePessoa').value.trim(),
-        whatsapp: document.getElementById('whatsappPessoa').value.trim(),
-        email: document.getElementById('emailPessoa').value.trim(),
+        vinculo: document.getElementById('vinculoPessoa').value.trim(),
+        rgResponsavel: document.getElementById('rgResponsavel').value.trim(),
+        cpfResponsavel: document.getElementById('cpfResponsavel').value.replace(/\D/g, ''),
         endereco: document.getElementById('enderecoPessoa').value.trim(),
-        cidade: document.getElementById('cidadePessoa').value.trim(),
-        estado: document.getElementById('estadoPessoa').value,
-        responsavel: responsavel,
-        obs: document.getElementById('obsPessoa').value.trim(),
+        renda: document.getElementById('rendaPessoa').value,
+        irpf: document.getElementById('irpfPessoa').value,
         ativo: document.getElementById('ativoPessoa').checked
     };
 
