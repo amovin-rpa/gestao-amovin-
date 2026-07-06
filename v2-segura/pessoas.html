@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -27,178 +33,598 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
 
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.kpi-row { display: flex; gap: 15px; margin-bottom: 22px; flex-wrap: wrap; }
-.kpi-card { background: #FFFFFF; padding: 16px 22px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; flex: 1; min-width: 120px; }
-.kpi-card .valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
-.kpi-card .label { font-size: 11px; color: var(--cinza); }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
 
-.tabs { display: flex; gap: 6px; margin-bottom: 22px; }
-.tab { padding: 10px 20px; background: #FFFFFF; border: 1px solid #F0E9DF; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--cinza); transition: all 0.2s; text-decoration: none; }
-.tab.ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #FFFFFF; padding: 6px; border-radius: 12px; border: 1px solid #F0E9DF; flex-wrap: wrap; }
+.tab-btn { padding: 10px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; background: transparent; color: var(--cinza); transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.tab-btn:hover { background: #F8F4ED; }
+.tab-btn.ativo { background: var(--laranja); color: white; }
 
-.busca { margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
-.busca input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
-.busca select { padding: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; }
-.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; }
-.btn-roxo { background: var(--laranja); color: white; }
-.btn-amarelo { background: var(--amarelo); color: #1A1A1A; }
-.btn-vermelho { background: #E53935; color: white; }
-.btn-verde { background: var(--verde); color: white; }
-.btn-azul { background: var(--azul); color: white; }
-.btn-laranja { background: #F5A623; color: white; }
+.busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
+.btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
 
-.card { background: #FFFFFF; padding: 18px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #F0E9DF; }
-.card h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--grafite); }
-.card p { margin: 2px 0; color: var(--cinza); font-size: 13px; }
-.card-foto { width: 45px; height: 55px; border-radius: 6px; object-fit: cover; float: left; margin-right: 12px; border: 1px solid #E5E0D8; }
-.status-ativo { background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
-.status-inativo { background: #FFEBEE; color: #C62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
-.sem-dados { text-align: center; color: #9CA3AF; padding: 30px; }
+.pessoa-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.pessoa-card.inativo { opacity: 0.6; border-left: 4px solid var(--vermelho); }
+.pessoa-info h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
+.pessoa-info p { font-size: 11px; color: var(--cinza); }
+.pessoa-info .badge-tipo { font-size: 9px; padding: 2px 10px; border-radius: 12px; margin-left: 6px; }
+.badge-beneficiario { background: #E3F2FD; color: #1565C0; }
+.badge-profissional { background: #E8F5E9; color: #2E7D32; }
+.badge-voluntario { background: #FFF3E0; color: #E65100; }
+.btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
+.btn-editar { background: #F5A623; color: white; }
+.btn-excluir { background: var(--vermelho); color: white; }
+.btn-crm { background: var(--azul); color: white; }
+.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
 
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
-.modal-box { background: white; padding: 28px; border-radius: 14px; width: 500px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
-.modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; }
-.modal-box label { font-weight: 600; font-size: 11px; display: block; margin-bottom: 3px; color: var(--cinza); text-transform: uppercase; }
-.foto-preview { width: 70px; height: 90px; border: 2px dashed #E5E0D8; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #9CA3AF; overflow: hidden; border-radius: 6px; }
-.foto-preview img { width: 100%; height: 100%; object-fit: cover; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
+.modal-header h3 { font-size: 18px; }
+.modal-body { padding: 22px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-full { grid-column: 1 / -1; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
+.form-group textarea { resize: vertical; min-height: 60px; }
+.form-group .campo-obrigatorio { color: var(--vermelho); }
+.btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.btn-salvar:hover { background: #A04A0E; }
+.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
+.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; } .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
+@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } }
 </style>
 </head>
 <body>
 
 <aside class="sidebar">
-  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a><a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-    <div class="nav-categoria">Captação</div><a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a><a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a><a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
-    <div class="nav-categoria">Financeiro</div><a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a><a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a><a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-    <div class="nav-categoria">Pessoas</div><a href="pessoas.html" class="nav-item ativo"><span class="icone">👥</span> Gestão de Pessoas</a><a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-    <div class="nav-categoria">Atendimento</div><a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-    <div class="nav-categoria">Documentos</div><a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a><a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a><a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Educação</div><a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a><a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-    <div class="nav-categoria">Comunicação</div><a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a><a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-    <div class="nav-categoria">Relatórios</div><a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
-    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item ativo"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>👥 Gestão de Pessoas</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
-  <div class="kpi-row"><div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total de Cadastros</div></div><div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Ativos</div></div><div class="kpi-card"><div class="valor" id="kpiInativos">0</div><div class="label">Inativos</div></div></div>
-  <div class="tabs"><a href="pessoas.html" class="tab ativo">👥 Beneficiários</a><a href="profissionais.html" class="tab">👨‍⚕️ Profissionais</a><a href="voluntarios.html" class="tab">💪 Voluntários</a></div>
-  <div class="busca"><input type="text" id="busca" placeholder="Buscar por nome..." oninput="filtrar()"><select id="ordem" onchange="filtrar()"><option value="az">A-Z</option><option value="za">Z-A</option></select><select id="filtroStatus" onchange="filtrar()"><option value="todos">Todos</option><option value="Ativo">Ativos</option><option value="Inativo">Inativos</option></select><button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button></div>
-  <div id="lista"></div>
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="topo-bar">
+    <h1>👥 Gestão de Pessoas</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiBeneficiarios">0</div><div class="kpi-label">👥 Beneficiários</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiProfissionais">0</div><div class="kpi-label">👨‍⚕️ Profissionais</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiVoluntarios">0</div><div class="kpi-label">💪 Voluntários</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn ativo" onclick="mudarAba('beneficiario')">👥 Beneficiários</button>
+    <button class="tab-btn" onclick="mudarAba('profissional')">👨‍⚕️ Profissionais</button>
+    <button class="tab-btn" onclick="mudarAba('voluntario')">💪 Voluntários</button>
+    <button class="tab-btn" onclick="mudarAba('todos')">📋 Todos</button>
+  </div>
+
+  <div class="busca-bar">
+    <input type="text" id="buscaPessoa" placeholder="Buscar por nome, CPF, responsável..." oninput="filtrar()">
+    <button class="btn-novo" onclick="abrirForm()">+ Novo Cadastro</button>
+  </div>
+
+  <div id="listaPessoas"></div>
+
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
-<div class="modal" id="modalForm"><div class="modal-box">
-  <h3 id="tituloModal">Novo Beneficiário</h3><input type="hidden" id="pessoaId">
-  <div class="foto-preview" id="fotoPreview">3x4</div><input type="file" id="fotoUpload" accept="image/*" onchange="previewFoto()" style="font-size:12px;">
-  <label>Nome completo *</label><input type="text" id="nomePessoa">
-  <div class="form-row"><div><label>Idade</label><input type="number" id="idadePessoa"></div><div><label>Data Nasc.</label><input type="date" id="nascimentoPessoa"></div></div>
-  <div class="form-row"><div><label>CPF</label><input type="text" id="cpfPessoa"></div><div><label>RG</label><input type="text" id="rgPessoa"></div></div>
-  <label>Telefone</label><input type="text" id="telefonePessoa">
-  <label>Projeto</label><select id="projetoPessoa"><option>Inclusão Digital</option><option>Esporte para Todos</option><option>Reforço Escolar</option><option>Capacitação Profissional</option></select>
-  <label>Status</label><select id="statusPessoa"><option>Ativo</option><option>Inativo</option></select>
-  <label>Diagnóstico</label><input type="text" id="diagnosticoPessoa">
-  <label>CID</label><input type="text" id="cidPessoa">
-  <label>Responsável</label><input type="text" id="respNome">
-  <label>Tel. Responsável</label><input type="text" id="respFone">
-  <label>Endereço</label><input type="text" id="enderecoPessoa">
-  <label>Observações</label><textarea id="obsPessoa" rows="2"></textarea>
-  <button class="btn btn-roxo" onclick="salvar()">Salvar</button>
-  <button class="btn btn-vermelho" onclick="fecharForm()">Cancelar</button>
-</div></div>
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="modalForm" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tituloModal">Novo Cadastro</h3>
+      <button class="btn-fechar" onclick="fecharForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pessoaId">
+      <div class="form-grid">
+        <div class="section-title">👤 Dados Pessoais</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Tipo de Cadastro <span class="campo-obrigatorio">*</span></label>
+            <select id="tipoPessoa">
+              <option value="beneficiario">👥 Beneficiário</option>
+              <option value="profissional">👨‍⚕️ Profissional</option>
+              <option value="voluntario">💪 Voluntário</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="nomePessoa" placeholder="Nome completo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>CPF</label>
+          <input type="text" id="cpfPessoa" placeholder="123.456.789-00">
+        </div>
+
+        <div class="form-group">
+          <label>RG</label>
+          <input type="text" id="rgPessoa" placeholder="RG">
+        </div>
+
+        <div class="form-group">
+          <label>Data de Nascimento</label>
+          <input type="date" id="dataNascimentoPessoa">
+        </div>
+
+        <div class="form-group">
+          <label>Sexo</label>
+          <select id="sexoPessoa">
+            <option value="">Selecione...</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <div class="section-title">📞 Contato</div>
+
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="text" id="telefonePessoa" placeholder="(34) 99999-9999">
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="text" id="whatsappPessoa" placeholder="(34) 99999-9999">
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="emailPessoa" placeholder="email@exemplo.com">
+          </div>
+        </div>
+
+        <div class="section-title">📍 Endereço</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" id="enderecoPessoa" placeholder="Rua, número, bairro">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cidade</label>
+          <input type="text" id="cidadePessoa" placeholder="Cidade">
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="estadoPessoa">
+            <option value="">Selecione...</option>
+            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+          </select>
+        </div>
+
+        <div class="section-title">👨‍👩‍👦 Responsável (para beneficiários)</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Responsável</label>
+            <input type="text" id="responsavelPessoa" placeholder="Ex: Mãe do beneficiário João Silva">
+            <small style="color:var(--cinza);font-size:10px;">Preencher quando o cadastro for beneficiário</small>
+          </div>
+        </div>
+
+        <div class="section-title">📋 Informações Adicionais</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea id="obsPessoa" rows="3" placeholder="Informações adicionais..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" id="ativoPessoa" checked>
+            <label for="ativoPessoa" style="text-transform:none;font-weight:400;color:var(--grafite);">✅ Ativo</label>
+          </div>
+        </div>
+      </div>
+      <button class="btn-salvar" onclick="salvarPessoa()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
 
 <script>
-var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
+// ============================================================
+// BANCO DE DADOS LOCAL
+// ============================================================
+var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+var abaAtual = 'beneficiario';
 var editandoId = null;
-if (beneficiarios.length === 0) { beneficiarios.push({id:1,nome:'Maria Silva',idade:17,telefone:'(34) 99999-0001',projeto:'Inclusão Digital',status:'Ativo',foto:''}); beneficiarios.push({id:2,nome:'João Santos',idade:22,telefone:'(34) 99999-0002',projeto:'Esporte para Todos',status:'Ativo',foto:''}); salvarDados(); }
-function salvarDados() { localStorage.setItem('amovin_beneficiarios', JSON.stringify(beneficiarios)); }
-function atualizarKPIs() { document.getElementById('kpiTotal').textContent = beneficiarios.length; document.getElementById('kpiAtivos').textContent = beneficiarios.filter(function(b){return b.status==='Ativo';}).length; document.getElementById('kpiInativos').textContent = beneficiarios.filter(function(b){return b.status==='Inativo';}).length; }
-function filtrar() { var busca = document.getElementById('busca').value.toLowerCase(), ordem = document.getElementById('ordem').value, st = document.getElementById('filtroStatus').value, lista = []; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].nome.toLowerCase().indexOf(busca) >= 0 && (st === 'todos' || beneficiarios[i].status === st)) lista.push(beneficiarios[i]); } lista.sort(function(a,b){return ordem==='az'?a.nome.localeCompare(b.nome):b.nome.localeCompare(a.nome);}); mostrar(lista); }
-function mostrar(lista) {
-    if (!lista) { lista = beneficiarios.slice(); lista.sort(function(a,b){return a.nome.localeCompare(b.nome);}); }
-    var h = ''; if (lista.length === 0) h = '<div class="sem-dados">Nenhum beneficiário.</div>';
-    for (var i = 0; i < lista.length; i++) { var b = lista[i], sc = b.status === 'Ativo' ? 'status-ativo' : 'status-inativo';
-        h += '<div class="card">' + (b.foto ? '<img src="'+b.foto+'" class="card-foto" alt="">' : '<div class="card-foto" style="background:#F8F4ED;display:flex;align-items:center;justify-content:center;font-size:9px;color:#9CA3AF;">3x4</div>');
-        h += '<h3>' + b.nome + '<span class="'+sc+'">'+b.status+'</span></h3><p>Idade: '+(b.idade||'-')+' | Projeto: '+b.projeto+' | Tel: '+(b.telefone||'-')+'</p>';
-        if (b.diagnostico) h += '<p>Diagnóstico: '+b.diagnostico+(b.cid?' | CID: '+b.cid:'')+'</p>';
-        if (b.respNome) h += '<p>Resp: '+b.respNome+(b.respFone?' | Tel: '+b.respFone:'')+'</p>';
-        h += '<button class="btn btn-amarelo" onclick="editar('+b.id+')">Editar</button> <button class="btn btn-verde" onclick="window.location.href=\'prontuario.html?id='+b.id+'\'">Prontuário</button> <button class="btn btn-laranja" onclick="imprimirTermo('+b.id+',\'adesao\')">Termo Adesão</button> <button class="btn btn-azul" onclick="imprimir('+b.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+b.id+')">Excluir</button></div>';
-    }
-    document.getElementById('lista').innerHTML = h;
+
+// Dados iniciais
+if (pessoas.length === 0) {
+    pessoas = [
+        { id: 1, nome: 'João Silva', tipo: 'beneficiario', cpf: '123.456.789-00', rg: 'MG-12.345.678', dataNasc: '2010-05-15', sexo: 'Masculino', telefone: '(34) 99999-1111', whatsapp: '(34) 99999-1111', email: 'joao@email.com', endereco: 'Rua das Flores, 123', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: 'Mãe do beneficiário João Silva', obs: 'Atendimento semanal', ativo: true, dataCadastro: '2026-07-01' },
+        { id: 2, nome: 'Dra. Lucia Ferreira', tipo: 'profissional', cpf: '987.654.321-00', rg: 'MG-98.765.432', dataNasc: '1985-03-20', sexo: 'Feminino', telefone: '(34) 99999-2222', whatsapp: '(34) 99999-2222', email: 'lucia@clinica.com', endereco: 'Rua Saúde, 456', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Assistente Social - CRESS MG 12345', ativo: true, dataCadastro: '2026-07-01' },
+        { id: 3, nome: 'Carlos Oliveira', tipo: 'voluntario', cpf: '456.789.123-00', rg: 'MG-45.678.901', dataNasc: '1990-11-10', sexo: 'Masculino', telefone: '(34) 99999-3333', whatsapp: '(34) 99999-3333', email: 'carlos@email.com', endereco: 'Rua Voluntários, 789', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Disponível fins de semana', ativo: true, dataCadastro: '2026-07-01' }
+    ];
+    salvar();
 }
-window.previewFoto = function() { var f = document.getElementById('fotoUpload').files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;">'; }; r.readAsDataURL(f); };
+
+function salvar() {
+    localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
+}
+
+// ============================================================
+// FUNÇÃO PARA IMPORTAR PARA O CRM
+// ============================================================
+function importarParaCRM(pessoa) {
+    var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
+    var existe = contatos.some(function(c) {
+        return c.nome === pessoa.nome && c.tipo === pessoa.tipo && c.origem === 'pessoas';
+    });
+
+    if (!existe) {
+        var novoContato = {
+            id: Date.now(),
+            nome: pessoa.nome || '',
+            tipo: pessoa.tipo || 'crm',
+            cpf: pessoa.cpf || '',
+            rg: pessoa.rg || '',
+            tel1: pessoa.telefone || '',
+            whatsapp: pessoa.whatsapp || pessoa.telefone || '',
+            email: pessoa.email || '',
+            endereco: pessoa.endereco || '',
+            cidade: pessoa.cidade || '',
+            estado: pessoa.estado || '',
+            responsavel: pessoa.responsavel || '',
+            categoria: pessoa.tipo === 'beneficiario' ? 'Beneficiário' : pessoa.tipo === 'profissional' ? 'Profissional' : 'Voluntário',
+            obs: pessoa.obs || '',
+            favorito: false,
+            origem: 'pessoas',
+            ativo: true,
+            dataCadastro: new Date().toISOString().split('T')[0]
+        };
+        contatos.push(novoContato);
+        localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
+        return true;
+    }
+    return false;
+}
+
+// ============================================================
+// RENDERIZAÇÃO
+// ============================================================
+function mudarAba(aba) {
+    abaAtual = aba;
+    document.querySelectorAll('.tab-btn').forEach(function(el) {
+        el.classList.remove('ativo');
+        if (el.textContent.includes('Beneficiários') && aba === 'beneficiario') el.classList.add('ativo');
+        else if (el.textContent.includes('Profissionais') && aba === 'profissional') el.classList.add('ativo');
+        else if (el.textContent.includes('Voluntários') && aba === 'voluntario') el.classList.add('ativo');
+        else if (el.textContent.includes('Todos') && aba === 'todos') el.classList.add('ativo');
+    });
+    filtrar();
+}
+
+function filtrar() {
+    var lista = pessoas.slice();
+
+    if (abaAtual !== 'todos') {
+        lista = lista.filter(function(p) { return p.tipo === abaAtual; });
+    }
+
+    var busca = document.getElementById('buscaPessoa').value.toLowerCase();
+    if (busca) {
+        lista = lista.filter(function(p) {
+            return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
+                   (p.cpf || '').indexOf(busca) >= 0 ||
+                   (p.responsavel || '').toLowerCase().indexOf(busca) >= 0;
+        });
+    }
+
+    lista.sort(function(a, b) {
+        return (a.nome || '').localeCompare(b.nome || '');
+    });
+
+    var container = document.getElementById('listaPessoas');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum registro encontrado.</div>';
+    } else {
+        container.innerHTML = lista.map(function(p) {
+            var badge = '';
+            if (p.tipo === 'beneficiario') badge = '<span class="badge-tipo badge-beneficiario">👥 Beneficiário</span>';
+            else if (p.tipo === 'profissional') badge = '<span class="badge-tipo badge-profissional">👨‍⚕️ Profissional</span>';
+            else if (p.tipo === 'voluntario') badge = '<span class="badge-tipo badge-voluntario">💪 Voluntário</span>';
+
+            var responsavelInfo = p.responsavel ? ' | 👤 ' + p.responsavel : '';
+            var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
+
+            return '<div class="pessoa-card' + (p.ativo === false ? ' inativo' : '') + '">' +
+                '<div class="pessoa-info">' +
+                '<h4>' + p.nome + ' ' + badge + '</h4>' +
+                '<p>📞 ' + (p.telefone || p.whatsapp || '-') + ' | 📧 ' + (p.email || '-') + responsavelInfo + '</p>' +
+                '<p style="font-size:10px;color:#9CA3AF;">📍 ' + (p.cidade || '') + (p.estado ? '/' + p.estado : '') + ' | ' + status + ' | 📅 ' + (p.dataCadastro || '') + '</p>' +
+                '</div>' +
+                '<div class="contato-acoes">' +
+                '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
+                '<button class="btn-acao btn-excluir" onclick="excluirPessoa(' + p.id + ')">🗑️</button>' +
+                '<button class="btn-acao btn-crm" onclick="enviarParaCRM(' + p.id + ')">📤 CRM</button>' +
+                '</div></div>';
+        }).join('');
+    }
+
+    atualizarKPIs();
+}
+
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = pessoas.length;
+    document.getElementById('kpiBeneficiarios').textContent = pessoas.filter(function(p) { return p.tipo === 'beneficiario'; }).length;
+    document.getElementById('kpiProfissionais').textContent = pessoas.filter(function(p) { return p.tipo === 'profissional'; }).length;
+    document.getElementById('kpiVoluntarios').textContent = pessoas.filter(function(p) { return p.tipo === 'voluntario'; }).length;
+    document.getElementById('kpiAtivos').textContent = pessoas.filter(function(p) { return p.ativo !== false; }).length;
+}
+
+// ============================================================
+// FORMULÁRIO
+// ============================================================
 window.abrirForm = function(id) {
-    editandoId = id || null; document.getElementById('modalForm').style.display = 'block';
-    document.getElementById('tituloModal').textContent = id ? 'Editar' : 'Novo';
-    document.getElementById('fotoUpload').value = ''; document.getElementById('fotoPreview').innerHTML = '3x4';
-    if (id) { var b = null; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } } if (b) {
-        document.getElementById('pessoaId').value=b.id;document.getElementById('nomePessoa').value=b.nome;document.getElementById('idadePessoa').value=b.idade||'';document.getElementById('nascimentoPessoa').value=b.nascimento||'';document.getElementById('cpfPessoa').value=b.cpf||'';document.getElementById('rgPessoa').value=b.rg||'';document.getElementById('telefonePessoa').value=b.telefone||'';document.getElementById('projetoPessoa').value=b.projeto;document.getElementById('statusPessoa').value=b.status;document.getElementById('diagnosticoPessoa').value=b.diagnostico||'';document.getElementById('cidPessoa').value=b.cid||'';document.getElementById('respNome').value=b.respNome||'';document.getElementById('respFone').value=b.respFone||'';document.getElementById('enderecoPessoa').value=b.endereco||'';document.getElementById('obsPessoa').value=b.obs||'';
-        if (b.foto) { document.getElementById('fotoPreview').innerHTML = '<img src="'+b.foto+'" style="width:100%;height:100%;object-fit:cover;">'; }
-    }} else { document.getElementById('pessoaId').value='';document.getElementById('nomePessoa').value='';document.getElementById('idadePessoa').value='';document.getElementById('nascimentoPessoa').value='';document.getElementById('cpfPessoa').value='';document.getElementById('rgPessoa').value='';document.getElementById('telefonePessoa').value='';document.getElementById('projetoPessoa').value='Inclusão Digital';document.getElementById('statusPessoa').value='Ativo';document.getElementById('diagnosticoPessoa').value='';document.getElementById('cidPessoa').value='';document.getElementById('respNome').value='';document.getElementById('respFone').value='';document.getElementById('enderecoPessoa').value='';document.getElementById('obsPessoa').value=''; }
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'flex';
+    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Cadastro' : '📝 Novo Cadastro';
+
+    if (id) {
+        var p = pessoas.find(function(x) { return x.id === id; });
+        if (!p) return;
+        document.getElementById('pessoaId').value = p.id;
+        document.getElementById('tipoPessoa').value = p.tipo || 'beneficiario';
+        document.getElementById('nomePessoa').value = p.nome || '';
+        document.getElementById('cpfPessoa').value = p.cpf || '';
+        document.getElementById('rgPessoa').value = p.rg || '';
+        document.getElementById('dataNascimentoPessoa').value = p.dataNasc || '';
+        document.getElementById('sexoPessoa').value = p.sexo || '';
+        document.getElementById('telefonePessoa').value = p.telefone || '';
+        document.getElementById('whatsappPessoa').value = p.whatsapp || '';
+        document.getElementById('emailPessoa').value = p.email || '';
+        document.getElementById('enderecoPessoa').value = p.endereco || '';
+        document.getElementById('cidadePessoa').value = p.cidade || '';
+        document.getElementById('estadoPessoa').value = p.estado || '';
+        document.getElementById('responsavelPessoa').value = p.responsavel || '';
+        document.getElementById('obsPessoa').value = p.obs || '';
+        document.getElementById('ativoPessoa').checked = p.ativo !== false;
+    } else {
+        document.getElementById('pessoaId').value = '';
+        document.getElementById('tipoPessoa').value = 'beneficiario';
+        document.getElementById('nomePessoa').value = '';
+        document.getElementById('cpfPessoa').value = '';
+        document.getElementById('rgPessoa').value = '';
+        document.getElementById('dataNascimentoPessoa').value = '';
+        document.getElementById('sexoPessoa').value = '';
+        document.getElementById('telefonePessoa').value = '';
+        document.getElementById('whatsappPessoa').value = '';
+        document.getElementById('emailPessoa').value = '';
+        document.getElementById('enderecoPessoa').value = '';
+        document.getElementById('cidadePessoa').value = '';
+        document.getElementById('estadoPessoa').value = '';
+        document.getElementById('responsavelPessoa').value = '';
+        document.getElementById('obsPessoa').value = '';
+        document.getElementById('ativoPessoa').checked = true;
+    }
 };
-window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
-window.salvar = function() {
-    var nome = document.getElementById('nomePessoa').value;
-    if (!nome) { alert('Preencha o nome!'); return; }
-    
-    var fotoSalvar = '';
-    var previewDiv = document.getElementById('fotoPreview');
-    if (previewDiv) {
-        var imgElement = previewDiv.querySelector('img');
-        if (imgElement && imgElement.src && imgElement.src.indexOf('data:') >= 0) {
-            fotoSalvar = imgElement.src;
+
+window.fecharForm = function() {
+    document.getElementById('modalForm').style.display = 'none';
+};
+
+window.salvarPessoa = function() {
+    var nome = document.getElementById('nomePessoa').value.trim();
+    if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
+
+    var tipo = document.getElementById('tipoPessoa').value;
+    var responsavel = document.getElementById('responsavelPessoa').value.trim();
+
+    if (tipo === 'beneficiario' && !responsavel) {
+        alert('⚠️ Para beneficiários, preencha o campo "Responsável" (ex: Mãe do beneficiário João)');
+        return;
+    }
+
+    var dados = {
+        nome: nome,
+        tipo: tipo,
+        cpf: document.getElementById('cpfPessoa').value.trim(),
+        rg: document.getElementById('rgPessoa').value.trim(),
+        dataNasc: document.getElementById('dataNascimentoPessoa').value,
+        sexo: document.getElementById('sexoPessoa').value,
+        telefone: document.getElementById('telefonePessoa').value.trim(),
+        whatsapp: document.getElementById('whatsappPessoa').value.trim(),
+        email: document.getElementById('emailPessoa').value.trim(),
+        endereco: document.getElementById('enderecoPessoa').value.trim(),
+        cidade: document.getElementById('cidadePessoa').value.trim(),
+        estado: document.getElementById('estadoPessoa').value,
+        responsavel: responsavel,
+        obs: document.getElementById('obsPessoa').value.trim(),
+        ativo: document.getElementById('ativoPessoa').checked
+    };
+
+    if (editandoId) {
+        var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) {
+                pessoas[idx][k] = dados[k];
+            }
+            pessoas[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
+        }
+    } else {
+        dados.id = Date.now();
+        dados.dataCadastro = new Date().toISOString().split('T')[0];
+        pessoas.push(dados);
+    }
+
+    salvar();
+
+    var pessoaSalva = editandoId ? pessoas.find(function(p) { return p.id === editandoId; }) : dados;
+    if (pessoaSalva) {
+        var importado = importarParaCRM(pessoaSalva);
+        if (importado) {
+            alert('✅ Cadastro salvo e importado para o CRM Social!');
+        } else {
+            alert('✅ Cadastro salvo! (Já existe no CRM)');
         }
     }
-    
-    var dados = {
-        nome: nome, idade: document.getElementById('idadePessoa').value, nascimento: document.getElementById('nascimentoPessoa').value,
-        cpf: document.getElementById('cpfPessoa').value, rg: document.getElementById('rgPessoa').value,
-        telefone: document.getElementById('telefonePessoa').value, projeto: document.getElementById('projetoPessoa').value,
-        status: document.getElementById('statusPessoa').value, diagnostico: document.getElementById('diagnosticoPessoa').value,
-        cid: document.getElementById('cidPessoa').value, respNome: document.getElementById('respNome').value,
-        respFone: document.getElementById('respFone').value, endereco: document.getElementById('enderecoPessoa').value,
-        obs: document.getElementById('obsPessoa').value, foto: fotoSalvar
-    };
-    
-    if (editandoId) {
-        for (var i = 0; i < beneficiarios.length; i++) {
-            if (beneficiarios[i].id === editandoId) { for (var k in dados) { beneficiarios[i][k] = dados[k]; } break; }
-        }
-    } else { dados.id = Date.now(); beneficiarios.push(dados); }
-    
-    salvarDados(); document.getElementById('modalForm').style.display = 'none'; filtrar(); atualizarKPIs();
+
+    fecharForm();
+    filtrar();
 };
-window.editar = function(id) { abrirForm(id); };
-window.excluir = function(id) { if (!confirm('Excluir?')) return; var novo = []; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id !== id) novo.push(beneficiarios[i]); } beneficiarios = novo; salvarDados(); filtrar(); atualizarKPIs(); };
-window.imprimir = function(id) { var b = null; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } } if (!b) return; var w = window.open('','_blank'); w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px}</style></head><body><h2>AMOVIN</h2><p>Nome: '+b.nome+'</p><p>Idade: '+(b.idade||'-')+'</p><p>Projeto: '+b.projeto+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
-window.imprimirTermo = function(id, tipo) { var b = null; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } } if (!b) return; var d = new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}); var w = window.open('','_blank'); w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}</style></head><body><h3>AMOVIN</h3><p><strong>'+(b.respNome||'___')+'</strong></p><p>Beneficiário: '+b.nome+'</p><p>Rio Paranaíba, '+d+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura</div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 
+// ============================================================
+// ENVIAR PARA CRM (botão manual)
+// ============================================================
+window.enviarParaCRM = function(id) {
+    var p = pessoas.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    var importado = importarParaCRM(p);
+    if (importado) {
+        alert('✅ ' + p.nome + ' foi importado para o CRM Social!');
+    } else {
+        alert('ℹ️ ' + p.nome + ' já existe no CRM Social.');
+    }
+};
+
+// ============================================================
+// EXCLUIR (NÃO EXCLUI DO CRM)
+// ============================================================
+window.excluirPessoa = function(id) {
+    var p = pessoas.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    if (!confirm('⚠️ Tem certeza que deseja excluir ' + p.nome + '?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social. O contato permanecerá no CRM como inativo.')) return;
+
+    p.ativo = false;
+    salvar();
+    filtrar();
+    alert('✅ ' + p.nome + ' foi marcado como INATIVO.\nO registro permanece no CRM Social.');
+};
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+filtrar();
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = { admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'], recepcao: ['dashboard','pessoas','profissionais','voluntarios','agenda','documentos'], consulta: ['dashboard','agenda','assistente'], financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'], voluntario: ['dashboard','agenda'] };
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos['admin'];
-document.querySelectorAll('.nav-item').forEach(function(item) { var href = item.getAttribute('href') || ''; var pagina = href.replace('.html',''); if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') { item.style.display = 'none'; } });
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
 
-if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-history.pushState(null,null,location.href); window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
-var timeout;function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
-document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
 
-atualizarKPIs();filtrar();
+if (!sessionStorage.getItem('amovin_logado')) {
+    window.location.href = 'index.html';
+}
 </script>
 </body>
 </html>
