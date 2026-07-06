@@ -142,9 +142,11 @@ function carregarMenu(paginaAtiva) {
     if (cargoEl) cargoEl.textContent = cargo;
 
     // ============================================================
-    // CONTROLE DE PERFIL (esconder módulos não permitidos)
+    // CONTROLE DE PERFIL - ADMIN VÊ TUDO
     // ============================================================
     var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+    
+    // LISTA COMPLETA DE MÓDULOS (INCLUINDO CAPTA+)
     var modulosPermitidos = {
         admin: ['dashboard','bi','capta','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
         recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
@@ -154,9 +156,19 @@ function carregarMenu(paginaAtiva) {
     };
 
     var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+    
     document.querySelectorAll('.nav-item').forEach(function(item) {
         var href = item.getAttribute('href') || '';
+        // Verifica se é um link interno (.html) ou externo (http)
         var pagina = href.replace('.html', '');
+        // Se for link externo (Amovin Capta+), não esconde
+        if (href.indexOf('http') === 0) {
+            // Links externos sempre visíveis para admin
+            if (perfil !== 'admin') {
+                item.style.display = 'none';
+            }
+            return;
+        }
         if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
             item.style.display = 'none';
         }
