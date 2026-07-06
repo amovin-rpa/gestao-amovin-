@@ -26,6 +26,13 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
 .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
+.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
+.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
+.user-info .nome { font-weight: 600; font-size: 13.5px; }
+.user-info .cargo { font-size: 11px; color: #6B7280; }
+.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-sair:hover { background: #F0E9DF; }
 
 /* MAIN */
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
@@ -92,46 +99,8 @@ tr:hover { background: #FFF8E7; }
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-    <div class="sidebar-logo-fallback">🌻</div>
-    <div class="brand">Amovin ERP Social</div>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div>
-    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <a href="bi.html" class="nav-item ativo"><span class="icone">📈</span> BI Executivo</a>
-    <div class="nav-categoria">Captação</div>
-    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
-    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
-    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
-    <div class="nav-categoria">Financeiro</div>
-    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
-    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
-    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-    <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
-    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-    <div class="nav-categoria">Atendimento</div>
-    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-    <div class="nav-categoria">Documentos</div>
-    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
-    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
-    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Educação</div>
-    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
-    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-    <div class="nav-categoria">Comunicação</div>
-    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
-    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-    <div class="nav-categoria">Relatórios</div>
-    <a href="relatorios.html" class="nav-item"><span class="icone">📋</span> Relatórios</a>
-    <div class="nav-categoria">Sistema</div>
-    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
-    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
-  </nav>
-</aside>
+<!-- ==================== MENU LATERAL ==================== -->
+<div id="menu-container"></div>
 
 <main class="main-content">
   <div class="topo-bar">
@@ -168,6 +137,7 @@ tr:hover { background: #FFF8E7; }
   </div>
 </main>
 
+<script src="menu.js"></script>
 <script>
 function getTodosDados() {
     return {
@@ -229,15 +199,11 @@ window.atualizarBI = function() {
     document.getElementById('ultimasMovimentacoes').innerHTML = todosLogs.length > 0 ? todosLogs.map(function(l){ return '<tr><td>'+(l.data?new Date(l.data).toLocaleString('pt-BR'):'-')+'</td><td>'+(l.modulo||'-')+'</td><td>'+(l.acao||'-')+'</td><td>'+(l.detalhe||'-')+'</td><td>👤 '+(l.usuario||'-')+'</td></tr>'; }).join('') : '<tr><td colspan="5" class="sem-dados">Nenhuma movimentação.</td></tr>';
 };
 
+// ============================================================
+// VERIFICAÇÃO DE SESSÃO
+// ============================================================
 if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-history.pushState(null, null, location.href);
-window.addEventListener('popstate', function() { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
-var timeout;
-function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(function() { sessionStorage.clear(); alert('Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-document.addEventListener('mousemove', resetTimeout);
-document.addEventListener('keypress', resetTimeout);
-document.addEventListener('click', resetTimeout);
-resetTimeout();
+
 atualizarBI();
 </script>
 </body>
