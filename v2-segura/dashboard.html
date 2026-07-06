@@ -15,6 +15,7 @@
   --cinza: #6B7280;
   --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -202,14 +203,14 @@ body {
 /* ==================== STATS ==================== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 18px;
   margin-bottom: 28px;
 }
 
 .stat-card {
   background: #FFFFFF;
-  padding: 24px 26px;
+  padding: 20px 22px;
   border-radius: 18px;
   border: 1px solid #F0E9DF;
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
@@ -222,9 +223,9 @@ body {
   box-shadow: 0 12px 30px rgba(0,0,0,0.06);
 }
 
-.stat-icon { font-size: 26px; margin-bottom: 12px; }
-.stat-valor { font-size: 29px; font-weight: 800; color: #1A1A1A; letter-spacing: -0.8px; }
-.stat-label { font-size: 12px; color: #6B7280; margin-top: 5px; font-weight: 600; }
+.stat-icon { font-size: 24px; margin-bottom: 10px; }
+.stat-valor { font-size: 28px; font-weight: 800; color: #1A1A1A; letter-spacing: -0.8px; }
+.stat-label { font-size: 11px; color: #6B7280; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
 
 /* ==================== CARDS ==================== */
 .info-grid {
@@ -236,26 +237,28 @@ body {
 
 .card {
   background: #FFFFFF;
-  padding: 26px;
+  padding: 24px 26px;
   border-radius: 18px;
   border: 1px solid #F0E9DF;
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
 }
 
 .card h3 {
-  font-size: 15.5px;
+  font-size: 15px;
   font-weight: 700;
   color: #1A1A1A;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #F5F0E8;
 }
 
 .lista-item {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 13px 0;
+  padding: 11px 0;
   border-bottom: 1px solid #F5F0E8;
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 .lista-item:last-child { border-bottom: none; }
@@ -264,17 +267,21 @@ body {
   font-weight: 700;
   color: #C65A11;
   min-width: 52px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.lista-item .info strong { display: block; font-weight: 600; color: #1A1A1A; }
-.lista-item .info small { color: #6B7280; font-size: 12px; }
+.lista-item .info strong { display: block; font-weight: 600; color: #1A1A1A; font-size: 13px; }
+.lista-item .info small { color: #6B7280; font-size: 11px; }
+.lista-item .badge-status { font-size: 9px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.badge-critico { background: #FFEBEE; color: #C62828; }
+.badge-alerta { background: #FFF3E0; color: #E65100; }
+.badge-normal { background: #E8F5E9; color: #2E7D32; }
 
 .sem-dados {
   text-align: center;
-  padding: 32px 0;
+  padding: 28px 0;
   color: #9CA3AF;
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 /* ==================== RODAPÉ ==================== */
@@ -384,7 +391,9 @@ body {
     <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
 
     <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
     <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
 
     <div class="nav-categoria">Atendimento</div>
@@ -392,6 +401,7 @@ body {
 
     <div class="nav-categoria">Documentos</div>
     <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="qrcodes.html" class="nav-item"><span class="icone">📱</span> QR Codes</a>
     <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
     <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
 
@@ -404,7 +414,7 @@ body {
     <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
 
     <div class="nav-categoria">Relatórios</div>
-    <a href="relatorios.html" class="nav-item"><span class="icone">📋</span> Relatórios</a>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
 
     <div class="nav-categoria">Sistema</div>
     <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
@@ -413,13 +423,13 @@ body {
 
   <div class="sidebar-footer">
     <div class="user-card">
-      <div class="user-avatar">A</div>
+      <div class="user-avatar" id="userAvatar">A</div>
       <div class="user-info">
-        <div class="nome">Administrador</div>
-        <div class="cargo">Admin</div>
+        <div class="nome" id="userNome">Administrador</div>
+        <div class="cargo" id="userCargo">Admin</div>
       </div>
     </div>
-    <button class="btn-sair" onclick="window.location.href='index.html'">Sair do Sistema</button>
+    <button class="btn-sair" onclick="fazerLogout()">🚪 Sair do Sistema</button>
   </div>
 </aside>
 
@@ -427,24 +437,64 @@ body {
 <main class="main-content">
   <div class="top-bar">
     <div class="saudacao">
-      <h1>Bem-vindo(a) de volta</h1>
+      <h1 id="saudacaoTexto">Bem-vindo(a) de volta</h1>
       <p>Painel de Gestão • Amovin ERP Social</p>
     </div>
     <div class="data-display" id="dataHoje"></div>
   </div>
 
+  <!-- STATS GRID -->
   <div class="stats-grid">
-    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-valor" id="statBenef">--</div><div class="stat-label">Beneficiários Ativos</div></div>
-    <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-valor" id="statAgenda">--</div><div class="stat-label">Agendamentos Hoje</div></div>
-    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-valor" id="statSaldo">--</div><div class="stat-label">Saldo Financeiro</div></div>
-    <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-valor" id="statAlertas">--</div><div class="stat-label">Alertas Pendentes</div></div>
+    <div class="stat-card" onclick="window.location.href='pessoas.html'">
+      <div class="stat-icon">👥</div>
+      <div class="stat-valor" id="statBenef">0</div>
+      <div class="stat-label">Beneficiários</div>
+    </div>
+    <div class="stat-card" onclick="window.location.href='profissionais.html'">
+      <div class="stat-icon">👨‍⚕️</div>
+      <div class="stat-valor" id="statProfissionais">0</div>
+      <div class="stat-label">Profissionais</div>
+    </div>
+    <div class="stat-card" onclick="window.location.href='voluntarios.html'">
+      <div class="stat-icon">💪</div>
+      <div class="stat-valor" id="statVoluntarios">0</div>
+      <div class="stat-label">Voluntários</div>
+    </div>
+    <div class="stat-card" onclick="window.location.href='qrcodes.html'">
+      <div class="stat-icon">📱</div>
+      <div class="stat-valor" id="statQR">0</div>
+      <div class="stat-label">QR Codes</div>
+    </div>
+    <div class="stat-card" onclick="window.location.href='agenda.html'">
+      <div class="stat-icon">📅</div>
+      <div class="stat-valor" id="statAgenda">0</div>
+      <div class="stat-label">Agendamentos Hoje</div>
+    </div>
+    <div class="stat-card" onclick="window.location.href='estoque.html'">
+      <div class="stat-icon">📦</div>
+      <div class="stat-valor" id="statEstoque">0</div>
+      <div class="stat-label">Itens em Estoque</div>
+    </div>
   </div>
 
+  <!-- INFO GRID -->
   <div class="info-grid">
-    <div class="card"><h3>📅 Agendamentos de Hoje</h3><div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div></div>
-    <div class="card"><h3>🛒 Compras Pendentes</h3><div id="listaCompras"><div class="sem-dados">Nenhuma compra pendente.</div></div></div>
-    <div class="card"><h3>📦 Estoque Crítico</h3><div id="listaEstoque"><div class="sem-dados">Estoque em níveis normais.</div></div></div>
-    <div class="card"><h3>📝 Últimos Documentos</h3><div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div></div>
+    <div class="card">
+      <h3>📅 Agendamentos de Hoje</h3>
+      <div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div>
+    </div>
+    <div class="card">
+      <h3>⚠️ Estoque Crítico</h3>
+      <div id="listaEstoque"><div class="sem-dados">Estoque em níveis normais.</div></div>
+    </div>
+    <div class="card">
+      <h3>📝 Últimos Documentos</h3>
+      <div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div>
+    </div>
+    <div class="card">
+      <h3>📱 QR Codes Recentes</h3>
+      <div id="listaQR"><div class="sem-dados">Nenhum QR Code gerado.</div></div>
+    </div>
   </div>
 
   <!-- Rodapé Vigorre -->
@@ -468,33 +518,166 @@ body {
 </main>
 
 <script>
-  const hoje = new Date();
-  document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+// ============================================================
+// CARREGAR DADOS DO USUÁRIO
+// ============================================================
+var nomeUsuario = sessionStorage.getItem('amovin_nome') || 'Administrador';
+var cargoUsuario = sessionStorage.getItem('amovin_perfil') || 'Admin';
+var primeiraLetra = nomeUsuario.charAt(0).toUpperCase();
 
-  const beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
-  document.getElementById('statBenef').textContent = beneficiarios.length;
+document.getElementById('userNome').textContent = nomeUsuario;
+document.getElementById('userCargo').textContent = cargoUsuario;
+document.getElementById('userAvatar').textContent = primeiraLetra;
 
-  const agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
-  const hojeStr = hoje.toISOString().split('T')[0];
-  const hojeLista = agendamentos.filter(a => a.data === hojeStr).sort((a,b) => (a.hora||'').localeCompare(b.hora||''));
-  document.getElementById('statAgenda').textContent = hojeLista.length;
-  if (hojeLista.length > 0) {
-    let html = '';
-    hojeLista.forEach(a => { html += `<div class="lista-item"><span class="hora">${a.hora||'--:--'}</span><div class="info"><strong>${a.nome||'Beneficiário'}</strong><small>${a.profissional||''}</small></div></div>`; });
-    document.getElementById('listaAgenda').innerHTML = html;
-  }
+// Saudação personalizada
+var hora = new Date().getHours();
+var saudacao = 'Bem-vindo(a) de volta';
+if (hora < 6) saudacao = '🌙 Boa madrugada';
+else if (hora < 12) saudacao = '🌅 Bom dia';
+else if (hora < 18) saudacao = '☀️ Boa tarde';
+else saudacao = '🌙 Boa noite';
+document.getElementById('saudacaoTexto').textContent = saudacao;
 
-  const financeiro = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
-  let receitas = 0, despesas = 0;
-  financeiro.forEach(f => { if (f.tipo === 'receita') receitas += (f.valor||0); else despesas += (f.valor||0); });
-  document.getElementById('statSaldo').textContent = 'R$ ' + (receitas - despesas).toFixed(0);
+// ============================================================
+// DATA
+// ============================================================
+var hoje = new Date();
+document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { 
+  weekday: 'long', 
+  day: 'numeric', 
+  month: 'long', 
+  year: 'numeric' 
+});
 
-  let timeout;
-  function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { alert('Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-  document.addEventListener('mousemove', resetTimeout);
-  document.addEventListener('keypress', resetTimeout);
-  document.addEventListener('click', resetTimeout);
-  resetTimeout();
+// ============================================================
+// CARREGAR DADOS DOS MÓDULOS
+// ============================================================
+
+// 1. BENEFICIÁRIOS
+var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
+var ativos = beneficiarios.filter(function(p) { return p.status === 'Ativo' || !p.status; });
+document.getElementById('statBenef').textContent = ativos.length;
+
+// 2. PROFISSIONAIS
+var profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
+var profAtivos = profissionais.filter(function(p) { return p.status === 'Ativo' || !p.status; });
+document.getElementById('statProfissionais').textContent = profAtivos.length;
+
+// 3. VOLUNTÁRIOS
+var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
+var volAtivos = voluntarios.filter(function(p) { return p.status === 'Ativo' || !p.status; });
+document.getElementById('statVoluntarios').textContent = volAtivos.length;
+
+// 4. QR CODES
+var qrCodes = JSON.parse(localStorage.getItem('amovin_qrcodes') || '[]');
+document.getElementById('statQR').textContent = qrCodes.length;
+
+// 5. AGENDAMENTOS HOJE
+var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
+var hojeStr = hoje.toISOString().split('T')[0];
+var hojeLista = agendamentos.filter(function(a) { return a.data === hojeStr && a.status !== 'cancelado'; });
+hojeLista.sort(function(a, b) { return (a.hora || '').localeCompare(b.hora || ''); });
+document.getElementById('statAgenda').textContent = hojeLista.length;
+
+var containerAgenda = document.getElementById('listaAgenda');
+if (hojeLista.length > 0) {
+  var htmlAgenda = '';
+  hojeLista.forEach(function(a) {
+    var nome = a.nome || 'Beneficiário';
+    var prof = a.profissional || '';
+    var hora = a.hora || '--:--';
+    htmlAgenda += '<div class="lista-item"><span class="hora">' + hora + '</span><div class="info"><strong>' + nome + '</strong><small>' + prof + '</small></div></div>';
+  });
+  containerAgenda.innerHTML = htmlAgenda;
+}
+
+// 6. ESTOQUE CRÍTICO
+var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+var criticos = estoque.filter(function(i) { return i.qtdAtual <= i.qtdMinima; });
+document.getElementById('statEstoque').textContent = estoque.length;
+
+var containerEstoque = document.getElementById('listaEstoque');
+if (criticos.length > 0) {
+  var htmlEstoque = '';
+  criticos.sort(function(a, b) { return (a.qtdAtual / a.qtdMinima) - (b.qtdAtual / b.qtdMinima); });
+  criticos.slice(0, 5).forEach(function(i) {
+    var badge = i.qtdAtual <= 0 ? 'badge-critico' : 'badge-alerta';
+    var label = i.qtdAtual <= 0 ? 'ESGOTADO' : 'BAIXO';
+    htmlEstoque += '<div class="lista-item"><span class="hora">' + i.qtdAtual + '/' + i.qtdMinima + '</span><div class="info"><strong>' + i.nome + '</strong><small>' + i.categoria + ' | <span class="badge-status ' + badge + '">' + label + '</span></small></div></div>';
+  });
+  containerEstoque.innerHTML = htmlEstoque;
+}
+
+// 7. ÚLTIMOS DOCUMENTOS
+var documentos = JSON.parse(localStorage.getItem('amovin_documentos') || '[]');
+var containerDocs = document.getElementById('listaDocs');
+if (documentos.length > 0) {
+  var docsRecentes = documentos.slice().sort(function(a, b) { 
+    return new Date(b.dataDoc || b.criadoEm || 0) - new Date(a.dataDoc || a.criadoEm || 0); 
+  }).slice(0, 5);
+  var htmlDocs = '';
+  docsRecentes.forEach(function(d) {
+    var data = d.dataDoc ? new Date(d.dataDoc + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+    htmlDocs += '<div class="lista-item"><span class="hora">' + data + '</span><div class="info"><strong>' + (d.nome || 'Documento') + '</strong><small>' + (d.categoria || '') + '</small></div></div>';
+  });
+  containerDocs.innerHTML = htmlDocs;
+}
+
+// 8. QR CODES RECENTES
+var containerQR = document.getElementById('listaQR');
+if (qrCodes.length > 0) {
+  var qrRecentes = qrCodes.slice().sort(function(a, b) { 
+    return new Date(b.dataCriacao || 0) - new Date(a.dataCriacao || 0); 
+  }).slice(0, 5);
+  var htmlQR = '';
+  qrRecentes.forEach(function(q) {
+    var data = q.dataCriacao ? new Date(q.dataCriacao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+    var status = q.status === 'Ativo' ? '✅' : '⚠️';
+    htmlQR += '<div class="lista-item"><span class="hora">' + status + '</span><div class="info"><strong>' + q.titulo + '</strong><small>' + q.categoria + ' | ' + data + '</small></div></div>';
+  });
+  containerQR.innerHTML = htmlQR;
+}
+
+// ============================================================
+// LOGOUT
+// ============================================================
+function fazerLogout() {
+  sessionStorage.clear();
+  window.location.href = 'index.html';
+}
+
+// ============================================================
+// SESSÃO
+// ============================================================
+if (!sessionStorage.getItem('amovin_logado')) {
+  window.location.href = 'index.html';
+}
+
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function() {
+  history.pushState(null, null, location.href);
+  sessionStorage.clear();
+  window.location.href = 'index.html';
+});
+
+var timeout;
+function resetTimeout() {
+  clearTimeout(timeout);
+  timeout = setTimeout(function() {
+    sessionStorage.clear();
+    alert('⏰ Sessão expirada.');
+    window.location.href = 'index.html';
+  }, 30 * 60 * 1000);
+}
+document.addEventListener('mousemove', resetTimeout);
+document.addEventListener('keypress', resetTimeout);
+document.addEventListener('click', resetTimeout);
+resetTimeout();
+
+// ============================================================
+// CONTROLE DE PERFIL (NÃO APLICA NO DASHBOARD - APENAS VISUAL)
+// ============================================================
+// O Dashboard é visual, todos veem o mesmo conteúdo
 </script>
 </body>
 </html>
