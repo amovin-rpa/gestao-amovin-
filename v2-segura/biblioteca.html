@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -39,7 +45,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .cat-item.ativo { background: var(--laranja); color: white; font-weight: 600; }
 .cat-item .count { float: right; opacity: 0.7; font-size: 10px; }
 
-.header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
 .btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; }
 .busca-bar { margin-bottom: 15px; }
 .busca-bar input { width: 100%; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
@@ -59,7 +65,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-acao { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; margin: 2px; }
 .btn-download { background: var(--azul); color: white; }
 .btn-editar { background: var(--amarelo); color: #1A1A1A; }
-.btn-excluir { background: #E53935; color: white; }
+.btn-excluir { background: var(--vermelho); color: white; }
 .sem-dados { text-align: center; padding: 40px; color: #9CA3AF; grid-column: 1 / -1; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -87,9 +93,46 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <aside class="sidebar">
   <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <div class="nav-categoria">Educação</div><a href="biblioteca.html" class="nav-item ativo"><span class="icone">📚</span> Biblioteca</a><a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item ativo"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
@@ -169,6 +212,32 @@ function finalizar(d) {
 }
 window.baixarDoc = function(id) { var d = documentos.find(function(x){return x.id===id;}); if (!d||!d.arquivo) return; var a = document.createElement('a'); a.href = d.arquivo; a.download = d.arquivoNome||d.nome; a.click(); };
 window.excluirDoc = function(id) { if (!confirm('Excluir?')) return; documentos = documentos.filter(function(x){return x.id!==id;}); salvar(); renderizarMenu(); filtrar(); };
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+history.pushState(null,null,location.href); window.addEventListener('popstate',function(){ history.pushState(null,null,location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+var timeout; function resetTimeout(){ clearTimeout(timeout); timeout = setTimeout(function(){ sessionStorage.clear(); alert('Sessão expirada.'); window.location.href = 'index.html'; },30*60*1000); }
+document.addEventListener('mousemove',resetTimeout); document.addEventListener('keypress',resetTimeout); document.addEventListener('click',resetTimeout); resetTimeout();
 
 renderizarMenu(); filtrar();
 </script>
