@@ -13,6 +13,7 @@ function renderizarMenu(paginaAtiva) {
         'editais': 'editais',
         'oficios': 'oficios',
         'projetos': 'projetos',
+        'capta': 'capta',
         'financeiro': 'financeiro',
         'orcamentos': 'orcamentos',
         'prestacao-contas': 'prestacao-contas',
@@ -51,6 +52,7 @@ function renderizarMenu(paginaAtiva) {
         <a href="bi.html" class="nav-item ${ativo === 'bi' ? 'ativo' : ''}"><span class="icone">📈</span> BI Executivo</a>
 
         <div class="nav-categoria">Captação</div>
+        <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item ${ativo === 'capta' ? 'ativo' : ''}"><span class="icone">🚀</span> Amovin Capta+</a>
         <a href="em-breve.html" class="nav-item ${ativo === 'editais' ? 'ativo' : ''}"><span class="icone">🔍</span> Editais</a>
         <a href="em-breve.html" class="nav-item ${ativo === 'oficios' ? 'ativo' : ''}"><span class="icone">📄</span> Ofícios IA</a>
         <a href="em-breve.html" class="nav-item ${ativo === 'projetos' ? 'ativo' : ''}"><span class="icone">📋</span> Projetos IA</a>
@@ -141,7 +143,7 @@ function carregarMenu(paginaAtiva) {
     // ============================================================
     var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
     var modulosPermitidos = {
-        admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+        admin: ['dashboard','bi','editais','oficios','projetos','capta','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
         recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
         consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
         financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
