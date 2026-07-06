@@ -50,9 +50,6 @@ body {
   overflow: hidden;
 }
 
-/* ============================================
-   ANIMAÇÕES GLOBAIS
-   ============================================ */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -123,7 +120,7 @@ body {
 }
 
 /* ============================================
-   PAINEL ESQUERDO - BRANDING (MAIS ELEGANTE)
+   PAINEL ESQUERDO - BRANDING
    ============================================ */
 .brand-panel {
   flex: 1.2;
@@ -164,7 +161,6 @@ body {
   z-index: 2;
 }
 
-/* Logo */
 .brand-logo {
   display: flex;
   align-items: center;
@@ -199,7 +195,6 @@ body {
   margin-top: 2px;
 }
 
-/* Título Principal */
 .brand-title {
   color: var(--branco);
   font-size: 36px;
@@ -221,7 +216,6 @@ body {
   max-width: 80%;
 }
 
-/* Citação */
 .brand-quote {
   font-size: 17px;
   font-style: italic;
@@ -233,7 +227,6 @@ body {
   line-height: 1.7;
 }
 
-/* Features Grid */
 .features-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -270,7 +263,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Status do Sistema */
 .brand-status {
   display: flex;
   align-items: center;
@@ -303,7 +295,7 @@ body {
 }
 
 /* ============================================
-   PAINEL DIREITO - LOGIN (MAIS LIMPO)
+   PAINEL DIREITO - LOGIN
    ============================================ */
 .login-panel {
   flex: 1;
@@ -426,7 +418,6 @@ body {
   opacity: 1;
 }
 
-/* Opções */
 .form-options {
   display: flex;
   justify-content: space-between;
@@ -558,7 +549,6 @@ body {
   font-weight: 600;
 }
 
-/* Mensagem de Erro */
 .error-message {
   background: #FEF2F2;
   border: 1px solid #FECACA;
@@ -779,84 +769,34 @@ body {
    RESPONSIVO
    ============================================ */
 @media (max-width: 1024px) {
-  .brand-panel {
-    display: none;
-  }
-  .login-panel {
-    padding: 40px 30px;
-  }
-  .login-container {
-    max-width: 500px;
-    min-height: auto;
-  }
-  .login-header .logo-mobile {
-    display: block;
-    margin-bottom: 24px;
-  }
-  .login-header .logo-mobile img {
-    width: 56px;
-    height: 56px;
-  }
-  .login-header h2 {
-    font-size: 22px;
-  }
+  .brand-panel { display: none; }
+  .login-panel { padding: 40px 30px; }
+  .login-container { max-width: 500px; min-height: auto; }
+  .login-header .logo-mobile { display: block; margin-bottom: 24px; }
+  .login-header .logo-mobile img { width: 56px; height: 56px; }
+  .login-header h2 { font-size: 22px; }
 }
 
 @media (max-width: 768px) {
-  .login-container {
-    max-width: 100%;
-    border-radius: 16px;
-  }
-  .login-panel {
-    padding: 32px 24px;
-  }
-  .login-header h2 {
-    font-size: 20px;
-  }
-  .login-form {
-    max-width: 100%;
-  }
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-  .lgpd-modal {
-    margin: 10px;
-  }
-  .modal-header, .modal-body, .modal-footer {
-    padding: 20px;
-  }
+  .login-container { max-width: 100%; border-radius: 16px; }
+  .login-panel { padding: 32px 24px; }
+  .login-header h2 { font-size: 20px; }
+  .login-form { max-width: 100%; }
+  .features-grid { grid-template-columns: 1fr; }
+  .lgpd-modal { margin: 10px; }
+  .modal-header, .modal-body, .modal-footer { padding: 20px; }
 }
 
 @media (max-width: 480px) {
-  body {
-    padding: 0;
-  }
-  .login-container {
-    border-radius: 0;
-    min-height: 100vh;
-  }
-  .login-panel {
-    padding: 24px 16px;
-  }
-  .login-header h2 {
-    font-size: 18px;
-  }
-  .form-input {
-    padding: 12px 14px 12px 40px;
-    font-size: 13px;
-  }
-  .btn-primary {
-    padding: 13px;
-    font-size: 14px;
-  }
-  .brand-panel {
-    display: none;
-  }
+  body { padding: 0; }
+  .login-container { border-radius: 0; min-height: 100vh; }
+  .login-panel { padding: 24px 16px; }
+  .login-header h2 { font-size: 18px; }
+  .form-input { padding: 12px 14px 12px 40px; font-size: 13px; }
+  .btn-primary { padding: 13px; font-size: 14px; }
+  .brand-panel { display: none; }
 }
 
-/* ============================================
-   UTILITÁRIOS
-   ============================================ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -915,8 +855,8 @@ body {
         </ul>
       </div>
       <div class="lgpd-links">
-        <a href="#" onclick="alert('Política de Privacidade completa'); return false;">📄 Política de Privacidade</a>
-        <a href="#" onclick="alert('Termos de Uso completos'); return false;">📋 Termos de Uso</a>
+        <a href="#" id="linkPolitica">📄 Política de Privacidade</a>
+        <a href="#" id="linkTermos">📋 Termos de Uso</a>
       </div>
       <div class="checkbox-agreement">
         <input type="checkbox" id="lgpdCheckbox">
@@ -1031,9 +971,9 @@ body {
 
     <div class="login-footer">
       <div class="footer-links">
-        <a href="#" onclick="alert('Política de Privacidade'); return false;">Política de Privacidade</a>
-        <a href="#" onclick="alert('Termos de Uso'); return false;">Termos de Uso</a>
-        <a href="#" onclick="alert('LGPD'); return false;">LGPD</a>
+        <a href="#" id="footerPolitica">Política de Privacidade</a>
+        <a href="#" id="footerTermos">Termos de Uso</a>
+        <a href="#" id="footerLgpd">LGPD</a>
       </div>
       <div class="footer-copy">
         <span>VIGORRE DESIGNER™</span> • (34) 99185-0735 • contato@vigorre.com.br
@@ -1045,7 +985,7 @@ body {
 </div>
 
 <!-- ============================================
-     JAVASCRIPT
+     JAVASCRIPT - TUDO NO ESCOPO GLOBAL
      ============================================ -->
 <script>
 // ============================================
@@ -1210,34 +1150,87 @@ function handleLogin(e) {
 }
 
 // ============================================
-// EVENTOS
+// EVENTOS - TODOS VIA JavaScript (SEM ONCLICK)
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-  checkLGPDStatus();
-  var lembrar = localStorage.getItem('amovin_lembrar');
-  if (lembrar) { elements.username.value = lembrar; elements.rememberMe.checked = true; }
+  console.log('🚀 AMOVIN ERP - Sistema Corporativo inicializado');
 
+  // Verificar LGPD
+  checkLGPDStatus();
+
+  // Lembrar usuário
+  var lembrar = localStorage.getItem('amovin_lembrar');
+  if (lembrar) {
+    elements.username.value = lembrar;
+    elements.rememberMe.checked = true;
+  }
+
+  // EVENTO: Checkbox LGPD
   elements.checkbox.addEventListener('change', function() {
     if (this.checked) {
       elements.btnContinuar.disabled = false;
       elements.btnContinuar.classList.add('enabled');
+      console.log('✅ Botão CONTINUAR habilitado');
     } else {
       elements.btnContinuar.disabled = true;
       elements.btnContinuar.classList.remove('enabled');
+      console.log('❌ Botão CONTINUAR desabilitado');
     }
   });
 
-  elements.btnContinuar.addEventListener('click', aceitarLGPD);
+  // EVENTO: Botão Continuar (SEM onclick no HTML)
+  elements.btnContinuar.addEventListener('click', function() {
+    console.log('🔵 Clique no botão CONTINUAR');
+    aceitarLGPD();
+  });
+
+  // EVENTO: Mostrar senha
   elements.togglePassword.addEventListener('click', function() {
     var t = elements.password.type === 'password' ? 'text' : 'password';
     elements.password.type = t;
     this.textContent = t === 'password' ? '👁️' : '🙈';
   });
-  elements.loginForm.addEventListener('submit', handleLogin);
-  elements.modal.addEventListener('keydown', function(e) { if (e.key === 'Escape') e.preventDefault(); });
-  elements.modal.addEventListener('click', function(e) { if (e.target === elements.modal) e.preventDefault(); });
 
-  console.log('🚀 AMOVIN ERP - Sistema Corporativo inicializado');
+  // EVENTO: Submit do formulário
+  elements.loginForm.addEventListener('submit', handleLogin);
+
+  // EVENTO: Fechar modal com ESC
+  elements.modal.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+    }
+  });
+
+  // EVENTO: Clique fora do modal
+  elements.modal.addEventListener('click', function(e) {
+    if (e.target === elements.modal) {
+      e.preventDefault();
+    }
+  });
+
+  // EVENTOS: Links de política (sem reload)
+  document.getElementById('linkPolitica').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('Política de Privacidade completa');
+  });
+  document.getElementById('linkTermos').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('Termos de Uso completos');
+  });
+  document.getElementById('footerPolitica').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('Política de Privacidade');
+  });
+  document.getElementById('footerTermos').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('Termos de Uso');
+  });
+  document.getElementById('footerLgpd').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('LGPD - Lei Geral de Proteção de Dados');
+  });
+
+  console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
 });
 </script>
 
