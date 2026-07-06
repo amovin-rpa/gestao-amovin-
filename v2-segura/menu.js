@@ -10,9 +10,6 @@ function renderizarMenu(paginaAtiva) {
     var mapaAtivo = {
         'dashboard': 'dashboard',
         'bi': 'bi',
-        'editais': 'editais',
-        'oficios': 'oficios',
-        'projetos': 'projetos',
         'capta': 'capta',
         'financeiro': 'financeiro',
         'orcamentos': 'orcamentos',
@@ -38,73 +35,79 @@ function renderizarMenu(paginaAtiva) {
 
     var ativo = mapaAtivo[paginaAtiva] || 'dashboard';
 
-    var html = `
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <div class="sidebar-logo-fallback">🌻</div>
-        <div class="brand">Amovin ERP Social</div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <div class="nav-categoria">Principal</div>
-        <a href="dashboard.html" class="nav-item ${ativo === 'dashboard' ? 'ativo' : ''}"><span class="icone">📊</span> Dashboard</a>
-        <a href="bi.html" class="nav-item ${ativo === 'bi' ? 'ativo' : ''}"><span class="icone">📈</span> BI Executivo</a>
-
-        <div class="nav-categoria">Captação</div>
-        <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item ${ativo === 'capta' ? 'ativo' : ''}"><span class="icone">🚀</span> Amovin Capta+</a>
-        <a href="em-breve.html" class="nav-item ${ativo === 'editais' ? 'ativo' : ''}"><span class="icone">🔍</span> Editais</a>
-        <a href="em-breve.html" class="nav-item ${ativo === 'oficios' ? 'ativo' : ''}"><span class="icone">📄</span> Ofícios IA</a>
-        <a href="em-breve.html" class="nav-item ${ativo === 'projetos' ? 'ativo' : ''}"><span class="icone">📋</span> Projetos IA</a>
-
-        <div class="nav-categoria">Financeiro</div>
-        <a href="financeiro.html" class="nav-item ${ativo === 'financeiro' ? 'ativo' : ''}"><span class="icone">💰</span> Financeiro</a>
-        <a href="orcamentos.html" class="nav-item ${ativo === 'orcamentos' ? 'ativo' : ''}"><span class="icone">📊</span> Orçamentos</a>
-        <a href="prestacao-contas.html" class="nav-item ${ativo === 'prestacao-contas' ? 'ativo' : ''}"><span class="icone">📋</span> Prest. Contas</a>
-
-        <div class="nav-categoria">Pessoas</div>
-        <a href="pessoas.html" class="nav-item ${ativo === 'pessoas' ? 'ativo' : ''}"><span class="icone">👥</span> Beneficiários</a>
-        <a href="profissionais.html" class="nav-item ${ativo === 'profissionais' ? 'ativo' : ''}"><span class="icone">👨‍⚕️</span> Profissionais</a>
-        <a href="voluntarios.html" class="nav-item ${ativo === 'voluntarios' ? 'ativo' : ''}"><span class="icone">💪</span> Voluntários</a>
-        <a href="agenda-telefonica.html" class="nav-item ${ativo === 'agenda-telefonica' ? 'ativo' : ''}"><span class="icone">☎️</span> CRM Social</a>
-
-        <div class="nav-categoria">Atendimento</div>
-        <a href="agenda.html" class="nav-item ${ativo === 'agenda' ? 'ativo' : ''}"><span class="icone">📅</span> Agenda</a>
-
-        <div class="nav-categoria">Documentos</div>
-        <a href="documentos.html" class="nav-item ${ativo === 'documentos' ? 'ativo' : ''}"><span class="icone">📝</span> Documentos</a>
-        <a href="qrcodes.html" class="nav-item ${ativo === 'qrcodes' ? 'ativo' : ''}"><span class="icone">📱</span> QR Codes</a>
-        <a href="estoque.html" class="nav-item ${ativo === 'estoque' ? 'ativo' : ''}"><span class="icone">📦</span> Estoque</a>
-        <a href="patrimonio.html" class="nav-item ${ativo === 'patrimonio' ? 'ativo' : ''}"><span class="icone">🏢</span> Patrimônio</a>
-
-        <div class="nav-categoria">Educação</div>
-        <a href="biblioteca.html" class="nav-item ${ativo === 'biblioteca' ? 'ativo' : ''}"><span class="icone">📚</span> Biblioteca</a>
-        <a href="certificados.html" class="nav-item ${ativo === 'certificados' ? 'ativo' : ''}"><span class="icone">🎓</span> Certificados</a>
-
-        <div class="nav-categoria">Comunicação</div>
-        <a href="chat.html" class="nav-item ${ativo === 'chat' ? 'ativo' : ''}"><span class="icone">💬</span> Chat</a>
-        <a href="assistente.html" class="nav-item ${ativo === 'assistente' ? 'ativo' : ''}"><span class="icone">🤖</span> Assistente IA</a>
-
-        <div class="nav-categoria">Relatórios</div>
-        <a href="relatorios.html" class="nav-item ${ativo === 'relatorios' ? 'ativo' : ''}"><span class="icone">📈</span> Relatórios</a>
-
-        <div class="nav-categoria">Sistema</div>
-        <a href="configuracoes.html" class="nav-item ${ativo === 'configuracoes' ? 'ativo' : ''}"><span class="icone">⚙️</span> Configurações</a>
-        <a href="backup.html" class="nav-item ${ativo === 'backup' ? 'ativo' : ''}"><span class="icone">💾</span> Backup</a>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="user-card">
-          <div class="user-avatar" id="userAvatarMenu">A</div>
-          <div class="user-info">
-            <div class="nome" id="userNomeMenu">Administrador</div>
-            <div class="cargo" id="userCargoMenu">Admin</div>
-          </div>
-        </div>
-        <button class="btn-sair" onclick="fazerLogout()">🚪 Sair do Sistema</button>
-      </div>
-    </aside>
-    `;
+    var html = '';
+    html += '<aside class="sidebar">';
+    html += '  <div class="sidebar-header">';
+    html += '    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">';
+    html += '    <div class="sidebar-logo-fallback">🌻</div>';
+    html += '    <div class="brand">Amovin ERP Social</div>';
+    html += '  </div>';
+    html += '  <nav class="sidebar-nav">';
+    
+    // Principal
+    html += '    <div class="nav-categoria">Principal</div>';
+    html += '    <a href="dashboard.html" class="nav-item ' + (ativo === 'dashboard' ? 'ativo' : '') + '"><span class="icone">📊</span> Dashboard</a>';
+    html += '    <a href="bi.html" class="nav-item ' + (ativo === 'bi' ? 'ativo' : '') + '"><span class="icone">📈</span> BI Executivo</a>';
+    
+    // Captação - APENAS AMOVIN CAPTA+
+    html += '    <div class="nav-categoria">Captação</div>';
+    html += '    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item ' + (ativo === 'capta' ? 'ativo' : '') + '"><span class="icone">🚀</span> Amovin Capta+</a>';
+    
+    // Financeiro
+    html += '    <div class="nav-categoria">Financeiro</div>';
+    html += '    <a href="financeiro.html" class="nav-item ' + (ativo === 'financeiro' ? 'ativo' : '') + '"><span class="icone">💰</span> Financeiro</a>';
+    html += '    <a href="orcamentos.html" class="nav-item ' + (ativo === 'orcamentos' ? 'ativo' : '') + '"><span class="icone">📊</span> Orçamentos</a>';
+    html += '    <a href="prestacao-contas.html" class="nav-item ' + (ativo === 'prestacao-contas' ? 'ativo' : '') + '"><span class="icone">📋</span> Prest. Contas</a>';
+    
+    // Pessoas
+    html += '    <div class="nav-categoria">Pessoas</div>';
+    html += '    <a href="pessoas.html" class="nav-item ' + (ativo === 'pessoas' ? 'ativo' : '') + '"><span class="icone">👥</span> Beneficiários</a>';
+    html += '    <a href="profissionais.html" class="nav-item ' + (ativo === 'profissionais' ? 'ativo' : '') + '"><span class="icone">👨‍⚕️</span> Profissionais</a>';
+    html += '    <a href="voluntarios.html" class="nav-item ' + (ativo === 'voluntarios' ? 'ativo' : '') + '"><span class="icone">💪</span> Voluntários</a>';
+    html += '    <a href="agenda-telefonica.html" class="nav-item ' + (ativo === 'agenda-telefonica' ? 'ativo' : '') + '"><span class="icone">☎️</span> CRM Social</a>';
+    
+    // Atendimento
+    html += '    <div class="nav-categoria">Atendimento</div>';
+    html += '    <a href="agenda.html" class="nav-item ' + (ativo === 'agenda' ? 'ativo' : '') + '"><span class="icone">📅</span> Agenda</a>';
+    
+    // Documentos
+    html += '    <div class="nav-categoria">Documentos</div>';
+    html += '    <a href="documentos.html" class="nav-item ' + (ativo === 'documentos' ? 'ativo' : '') + '"><span class="icone">📝</span> Documentos</a>';
+    html += '    <a href="qrcodes.html" class="nav-item ' + (ativo === 'qrcodes' ? 'ativo' : '') + '"><span class="icone">📱</span> QR Codes</a>';
+    html += '    <a href="estoque.html" class="nav-item ' + (ativo === 'estoque' ? 'ativo' : '') + '"><span class="icone">📦</span> Estoque</a>';
+    html += '    <a href="patrimonio.html" class="nav-item ' + (ativo === 'patrimonio' ? 'ativo' : '') + '"><span class="icone">🏢</span> Patrimônio</a>';
+    
+    // Educação
+    html += '    <div class="nav-categoria">Educação</div>';
+    html += '    <a href="biblioteca.html" class="nav-item ' + (ativo === 'biblioteca' ? 'ativo' : '') + '"><span class="icone">📚</span> Biblioteca</a>';
+    html += '    <a href="certificados.html" class="nav-item ' + (ativo === 'certificados' ? 'ativo' : '') + '"><span class="icone">🎓</span> Certificados</a>';
+    
+    // Comunicação
+    html += '    <div class="nav-categoria">Comunicação</div>';
+    html += '    <a href="chat.html" class="nav-item ' + (ativo === 'chat' ? 'ativo' : '') + '"><span class="icone">💬</span> Chat</a>';
+    html += '    <a href="assistente.html" class="nav-item ' + (ativo === 'assistente' ? 'ativo' : '') + '"><span class="icone">🤖</span> Assistente IA</a>';
+    
+    // Relatórios
+    html += '    <div class="nav-categoria">Relatórios</div>';
+    html += '    <a href="relatorios.html" class="nav-item ' + (ativo === 'relatorios' ? 'ativo' : '') + '"><span class="icone">📈</span> Relatórios</a>';
+    
+    // Sistema
+    html += '    <div class="nav-categoria">Sistema</div>';
+    html += '    <a href="configuracoes.html" class="nav-item ' + (ativo === 'configuracoes' ? 'ativo' : '') + '"><span class="icone">⚙️</span> Configurações</a>';
+    html += '    <a href="backup.html" class="nav-item ' + (ativo === 'backup' ? 'ativo' : '') + '"><span class="icone">💾</span> Backup</a>';
+    
+    html += '  </nav>';
+    html += '  <div class="sidebar-footer">';
+    html += '    <div class="user-card">';
+    html += '      <div class="user-avatar" id="userAvatarMenu">A</div>';
+    html += '      <div class="user-info">';
+    html += '        <div class="nome" id="userNomeMenu">Administrador</div>';
+    html += '        <div class="cargo" id="userCargoMenu">Admin</div>';
+    html += '      </div>';
+    html += '    </div>';
+    html += '    <button class="btn-sair" onclick="fazerLogout()">🚪 Sair do Sistema</button>';
+    html += '  </div>';
+    html += '</aside>';
 
     return html;
 }
@@ -143,7 +146,7 @@ function carregarMenu(paginaAtiva) {
     // ============================================================
     var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
     var modulosPermitidos = {
-        admin: ['dashboard','bi','editais','oficios','projetos','capta','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+        admin: ['dashboard','bi','capta','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
         recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
         consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
         financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
@@ -154,7 +157,7 @@ function carregarMenu(paginaAtiva) {
     document.querySelectorAll('.nav-item').forEach(function(item) {
         var href = item.getAttribute('href') || '';
         var pagina = href.replace('.html', '');
-        if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
             item.style.display = 'none';
         }
     });
