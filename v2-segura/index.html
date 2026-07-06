@@ -888,7 +888,7 @@ body {
     </div>
     
     <div class="modal-footer">
-      <button type="button" class="btn-secondary" id="btnContinuar" disabled onclick="aceitarLGPD()">
+      <button type="button" class="btn-secondary" id="btnContinuar" disabled>
         ✅ Continuar
       </button>
     </div>
@@ -1074,322 +1074,336 @@ body {
      JAVASCRIPT
      ============================================ -->
 <script>
-(function() {
-  'use strict';
+// ============================================
+// CONFIGURAÇÕES
+// ============================================
+var CONFIG = {
+  LGPD_VERSION: '1.0.0',
+  LGPD_STORAGE_KEY: 'lgpd_aceito',
+  ADMIN_USER: 'admin',
+  ADMIN_PASS: 'amovin2026'
+};
+
+// ============================================
+// ELEMENTOS DO DOM
+// ============================================
+var elements = {
+  modal: document.getElementById('lgpdModal'),
+  checkbox: document.getElementById('lgpdCheckbox'),
+  btnContinuar: document.getElementById('btnContinuar'),
+  loginForm: document.getElementById('loginForm'),
+  username: document.getElementById('username'),
+  password: document.getElementById('password'),
+  togglePassword: document.getElementById('togglePassword'),
+  btnEntrar: document.getElementById('btnEntrar'),
+  errorMessage: document.getElementById('errorMessage'),
+  btnHint: document.getElementById('btnHint'),
+  rememberMe: document.getElementById('rememberMe')
+};
+
+// ============================================
+// FUNÇÕES DE SEGURANÇA
+// ============================================
+function sanitizeInput(input) {
+  return input
+    .replace(/[<>]/g, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+=/gi, '')
+    .trim()
+    .substring(0, 100);
+}
+
+function validateCredentials(username, password) {
+  var errors = [];
   
-  // ============================================
-  // CONFIGURAÇÕES
-  // ============================================
-  const CONFIG = {
-    LGPD_VERSION: '1.0.0',
-    LGPD_STORAGE_KEY: 'lgpd_aceito',
-    ADMIN_USER: 'admin',
-    ADMIN_PASS: 'amovin2026'
-  };
-  
-  // ============================================
-  // ELEMENTOS DO DOM
-  // ============================================
-  var elements = {
-    modal: document.getElementById('lgpdModal'),
-    checkbox: document.getElementById('lgpdCheckbox'),
-    btnContinuar: document.getElementById('btnContinuar'),
-    loginForm: document.getElementById('loginForm'),
-    username: document.getElementById('username'),
-    password: document.getElementById('password'),
-    togglePassword: document.getElementById('togglePassword'),
-    btnEntrar: document.getElementById('btnEntrar'),
-    errorMessage: document.getElementById('errorMessage'),
-    btnHint: document.getElementById('btnHint'),
-    rememberMe: document.getElementById('rememberMe')
-  };
-  
-  // ============================================
-  // FUNÇÕES DE SEGURANÇA
-  // ============================================
-  function sanitizeInput(input) {
-    return input
-      .replace(/[<>]/g, '')
-      .replace(/javascript:/gi, '')
-      .replace(/on\w+=/gi, '')
-      .trim()
-      .substring(0, 100);
+  if (!username || username.trim().length === 0) {
+    errors.push('Por favor, informe seu login.');
   }
   
-  function validateCredentials(username, password) {
-    var errors = [];
-    
-    if (!username || username.trim().length === 0) {
-      errors.push('Por favor, informe seu login.');
-    }
-    
-    if (!password || password.length < 1) {
-      errors.push('Por favor, informe sua senha.');
-    }
-    
-    if (username && username.length > 100) {
-      errors.push('Login muito longo. Máximo 100 caracteres.');
-    }
-    
-    if (password && password.length > 50) {
-      errors.push('Senha muito longa. Máximo 50 caracteres.');
-    }
-    
-    return errors;
+  if (!password || password.length < 1) {
+    errors.push('Por favor, informe sua senha.');
   }
   
-  // ============================================
-  // FUNÇÕES DE LGPD
-  // ============================================
-  function getLGPDData() {
-    try {
-      var data = localStorage.getItem(CONFIG.LGPD_STORAGE_KEY);
-      return data ? JSON.parse(data) : null;
-    } catch (e) {
-      console.error('Erro ao ler dados da LGPD:', e);
-      return null;
-    }
+  if (username && username.length > 100) {
+    errors.push('Login muito longo. Máximo 100 caracteres.');
   }
   
-  function saveLGPDData() {
-    try {
-      var data = {
-        aceito: true,
-        data: new Date().toISOString(),
-        versao: CONFIG.LGPD_VERSION,
-        idioma: navigator.language || 'pt-BR'
-      };
-      localStorage.setItem(CONFIG.LGPD_STORAGE_KEY, JSON.stringify(data));
-      return data;
-    } catch (e) {
-      console.error('Erro ao salvar dados da LGPD:', e);
-      return null;
-    }
+  if (password && password.length > 50) {
+    errors.push('Senha muito longa. Máximo 50 caracteres.');
   }
   
-  function checkLGPDStatus() {
-    var lgpdData = getLGPDData();
-    
-    if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
-      showLGPDModal();
-      return false;
-    }
-    
+  return errors;
+}
+
+// ============================================
+// FUNÇÕES DE LGPD
+// ============================================
+function getLGPDData() {
+  try {
+    var data = localStorage.getItem(CONFIG.LGPD_STORAGE_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    console.error('Erro ao ler dados da LGPD:', e);
+    return null;
+  }
+}
+
+function saveLGPDData() {
+  try {
+    var data = {
+      aceito: true,
+      data: new Date().toISOString(),
+      versao: CONFIG.LGPD_VERSION,
+      idioma: navigator.language || 'pt-BR'
+    };
+    localStorage.setItem(CONFIG.LGPD_STORAGE_KEY, JSON.stringify(data));
+    return data;
+  } catch (e) {
+    console.error('Erro ao salvar dados da LGPD:', e);
+    return null;
+  }
+}
+
+function checkLGPDStatus() {
+  var lgpdData = getLGPDData();
+  
+  if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
+    showLGPDModal();
+    return false;
+  }
+  
+  enableLogin();
+  return true;
+}
+
+function showLGPDModal() {
+  elements.modal.classList.remove('hidden');
+  elements.checkbox.checked = false;
+  elements.btnContinuar.disabled = true;
+  elements.btnContinuar.classList.remove('enabled');
+  document.body.style.overflow = 'hidden';
+}
+
+function hideLGPDModal() {
+  elements.modal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// ============================================
+// FUNÇÃO PRINCIPAL - ACEITAR LGPD (GLOBAL)
+// ============================================
+function aceitarLGPD() {
+  console.log('🔵 Função aceitarLGPD chamada!');
+  
+  if (!elements.checkbox.checked) {
+    alert('⚠️ Por favor, marque a caixa para concordar com a Política de Privacidade.');
+    return;
+  }
+  
+  console.log('✅ Checkbox marcado. Salvando dados...');
+  
+  var data = saveLGPDData();
+  if (data) {
+    hideLGPDModal();
     enableLogin();
-    return true;
+    showNotification('✅ Política de Privacidade aceita com sucesso!', 'success');
+    console.log('✅ LGPD aceita com sucesso!');
+  } else {
+    showNotification('❌ Erro ao salvar aceite. Tente novamente.', 'error');
+  }
+}
+
+function enableLogin() {
+  elements.btnEntrar.disabled = false;
+  elements.btnHint.classList.remove('show');
+}
+
+function disableLogin() {
+  elements.btnEntrar.disabled = true;
+  elements.btnHint.classList.add('show');
+}
+
+// ============================================
+// FUNÇÕES DE LOGIN
+// ============================================
+function handleLogin(e) {
+  e.preventDefault();
+  
+  var lgpdData = getLGPDData();
+  if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
+    showError('É necessário aceitar a Política de Privacidade para continuar.');
+    showLGPDModal();
+    return;
   }
   
-  function showLGPDModal() {
-    elements.modal.classList.remove('hidden');
-    elements.checkbox.checked = false;
-    elements.btnContinuar.disabled = true;
-    elements.btnContinuar.classList.remove('enabled');
-    document.body.style.overflow = 'hidden';
+  var username = sanitizeInput(elements.username.value);
+  var password = elements.password.value;
+  
+  var errors = validateCredentials(username, password);
+  if (errors.length > 0) {
+    showError(errors.join(' '));
+    return;
   }
   
-  function hideLGPDModal() {
-    elements.modal.classList.add('hidden');
-    document.body.style.overflow = '';
-  }
+  setLoading(true);
+  hideError();
   
-  window.aceitarLGPD = function() {
-    if (!elements.checkbox.checked) {
-      alert('Por favor, marque a caixa para concordar com a Política de Privacidade.');
-      return;
-    }
-    
-    var data = saveLGPDData();
-    if (data) {
-      hideLGPDModal();
-      enableLogin();
-      showNotification('Política de Privacidade aceita com sucesso!', 'success');
-    } else {
-      showNotification('Erro ao salvar aceite. Tente novamente.', 'error');
-    }
-  };
-  
-  function enableLogin() {
-    elements.btnEntrar.disabled = false;
-    elements.btnHint.classList.remove('show');
-  }
-  
-  function disableLogin() {
-    elements.btnEntrar.disabled = true;
-    elements.btnHint.classList.add('show');
-  }
-  
-  // ============================================
-  // FUNÇÕES DE LOGIN
-  // ============================================
-  function handleLogin(e) {
-    e.preventDefault();
-    
-    var lgpdData = getLGPDData();
-    if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
-      showError('É necessário aceitar a Política de Privacidade para continuar.');
-      showLGPDModal();
-      return;
-    }
-    
-    var username = sanitizeInput(elements.username.value);
-    var password = elements.password.value;
-    
-    var errors = validateCredentials(username, password);
-    if (errors.length > 0) {
-      showError(errors.join(' '));
-      return;
-    }
-    
-    setLoading(true);
-    hideError();
-    
-    try {
-      // Simular processamento
-      setTimeout(function() {
-        if (username.toLowerCase() === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
-          sessionStorage.setItem('amovin_logado', 'true');
-          sessionStorage.setItem('amovin_perfil', 'admin');
-          sessionStorage.setItem('amovin_nome', 'Administrador');
-          
-          if (elements.rememberMe.checked) {
-            localStorage.setItem('amovin_lembrar', username);
-          } else {
-            localStorage.removeItem('amovin_lembrar');
-          }
-          
-          showNotification('Login realizado com sucesso! Redirecionando...', 'success');
-          setTimeout(function() {
-            window.location.href = 'dashboard.html';
-          }, 1000);
-          
+  try {
+    // Simular processamento
+    setTimeout(function() {
+      if (username.toLowerCase() === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
+        sessionStorage.setItem('amovin_logado', 'true');
+        sessionStorage.setItem('amovin_perfil', 'admin');
+        sessionStorage.setItem('amovin_nome', 'Administrador');
+        
+        if (elements.rememberMe.checked) {
+          localStorage.setItem('amovin_lembrar', username);
         } else {
-          sessionStorage.setItem('amovin_logado', 'true');
-          sessionStorage.setItem('amovin_perfil', 'recepcao');
-          sessionStorage.setItem('amovin_nome', username);
-          
-          if (elements.rememberMe.checked) {
-            localStorage.setItem('amovin_lembrar', username);
-          }
-          
-          showNotification('Bem-vindo(a)! Redirecionando...', 'success');
-          setTimeout(function() {
-            window.location.href = 'dashboard.html';
-          }, 1000);
+          localStorage.removeItem('amovin_lembrar');
         }
         
-        setLoading(false);
-      }, 1500);
+        showNotification('Login realizado com sucesso! Redirecionando...', 'success');
+        setTimeout(function() {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+        
+      } else {
+        sessionStorage.setItem('amovin_logado', 'true');
+        sessionStorage.setItem('amovin_perfil', 'recepcao');
+        sessionStorage.setItem('amovin_nome', username);
+        
+        if (elements.rememberMe.checked) {
+          localStorage.setItem('amovin_lembrar', username);
+        }
+        
+        showNotification('Bem-vindo(a)! Redirecionando...', 'success');
+        setTimeout(function() {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      }
       
-    } catch (error) {
-      console.error('Erro no login:', error);
-      showError('Erro ao processar login. Tente novamente.');
       setLoading(false);
-    }
+    }, 1500);
+    
+  } catch (error) {
+    console.error('Erro no login:', error);
+    showError('Erro ao processar login. Tente novamente.');
+    setLoading(false);
   }
-  
-  // ============================================
-  // FUNÇÕES DE UI
-  // ============================================
-  function showError(message) {
-    elements.errorMessage.textContent = message;
-    elements.errorMessage.classList.add('show');
-  }
-  
-  function hideError() {
-    elements.errorMessage.classList.remove('show');
-  }
-  
-  function setLoading(isLoading) {
-    if (isLoading) {
-      elements.btnEntrar.classList.add('loading');
+}
+
+// ============================================
+// FUNÇÕES DE UI
+// ============================================
+function showError(message) {
+  elements.errorMessage.textContent = message;
+  elements.errorMessage.classList.add('show');
+}
+
+function hideError() {
+  elements.errorMessage.classList.remove('show');
+}
+
+function setLoading(isLoading) {
+  if (isLoading) {
+    elements.btnEntrar.classList.add('loading');
+    elements.btnEntrar.disabled = true;
+  } else {
+    elements.btnEntrar.classList.remove('loading');
+    var lgpdData = getLGPDData();
+    if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
       elements.btnEntrar.disabled = true;
     } else {
-      elements.btnEntrar.classList.remove('loading');
-      var lgpdData = getLGPDData();
-      if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
-        elements.btnEntrar.disabled = true;
-      } else {
-        elements.btnEntrar.disabled = false;
-      }
+      elements.btnEntrar.disabled = false;
     }
   }
+}
+
+function showNotification(message, type) {
+  type = type || 'info';
+  var notification = document.createElement('div');
+  var bgColor = type === 'success' ? '#059669' : type === 'error' ? '#DC2626' : '#E8B923';
+  notification.style.cssText = 'position:fixed;top:20px;right:20px;padding:16px 24px;background:' + bgColor + ';color:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:400px;';
+  notification.textContent = message;
+  document.body.appendChild(notification);
   
-  function showNotification(message, type) {
-    type = type || 'info';
-    var notification = document.createElement('div');
-    var bgColor = type === 'success' ? '#059669' : type === 'error' ? '#DC2626' : '#E8B923';
-    notification.style.cssText = 'position:fixed;top:20px;right:20px;padding:16px 24px;background:' + bgColor + ';color:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:400px;';
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(function() {
-      notification.style.animation = 'slideOutRight 0.3s ease';
-      setTimeout(function() { notification.remove(); }, 300);
-    }, 3000);
-  }
+  setTimeout(function() {
+    notification.style.animation = 'slideOutRight 0.3s ease';
+    setTimeout(function() { notification.remove(); }, 300);
+  }, 3000);
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+elements.checkbox.addEventListener('change', function() {
+  console.log('🔵 Checkbox alterado! Marcado:', this.checked);
   
-  // ============================================
-  // EVENT LISTENERS
-  // ============================================
-  elements.checkbox.addEventListener('change', function() {
-    if (this.checked) {
-      elements.btnContinuar.disabled = false;
-      elements.btnContinuar.classList.add('enabled');
-    } else {
-      elements.btnContinuar.disabled = true;
-      elements.btnContinuar.classList.remove('enabled');
-    }
-  });
-  
-  elements.togglePassword.addEventListener('click', function() {
-    var type = elements.password.type === 'password' ? 'text' : 'password';
-    elements.password.type = type;
-    this.textContent = type === 'password' ? '👁️' : '🙈';
-  });
-  
-  elements.loginForm.addEventListener('submit', handleLogin);
-  
-  elements.modal.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  });
-  
-  elements.modal.addEventListener('click', function(e) {
-    if (e.target === elements.modal) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  });
-  
-  // ============================================
-  // INICIALIZAÇÃO
-  // ============================================
-  function init() {
-    checkLGPDStatus();
-    
-    var lembrar = localStorage.getItem('amovin_lembrar');
-    if (lembrar) {
-      elements.username.value = lembrar;
-      elements.rememberMe.checked = true;
-    }
-    
-    var style = document.createElement('style');
-    style.textContent = '@keyframes slideInRight{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}@keyframes slideOutRight{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}';
-    document.head.appendChild(style);
-    
-    console.log('✅ AMOVIN ERP - Sistema inicializado com sucesso');
-    console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
-  }
-  
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  if (this.checked) {
+    elements.btnContinuar.disabled = false;
+    elements.btnContinuar.classList.add('enabled');
+    console.log('✅ Botão CONTINUAR habilitado!');
   } else {
-    init();
+    elements.btnContinuar.disabled = true;
+    elements.btnContinuar.classList.remove('enabled');
+    console.log('❌ Botão CONTINUAR desabilitado.');
+  }
+});
+
+// Botão Continuar - evento direto no JavaScript
+elements.btnContinuar.addEventListener('click', function(e) {
+  console.log('🔵 Botão CONTINUAR clicado!');
+  aceitarLGPD();
+});
+
+elements.togglePassword.addEventListener('click', function() {
+  var type = elements.password.type === 'password' ? 'text' : 'password';
+  elements.password.type = type;
+  this.textContent = type === 'password' ? '👁️' : '🙈';
+});
+
+elements.loginForm.addEventListener('submit', handleLogin);
+
+elements.modal.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+
+elements.modal.addEventListener('click', function(e) {
+  if (e.target === elements.modal) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+function init() {
+  console.log('🚀 Inicializando sistema...');
+  checkLGPDStatus();
+  
+  var lembrar = localStorage.getItem('amovin_lembrar');
+  if (lembrar) {
+    elements.username.value = lembrar;
+    elements.rememberMe.checked = true;
   }
   
-})();
+  var style = document.createElement('style');
+  style.textContent = '@keyframes slideInRight{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}@keyframes slideOutRight{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}';
+  document.head.appendChild(style);
+  
+  console.log('✅ AMOVIN ERP - Sistema inicializado com sucesso');
+  console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 
 </body>
