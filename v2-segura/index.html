@@ -13,14 +13,15 @@
 }
 
 :root {
-  --amarelo: #E8B923;
-  --amarelo-escuro: #D4A017;
-  --grafite: #2C2C2C;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
   --cinza: #6B7280;
-  --fundo: #F8F4ED;
+  --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
-  --vermelho: #DC2626;
-  --verde: #059669;
+  --vermelho: #E53935;
   --sombra-suave: 0 4px 24px rgba(0, 0, 0, 0.06);
   --sombra-media: 0 8px 40px rgba(0, 0, 0, 0.1);
   --sombra-forte: 0 20px 60px rgba(0, 0, 0, 0.15);
@@ -29,7 +30,7 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #F8F4ED 0%, #F1E9DD 50%, #EDE5D9 100%);
+  background: var(--cinza-claro);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -96,9 +97,12 @@ body {
   animation: fadeInUp 0.6s ease-out;
 }
 
+/* ============================================
+   PAINEL LATERAL (DESKTOP) - CORES AMOVIN
+   ============================================ */
 .institutional-panel {
   flex: 1;
-  background: linear-gradient(135deg, var(--grafite) 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, var(--grafite) 0%, #2C2C2C 100%);
   color: var(--branco);
   padding: 60px 50px;
   display: flex;
@@ -115,7 +119,7 @@ body {
   right: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(232, 185, 35, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 197, 24, 0.08) 0%, transparent 70%);
   animation: pulse 8s ease-in-out infinite;
 }
 
@@ -128,7 +132,7 @@ body {
   width: 100px;
   height: 100px;
   margin-bottom: 40px;
-  filter: drop-shadow(0 8px 20px rgba(232, 185, 35, 0.3));
+  filter: drop-shadow(0 8px 20px rgba(198, 90, 17, 0.3));
 }
 
 .institutional-title {
@@ -136,11 +140,16 @@ body {
   font-weight: 700;
   margin-bottom: 12px;
   line-height: 1.2;
+  color: var(--branco);
+}
+
+.institutional-title span {
+  color: var(--amarelo);
 }
 
 .institutional-subtitle {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 40px;
   line-height: 1.6;
 }
@@ -167,7 +176,7 @@ body {
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.85);
   transition: all 0.3s ease;
 }
 
@@ -179,22 +188,26 @@ body {
 .feature-icon {
   width: 24px;
   height: 24px;
-  background: rgba(232, 185, 35, 0.2);
+  background: rgba(245, 197, 24, 0.15);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   flex-shrink: 0;
+  color: var(--amarelo);
 }
 
 .institutional-footer {
   position: relative;
   z-index: 2;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.4);
 }
 
+/* ============================================
+   CARD DE LOGIN
+   ============================================ */
 .login-card {
   flex: 1;
   padding: 60px 50px;
@@ -202,6 +215,7 @@ body {
   flex-direction: column;
   justify-content: center;
   position: relative;
+  background: var(--branco);
 }
 
 .logo-container {
@@ -214,21 +228,25 @@ body {
   height: 80px;
   margin: 0 auto 16px;
   display: block;
-  filter: drop-shadow(0 4px 12px rgba(232, 185, 35, 0.2));
+  filter: drop-shadow(0 4px 12px rgba(198, 90, 17, 0.2));
 }
 
 .logo-fallback {
   font-size: 64px;
   display: none;
-  filter: drop-shadow(0 4px 12px rgba(232, 185, 35, 0.2));
+  filter: drop-shadow(0 4px 12px rgba(198, 90, 17, 0.2));
 }
 
 .brand-name {
   font-size: 28px;
   font-weight: 700;
   color: var(--grafite);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   letter-spacing: -0.5px;
+}
+
+.brand-name span {
+  color: var(--laranja);
 }
 
 .brand-subtitle {
@@ -239,6 +257,9 @@ body {
   font-weight: 500;
 }
 
+/* ============================================
+   FORMULÁRIO
+   ============================================ */
 .login-form {
   max-width: 400px;
   margin: 0 auto;
@@ -275,8 +296,8 @@ body {
 
 .form-input:focus {
   outline: none;
-  border-color: var(--amarelo);
-  box-shadow: 0 0 0 4px rgba(232, 185, 35, 0.1);
+  border-color: var(--laranja);
+  box-shadow: 0 0 0 4px rgba(198, 90, 17, 0.1);
 }
 
 .form-input::placeholder {
@@ -294,7 +315,7 @@ body {
 }
 
 .form-input:focus ~ .input-icon {
-  color: var(--amarelo);
+  color: var(--laranja);
 }
 
 .password-toggle {
@@ -312,7 +333,7 @@ body {
 }
 
 .password-toggle:hover {
-  color: var(--amarelo);
+  color: var(--laranja);
 }
 
 .form-options {
@@ -334,11 +355,11 @@ body {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: var(--amarelo);
+  accent-color: var(--laranja);
 }
 
 .forgot-link {
-  color: var(--amarelo-escuro);
+  color: var(--laranja);
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
@@ -349,11 +370,14 @@ body {
   text-decoration: underline;
 }
 
+/* ============================================
+   BOTÃO PRINCIPAL
+   ============================================ */
 .btn-primary {
   width: 100%;
   padding: 16px;
-  background: var(--amarelo);
-  color: var(--grafite);
+  background: var(--laranja);
+  color: var(--branco);
   border: none;
   border-radius: var(--raio);
   font-size: 16px;
@@ -362,7 +386,7 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(232, 185, 35, 0.3);
+  box-shadow: 0 4px 16px rgba(198, 90, 17, 0.3);
   letter-spacing: 0.3px;
 }
 
@@ -374,7 +398,7 @@ body {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
 }
@@ -385,9 +409,9 @@ body {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--amarelo-escuro);
+  background: #A04A0E;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(232, 185, 35, 0.4);
+  box-shadow: 0 8px 24px rgba(198, 90, 17, 0.4);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -418,8 +442,8 @@ body {
 .spinner {
   width: 20px;
   height: 20px;
-  border: 3px solid rgba(44, 44, 44, 0.2);
-  border-top-color: var(--grafite);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--branco);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   display: none;
@@ -445,6 +469,9 @@ body {
   font-weight: 600;
 }
 
+/* ============================================
+   MENSAGEM DE ERRO
+   ============================================ */
 .error-message {
   background: #FEF2F2;
   border: 1px solid #FECACA;
@@ -462,6 +489,9 @@ body {
   display: block;
 }
 
+/* ============================================
+   RODAPÉ
+   ============================================ */
 .footer {
   margin-top: 40px;
   padding-top: 30px;
@@ -479,7 +509,7 @@ body {
 .footer-logo {
   width: 60px;
   height: auto;
-  opacity: 0.6;
+  opacity: 0.5;
   transition: all 0.3s ease;
 }
 
@@ -501,7 +531,7 @@ body {
 }
 
 .footer-links a {
-  color: var(--amarelo-escuro);
+  color: var(--laranja);
   text-decoration: none;
   transition: all 0.3s ease;
   font-weight: 500;
@@ -529,6 +559,9 @@ body {
   animation: blink 2s infinite;
 }
 
+/* ============================================
+   MODAL LGPD
+   ============================================ */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -569,6 +602,10 @@ body {
   font-weight: 700;
   color: var(--grafite);
   margin-bottom: 8px;
+}
+
+.modal-title span {
+  color: var(--laranja);
 }
 
 .modal-subtitle {
@@ -612,7 +649,7 @@ body {
 }
 
 .lgpd-links a {
-  color: var(--amarelo-escuro);
+  color: var(--laranja);
   text-decoration: none;
   font-weight: 600;
   font-size: 13px;
@@ -638,7 +675,7 @@ body {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: var(--amarelo);
+  accent-color: var(--laranja);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -671,17 +708,20 @@ body {
 }
 
 .btn-secondary.enabled {
-  background: var(--amarelo);
-  color: var(--grafite);
+  background: var(--laranja);
+  color: var(--branco);
   cursor: pointer;
 }
 
 .btn-secondary.enabled:hover {
-  background: var(--amarelo-escuro);
+  background: #A04A0E;
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(232, 185, 35, 0.3);
+  box-shadow: 0 4px 16px rgba(198, 90, 17, 0.3);
 }
 
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
 @media (max-width: 1024px) {
   .institutional-panel {
     display: none;
@@ -760,7 +800,7 @@ body {
 }
 
 *:focus-visible {
-  outline: 3px solid var(--amarelo);
+  outline: 3px solid var(--laranja);
   outline-offset: 2px;
 }
 
@@ -785,7 +825,7 @@ body {
 <div class="modal-overlay" id="lgpdModal" role="dialog" aria-labelledby="lgpdTitle" aria-modal="true">
   <div class="lgpd-modal">
     <div class="modal-header">
-      <h2 class="modal-title" id="lgpdTitle">Política de Privacidade e LGPD</h2>
+      <h2 class="modal-title" id="lgpdTitle">Política de Privacidade e <span>LGPD</span></h2>
       <p class="modal-subtitle">AMOVIN ERP Social - Proteção de Dados</p>
     </div>
     
@@ -847,12 +887,13 @@ body {
      ============================================ -->
 <div class="login-container">
   
+  <!-- PAINEL LATERAL (DESKTOP) -->
   <aside class="institutional-panel" aria-label="Informações institucionais">
     <div class="institutional-content">
       <div>
         <img src="images/amovin-logo.png" alt="Logo AMOVIN" class="institutional-logo" onerror="this.style.display='none'">
         
-        <h1 class="institutional-title">AMOVIN ERP Social</h1>
+        <h1 class="institutional-title">AMOVIN <span>ERP Social</span></h1>
         <p class="institutional-subtitle">Sistema Integrado de Gestão Institucional</p>
         
         <blockquote class="institutional-quote">
@@ -877,17 +918,22 @@ body {
     </div>
   </aside>
   
+  <!-- CARD DE LOGIN -->
   <main class="login-card">
     
+    <!-- Logo e Identidade -->
     <div class="logo-container">
       <img src="images/amovin-logo.png" alt="AMOVIN ERP Social" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
       <div class="logo-fallback">🌻</div>
-      <h1 class="brand-name">AMOVIN ERP Social</h1>
+      
+      <h1 class="brand-name">AMOVIN <span>ERP Social</span></h1>
       <p class="brand-subtitle">Sistema Integrado de Gestão</p>
     </div>
     
+    <!-- Mensagem de Erro -->
     <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
     
+    <!-- Formulário -->
     <form class="login-form" id="loginForm" novalidate>
       
       <div class="form-group">
@@ -929,6 +975,7 @@ body {
       
     </form>
     
+    <!-- Rodapé -->
     <footer class="footer">
       <div class="footer-content">
         <img src="images/logo-vigorre.png" alt="Vigorre Designer" class="footer-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -961,12 +1008,13 @@ body {
   
 </div>
 
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
 <script>
 // ============================================
-// JAVASCRIPT - TODAS AS FUNÇÕES NO ESCOPO GLOBAL
-// ============================================
-
 // CONFIGURAÇÕES
+// ============================================
 var CONFIG = {
   LGPD_VERSION: '1.0.0',
   LGPD_STORAGE_KEY: 'lgpd_aceito',
@@ -974,7 +1022,9 @@ var CONFIG = {
   ADMIN_PASS: 'amovin2026'
 };
 
+// ============================================
 // ELEMENTOS DO DOM
+// ============================================
 var elements = {
   modal: document.getElementById('lgpdModal'),
   checkbox: document.getElementById('lgpdCheckbox'),
@@ -1194,17 +1244,14 @@ function showNotification(message, type) {
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 Documento carregado!');
   
-  // Verificar LGPD
   checkLGPDStatus();
   
-  // Lembrar usuário
   var lembrar = localStorage.getItem('amovin_lembrar');
   if (lembrar) {
     elements.username.value = lembrar;
     elements.rememberMe.checked = true;
   }
   
-  // Evento do checkbox
   elements.checkbox.addEventListener('change', function() {
     console.log('🔵 Checkbox alterado! Marcado:', this.checked);
     if (this.checked) {
@@ -1218,23 +1265,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Evento do botão Continuar (SEM onclick no HTML)
   elements.btnContinuar.addEventListener('click', function(e) {
     console.log('🔵 Botão CONTINUAR clicado!');
     aceitarLGPD();
   });
   
-  // Evento do botão mostrar senha
   elements.togglePassword.addEventListener('click', function() {
     var type = elements.password.type === 'password' ? 'text' : 'password';
     elements.password.type = type;
     this.textContent = type === 'password' ? '👁️' : '🙈';
   });
   
-  // Evento do formulário de login
   elements.loginForm.addEventListener('submit', handleLogin);
   
-  // Evento do modal (Escape)
   elements.modal.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       e.preventDefault();
@@ -1242,7 +1285,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Evento do modal (clique fora)
   elements.modal.addEventListener('click', function(e) {
     if (e.target === elements.modal) {
       e.preventDefault();
@@ -1250,7 +1292,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Adicionar animações
   var style = document.createElement('style');
   style.textContent = '@keyframes slideInRight{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}@keyframes slideOutRight{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}';
   document.head.appendChild(style);
