@@ -53,9 +53,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 .pessoa-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .pessoa-card.inativo { opacity: 0.6; border-left: 4px solid var(--vermelho); }
-.pessoa-info h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
-.pessoa-info p { font-size: 11px; color: var(--cinza); }
-.pessoa-info .badge-tipo { font-size: 9px; padding: 2px 10px; border-radius: 12px; margin-left: 6px; }
+.pessoa-info { display: flex; align-items: center; gap: 14px; flex: 1; }
+.pessoa-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--cinza); flex-shrink: 0; border: 2px solid #F0E9DF; }
+.pessoa-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.pessoa-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
+.pessoa-dados p { font-size: 11px; color: var(--cinza); }
+.pessoa-dados .badge-tipo { font-size: 9px; padding: 2px 10px; border-radius: 12px; margin-left: 6px; }
 .badge-beneficiario { background: #E3F2FD; color: #1565C0; }
 .badge-profissional { background: #E8F5E9; color: #2E7D32; }
 .badge-voluntario { background: #FFF3E0; color: #E65100; }
@@ -77,6 +80,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
 .form-group textarea { resize: vertical; min-height: 60px; }
 .form-group .campo-obrigatorio { color: var(--vermelho); }
+.form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
+.foto-preview { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #F0E9DF; margin-top: 8px; display: none; }
 .btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 .btn-salvar:hover { background: #A04A0E; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
@@ -243,6 +248,17 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
           </select>
         </div>
 
+        <div class="section-title">📸 Foto (opcional)</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Foto <span class="campo-opcional">(opcional - JPG, PNG)</span></label>
+            <input type="file" id="fotoPessoa" accept="image/*" onchange="previewFoto(event)">
+            <img id="fotoPreview" class="foto-preview" alt="Pré-visualização">
+            <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">📷 Clique em "Escolher arquivo" para adicionar uma foto. O cadastro é aceito mesmo sem foto.</small>
+          </div>
+        </div>
+
         <div class="section-title">📞 Contato</div>
 
         <div class="form-group">
@@ -298,7 +314,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
           <div class="form-group">
             <label>Responsável</label>
             <input type="text" id="responsavelPessoa" placeholder="Ex: Mãe do beneficiário João Silva">
-            <small style="color:var(--cinza);font-size:10px;">Preencher quando o cadastro for beneficiário</small>
+            <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">Preencher quando o cadastro for beneficiário</small>
           </div>
         </div>
 
@@ -330,13 +346,14 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
 var abaAtual = 'beneficiario';
 var editandoId = null;
+var fotoDataURL = null;
 
 // Dados iniciais
 if (pessoas.length === 0) {
     pessoas = [
-        { id: 1, nome: 'João Silva', tipo: 'beneficiario', cpf: '123.456.789-00', rg: 'MG-12.345.678', dataNasc: '2010-05-15', sexo: 'Masculino', telefone: '(34) 99999-1111', whatsapp: '(34) 99999-1111', email: 'joao@email.com', endereco: 'Rua das Flores, 123', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: 'Mãe do beneficiário João Silva', obs: 'Atendimento semanal', ativo: true, dataCadastro: '2026-07-01' },
-        { id: 2, nome: 'Dra. Lucia Ferreira', tipo: 'profissional', cpf: '987.654.321-00', rg: 'MG-98.765.432', dataNasc: '1985-03-20', sexo: 'Feminino', telefone: '(34) 99999-2222', whatsapp: '(34) 99999-2222', email: 'lucia@clinica.com', endereco: 'Rua Saúde, 456', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Assistente Social - CRESS MG 12345', ativo: true, dataCadastro: '2026-07-01' },
-        { id: 3, nome: 'Carlos Oliveira', tipo: 'voluntario', cpf: '456.789.123-00', rg: 'MG-45.678.901', dataNasc: '1990-11-10', sexo: 'Masculino', telefone: '(34) 99999-3333', whatsapp: '(34) 99999-3333', email: 'carlos@email.com', endereco: 'Rua Voluntários, 789', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Disponível fins de semana', ativo: true, dataCadastro: '2026-07-01' }
+        { id: 1, nome: 'João Silva', tipo: 'beneficiario', cpf: '123.456.789-00', rg: 'MG-12.345.678', dataNasc: '2010-05-15', sexo: 'Masculino', telefone: '(34) 99999-1111', whatsapp: '(34) 99999-1111', email: 'joao@email.com', endereco: 'Rua das Flores, 123', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: 'Mãe do beneficiário João Silva', obs: 'Atendimento semanal', ativo: true, dataCadastro: '2026-07-01', foto: null },
+        { id: 2, nome: 'Dra. Lucia Ferreira', tipo: 'profissional', cpf: '987.654.321-00', rg: 'MG-98.765.432', dataNasc: '1985-03-20', sexo: 'Feminino', telefone: '(34) 99999-2222', whatsapp: '(34) 99999-2222', email: 'lucia@clinica.com', endereco: 'Rua Saúde, 456', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Assistente Social - CRESS MG 12345', ativo: true, dataCadastro: '2026-07-01', foto: null },
+        { id: 3, nome: 'Carlos Oliveira', tipo: 'voluntario', cpf: '456.789.123-00', rg: 'MG-45.678.901', dataNasc: '1990-11-10', sexo: 'Masculino', telefone: '(34) 99999-3333', whatsapp: '(34) 99999-3333', email: 'carlos@email.com', endereco: 'Rua Voluntários, 789', cidade: 'Rio Paranaíba', estado: 'MG', responsavel: '', obs: 'Disponível fins de semana', ativo: true, dataCadastro: '2026-07-01', foto: null }
     ];
     salvar();
 }
@@ -373,6 +390,7 @@ function importarParaCRM(pessoa) {
             favorito: false,
             origem: 'pessoas',
             ativo: true,
+            foto: pessoa.foto || null,
             dataCadastro: new Date().toISOString().split('T')[0]
         };
         contatos.push(novoContato);
@@ -381,6 +399,26 @@ function importarParaCRM(pessoa) {
     }
     return false;
 }
+
+// ============================================================
+// PRÉ-VISUALIZAÇÃO DA FOTO
+// ============================================================
+window.previewFoto = function(event) {
+    var file = event.target.files[0];
+    if (!file) {
+        document.getElementById('fotoPreview').style.display = 'none';
+        fotoDataURL = null;
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        fotoDataURL = e.target.result;
+        var preview = document.getElementById('fotoPreview');
+        preview.src = fotoDataURL;
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+};
 
 // ============================================================
 // RENDERIZAÇÃO
@@ -395,6 +433,16 @@ function mudarAba(aba) {
         else if (el.textContent.includes('Todos') && aba === 'todos') el.classList.add('ativo');
     });
     filtrar();
+}
+
+function getAvatarHtml(pessoa) {
+    if (pessoa.foto) {
+        return '<img src="' + pessoa.foto + '" alt="' + pessoa.nome + '" class="pessoa-avatar">';
+    }
+    var iniciais = pessoa.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
+    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
+    var cor = cores[pessoa.id % cores.length] || '#C65A11';
+    return '<div class="pessoa-avatar" style="background:' + cor + ';color:white;font-size:18px;font-weight:700;">' + iniciais + '</div>';
 }
 
 function filtrar() {
@@ -432,10 +480,12 @@ function filtrar() {
 
             return '<div class="pessoa-card' + (p.ativo === false ? ' inativo' : '') + '">' +
                 '<div class="pessoa-info">' +
+                getAvatarHtml(p) +
+                '<div class="pessoa-dados">' +
                 '<h4>' + p.nome + ' ' + badge + '</h4>' +
                 '<p>📞 ' + (p.telefone || p.whatsapp || '-') + ' | 📧 ' + (p.email || '-') + responsavelInfo + '</p>' +
                 '<p style="font-size:10px;color:#9CA3AF;">📍 ' + (p.cidade || '') + (p.estado ? '/' + p.estado : '') + ' | ' + status + ' | 📅 ' + (p.dataCadastro || '') + '</p>' +
-                '</div>' +
+                '</div></div>' +
                 '<div class="contato-acoes">' +
                 '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
                 '<button class="btn-acao btn-excluir" onclick="excluirPessoa(' + p.id + ')">🗑️</button>' +
@@ -463,6 +513,12 @@ window.abrirForm = function(id) {
     document.getElementById('modalForm').style.display = 'flex';
     document.getElementById('tituloModal').textContent = id ? '✏️ Editar Cadastro' : '📝 Novo Cadastro';
 
+    // Resetar foto
+    fotoDataURL = null;
+    document.getElementById('fotoPreview').style.display = 'none';
+    document.getElementById('fotoPreview').src = '';
+    document.getElementById('fotoPessoa').value = '';
+
     if (id) {
         var p = pessoas.find(function(x) { return x.id === id; });
         if (!p) return;
@@ -482,6 +538,12 @@ window.abrirForm = function(id) {
         document.getElementById('responsavelPessoa').value = p.responsavel || '';
         document.getElementById('obsPessoa').value = p.obs || '';
         document.getElementById('ativoPessoa').checked = p.ativo !== false;
+        if (p.foto) {
+            fotoDataURL = p.foto;
+            var preview = document.getElementById('fotoPreview');
+            preview.src = p.foto;
+            preview.style.display = 'block';
+        }
     } else {
         document.getElementById('pessoaId').value = '';
         document.getElementById('tipoPessoa').value = 'beneficiario';
@@ -535,6 +597,17 @@ window.salvarPessoa = function() {
         obs: document.getElementById('obsPessoa').value.trim(),
         ativo: document.getElementById('ativoPessoa').checked
     };
+
+    // Só adiciona foto se tiver (opcional)
+    if (fotoDataURL) {
+        dados.foto = fotoDataURL;
+    } else if (editandoId) {
+        // Manter foto existente se não foi alterada
+        var existente = pessoas.find(function(p) { return p.id === editandoId; });
+        if (existente && existente.foto) {
+            dados.foto = existente.foto;
+        }
+    }
 
     if (editandoId) {
         var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
