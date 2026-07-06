@@ -6,9 +6,6 @@
 <title>AMOVIN • Acesso ao Sistema</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ============================================
-   RESET & BASE
-   ============================================ */
 * {
   margin: 0;
   padding: 0;
@@ -43,9 +40,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ============================================
-   ANIMAÇÕES
-   ============================================ */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
@@ -90,9 +84,6 @@ body {
   50% { opacity: 0.3; }
 }
 
-/* ============================================
-   LAYOUT PRINCIPAL
-   ============================================ */
 .login-container {
   display: flex;
   width: 100%;
@@ -105,9 +96,6 @@ body {
   animation: fadeInUp 0.6s ease-out;
 }
 
-/* ============================================
-   PAINEL LATERAL (DESKTOP)
-   ============================================ */
 .institutional-panel {
   flex: 1;
   background: linear-gradient(135deg, var(--grafite) 0%, #1a1a1a 100%);
@@ -207,9 +195,6 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* ============================================
-   CARD DE LOGIN
-   ============================================ */
 .login-card {
   flex: 1;
   padding: 60px 50px;
@@ -254,9 +239,6 @@ body {
   font-weight: 500;
 }
 
-/* ============================================
-   FORMULÁRIO
-   ============================================ */
 .login-form {
   max-width: 400px;
   margin: 0 auto;
@@ -367,9 +349,6 @@ body {
   text-decoration: underline;
 }
 
-/* ============================================
-   BOTÃO PRINCIPAL
-   ============================================ */
 .btn-primary {
   width: 100%;
   padding: 16px;
@@ -466,9 +445,6 @@ body {
   font-weight: 600;
 }
 
-/* ============================================
-   MENSAGEM DE ERRO
-   ============================================ */
 .error-message {
   background: #FEF2F2;
   border: 1px solid #FECACA;
@@ -486,9 +462,6 @@ body {
   display: block;
 }
 
-/* ============================================
-   RODAPÉ
-   ============================================ */
 .footer {
   margin-top: 40px;
   padding-top: 30px;
@@ -556,9 +529,6 @@ body {
   animation: blink 2s infinite;
 }
 
-/* ============================================
-   MODAL LGPD
-   ============================================ */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -712,14 +682,10 @@ body {
   box-shadow: 0 4px 16px rgba(232, 185, 35, 0.3);
 }
 
-/* ============================================
-   RESPONSIVIDADE
-   ============================================ */
 @media (max-width: 1024px) {
   .institutional-panel {
     display: none;
   }
-  
   .login-card {
     padding: 40px 30px;
   }
@@ -730,31 +696,24 @@ body {
     flex-direction: column;
     min-height: auto;
   }
-  
   .institutional-panel {
     display: none !important;
   }
-  
   .login-card {
     padding: 30px 20px;
   }
-  
   .brand-name {
     font-size: 24px;
   }
-  
   .features-list {
     grid-template-columns: 1fr;
   }
-  
   .modal-body {
     padding: 24px;
   }
-  
   .modal-header {
     padding: 24px;
   }
-  
   .modal-footer {
     padding: 20px 24px 24px;
   }
@@ -764,39 +723,30 @@ body {
   body {
     padding: 0;
   }
-  
   .login-container {
     border-radius: 0;
     min-height: 100vh;
   }
-  
   .login-card {
     padding: 24px 16px;
   }
-  
   .logo {
     width: 60px;
     height: 60px;
   }
-  
   .brand-name {
     font-size: 20px;
   }
-  
   .form-input {
     padding: 12px 14px 12px 40px;
     font-size: 14px;
   }
-  
   .btn-primary {
     padding: 14px;
     font-size: 14px;
   }
 }
 
-/* ============================================
-   ACESSIBILIDADE
-   ============================================ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -814,9 +764,6 @@ body {
   outline-offset: 2px;
 }
 
-/* ============================================
-   UTILITÁRIOS
-   ============================================ */
 .hidden {
   display: none !important;
 }
@@ -900,7 +847,6 @@ body {
      ============================================ -->
 <div class="login-container">
   
-  <!-- PAINEL LATERAL (DESKTOP) -->
   <aside class="institutional-panel" aria-label="Informações institucionais">
     <div class="institutional-content">
       <div>
@@ -914,38 +860,14 @@ body {
         </blockquote>
         
         <ul class="features-list">
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>Gestão de Beneficiários</span>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>Gestão Financeira</span>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>Patrimônio</span>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>Projetos</span>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>Documentos</span>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>Prestação de Contas</span>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>QR Code Inteligente</span>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">✓</span>
-            <span>Business Intelligence</span>
-          </li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>Gestão de Beneficiários</span></li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>Gestão Financeira</span></li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>Patrimônio</span></li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>Projetos</span></li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>Documentos</span></li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>Prestação de Contas</span></li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>QR Code Inteligente</span></li>
+          <li class="feature-item"><span class="feature-icon">✓</span><span>Business Intelligence</span></li>
         </ul>
       </div>
       
@@ -955,37 +877,24 @@ body {
     </div>
   </aside>
   
-  <!-- CARD DE LOGIN -->
   <main class="login-card">
     
-    <!-- Logo e Identidade -->
     <div class="logo-container">
       <img src="images/amovin-logo.png" alt="AMOVIN ERP Social" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
       <div class="logo-fallback">🌻</div>
-      
       <h1 class="brand-name">AMOVIN ERP Social</h1>
       <p class="brand-subtitle">Sistema Integrado de Gestão</p>
     </div>
     
-    <!-- Mensagem de Erro -->
     <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
     
-    <!-- Formulário -->
     <form class="login-form" id="loginForm" novalidate>
       
       <div class="form-group">
         <label for="username" class="form-label">Login / Usuário</label>
         <div class="input-wrapper">
           <span class="input-icon" aria-hidden="true">👤</span>
-          <input 
-            type="text" 
-            id="username" 
-            class="form-input" 
-            placeholder="Digite seu login"
-            autocomplete="username"
-            required
-            aria-required="true"
-          >
+          <input type="text" id="username" class="form-input" placeholder="Digite seu login" autocomplete="username" required aria-required="true">
         </div>
       </div>
       
@@ -993,18 +902,8 @@ body {
         <label for="password" class="form-label">Senha</label>
         <div class="input-wrapper">
           <span class="input-icon" aria-hidden="true">🔒</span>
-          <input 
-            type="password" 
-            id="password" 
-            class="form-input" 
-            placeholder="Digite sua senha"
-            autocomplete="current-password"
-            required
-            aria-required="true"
-          >
-          <button type="button" class="password-toggle" id="togglePassword" aria-label="Mostrar ou ocultar senha">
-            👁️
-          </button>
+          <input type="password" id="password" class="form-input" placeholder="Digite sua senha" autocomplete="current-password" required aria-required="true">
+          <button type="button" class="password-toggle" id="togglePassword" aria-label="Mostrar ou ocultar senha">👁️</button>
         </div>
       </div>
       
@@ -1013,9 +912,7 @@ body {
           <input type="checkbox" id="rememberMe" aria-label="Lembrar meus dados">
           <span>Lembrar-me</span>
         </label>
-        <a href="#" class="forgot-link" onclick="alert('Funcionalidade de recuperação de senha será implementada em breve.'); return false;">
-          Esqueci minha senha
-        </a>
+        <a href="#" class="forgot-link" onclick="alert('Funcionalidade de recuperação de senha será implementada em breve.'); return false;">Esqueci minha senha</a>
       </div>
       
       <button type="submit" class="btn-primary" id="btnEntrar" disabled>
@@ -1032,15 +929,9 @@ body {
       
     </form>
     
-    <!-- Rodapé -->
     <footer class="footer">
       <div class="footer-content">
-        <img 
-          src="images/logo-vigorre.png" 
-          alt="Vigorre Designer" 
-          class="footer-logo"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-        >
+        <img src="images/logo-vigorre.png" alt="Vigorre Designer" class="footer-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
         <span class="logo-vigorre-fallback" style="display: none;">Vigorre</span>
         
         <div class="footer-info">
@@ -1070,13 +961,12 @@ body {
   
 </div>
 
-<!-- ============================================
-     JAVASCRIPT
-     ============================================ -->
 <script>
 // ============================================
-// CONFIGURAÇÕES
+// JAVASCRIPT - TODAS AS FUNÇÕES NO ESCOPO GLOBAL
 // ============================================
+
+// CONFIGURAÇÕES
 var CONFIG = {
   LGPD_VERSION: '1.0.0',
   LGPD_STORAGE_KEY: 'lgpd_aceito',
@@ -1084,9 +974,7 @@ var CONFIG = {
   ADMIN_PASS: 'amovin2026'
 };
 
-// ============================================
 // ELEMENTOS DO DOM
-// ============================================
 var elements = {
   modal: document.getElementById('lgpdModal'),
   checkbox: document.getElementById('lgpdCheckbox'),
@@ -1105,33 +993,15 @@ var elements = {
 // FUNÇÕES DE SEGURANÇA
 // ============================================
 function sanitizeInput(input) {
-  return input
-    .replace(/[<>]/g, '')
-    .replace(/javascript:/gi, '')
-    .replace(/on\w+=/gi, '')
-    .trim()
-    .substring(0, 100);
+  return input.replace(/[<>]/g, '').replace(/javascript:/gi, '').replace(/on\w+=/gi, '').trim().substring(0, 100);
 }
 
 function validateCredentials(username, password) {
   var errors = [];
-  
-  if (!username || username.trim().length === 0) {
-    errors.push('Por favor, informe seu login.');
-  }
-  
-  if (!password || password.length < 1) {
-    errors.push('Por favor, informe sua senha.');
-  }
-  
-  if (username && username.length > 100) {
-    errors.push('Login muito longo. Máximo 100 caracteres.');
-  }
-  
-  if (password && password.length > 50) {
-    errors.push('Senha muito longa. Máximo 50 caracteres.');
-  }
-  
+  if (!username || username.trim().length === 0) errors.push('Por favor, informe seu login.');
+  if (!password || password.length < 1) errors.push('Por favor, informe sua senha.');
+  if (username && username.length > 100) errors.push('Login muito longo. Máximo 100 caracteres.');
+  if (password && password.length > 50) errors.push('Senha muito longa. Máximo 50 caracteres.');
   return errors;
 }
 
@@ -1166,12 +1036,10 @@ function saveLGPDData() {
 
 function checkLGPDStatus() {
   var lgpdData = getLGPDData();
-  
   if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
     showLGPDModal();
     return false;
   }
-  
   enableLogin();
   return true;
 }
@@ -1249,42 +1117,30 @@ function handleLogin(e) {
   hideError();
   
   try {
-    // Simular processamento
     setTimeout(function() {
       if (username.toLowerCase() === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
         sessionStorage.setItem('amovin_logado', 'true');
         sessionStorage.setItem('amovin_perfil', 'admin');
         sessionStorage.setItem('amovin_nome', 'Administrador');
-        
         if (elements.rememberMe.checked) {
           localStorage.setItem('amovin_lembrar', username);
         } else {
           localStorage.removeItem('amovin_lembrar');
         }
-        
         showNotification('Login realizado com sucesso! Redirecionando...', 'success');
-        setTimeout(function() {
-          window.location.href = 'dashboard.html';
-        }, 1000);
-        
+        setTimeout(function() { window.location.href = 'dashboard.html'; }, 1000);
       } else {
         sessionStorage.setItem('amovin_logado', 'true');
         sessionStorage.setItem('amovin_perfil', 'recepcao');
         sessionStorage.setItem('amovin_nome', username);
-        
         if (elements.rememberMe.checked) {
           localStorage.setItem('amovin_lembrar', username);
         }
-        
         showNotification('Bem-vindo(a)! Redirecionando...', 'success');
-        setTimeout(function() {
-          window.location.href = 'dashboard.html';
-        }, 1000);
+        setTimeout(function() { window.location.href = 'dashboard.html'; }, 1000);
       }
-      
       setLoading(false);
     }, 1500);
-    
   } catch (error) {
     console.error('Erro no login:', error);
     showError('Erro ao processar login. Tente novamente.');
@@ -1326,7 +1182,6 @@ function showNotification(message, type) {
   notification.style.cssText = 'position:fixed;top:20px;right:20px;padding:16px 24px;background:' + bgColor + ';color:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:400px;';
   notification.textContent = message;
   document.body.appendChild(notification);
-  
   setTimeout(function() {
     notification.style.animation = 'slideOutRight 0.3s ease';
     setTimeout(function() { notification.remove(); }, 300);
@@ -1336,74 +1191,73 @@ function showNotification(message, type) {
 // ============================================
 // EVENT LISTENERS
 // ============================================
-elements.checkbox.addEventListener('change', function() {
-  console.log('🔵 Checkbox alterado! Marcado:', this.checked);
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🚀 Documento carregado!');
   
-  if (this.checked) {
-    elements.btnContinuar.disabled = false;
-    elements.btnContinuar.classList.add('enabled');
-    console.log('✅ Botão CONTINUAR habilitado!');
-  } else {
-    elements.btnContinuar.disabled = true;
-    elements.btnContinuar.classList.remove('enabled');
-    console.log('❌ Botão CONTINUAR desabilitado.');
-  }
-});
-
-// Botão Continuar - evento direto no JavaScript (SEM onclick no HTML)
-elements.btnContinuar.addEventListener('click', function(e) {
-  console.log('🔵 Botão CONTINUAR clicado!');
-  aceitarLGPD();
-});
-
-elements.togglePassword.addEventListener('click', function() {
-  var type = elements.password.type === 'password' ? 'text' : 'password';
-  elements.password.type = type;
-  this.textContent = type === 'password' ? '👁️' : '🙈';
-});
-
-elements.loginForm.addEventListener('submit', handleLogin);
-
-elements.modal.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-});
-
-elements.modal.addEventListener('click', function(e) {
-  if (e.target === elements.modal) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-});
-
-// ============================================
-// INICIALIZAÇÃO
-// ============================================
-function init() {
-  console.log('🚀 Inicializando sistema...');
+  // Verificar LGPD
   checkLGPDStatus();
   
+  // Lembrar usuário
   var lembrar = localStorage.getItem('amovin_lembrar');
   if (lembrar) {
     elements.username.value = lembrar;
     elements.rememberMe.checked = true;
   }
   
+  // Evento do checkbox
+  elements.checkbox.addEventListener('change', function() {
+    console.log('🔵 Checkbox alterado! Marcado:', this.checked);
+    if (this.checked) {
+      elements.btnContinuar.disabled = false;
+      elements.btnContinuar.classList.add('enabled');
+      console.log('✅ Botão CONTINUAR habilitado!');
+    } else {
+      elements.btnContinuar.disabled = true;
+      elements.btnContinuar.classList.remove('enabled');
+      console.log('❌ Botão CONTINUAR desabilitado.');
+    }
+  });
+  
+  // Evento do botão Continuar (SEM onclick no HTML)
+  elements.btnContinuar.addEventListener('click', function(e) {
+    console.log('🔵 Botão CONTINUAR clicado!');
+    aceitarLGPD();
+  });
+  
+  // Evento do botão mostrar senha
+  elements.togglePassword.addEventListener('click', function() {
+    var type = elements.password.type === 'password' ? 'text' : 'password';
+    elements.password.type = type;
+    this.textContent = type === 'password' ? '👁️' : '🙈';
+  });
+  
+  // Evento do formulário de login
+  elements.loginForm.addEventListener('submit', handleLogin);
+  
+  // Evento do modal (Escape)
+  elements.modal.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+  
+  // Evento do modal (clique fora)
+  elements.modal.addEventListener('click', function(e) {
+    if (e.target === elements.modal) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+  
+  // Adicionar animações
   var style = document.createElement('style');
   style.textContent = '@keyframes slideInRight{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}@keyframes slideOutRight{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}';
   document.head.appendChild(style);
   
   console.log('✅ AMOVIN ERP - Sistema inicializado com sucesso');
   console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+});
 </script>
 
 </body>
