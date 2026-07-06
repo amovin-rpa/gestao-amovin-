@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -50,7 +56,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-ia { background: #7B1FA2; color: white; }
 .btn-editar { background: var(--amarelo); color: #1A1A1A; }
 .btn-visualizar { background: var(--azul); color: white; }
-.btn-cancelar { background: #E53935; color: white; }
+.btn-cancelar { background: var(--vermelho); color: white; }
 .btn-duplicar { background: #F5A623; color: white; }
 
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -71,20 +77,15 @@ tr:hover { background: #FFF8E7; }
 .busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
 .busca-bar select { padding: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; }
 
-.log-item { padding: 8px 15px; border-bottom: 1px solid #F0E9DF; font-size: 12px; display: flex; justify-content: space-between; }
+.log-item { padding: 8px 15px; border-bottom: 1px solid #F0E9DF; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 .vinculo-info { background: #E8F5E9; padding: 10px; border-radius: 8px; font-size: 12px; margin-top: 8px; display: none; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; }
-.rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; }
-.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
-.rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; }
-.rodape-info a { color: #C65A11; text-decoration: none; }
-.rodape-info .email { font-size: 8px; color: #aaa; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
 @media (max-width: 1000px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-principal { grid-template-columns: 1fr; } }
@@ -101,12 +102,41 @@ tr:hover { background: #FFF8E7; }
   <nav class="sidebar-nav">
     <div class="nav-categoria">Principal</div>
     <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
     <div class="nav-categoria">Documentos</div>
     <a href="documentos.html" class="nav-item ativo"><span class="icone">📝</span> Documentos</a>
     <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
     <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
     <div class="nav-categoria">Sistema</div>
     <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
     <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
@@ -141,7 +171,7 @@ tr:hover { background: #FFF8E7; }
         <div id="camposProtocolo" style="display:none;"><div class="form-row"><div class="form-group"><label>Origem</label><input type="text" id="origemDoc"></div><div class="form-group"><label>Destino</label><input type="text" id="destinoDoc"></div></div></div>
         <div class="form-group"><label>Texto</label><textarea id="textoDoc" rows="5"></textarea></div>
         <div class="form-group"><label>Observações</label><input type="text" id="obsDoc"></div>
-        <div style="display:flex;gap:8px;"><button class="btn btn-salvar" onclick="salvarDocumento()" style="flex:1;">💾 Salvar</button><button class="btn btn-ia" onclick="sugerirComIA()">🤖 IA</button></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-salvar" onclick="salvarDocumento()" style="flex:1;">💾 Salvar</button><button class="btn btn-ia" onclick="sugerirComIA()">🤖 IA</button></div>
         <button class="btn btn-cancelar" onclick="limparFormulario()" style="width:100%;margin-top:8px;">🔄 Limpar</button>
       </div>
     </div>
@@ -171,7 +201,7 @@ var editandoId = null;
 var usuarioAtual = sessionStorage.getItem('amovin_nome') || 'Admin';
 
 if (documentos.length === 0) {
-    documentos = [{id:1,tipo:'recibo',numero:'REC-2026-000001',nome:'João Silva',cpf:'123.456.789-00',valor:500,data:'2026-06-20',texto:'Recebi de João Silva...',status:'emitido',obs:'',criadoPor:'Admin',criadoEm:'2026-06-20T10:00:00'}];
+    documentos = [{id:1,tipo:'recibo',numero:'REC-2026-000001',nome:'João Silva',cpf:'123.456.789-00',valor:500,data:'2026-07-06',texto:'Recebi de João Silva...',status:'emitido',obs:'',criadoPor:'Admin',criadoEm:'2026-07-06T10:00:00'}];
     salvar();
 }
 function salvar() { localStorage.setItem('amovin_documentos_oficiais',JSON.stringify(documentos)); localStorage.setItem('amovin_documentos_logs',JSON.stringify(logs)); }
@@ -206,6 +236,27 @@ window.sugerirComIA=async function(){var n=document.getElementById('nomeDoc').va
 function filtrarDocumentos(){var b=document.getElementById('buscaDoc').value.toLowerCase(),t=document.getElementById('filtroTipo').value,s=document.getElementById('filtroStatus').value,l=documentos.slice();if(b)l=l.filter(function(d){return(d.nome||'').toLowerCase().indexOf(b)>=0||(d.cpf||'').indexOf(b)>=0||(d.numero||'').toLowerCase().indexOf(b)>=0;});if(t!=='todos')l=l.filter(function(d){return d.tipo===t;});if(s!=='todos')l=l.filter(function(d){return d.status===s;});l.sort(function(a,b){return new Date(b.criadoEm)-new Date(a.criadoEm);});document.getElementById('totalLista').textContent='('+l.length+')';document.getElementById('tabelaDocumentos').innerHTML=l.length===0?'<tr><td colspan="6" class="sem-dados">Nenhum documento.</td></tr>':l.map(function(d){return'<tr><td><strong>'+d.numero+'</strong></td><td><span class="badge badge-'+d.tipo+'">'+d.tipo+'</span></td><td>'+d.nome+'</td><td>'+(d.data?new Date(d.data+'T00:00:00').toLocaleDateString('pt-BR'):'-')+'</td><td><span class="badge badge-'+d.status+'">'+d.status+'</span></td><td>'+(d.status==='rascunho'?'<button class="btn btn-editar" onclick="editarDocumento('+d.id+')">✏️</button>':'')+'<button class="btn btn-visualizar" onclick="visualizarDocumento('+d.id+')">👁️</button><button class="btn btn-duplicar" onclick="duplicarDocumento('+d.id+')">📋</button>'+(d.status!=='cancelado'?'<button class="btn btn-cancelar" onclick="cancelarDocumento('+d.id+')">❌</button>':'')+'</td></tr>';}).join('');}
 function atualizarKPIs(){var h=new Date().toISOString().split('T')[0];document.getElementById('kpiTotal').textContent=documentos.length;document.getElementById('kpiRecibos').textContent=documentos.filter(function(d){return d.tipo==='recibo';}).length;document.getElementById('kpiProtocolos').textContent=documentos.filter(function(d){return d.tipo==='protocolo';}).length;document.getElementById('kpiDeclaracoes').textContent=documentos.filter(function(d){return d.tipo==='declaracao'||d.tipo==='termo';}).length;document.getElementById('kpiHoje').textContent=documentos.filter(function(d){return d.data===h;}).length;document.getElementById('kpiCancelados').textContent=documentos.filter(function(d){return d.status==='cancelado';}).length;}
 window.limparFormulario=function(){editandoId=null;document.getElementById('tituloForm').textContent='Novo Documento';document.getElementById('docId').value='';document.getElementById('tipoDoc').value='recibo';document.getElementById('statusDoc').value='rascunho';document.getElementById('beneficiarioDoc').value='';document.getElementById('nomeDoc').value='';document.getElementById('cpfDoc').value='';document.getElementById('valorDoc').value='';document.getElementById('dataDoc').value=new Date().toISOString().split('T')[0];document.getElementById('textoDoc').value='';document.getElementById('obsDoc').value='';document.getElementById('itemPatrimonio').value='';document.getElementById('qtdEntregue').value='1';document.getElementById('infoItem').style.display='none';atualizarTipo();};
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
 
 if(!sessionStorage.getItem('amovin_logado'))window.location.href='index.html';
 history.pushState(null,null,location.href);window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
