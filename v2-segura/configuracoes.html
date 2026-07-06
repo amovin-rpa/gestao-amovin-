@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -33,25 +39,46 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; }
-.card-full { grid-column: 1 / -1; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; align-items: center; gap: 10px; }
+.card h3 .badge { font-size: 10px; font-weight: 600; padding: 2px 10px; border-radius: 20px; background: #E8F5E9; color: #2E7D32; }
+.card h3 .badge-danger { background: #FFEBEE; color: #C62828; }
 
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
-.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; }
-.btn-salvar { background: var(--laranja); color: white; width: 100%; padding: 14px; font-size: 15px; }
-.btn-azul { background: var(--azul); color: white; }
-.btn-vermelho { background: #E53935; color: white; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
+.form-group textarea { resize: vertical; min-height: 60px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-.color-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-.color-option { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; }
-.color-option:hover { transform: scale(1.1); }
-.color-option.selecionada { border-color: #333; box-shadow: 0 0 0 3px rgba(0,0,0,0.2); }
-.preview-logo { width: 80px; height: 80px; border: 2px dashed #E5E0D8; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 10px; overflow: hidden; }
-.preview-logo img { width: 100%; height: 100%; object-fit: contain; }
-.status-msg { padding: 12px; border-radius: 10px; margin-top: 10px; display: none; font-size: 13px; font-weight: 600; }
-.status-msg.sucesso { background: #E8F5E9; color: #2E7D32; display: block; }
+.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; }
+.btn-salvar { background: var(--laranja); color: white; }
+.btn-salvar:hover { background: #A04A0E; }
+.btn-verde { background: var(--verde); color: white; }
+.btn-verde:hover { background: #388E3C; }
+.btn-vermelho { background: var(--vermelho); color: white; }
+.btn-vermelho:hover { background: #C62828; }
+.btn-azul { background: var(--azul); color: white; }
+.btn-azul:hover { background: #1565C0; }
+.btn-cinza { background: #E5E0D8; color: var(--grafite); }
+.btn-cinza:hover { background: #D5D0C8; }
+
+.perfil-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #F8F4ED; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--laranja); }
+.perfil-item .perfil-nome { font-weight: 600; color: var(--grafite); }
+.perfil-item .perfil-modulos { font-size: 11px; color: var(--cinza); }
+.perfil-item .perfil-acoes { display: flex; gap: 6px; }
+.perfil-item .badge-admin { background: #E3F2FD; color: #1565C0; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; }
+.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
+.modal-header h3 { font-size: 18px; }
+.modal-body { padding: 22px; }
+.modal-body .form-group { margin-bottom: 14px; }
+.modal-body .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.modal-body .form-group input, .modal-body .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+.modal-body .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+.modal-body .checkbox-grid label { font-size: 12px; font-weight: 400; text-transform: none; color: var(--grafite); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.modal-body .checkbox-grid input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
@@ -60,139 +87,583 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .config-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1000px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .config-grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .modal-body .checkbox-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
 <aside class="sidebar">
-  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item ativo"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item ativo"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>⚙️ Configurações</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar">
+    <h1>⚙️ Configurações</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
 
   <div class="config-grid">
+    <!-- Perfis e Permissões -->
     <div class="card">
-      <h3>🏢 Dados da Organização</h3>
-      <div class="form-group"><label>Nome da ONG</label><input type="text" id="nomeOng" placeholder="AMOVIN"></div>
-      <div class="form-group"><label>Nome Completo</label><input type="text" id="nomeCompletoOng"></div>
-      <div class="form-group"><label>CNPJ</label><input type="text" id="cnpjOng"></div>
-      <div class="form-group"><label>Endereço</label><input type="text" id="enderecoOng"></div>
-      <div class="form-group"><label>Cidade/Estado</label><input type="text" id="cidadeOng" value="Rio Paranaíba/MG"></div>
-      <div class="form-group"><label>Telefone</label><input type="text" id="telefoneOng"></div>
-      <div class="form-group"><label>E-mail</label><input type="email" id="emailOng"></div>
-      <div class="form-group"><label>Instagram</label><input type="text" id="instagramOng"></div>
-      <div class="form-group"><label>Presidente</label><input type="text" id="presidenteOng"></div>
+      <h3>👥 Perfis e Permissões <span class="badge">Admin</span></h3>
+      <div id="listaPerfis"></div>
+      <button class="btn btn-verde" onclick="abrirFormPerfil()" style="width:100%;margin-top:10px;">+ Novo Perfil</button>
     </div>
 
+    <!-- Configurações da Instituição -->
     <div class="card">
-      <h3>🎨 Personalização</h3>
-      <div class="form-group"><label>Logo</label><div class="preview-logo" id="previewLogo">A</div><input type="file" id="logoUpload" accept="image/*" onchange="previewLogo(this)"></div>
-      <div class="form-group"><label>Cor Principal</label><div class="color-picker" id="corPrincipalPicker">
-        <div class="color-option" style="background:#C65A11" onclick="selecionarCor('principal','#C65A11',this)"></div>
-        <div class="color-option" style="background:#667eea" onclick="selecionarCor('principal','#667eea',this)"></div>
-        <div class="color-option" style="background:#2e7d32" onclick="selecionarCor('principal','#2e7d32',this)"></div>
-        <div class="color-option" style="background:#1565c0" onclick="selecionarCor('principal','#1565c0',this)"></div>
-      </div></div>
-      <div class="form-group"><label>Cor Secundária</label><div class="color-picker" id="corSecundariaPicker">
-        <div class="color-option" style="background:#F5C518" onclick="selecionarCor('secundaria','#F5C518',this)"></div>
-        <div class="color-option" style="background:#764ba2" onclick="selecionarCor('secundaria','#764ba2',this)"></div>
-        <div class="color-option" style="background:#43a047" onclick="selecionarCor('secundaria','#43a047',this)"></div>
-        <div class="color-option" style="background:#ff8f00" onclick="selecionarCor('secundaria','#ff8f00',this)"></div>
-      </div></div>
+      <h3>🏢 Instituição</h3>
+      <div class="form-group"><label>Nome da Instituição</label><input type="text" id="nomeInstituicao" value="AMOVIN - Associação e Movimento pela Inclusão"></div>
+      <div class="form-row">
+        <div class="form-group"><label>CNPJ</label><input type="text" id="cnpjInstituicao" value="XX.XXX.XXX/XXXX-XX"></div>
+        <div class="form-group"><label>Telefone</label><input type="text" id="telefoneInstituicao" value="(34) 99999-9999"></div>
+      </div>
+      <div class="form-group"><label>E-mail</label><input type="email" id="emailInstituicao" value="contato@amovin.org.br"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Cidade</label><input type="text" id="cidadeInstituicao" value="Rio Paranaíba"></div>
+        <div class="form-group"><label>Estado</label><select id="estadoInstituicao"><option value="MG" selected>MG</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select></div>
+      </div>
+      <button class="btn btn-salvar" onclick="salvarInstituicao()">💾 Salvar Instituição</button>
     </div>
 
+    <!-- Chave Gemini -->
     <div class="card">
-      <h3>👤 Usuários</h3>
-      <div class="form-group"><label>Email</label><input type="email" id="novoUsuarioEmail"></div>
-      <div class="form-group"><label>Senha</label><input type="password" id="novoUsuarioSenha"></div>
-      <div class="form-group"><label>Perfil</label><select id="novoUsuarioPerfil"><option value="admin">Administrador</option><option value="recepcao">Recepção</option><option value="consulta">Profissional</option><option value="financeiro">Financeiro</option><option value="voluntario">Voluntário</option></select></div>
-      <button class="btn btn-salvar" onclick="adicionarUsuario()">➕ Adicionar</button>
-      <div id="listaUsuarios" style="margin-top:15px;"></div>
+      <h3>🤖 Inteligência Artificial <span class="badge">Gemini</span></h3>
+      <div class="form-group"><label>Chave da API Gemini</label><input type="password" id="geminiKey" placeholder="AIzaSy..."></div>
+      <div class="form-group"><label>Status</label><span id="statusGemini" style="font-size:12px;color:#888;">Não configurado</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-salvar" onclick="salvarGemini()">💾 Salvar Chave</button>
+        <button class="btn btn-azul" onclick="testarGemini()">🔍 Testar Conexão</button>
+        <button class="btn btn-vermelho" onclick="removerGemini()">🗑️ Remover</button>
+      </div>
     </div>
 
+    <!-- Segurança e LGPD -->
     <div class="card">
-      <h3>💾 Backup</h3>
-      <p style="font-size:12px;color:var(--cinza);margin-bottom:15px;">Gerencie os dados do sistema</p>
-      <button class="btn btn-azul" onclick="window.location.href='backup.html'" style="width:100%;">📥 Ir para Backup</button>
-      <button class="btn btn-vermelho" onclick="resetarSistema()" style="width:100%;margin-top:8px;">⚠️ Resetar Sistema</button>
+      <h3>🔒 Segurança e LGPD <span class="badge badge-danger">Importante</span></h3>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="lgpdAtivo" checked>
+        <label for="lgpdAtivo" style="text-transform:none;font-weight:400;color:var(--grafite);">Exigir aceite de termos LGPD no cadastro</label>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="logAuditoria" checked>
+        <label for="logAuditoria" style="text-transform:none;font-weight:400;color:var(--grafite);">Manter logs de auditoria por 180 dias</label>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="sessaoAutomatica" checked>
+        <label for="sessaoAutomatica" style="text-transform:none;font-weight:400;color:var(--grafite);">Encerrar sessão automática após 30 minutos</label>
+      </div>
+      <button class="btn btn-salvar" onclick="salvarSeguranca()">💾 Salvar Configurações</button>
     </div>
 
-    <div class="card card-full">
-      <button class="btn-salvar" onclick="salvarConfiguracoes()" style="background:var(--verde);">💾 Salvar Todas as Configurações</button>
-      <div class="status-msg" id="statusMsg"></div>
+    <!-- Backup -->
+    <div class="card">
+      <h3>💾 Backup <span class="badge">Manual</span></h3>
+      <p style="font-size:13px;color:var(--cinza);margin-bottom:14px;">Exporte todos os dados do sistema em formato JSON para backup ou migração.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-verde" onclick="exportarBackup()">📤 Exportar Backup</button>
+        <button class="btn btn-azul" onclick="importarBackup()">📥 Importar Backup</button>
+        <button class="btn btn-vermelho" onclick="limparDados()">🗑️ Limpar Dados</button>
+      </div>
+      <div id="backupStatus" style="margin-top:10px;font-size:12px;color:var(--cinza);"></div>
+    </div>
+
+    <!-- Aparência -->
+    <div class="card">
+      <h3>🎨 Aparência</h3>
+      <div class="form-group"><label>Tema</label>
+        <select id="temaSistema">
+          <option value="claro">☀️ Claro</option>
+          <option value="escuro">🌙 Escuro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Cor Primária</label><input type="color" id="corPrimaria" value="#C65A11"></div>
+        <div class="form-group"><label>Cor Secundária</label><input type="color" id="corSecundaria" value="#F5C518"></div>
+      </div>
+      <button class="btn btn-salvar" onclick="salvarAparencia()">💾 Salvar Aparência</button>
     </div>
   </div>
 
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
+<!-- MODAL PERFIL -->
+<div class="modal-overlay" id="modalPerfil" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tituloPerfil">Novo Perfil</h3>
+      <button class="btn-fechar" onclick="fecharFormPerfil()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="perfilId">
+      <div class="form-group"><label>Nome do Perfil *</label><input type="text" id="nomePerfil" placeholder="Ex: Administrador, Recepção, Voluntário"></div>
+      <div class="form-group"><label>Módulos Permitidos</label>
+        <div class="checkbox-grid" id="modulosPermissoes">
+          <label><input type="checkbox" value="dashboard" checked> 📊 Dashboard</label>
+          <label><input type="checkbox" value="bi"> 📈 BI Executivo</label>
+          <label><input type="checkbox" value="editais"> 🔍 Editais</label>
+          <label><input type="checkbox" value="oficios"> 📄 Ofícios IA</label>
+          <label><input type="checkbox" value="projetos"> 📋 Projetos IA</label>
+          <label><input type="checkbox" value="financeiro"> 💰 Financeiro</label>
+          <label><input type="checkbox" value="orcamentos"> 📊 Orçamentos</label>
+          <label><input type="checkbox" value="prestacao-contas"> 📋 Prest. Contas</label>
+          <label><input type="checkbox" value="pessoas"> 👥 Gestão de Pessoas</label>
+          <label><input type="checkbox" value="agenda-telefonica"> ☎️ CRM Social</label>
+          <label><input type="checkbox" value="agenda"> 📅 Agenda</label>
+          <label><input type="checkbox" value="documentos"> 📝 Documentos</label>
+          <label><input type="checkbox" value="estoque"> 📦 Estoque</label>
+          <label><input type="checkbox" value="patrimonio"> 🏢 Patrimônio</label>
+          <label><input type="checkbox" value="biblioteca"> 📚 Biblioteca</label>
+          <label><input type="checkbox" value="certificados"> 🎓 Certificados</label>
+          <label><input type="checkbox" value="chat"> 💬 Chat</label>
+          <label><input type="checkbox" value="assistente"> 🤖 Assistente IA</label>
+          <label><input type="checkbox" value="relatorios"> 📈 Relatórios</label>
+          <label><input type="checkbox" value="configuracoes"> ⚙️ Configurações</label>
+          <label><input type="checkbox" value="backup"> 💾 Backup</label>
+        </div>
+      </div>
+      <button class="btn btn-salvar" onclick="salvarPerfil()">💾 Salvar Perfil</button>
+    </div>
+  </div>
+</div>
+
 <script>
-var config = JSON.parse(localStorage.getItem('amovin_config') || '{}');
-var usuarios = JSON.parse(localStorage.getItem('amovin_usuarios') || '[]');
-var corPrincipal = config.corPrincipal || '#C65A11';
-var corSecundaria = config.corSecundaria || '#F5C518';
-if (usuarios.length === 0) { usuarios = [{email:'admin@amovin.org.br',senha:'amovin2026',perfil:'admin',nome:'Administrador'}]; salvarUsuarios(); }
-function salvarConfig() { localStorage.setItem('amovin_config',JSON.stringify(config)); }
-function salvarUsuarios() { localStorage.setItem('amovin_usuarios',JSON.stringify(usuarios)); }
+// ============================================================
+// PERFIS E PERMISSÕES
+// ============================================================
+var perfis = JSON.parse(localStorage.getItem('amovin_perfis') || '[]');
+var editandoPerfilId = null;
 
-(function carregar() {
-    document.getElementById('nomeOng').value = config.nomeOng || 'AMOVIN';
-    document.getElementById('nomeCompletoOng').value = config.nomeCompletoOng || '';
-    document.getElementById('cnpjOng').value = config.cnpjOng || '';
-    document.getElementById('enderecoOng').value = config.enderecoOng || '';
-    document.getElementById('cidadeOng').value = config.cidadeOng || 'Rio Paranaíba/MG';
-    document.getElementById('telefoneOng').value = config.telefoneOng || '';
-    document.getElementById('emailOng').value = config.emailOng || '';
-    document.getElementById('instagramOng').value = config.instagramOng || '';
-    document.getElementById('presidenteOng').value = config.presidenteOng || '';
-    if (config.logo) document.getElementById('previewLogo').innerHTML = '<img src="'+config.logo+'">';
-    marcarCor();
-    renderizarUsuarios();
-})();
+if (perfis.length === 0) {
+    perfis = [
+        { id: 'admin', nome: 'Administrador Master', modulos: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'] },
+        { id: 'recepcao', nome: 'Recepção', modulos: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'] },
+        { id: 'consulta', nome: 'Consulta', modulos: ['dashboard','agenda','agenda-telefonica','assistente'] },
+        { id: 'financeiro', nome: 'Financeiro', modulos: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'] },
+        { id: 'voluntario', nome: 'Voluntário', modulos: ['dashboard','agenda','agenda-telefonica'] }
+    ];
+    salvarPerfis();
+}
 
-window.previewLogo = function(input) { var f = input.files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e) { document.getElementById('previewLogo').innerHTML = '<img src="'+e.target.result+'">'; config.logo = e.target.result; }; r.readAsDataURL(f); };
-window.selecionarCor = function(tipo, cor, el) { if (tipo==='principal') corPrincipal=cor; else corSecundaria=cor; el.parentElement.querySelectorAll('.color-option').forEach(function(c){c.classList.remove('selecionada');}); el.classList.add('selecionada'); };
-function marcarCor() { document.querySelectorAll('#corPrincipalPicker .color-option').forEach(function(c){if(c.style.background===corPrincipal)c.classList.add('selecionada');}); document.querySelectorAll('#corSecundariaPicker .color-option').forEach(function(c){if(c.style.background===corSecundaria)c.classList.add('selecionada');}); }
+function salvarPerfis() {
+    localStorage.setItem('amovin_perfis', JSON.stringify(perfis));
+}
 
-window.salvarConfiguracoes = function() {
-    config.nomeOng = document.getElementById('nomeOng').value;
-    config.nomeCompletoOng = document.getElementById('nomeCompletoOng').value;
-    config.cnpjOng = document.getElementById('cnpjOng').value;
-    config.enderecoOng = document.getElementById('enderecoOng').value;
-    config.cidadeOng = document.getElementById('cidadeOng').value;
-    config.telefoneOng = document.getElementById('telefoneOng').value;
-    config.emailOng = document.getElementById('emailOng').value;
-    config.instagramOng = document.getElementById('instagramOng').value;
-    config.presidenteOng = document.getElementById('presidenteOng').value;
-    config.corPrincipal = corPrincipal;
-    config.corSecundaria = corSecundaria;
-    salvarConfig();
-    document.getElementById('statusMsg').textContent = 'Configurações salvas!';
-    document.getElementById('statusMsg').className = 'status-msg sucesso';
-    setTimeout(function(){ document.getElementById('statusMsg').className = 'status-msg'; },3000);
+function renderizarPerfis() {
+    var container = document.getElementById('listaPerfis');
+    if (perfis.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--cinza);">Nenhum perfil cadastrado.</div>';
+        return;
+    }
+    container.innerHTML = perfis.map(function(p) {
+        var badge = p.id === 'admin' ? '<span class="badge-admin">Admin</span>' : '';
+        return '<div class="perfil-item">' +
+            '<div><span class="perfil-nome">' + p.nome + '</span> ' + badge + '<br><span class="perfil-modulos">' + (p.modulos || []).length + ' módulos</span></div>' +
+            '<div class="perfil-acoes">' +
+            '<button class="btn btn-azul" style="padding:4px 10px;font-size:10px;" onclick="editarPerfil(\'' + p.id + '\')">✏️</button>' +
+            (p.id !== 'admin' ? '<button class="btn btn-vermelho" style="padding:4px 10px;font-size:10px;" onclick="excluirPerfil(\'' + p.id + '\')">🗑️</button>' : '') +
+            '</div></div>';
+    }).join('');
+}
+
+window.abrirFormPerfil = function(id) {
+    editandoPerfilId = id || null;
+    document.getElementById('modalPerfil').style.display = 'flex';
+    document.getElementById('tituloPerfil').textContent = id ? '✏️ Editar Perfil' : '📝 Novo Perfil';
+
+    // Limpar todos os checkboxes
+    document.querySelectorAll('#modulosPermissoes input[type="checkbox"]').forEach(function(cb) { cb.checked = false; });
+
+    if (id) {
+        var p = perfis.find(function(x) { return x.id === id; });
+        if (!p) return;
+        document.getElementById('perfilId').value = p.id;
+        document.getElementById('nomePerfil').value = p.nome;
+        if (p.modulos) {
+            p.modulos.forEach(function(m) {
+                var cb = document.querySelector('#modulosPermissoes input[value="' + m + '"]');
+                if (cb) cb.checked = true;
+            });
+        }
+    } else {
+        document.getElementById('perfilId').value = '';
+        document.getElementById('nomePerfil').value = '';
+    }
 };
 
-window.adicionarUsuario = function() {
-    var e = document.getElementById('novoUsuarioEmail').value.trim(), s = document.getElementById('novoUsuarioSenha').value.trim(), p = document.getElementById('novoUsuarioPerfil').value;
-    if (!e||!s) { alert('Preencha email e senha!'); return; }
-    if (usuarios.find(function(u){return u.email===e;})) { alert('Usuário já existe!'); return; }
-    usuarios.push({email:e,senha:s,perfil:p,nome:e.split('@')[0]});
-    salvarUsuarios(); document.getElementById('novoUsuarioEmail').value=''; document.getElementById('novoUsuarioSenha').value=''; renderizarUsuarios();
+window.fecharFormPerfil = function() {
+    document.getElementById('modalPerfil').style.display = 'none';
 };
-function renderizarUsuarios() { document.getElementById('listaUsuarios').innerHTML = '<h4 style="margin-bottom:8px;">Cadastrados</h4>'+usuarios.map(function(u){return '<div style="padding:6px;border-bottom:1px solid #F0E9DF;font-size:12px;display:flex;justify-content:space-between;"><span>'+u.nome+' <small>('+u.perfil+')</small></span><button onclick="removerUsuario(\''+u.email+'\')" style="background:#E53935;color:white;border:none;padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;">🗑️</button></div>';}).join(''); }
-window.removerUsuario = function(e) { if (!confirm('Remover?')) return; usuarios = usuarios.filter(function(u){return u.email!==e;}); salvarUsuarios(); renderizarUsuarios(); };
-window.resetarSistema = function() { if (!confirm('Apagar TODOS os dados?')) return; var c = prompt('Digite RESETAR:'); if (c!=='RESETAR') return; Object.keys(localStorage).filter(function(k){return k.startsWith('amovin_');}).forEach(function(k){localStorage.removeItem(k);}); alert('Sistema resetado.'); location.reload(); };
+
+window.salvarPerfil = function() {
+    var nome = document.getElementById('nomePerfil').value.trim();
+    if (!nome) { alert('Nome do perfil é obrigatório!'); return; }
+
+    var modulos = [];
+    document.querySelectorAll('#modulosPermissoes input[type="checkbox"]:checked').forEach(function(cb) {
+        modulos.push(cb.value);
+    });
+
+    if (modulos.length === 0) { alert('Selecione pelo menos um módulo!'); return; }
+
+    var id = document.getElementById('perfilId').value || nome.toLowerCase().replace(/\s/g, '-');
+
+    if (editandoPerfilId) {
+        var idx = perfis.findIndex(function(x) { return x.id === editandoPerfilId; });
+        if (idx >= 0) {
+            perfis[idx].nome = nome;
+            perfis[idx].modulos = modulos;
+        }
+    } else {
+        if (perfis.find(function(x) { return x.id === id; })) {
+            alert('Já existe um perfil com este nome!');
+            return;
+        }
+        perfis.push({ id: id, nome: nome, modulos: modulos });
+    }
+
+    salvarPerfis();
+    renderizarPerfis();
+    fecharFormPerfil();
+    alert('✅ Perfil salvo com sucesso!');
+};
+
+window.editarPerfil = function(id) {
+    abrirFormPerfil(id);
+};
+
+window.excluirPerfil = function(id) {
+    if (id === 'admin') { alert('Não é possível excluir o perfil Administrador Master!'); return; }
+    if (!confirm('Excluir o perfil "' + perfis.find(function(x) { return x.id === id; }).nome + '"?')) return;
+    perfis = perfis.filter(function(x) { return x.id !== id; });
+    salvarPerfis();
+    renderizarPerfis();
+};
+
+// ============================================================
+// INSTITUIÇÃO
+// ============================================================
+window.salvarInstituicao = function() {
+    var dados = {
+        nome: document.getElementById('nomeInstituicao').value,
+        cnpj: document.getElementById('cnpjInstituicao').value,
+        telefone: document.getElementById('telefoneInstituicao').value,
+        email: document.getElementById('emailInstituicao').value,
+        cidade: document.getElementById('cidadeInstituicao').value,
+        estado: document.getElementById('estadoInstituicao').value
+    };
+    localStorage.setItem('amovin_instituicao', JSON.stringify(dados));
+    alert('✅ Dados da instituição salvos!');
+};
+
+function carregarInstituicao() {
+    var dados = JSON.parse(localStorage.getItem('amovin_instituicao'));
+    if (dados) {
+        document.getElementById('nomeInstituicao').value = dados.nome || '';
+        document.getElementById('cnpjInstituicao').value = dados.cnpj || '';
+        document.getElementById('telefoneInstituicao').value = dados.telefone || '';
+        document.getElementById('emailInstituicao').value = dados.email || '';
+        document.getElementById('cidadeInstituicao').value = dados.cidade || '';
+        document.getElementById('estadoInstituicao').value = dados.estado || 'MG';
+    }
+}
+
+// ============================================================
+// GEMINI
+// ============================================================
+window.salvarGemini = function() {
+    var key = document.getElementById('geminiKey').value.trim();
+    if (!key) { alert('Digite a chave da API Gemini!'); return; }
+    localStorage.setItem('amovin_gemini_key', key);
+    document.getElementById('statusGemini').textContent = '✅ Chave salva com sucesso!';
+    document.getElementById('statusGemini').style.color = '#2E7D32';
+    alert('✅ Chave Gemini salva!');
+};
+
+window.testarGemini = function() {
+    var key = localStorage.getItem('amovin_gemini_key') || document.getElementById('geminiKey').value.trim();
+    if (!key) { alert('Chave não configurada!'); return; }
+    document.getElementById('statusGemini').textContent = '🔄 Testando...';
+    document.getElementById('statusGemini').style.color = '#E65100';
+
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: 'Olá' }] }] })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.candidates && d.candidates[0]) {
+            document.getElementById('statusGemini').textContent = '✅ Conexão bem-sucedida!';
+            document.getElementById('statusGemini').style.color = '#2E7D32';
+        } else {
+            document.getElementById('statusGemini').textContent = '❌ Erro na conexão. Verifique a chave.';
+            document.getElementById('statusGemini').style.color = '#C62828';
+        }
+    })
+    .catch(function() {
+        document.getElementById('statusGemini').textContent = '❌ Erro ao conectar.';
+        document.getElementById('statusGemini').style.color = '#C62828';
+    });
+};
+
+window.removerGemini = function() {
+    if (!confirm('Remover a chave Gemini?')) return;
+    localStorage.removeItem('amovin_gemini_key');
+    document.getElementById('geminiKey').value = '';
+    document.getElementById('statusGemini').textContent = '🔴 Chave removida';
+    document.getElementById('statusGemini').style.color = '#888';
+    alert('🗑️ Chave removida!');
+};
+
+function carregarGemini() {
+    var key = localStorage.getItem('amovin_gemini_key');
+    if (key) {
+        document.getElementById('geminiKey').value = key;
+        document.getElementById('statusGemini').textContent = '✅ Chave configurada';
+        document.getElementById('statusGemini').style.color = '#2E7D32';
+    }
+}
+
+// ============================================================
+// SEGURANÇA
+// ============================================================
+window.salvarSeguranca = function() {
+    var config = {
+        lgpd: document.getElementById('lgpdAtivo').checked,
+        log: document.getElementById('logAuditoria').checked,
+        sessao: document.getElementById('sessaoAutomatica').checked
+    };
+    localStorage.setItem('amovin_seguranca', JSON.stringify(config));
+    alert('✅ Configurações de segurança salvas!');
+};
+
+function carregarSeguranca() {
+    var config = JSON.parse(localStorage.getItem('amovin_seguranca'));
+    if (config) {
+        document.getElementById('lgpdAtivo').checked = config.lgpd !== false;
+        document.getElementById('logAuditoria').checked = config.log !== false;
+        document.getElementById('sessaoAutomatica').checked = config.sessao !== false;
+    }
+}
+
+// ============================================================
+// BACKUP
+// ============================================================
+window.exportarBackup = function() {
+    var dados = {
+        pessoas: JSON.parse(localStorage.getItem('amovin_pessoas') || '[]'),
+        contatos: JSON.parse(localStorage.getItem('amovin_contatos') || '[]'),
+        documentos: JSON.parse(localStorage.getItem('amovin_documentos_oficiais') || '[]'),
+        estoque: JSON.parse(localStorage.getItem('amovin_estoque') || '[]'),
+        bens: JSON.parse(localStorage.getItem('amovin_bens') || '[]'),
+        agendamentos: JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]'),
+        certificados: JSON.parse(localStorage.getItem('amovin_certificados') || '[]'),
+        orcamentos: JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]'),
+        biblioteca: JSON.parse(localStorage.getItem('amovin_documentos') || '[]'),
+        perfis: JSON.parse(localStorage.getItem('amovin_perfis') || '[]'),
+        instituicao: JSON.parse(localStorage.getItem('amovin_instituicao')),
+        seguranca: JSON.parse(localStorage.getItem('amovin_seguranca')),
+        data: new Date().toISOString()
+    };
+
+    var blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'backup-amovin-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    document.getElementById('backupStatus').textContent = '✅ Backup exportado em ' + new Date().toLocaleString('pt-BR');
+};
+
+window.importarBackup = function() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            try {
+                var dados = JSON.parse(ev.target.result);
+                if (!confirm('⚠️ Isso sobrescreverá todos os dados atuais. Continuar?')) return;
+
+                for (var key in dados) {
+                    if (key === 'data') continue;
+                    if (typeof dados[key] === 'object') {
+                        localStorage.setItem('amovin_' + key, JSON.stringify(dados[key]));
+                    }
+                }
+                document.getElementById('backupStatus').textContent = '✅ Backup importado com sucesso! Recarregue a página.';
+                alert('✅ Backup importado! Recarregue a página para ver os dados.');
+                location.reload();
+            } catch (err) {
+                alert('❌ Erro ao ler o arquivo. Verifique se é um backup válido.');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+};
+
+window.limparDados = function() {
+    if (!confirm('⚠️ ATENÇÃO: Isso limpará TODOS os dados do sistema! Esta ação NÃO pode ser desfeita.\n\nTem certeza?')) return;
+    if (!confirm('🔴 ÚLTIMA CONFIRMAÇÃO: Todos os dados serão permanentemente excluídos. Continuar?')) return;
+
+    var chaves = ['pessoas', 'contatos', 'documentos_oficiais', 'estoque', 'bens', 'agendamentos', 'certificados', 'orcamentos', 'documentos', 'perfis'];
+    chaves.forEach(function(k) {
+        localStorage.removeItem('amovin_' + k);
+    });
+    localStorage.removeItem('amovin_instituicao');
+    localStorage.removeItem('amovin_seguranca');
+    localStorage.removeItem('amovin_gemini_key');
+
+    document.getElementById('backupStatus').textContent = '🗑️ Todos os dados foram limpos. Recarregue a página.';
+    alert('🗑️ Dados limpos! A página será recarregada.');
+    location.reload();
+};
+
+// ============================================================
+// APARÊNCIA
+// ============================================================
+window.salvarAparencia = function() {
+    var config = {
+        tema: document.getElementById('temaSistema').value,
+        corPrimaria: document.getElementById('corPrimaria').value,
+        corSecundaria: document.getElementById('corSecundaria').value
+    };
+    localStorage.setItem('amovin_aparencia', JSON.stringify(config));
+    alert('✅ Aparência salva! Recarregue a página para aplicar.');
+    location.reload();
+};
+
+function carregarAparencia() {
+    var config = JSON.parse(localStorage.getItem('amovin_aparencia'));
+    if (config) {
+        document.getElementById('temaSistema').value = config.tema || 'claro';
+        document.getElementById('corPrimaria').value = config.corPrimaria || '#C65A11';
+        document.getElementById('corSecundaria').value = config.corSecundaria || '#F5C518';
+
+        // Aplicar tema escuro (simples)
+        if (config.tema === 'escuro') {
+            document.body.style.background = '#1A1A1A';
+            document.body.style.color = '#F5F5F5';
+            document.querySelector('.main-content').style.background = '#1A1A1A';
+        }
+    }
+}
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
 
 if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-history.pushState(null,null,location.href); window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
-var timeout; function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
-document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function() {
+    history.pushState(null, null, location.href);
+    sessionStorage.clear();
+    window.location.href = 'index.html';
+});
+
+var timeout;
+function resetTimeout() {
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+        sessionStorage.clear();
+        alert('⏰ Sessão expirada.');
+        window.location.href = 'index.html';
+    }, 30 * 60 * 1000);
+}
+document.addEventListener('mousemove', resetTimeout);
+document.addEventListener('keypress', resetTimeout);
+document.addEventListener('click', resetTimeout);
+resetTimeout();
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+renderizarPerfis();
+carregarInstituicao();
+carregarGemini();
+carregarSeguranca();
+carregarAparencia();
 </script>
 </body>
 </html>
