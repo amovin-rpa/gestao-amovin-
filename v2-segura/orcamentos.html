@@ -95,14 +95,30 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
       <input type="hidden" id="orcamentoId">
       
       <div class="section-title">👤 Dados do Solicitante</div>
-      <div class="form-group"><label>Nome/Razão Social *</label><input type="text" id="nomeSolicitacao" placeholder="Nome da empresa ou solicitante"></div>
-      <div class="linha-dupla">
-        <div class="form-group"><label>CPF/CNPJ</label><input type="text" id="cpfCnpjOrc" placeholder="000.000.000-00"></div>
-        <div class="form-group"><label>E-mail</label><input type="email" id="emailOrc" placeholder="email@exemplo.com"></div>
+      <div class="form-group"><label>Solicitante (Automático)</label><input type="text" id="nomeSolicitanteLogado" readonly style="background:#F8F4ED;font-weight:600;color:var(--laranja);"></div>
+      <div class="form-group"><label>Nome da Solicitação *</label><input type="text" id="nomeSolicitacao" placeholder="Ex: Compra de Materiais Esportivos"></div>
+      
+      <div class="section-title">🎯 Finalidade</div>
+      <div class="form-group"><label>Destino do Material *</label><select id="finalidadeOrc" onchange="toggleFinalidade()">
+        <option value="">Selecione...</option>
+        <option value="sede">🏢 Sede Administrativo</option>
+        <option value="terapias">🩺 Terapias / Consultas</option>
+        <option value="projetos">📋 Projetos</option>
+        <option value="outros">📝 Outros</option>
+      </select></div>
+      
+      <div id="campoProjeto" style="display:none;">
+        <div class="form-group"><label>Selecione o Projeto *</label><select id="projetoOrc">
+          <option value="">Selecione um projeto...</option>
+          <option>Inclusão Digital</option>
+          <option>Esporte para Todos</option>
+          <option>Reforço Escolar</option>
+          <option>Capacitação Profissional</option>
+        </select></div>
       </div>
-      <div class="linha-dupla">
-        <div class="form-group"><label>Telefone</label><input type="text" id="telefoneOrc" placeholder="(34) 99999-0000"></div>
-        <div class="form-group"><label>Endereço de Entrega</label><input type="text" id="enderecoOrc" placeholder="Rua, número, bairro, cidade"></div>
+      
+      <div id="campoOutros" style="display:none;">
+        <div class="form-group"><label>Descreva a Finalidade *</label><input type="text" id="outrosOrc" placeholder="Descreva obrigatoriamente..."></div>
       </div>
 
       <div class="section-title">📦 Especificação do Material</div>
@@ -151,21 +167,27 @@ var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
 var editandoId = null, solicitacaoAtual = '';
 
 if (orcamentos.length === 0) {
-    orcamentos.push({id:1,solicitacao:'Material Esportivo',empresa:'Loja A',cnpj:'12.345.678/0001-90',data:'2026-06-20',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:150,valorTotal:1500,prazo:15,pagamento:'PIX',validade:30,cpfCnpj:'',email:'',telefone:'',endereco:'',descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'',vencedor:false});
-    orcamentos.push({id:2,solicitacao:'Material Esportivo',empresa:'Fornecedor B',cnpj:'98.765.432/0001-10',data:'2026-06-21',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:120,valorTotal:1200,prazo:10,pagamento:'Boleto',validade:30,cpfCnpj:'',email:'',telefone:'',endereco:'',descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'Frete grátis',vencedor:true});
+    orcamentos.push({id:1,solicitacao:'Material Esportivo',empresa:'Loja A',cnpj:'12.345.678/0001-90',data:'2026-06-20',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:150,valorTotal:1500,prazo:15,pagamento:'PIX',validade:30,descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'',vencedor:false,finalidade:'projetos',projeto:'Esporte para Todos',outros:'',solicitante:'Admin'});
+    orcamentos.push({id:2,solicitacao:'Material Esportivo',empresa:'Fornecedor B',cnpj:'98.765.432/0001-10',data:'2026-06-21',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:120,valorTotal:1200,prazo:10,pagamento:'Boleto',validade:30,descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'Frete grátis',vencedor:true,finalidade:'projetos',projeto:'Esporte para Todos',outros:'',solicitante:'Admin'});
     salvar();
 }
 function salvar() { localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos)); }
 function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.',','); }
 
-document.getElementById('valorUnitarioOrc').addEventListener('input', function() {
-    var unit = parseFloat(this.value) || 0, qtd = parseInt(document.getElementById('qtdOrc').value) || 0;
-    document.getElementById('valorTotalOrc').value = (unit * qtd).toFixed(2);
-});
-document.getElementById('qtdOrc').addEventListener('input', function() {
-    var unit = parseFloat(document.getElementById('valorUnitarioOrc').value) || 0, qtd = parseInt(this.value) || 0;
-    document.getElementById('valorTotalOrc').value = (unit * qtd).toFixed(2);
-});
+// Preencher nome do usuário logado
+document.getElementById('nomeSolicitanteLogado').value = sessionStorage.getItem('amovin_nome') || 'Administrador';
+
+// Calcular valor total automaticamente
+document.getElementById('valorUnitarioOrc').addEventListener('input', calcTotal);
+document.getElementById('qtdOrc').addEventListener('input', calcTotal);
+function calcTotal() { var u = parseFloat(document.getElementById('valorUnitarioOrc').value)||0, q = parseInt(document.getElementById('qtdOrc').value)||0; document.getElementById('valorTotalOrc').value = (u*q).toFixed(2); }
+
+// Toggle finalidade
+window.toggleFinalidade = function() {
+    var f = document.getElementById('finalidadeOrc').value;
+    document.getElementById('campoProjeto').style.display = (f === 'projetos') ? 'block' : 'none';
+    document.getElementById('campoOutros').style.display = (f === 'outros') ? 'block' : 'none';
+};
 
 function atualizarContador() { document.getElementById('contadorOrc').textContent = orcamentos.filter(function(o){return o.solicitacao===solicitacaoAtual;}).length + '/3'; }
 
@@ -179,6 +201,7 @@ function renderizar() {
             html += '<div class="orcamento-card'+(o.vencedor?' vencedor':'')+'"><h4>'+o.empresa+(o.vencedor?' 🏆':'')+'</h4>';
             html += '<p>📦 '+o.item+' | Qtd: '+o.qtd+' | Unit: '+fm(o.valorUnitario)+' | Total: <strong>'+fm(o.valorTotal)+'</strong></p>';
             html += '<p>⏱️ Prazo: '+(o.prazo||'-')+' dias | 💳 '+(o.pagamento||'-')+' | 📅 Validade: '+(o.validade||'-')+' dias</p>';
+            if(o.finalidade) html += '<p>🎯 '+(o.finalidade==='sede'?'Sede Administrativo':o.finalidade==='terapias'?'Terapias/Consultas':o.finalidade==='projetos'?'Projeto: '+o.projeto:'Outros: '+o.outros)+'</p>';
             if(o.obs) html += '<p>📝 '+o.obs+'</p>';
             html += '<button class="btn btn-editar" onclick="editarOrc('+o.id+')">✏️</button> <button class="btn btn-excluir" onclick="excluirOrc('+o.id+')">🗑️</button></div>';
         });
@@ -188,11 +211,21 @@ function renderizar() {
 }
 
 window.salvarOrcamento = function() {
-    var sol = document.getElementById('nomeSolicitacao').value.trim(), emp = document.getElementById('empresaOrc').value.trim(), item = document.getElementById('itemOrc').value.trim(), qtd = parseInt(document.getElementById('qtdOrc').value)||0, vu = parseFloat(document.getElementById('valorUnitarioOrc').value)||0, vt = parseFloat(document.getElementById('valorTotalOrc').value)||0;
+    var sol = document.getElementById('nomeSolicitacao').value.trim(), emp = document.getElementById('empresaOrc').value.trim(), item = document.getElementById('itemOrc').value.trim(), qtd = parseInt(document.getElementById('qtdOrc').value)||0, vu = parseFloat(document.getElementById('valorUnitarioOrc').value)||0, vt = parseFloat(document.getElementById('valorTotalOrc').value)||0, finalidade = document.getElementById('finalidadeOrc').value;
     if (!sol || !emp || !item || !qtd || !vu) { alert('Preencha os campos obrigatórios!'); return; }
+    if (!finalidade) { alert('Selecione a finalidade!'); return; }
+    if (finalidade === 'projetos' && !document.getElementById('projetoOrc').value) { alert('Selecione o projeto!'); return; }
+    if (finalidade === 'outros' && !document.getElementById('outrosOrc').value.trim()) { alert('Descreva a finalidade!'); return; }
     var count = orcamentos.filter(function(o){return o.solicitacao===sol&&o.id!==editandoId;}).length;
     if (!editandoId && count >= 3) { alert('Máximo de 3 orçamentos por solicitação!'); return; }
-    var dados = { solicitacao:sol, empresa:emp, cnpj:document.getElementById('cnpjOrc').value, data:document.getElementById('dataOrc').value, item:item, descricaoItem:document.getElementById('descricaoItemOrc').value, qtd:qtd, unidade:document.getElementById('unidadeOrc').value, valorUnitario:vu, valorTotal:vt, prazo:document.getElementById('prazoOrc').value, pagamento:document.getElementById('pagamentoOrc').value, validade:document.getElementById('validadeOrc').value, cpfCnpj:document.getElementById('cpfCnpjOrc').value, email:document.getElementById('emailOrc').value, telefone:document.getElementById('telefoneOrc').value, endereco:document.getElementById('enderecoOrc').value, obs:document.getElementById('obsOrc').value, vencedor:false };
+    var dados = {
+        solicitacao:sol, empresa:emp, cnpj:document.getElementById('cnpjOrc').value, data:document.getElementById('dataOrc').value,
+        item:item, descricaoItem:document.getElementById('descricaoItemOrc').value, qtd:qtd, unidade:document.getElementById('unidadeOrc').value,
+        valorUnitario:vu, valorTotal:vt, prazo:document.getElementById('prazoOrc').value, pagamento:document.getElementById('pagamentoOrc').value,
+        validade:document.getElementById('validadeOrc').value, obs:document.getElementById('obsOrc').value, vencedor:false,
+        finalidade:finalidade, projeto:document.getElementById('projetoOrc').value, outros:document.getElementById('outrosOrc').value,
+        solicitante:document.getElementById('nomeSolicitanteLogado').value
+    };
     if (editandoId) { var idx = orcamentos.findIndex(function(o){return o.id===editandoId;}); if(idx>=0) orcamentos[idx] = Object.assign({},orcamentos[idx],dados); }
     else { orcamentos.push(Object.assign({id:Date.now()},dados)); }
     salvar(); limparForm(); renderizar(); atualizarContador();
@@ -207,9 +240,11 @@ window.editarOrc = function(id) {
     document.getElementById('qtdOrc').value = o.qtd||1; document.getElementById('unidadeOrc').value = o.unidade||'Unidade';
     document.getElementById('valorUnitarioOrc').value = o.valorUnitario||''; document.getElementById('valorTotalOrc').value = o.valorTotal||'';
     document.getElementById('prazoOrc').value = o.prazo||''; document.getElementById('pagamentoOrc').value = o.pagamento||'PIX';
-    document.getElementById('validadeOrc').value = o.validade||''; document.getElementById('cpfCnpjOrc').value = o.cpfCnpj||'';
-    document.getElementById('emailOrc').value = o.email||''; document.getElementById('telefoneOrc').value = o.telefone||'';
-    document.getElementById('enderecoOrc').value = o.endereco||''; document.getElementById('obsOrc').value = o.obs||'';
+    document.getElementById('validadeOrc').value = o.validade||'';
+    document.getElementById('finalidadeOrc').value = o.finalidade||''; toggleFinalidade();
+    if (o.finalidade==='projetos') document.getElementById('projetoOrc').value = o.projeto||'';
+    if (o.finalidade==='outros') document.getElementById('outrosOrc').value = o.outros||'';
+    document.getElementById('obsOrc').value = o.obs||'';
     solicitacaoAtual = o.solicitacao; atualizarContador();
 };
 
@@ -223,9 +258,9 @@ function limparForm() {
     document.getElementById('qtdOrc').value = '1'; document.getElementById('unidadeOrc').value = 'Unidade';
     document.getElementById('valorUnitarioOrc').value = ''; document.getElementById('valorTotalOrc').value = '';
     document.getElementById('prazoOrc').value = ''; document.getElementById('pagamentoOrc').value = 'PIX';
-    document.getElementById('validadeOrc').value = ''; document.getElementById('cpfCnpjOrc').value = '';
-    document.getElementById('emailOrc').value = ''; document.getElementById('telefoneOrc').value = '';
-    document.getElementById('enderecoOrc').value = ''; document.getElementById('obsOrc').value = '';
+    document.getElementById('validadeOrc').value = ''; document.getElementById('finalidadeOrc').value = '';
+    document.getElementById('projetoOrc').value = ''; document.getElementById('outrosOrc').value = '';
+    document.getElementById('obsOrc').value = ''; toggleFinalidade();
     solicitacaoAtual = ''; atualizarContador();
 }
 
