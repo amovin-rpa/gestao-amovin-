@@ -685,33 +685,31 @@ body {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  border-top: 1px solid #E5E7EB;
 }
 
 .btn-secondary {
-  padding: 12px 24px;
-  background: transparent;
-  color: var(--cinza);
-  border: 2px solid #E5E7EB;
+  padding: 12px 32px;
+  background: #D1D5DB;
+  color: #6B7280;
+  border: none;
   border-radius: var(--raio);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: not-allowed;
-  opacity: 0.5;
   transition: all 0.3s ease;
 }
 
 .btn-secondary.enabled {
   background: var(--amarelo);
   color: var(--grafite);
-  border-color: var(--amarelo);
   cursor: pointer;
-  opacity: 1;
 }
 
 .btn-secondary.enabled:hover {
   background: var(--amarelo-escuro);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(232, 185, 35, 0.3);
+  box-shadow: 0 4px 16px rgba(232, 185, 35, 0.3);
 }
 
 /* ============================================
@@ -891,7 +889,7 @@ body {
     
     <div class="modal-footer">
       <button type="button" class="btn-secondary" id="btnContinuar" disabled onclick="aceitarLGPD()">
-        Continuar
+        ✅ Continuar
       </button>
     </div>
   </div>
@@ -1092,7 +1090,7 @@ body {
   // ============================================
   // ELEMENTOS DO DOM
   // ============================================
-  const elements = {
+  var elements = {
     modal: document.getElementById('lgpdModal'),
     checkbox: document.getElementById('lgpdCheckbox'),
     btnContinuar: document.getElementById('btnContinuar'),
@@ -1119,7 +1117,7 @@ body {
   }
   
   function validateCredentials(username, password) {
-    const errors = [];
+    var errors = [];
     
     if (!username || username.trim().length === 0) {
       errors.push('Por favor, informe seu login.');
@@ -1145,7 +1143,7 @@ body {
   // ============================================
   function getLGPDData() {
     try {
-      const data = localStorage.getItem(CONFIG.LGPD_STORAGE_KEY);
+      var data = localStorage.getItem(CONFIG.LGPD_STORAGE_KEY);
       return data ? JSON.parse(data) : null;
     } catch (e) {
       console.error('Erro ao ler dados da LGPD:', e);
@@ -1155,7 +1153,7 @@ body {
   
   function saveLGPDData() {
     try {
-      const data = {
+      var data = {
         aceito: true,
         data: new Date().toISOString(),
         versao: CONFIG.LGPD_VERSION,
@@ -1170,7 +1168,7 @@ body {
   }
   
   function checkLGPDStatus() {
-    const lgpdData = getLGPDData();
+    var lgpdData = getLGPDData();
     
     if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
       showLGPDModal();
@@ -1194,12 +1192,13 @@ body {
     document.body.style.overflow = '';
   }
   
-  function aceitarLGPD() {
+  window.aceitarLGPD = function() {
     if (!elements.checkbox.checked) {
+      alert('Por favor, marque a caixa para concordar com a Política de Privacidade.');
       return;
     }
     
-    const data = saveLGPDData();
+    var data = saveLGPDData();
     if (data) {
       hideLGPDModal();
       enableLogin();
@@ -1207,7 +1206,7 @@ body {
     } else {
       showNotification('Erro ao salvar aceite. Tente novamente.', 'error');
     }
-  }
+  };
   
   function enableLogin() {
     elements.btnEntrar.disabled = false;
@@ -1222,20 +1221,20 @@ body {
   // ============================================
   // FUNÇÕES DE LOGIN
   // ============================================
-  async function handleLogin(e) {
+  function handleLogin(e) {
     e.preventDefault();
     
-    const lgpdData = getLGPDData();
+    var lgpdData = getLGPDData();
     if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
       showError('É necessário aceitar a Política de Privacidade para continuar.');
       showLGPDModal();
       return;
     }
     
-    const username = sanitizeInput(elements.username.value);
-    const password = elements.password.value;
+    var username = sanitizeInput(elements.username.value);
+    var password = elements.password.value;
     
-    const errors = validateCredentials(username, password);
+    var errors = validateCredentials(username, password);
     if (errors.length > 0) {
       showError(errors.join(' '));
       return;
@@ -1245,43 +1244,45 @@ body {
     hideError();
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      if (username.toLowerCase() === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
-        sessionStorage.setItem('amovin_logado', 'true');
-        sessionStorage.setItem('amovin_perfil', 'admin');
-        sessionStorage.setItem('amovin_nome', 'Administrador');
-        
-        if (elements.rememberMe.checked) {
-          localStorage.setItem('amovin_lembrar', username);
+      // Simular processamento
+      setTimeout(function() {
+        if (username.toLowerCase() === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
+          sessionStorage.setItem('amovin_logado', 'true');
+          sessionStorage.setItem('amovin_perfil', 'admin');
+          sessionStorage.setItem('amovin_nome', 'Administrador');
+          
+          if (elements.rememberMe.checked) {
+            localStorage.setItem('amovin_lembrar', username);
+          } else {
+            localStorage.removeItem('amovin_lembrar');
+          }
+          
+          showNotification('Login realizado com sucesso! Redirecionando...', 'success');
+          setTimeout(function() {
+            window.location.href = 'dashboard.html';
+          }, 1000);
+          
         } else {
-          localStorage.removeItem('amovin_lembrar');
+          sessionStorage.setItem('amovin_logado', 'true');
+          sessionStorage.setItem('amovin_perfil', 'recepcao');
+          sessionStorage.setItem('amovin_nome', username);
+          
+          if (elements.rememberMe.checked) {
+            localStorage.setItem('amovin_lembrar', username);
+          }
+          
+          showNotification('Bem-vindo(a)! Redirecionando...', 'success');
+          setTimeout(function() {
+            window.location.href = 'dashboard.html';
+          }, 1000);
         }
         
-        showNotification('Login realizado com sucesso! Redirecionando...', 'success');
-        setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 1000);
-        
-      } else {
-        sessionStorage.setItem('amovin_logado', 'true');
-        sessionStorage.setItem('amovin_perfil', 'recepcao');
-        sessionStorage.setItem('amovin_nome', username);
-        
-        if (elements.rememberMe.checked) {
-          localStorage.setItem('amovin_lembrar', username);
-        }
-        
-        showNotification('Bem-vindo(a)! Redirecionando...', 'success');
-        setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 1000);
-      }
+        setLoading(false);
+      }, 1500);
       
     } catch (error) {
       console.error('Erro no login:', error);
       showError('Erro ao processar login. Tente novamente.');
-    } finally {
       setLoading(false);
     }
   }
@@ -1304,35 +1305,26 @@ body {
       elements.btnEntrar.disabled = true;
     } else {
       elements.btnEntrar.classList.remove('loading');
-      const lgpdData = getLGPDData();
+      var lgpdData = getLGPDData();
       if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
         elements.btnEntrar.disabled = true;
+      } else {
+        elements.btnEntrar.disabled = false;
       }
     }
   }
   
-  function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 16px 24px;
-      background: ${type === 'success' ? '#059669' : type === 'error' ? '#DC2626' : '#E8B923'};
-      color: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      z-index: 20000;
-      animation: slideInRight 0.3s ease;
-      font-weight: 600;
-      max-width: 400px;
-    `;
+  function showNotification(message, type) {
+    type = type || 'info';
+    var notification = document.createElement('div');
+    var bgColor = type === 'success' ? '#059669' : type === 'error' ? '#DC2626' : '#E8B923';
+    notification.style.cssText = 'position:fixed;top:20px;right:20px;padding:16px 24px;background:' + bgColor + ';color:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:400px;';
     notification.textContent = message;
     document.body.appendChild(notification);
     
-    setTimeout(() => {
+    setTimeout(function() {
       notification.style.animation = 'slideOutRight 0.3s ease';
-      setTimeout(() => notification.remove(), 300);
+      setTimeout(function() { notification.remove(); }, 300);
     }, 3000);
   }
   
@@ -1350,7 +1342,7 @@ body {
   });
   
   elements.togglePassword.addEventListener('click', function() {
-    const type = elements.password.type === 'password' ? 'text' : 'password';
+    var type = elements.password.type === 'password' ? 'text' : 'password';
     elements.password.type = type;
     this.textContent = type === 'password' ? '👁️' : '🙈';
   });
@@ -1377,23 +1369,14 @@ body {
   function init() {
     checkLGPDStatus();
     
-    const lembrar = localStorage.getItem('amovin_lembrar');
+    var lembrar = localStorage.getItem('amovin_lembrar');
     if (lembrar) {
       elements.username.value = lembrar;
       elements.rememberMe.checked = true;
     }
     
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideInRight {
-        from { transform: translateX(400px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(400px); opacity: 0; }
-      }
-    `;
+    var style = document.createElement('style');
+    style.textContent = '@keyframes slideInRight{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}@keyframes slideOutRight{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}';
     document.head.appendChild(style);
     
     console.log('✅ AMOVIN ERP - Sistema inicializado com sucesso');
