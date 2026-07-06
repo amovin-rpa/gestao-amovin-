@@ -865,7 +865,7 @@ body {
 </div>
 
 <!-- ============================================
-     JAVASCRIPT
+     JAVASCRIPT - LOGIN CORRIGIDO
      ============================================ -->
 <script>
 // ============================================
@@ -993,38 +993,71 @@ function showNotification(msg, type) {
 }
 
 // ============================================
-// LOGIN
+// LOGIN - CORRIGIDO (Admin Master SEMPRE)
 // ============================================
 function handleLogin(e) {
   e.preventDefault();
+  
   var data = getLGPDData();
   if (!data || data.versao !== CONFIG.LGPD_VERSION) {
     showError('Aceite a Política de Privacidade para continuar.');
     showLGPDModal();
     return;
   }
+  
   var user = elements.username.value.trim();
   var pass = elements.password.value;
-  if (!user || !pass) { showError('Preencha todos os campos.'); return; }
+  
+  if (!user || !pass) { 
+    showError('Preencha todos os campos.'); 
+    return; 
+  }
+  
   setLoading(true);
   hideError();
+  
   setTimeout(function() {
+    // ============================================================
+    // CORREÇÃO: Admin Master SEMPRE com perfil 'admin'
+    // ============================================================
     if (user.toLowerCase() === CONFIG.ADMIN_USER && pass === CONFIG.ADMIN_PASS) {
+      // Admin Master - acesso TOTAL
       sessionStorage.setItem('amovin_logado', 'true');
       sessionStorage.setItem('amovin_perfil', 'admin');
-      sessionStorage.setItem('amovin_nome', 'Administrador');
-      if (elements.rememberMe.checked) localStorage.setItem('amovin_lembrar', user);
-      else localStorage.removeItem('amovin_lembrar');
-      showNotification('✅ Bem-vindo(a)!', 'success');
-      setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+      sessionStorage.setItem('amovin_nome', 'Administrador Master');
+      
+      if (elements.rememberMe.checked) {
+        localStorage.setItem('amovin_lembrar', user);
+      } else {
+        localStorage.removeItem('amovin_lembrar');
+      }
+      
+      showNotification('✅ Bem-vindo, Administrador Master!', 'success');
+      setTimeout(function() { 
+        window.location.href = 'dashboard.html'; 
+      }, 800);
+      
     } else {
+      // ============================================================
+      // USUÁRIO COMUM (NÃO ADMIN) - perfil 'recepcao'
+      // ============================================================
+      // Qualquer outro usuário (não admin) terá perfil 'recepcao'
       sessionStorage.setItem('amovin_logado', 'true');
       sessionStorage.setItem('amovin_perfil', 'recepcao');
       sessionStorage.setItem('amovin_nome', user);
-      if (elements.rememberMe.checked) localStorage.setItem('amovin_lembrar', user);
+      
+      if (elements.rememberMe.checked) {
+        localStorage.setItem('amovin_lembrar', user);
+      } else {
+        localStorage.removeItem('amovin_lembrar');
+      }
+      
       showNotification('✅ Bem-vindo(a)!', 'success');
-      setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+      setTimeout(function() { 
+        window.location.href = 'dashboard.html'; 
+      }, 800);
     }
+    
     setLoading(false);
   }, 1200);
 }
