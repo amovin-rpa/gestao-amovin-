@@ -53,7 +53,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .voluntario-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .voluntario-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
 .voluntario-dados p { font-size: 11px; color: var(--cinza); margin: 1px 0; }
-.voluntario-dados .badge-area { font-size: 9px; padding: 2px 10px; border-radius: 12px; background: #FFF3E0; color: #E65100; margin-left: 6px; }
 .btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
 .btn-editar { background: #F5A623; color: white; }
 .btn-excluir { background: var(--vermelho); color: white; }
@@ -61,7 +60,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal { background: white; border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; }
 .modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
 .modal-header h3 { font-size: 18px; }
 .modal-body { padding: 22px; }
@@ -70,7 +69,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
-.form-group textarea { resize: vertical; min-height: 60px; }
 .form-group .campo-obrigatorio { color: var(--vermelho); }
 .form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
 .foto-container { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0; }
@@ -81,7 +79,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 .btn-salvar:hover { background: #A04A0E; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
-.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
+.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; background: #FFF8E7; padding: 8px 12px; border-radius: 6px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
@@ -118,7 +116,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
 
     <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item ativo"><span class="icone">💪</span> Voluntários</a>
     <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
 
     <div class="nav-categoria">Atendimento</div>
@@ -155,12 +155,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
     <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiAreas">0</div><div class="kpi-label">📌 Áreas</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiFuncoes">0</div><div class="kpi-label">📌 Funções</div></div>
   </div>
 
   <div class="busca-bar">
-    <input type="text" id="buscaVoluntario" placeholder="Buscar por nome, área, CPF..." oninput="filtrar()">
-    <button class="btn-novo" onclick="window.location.href='pessoas.html'">+ Novo Voluntário</button>
+    <input type="text" id="buscaVoluntario" placeholder="Buscar por nome, função..." oninput="filtrar()">
+    <button class="btn-novo" onclick="abrirForm()">+ Novo Voluntário</button>
   </div>
 
   <div id="listaVoluntarios"></div>
@@ -180,21 +180,21 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </main>
 
-<!-- MODAL EDITAR -->
+<!-- MODAL FORM -->
 <div class="modal-overlay" id="modalForm" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="tituloModal">✏️ Editar Voluntário</h3>
+      <h3 id="tituloModal">📝 Novo Voluntário</h3>
       <button class="btn-fechar" onclick="fecharForm()">✕</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="voluntarioId">
       <div class="form-grid">
-        <!-- ============================================ -->
-        <!-- SEÇÃO: FOTO (NO ALTO) -->
-        <!-- ============================================ -->
-        <div class="section-title">📸 Foto <span class="campo-opcional">(opcional)</span></div>
         
+        <!-- ============================================ -->
+        <!-- FOTO -->
+        <!-- ============================================ -->
+        <div class="section-title">📸 Foto do Voluntário <span class="campo-opcional">(opcional)</span></div>
         <div class="form-full">
           <div class="form-group" style="text-align:center;">
             <div class="foto-container">
@@ -211,136 +211,28 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         </div>
 
         <!-- ============================================ -->
-        <!-- SEÇÃO: DADOS PESSOAIS -->
+        <!-- DADOS DO VOLUNTÁRIO -->
         <!-- ============================================ -->
-        <div class="section-title">👤 Dados Pessoais</div>
+        <div class="section-title">📋 DADOS DO VOLUNTÁRIO</div>
 
         <div class="form-full">
           <div class="form-group">
-            <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="nomeVoluntario" placeholder="Nome completo">
+            <label>Nome <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="nomeVoluntario" placeholder="Nome completo do voluntário">
           </div>
         </div>
 
-        <div class="form-group">
-          <label>CPF</label>
-          <input type="text" id="cpfVoluntario" placeholder="123.456.789-00">
-        </div>
-
-        <div class="form-group">
-          <label>RG</label>
-          <input type="text" id="rgVoluntario" placeholder="RG">
-        </div>
-
-        <div class="form-group">
-          <label>Data de Nascimento</label>
-          <input type="date" id="dataNascVoluntario">
-        </div>
-
-        <div class="form-group">
-          <label>Sexo</label>
-          <select id="sexoVoluntario">
-            <option value="">Selecione...</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: CONTATO -->
-        <!-- ============================================ -->
-        <div class="section-title">📞 Contato</div>
-
-        <div class="form-group">
-          <label>Telefone</label>
-          <input type="text" id="telefoneVoluntario" placeholder="(34) 99999-9999">
-        </div>
-
-        <div class="form-group">
-          <label>WhatsApp</label>
-          <input type="text" id="whatsappVoluntario" placeholder="(34) 99999-9999">
-        </div>
-
         <div class="form-full">
           <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" id="emailVoluntario" placeholder="email@exemplo.com">
+            <label>Função <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="funcaoVoluntario" placeholder="Ex: Recreador, Apoio Administrativo, Captação">
           </div>
         </div>
 
-        <!-- ============================================ -->
-        <!-- SEÇÃO: ENDEREÇO -->
-        <!-- ============================================ -->
-        <div class="section-title">📍 Endereço</div>
-
         <div class="form-full">
           <div class="form-group">
-            <label>Endereço</label>
-            <input type="text" id="enderecoVoluntario" placeholder="Rua, número, bairro">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Cidade</label>
-          <input type="text" id="cidadeVoluntario" placeholder="Cidade">
-        </div>
-
-        <div class="form-group">
-          <label>Estado</label>
-          <select id="estadoVoluntario">
-            <option value="">Selecione...</option>
-            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
-            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
-            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
-            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
-            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
-            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
-            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
-            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
-            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-          </select>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: DADOS DE VOLUNTARIADO -->
-        <!-- ============================================ -->
-        <div class="section-title">💪 Dados de Voluntariado</div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Área de Atuação</label>
-            <input type="text" id="areaVoluntario" placeholder="Ex: Recreação, Administração, Captação">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Data de Ingresso</label>
-          <input type="date" id="dataIngressoVoluntario">
-        </div>
-
-        <div class="form-group">
-          <label>Disponibilidade</label>
-          <select id="disponibilidadeVoluntario">
-            <option value="">Selecione...</option>
-            <option value="Finais de semana">Finais de semana</option>
-            <option value="Dias úteis - Manhã">Dias úteis - Manhã</option>
-            <option value="Dias úteis - Tarde">Dias úteis - Tarde</option>
-            <option value="Dias úteis - Noite">Dias úteis - Noite</option>
-            <option value="Todos os dias">Todos os dias</option>
-            <option value="Flexível">Flexível</option>
-          </select>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: INFORMAÇÕES ADICIONAIS -->
-        <!-- ============================================ -->
-        <div class="section-title">📋 Informações Adicionais</div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Observações</label>
-            <textarea id="obsVoluntario" rows="3" placeholder="Informações adicionais..."></textarea>
+            <label>Telefone <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="telefoneVoluntario" placeholder="(34) 99999-9999">
           </div>
         </div>
 
@@ -360,10 +252,25 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 // ============================================================
 // BANCO DE DADOS LOCAL
 // ============================================================
-var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
 var editandoId = null;
 var fotoDataURL = null;
 
+// Dados iniciais
+if (voluntarios.length === 0) {
+    voluntarios = [
+        { id: 1, nome: 'Fernanda Lima', funcao: 'Recreadora', telefone: '(34) 99999-4444', ativo: true, dataCadastro: '2026-07-01', foto: null }
+    ];
+    salvar();
+}
+
+function salvar() {
+    localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios));
+}
+
+// ============================================================
+// FUNÇÕES DE FORMATAÇÃO
+// ============================================================
 function formatarDataBR(dataISO) {
     if (!dataISO) return '-';
     var partes = dataISO.split('-');
@@ -378,10 +285,6 @@ function getAvatarHtml(pessoa) {
     var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
     var cor = cores[pessoa.id % cores.length] || '#C65A11';
     return '<div class="voluntario-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
-}
-
-function salvar() {
-    localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
 }
 
 // ============================================================
@@ -420,32 +323,32 @@ window.removerFoto = function() {
 // ============================================================
 // IMPORTAR PARA CRM
 // ============================================================
-function importarParaCRM(pessoa) {
+function importarParaCRM(voluntario) {
     var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
     var existe = contatos.some(function(c) {
-        return c.nome === pessoa.nome && c.tipo === pessoa.tipo && c.origem === 'pessoas';
+        return c.nome === voluntario.nome && c.tipo === 'voluntario' && c.origem === 'pessoas';
     });
 
     if (!existe) {
         var novoContato = {
             id: Date.now(),
-            nome: pessoa.nome || '',
-            tipo: pessoa.tipo || 'crm',
-            cpf: pessoa.cpf || '',
-            rg: pessoa.rg || '',
-            tel1: pessoa.telefone || '',
-            whatsapp: pessoa.whatsapp || pessoa.telefone || '',
-            email: pessoa.email || '',
-            endereco: pessoa.endereco || '',
-            cidade: pessoa.cidade || '',
-            estado: pessoa.estado || '',
-            responsavel: pessoa.responsavel || '',
+            nome: voluntario.nome || '',
+            tipo: 'voluntario',
+            cpf: '',
+            rg: '',
+            tel1: voluntario.telefone || '',
+            whatsapp: voluntario.telefone || '',
+            email: '',
+            endereco: '',
+            cidade: '',
+            estado: '',
+            responsavel: '',
             categoria: 'Voluntário',
-            obs: pessoa.obs || '',
+            obs: voluntario.funcao || '',
             favorito: false,
             origem: 'pessoas',
             ativo: true,
-            foto: pessoa.foto || null,
+            foto: voluntario.foto || null,
             dataCadastro: new Date().toISOString().split('T')[0]
         };
         contatos.push(novoContato);
@@ -459,19 +362,16 @@ function importarParaCRM(pessoa) {
 // RENDERIZAÇÃO
 // ============================================================
 function filtrar() {
-    var lista = pessoas.filter(function(p) { return p.tipo === 'voluntario'; });
+    var lista = voluntarios.slice();
 
     var busca = document.getElementById('buscaVoluntario').value.toLowerCase();
     if (busca) {
         lista = lista.filter(function(p) {
             return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
-                   (p.cpf || '').indexOf(busca) >= 0 ||
-                   (p.area || '').toLowerCase().indexOf(busca) >= 0 ||
-                   (p.obs || '').toLowerCase().indexOf(busca) >= 0;
+                   (p.funcao || '').toLowerCase().indexOf(busca) >= 0;
         });
     }
 
-    // ORDEM ALFABÉTICA
     lista.sort(function(a, b) {
         return (a.nome || '').localeCompare(b.nome || '');
     });
@@ -482,39 +382,34 @@ function filtrar() {
     } else {
         container.innerHTML = lista.map(function(p) {
             var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
-            var area = p.area || p.obs || 'Voluntário';
-            var disponibilidade = p.disponibilidade ? ' | 🕐 ' + p.disponibilidade : '';
-            var telefone = p.telefone || p.whatsapp || '-';
-            var cidadeEstado = (p.cidade || '') + (p.estado ? '/' + p.estado : '');
-            if (!cidadeEstado) cidadeEstado = '-';
 
             return '<div class="voluntario-card' + (p.ativo === false ? ' inativo' : '') + '">' +
                 '<div class="voluntario-info">' +
                 getAvatarHtml(p) +
                 '<div class="voluntario-dados">' +
-                '<h4>' + p.nome + ' <span class="badge-area">' + area + '</span></h4>' +
-                '<p>📞 ' + telefone + ' | 📧 ' + (p.email || '-') + disponibilidade + '</p>' +
-                '<p>📍 ' + cidadeEstado + ' | ' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
+                '<h4>' + p.nome + ' | ' + p.funcao + '</h4>' +
+                '<p>📞 ' + (p.telefone || '-') + '</p>' +
+                '<p>' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
                 '</div></div>' +
                 '<div class="contato-acoes">' +
                 '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
+                '<button class="btn-acao btn-excluir" onclick="excluirVoluntario(' + p.id + ')">🗑️</button>' +
                 '<button class="btn-acao btn-crm" onclick="enviarParaCRM(' + p.id + ')">📤 CRM</button>' +
                 '</div></div>';
         }).join('');
     }
 
-    atualizarKPIs(lista);
+    atualizarKPIs();
 }
 
-function atualizarKPIs(lista) {
-    document.getElementById('kpiTotal').textContent = lista.length;
-    document.getElementById('kpiAtivos').textContent = lista.filter(function(p) { return p.ativo !== false; }).length;
-    var areas = {};
-    lista.forEach(function(p) {
-        var area = p.area || p.obs || 'Voluntário';
-        areas[area] = (areas[area] || 0) + 1;
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = voluntarios.length;
+    document.getElementById('kpiAtivos').textContent = voluntarios.filter(function(p) { return p.ativo !== false; }).length;
+    var funcoes = {};
+    voluntarios.forEach(function(p) {
+        if (p.funcao) funcoes[p.funcao] = (funcoes[p.funcao] || 0) + 1;
     });
-    document.getElementById('kpiAreas').textContent = Object.keys(areas).length;
+    document.getElementById('kpiFuncoes').textContent = Object.keys(funcoes).length;
 }
 
 // ============================================================
@@ -523,30 +418,19 @@ function atualizarKPIs(lista) {
 window.abrirForm = function(id) {
     editandoId = id || null;
     document.getElementById('modalForm').style.display = 'flex';
-    document.getElementById('tituloModal').textContent = '✏️ Editar Voluntário';
+    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Voluntário' : '📝 Novo Voluntário';
 
     removerFoto();
 
     if (id) {
-        var p = pessoas.find(function(x) { return x.id === id; });
+        var p = voluntarios.find(function(x) { return x.id === id; });
         if (!p) return;
         document.getElementById('voluntarioId').value = p.id;
         document.getElementById('nomeVoluntario').value = p.nome || '';
-        document.getElementById('cpfVoluntario').value = p.cpf || '';
-        document.getElementById('rgVoluntario').value = p.rg || '';
-        document.getElementById('dataNascVoluntario').value = p.dataNasc || '';
-        document.getElementById('sexoVoluntario').value = p.sexo || '';
+        document.getElementById('funcaoVoluntario').value = p.funcao || '';
         document.getElementById('telefoneVoluntario').value = p.telefone || '';
-        document.getElementById('whatsappVoluntario').value = p.whatsapp || '';
-        document.getElementById('emailVoluntario').value = p.email || '';
-        document.getElementById('enderecoVoluntario').value = p.endereco || '';
-        document.getElementById('cidadeVoluntario').value = p.cidade || '';
-        document.getElementById('estadoVoluntario').value = p.estado || '';
-        document.getElementById('areaVoluntario').value = p.area || p.obs || '';
-        document.getElementById('dataIngressoVoluntario').value = p.dataIngresso || '';
-        document.getElementById('disponibilidadeVoluntario').value = p.disponibilidade || '';
-        document.getElementById('obsVoluntario').value = p.obs || '';
         document.getElementById('ativoVoluntario').checked = p.ativo !== false;
+
         if (p.foto) {
             fotoDataURL = p.foto;
             var preview = document.getElementById('fotoPreview');
@@ -554,6 +438,12 @@ window.abrirForm = function(id) {
             preview.className = 'foto-preview visible';
             document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
         }
+    } else {
+        document.getElementById('voluntarioId').value = '';
+        document.getElementById('nomeVoluntario').value = '';
+        document.getElementById('funcaoVoluntario').value = '';
+        document.getElementById('telefoneVoluntario').value = '';
+        document.getElementById('ativoVoluntario').checked = true;
     }
 };
 
@@ -570,30 +460,29 @@ window.salvarVoluntario = function() {
         return;
     }
 
+    var funcao = document.getElementById('funcaoVoluntario').value.trim();
+    if (!funcao) {
+        alert('⚠️ Função é obrigatória!');
+        return;
+    }
+
+    var telefone = document.getElementById('telefoneVoluntario').value.trim();
+    if (!telefone) {
+        alert('⚠️ Telefone é obrigatório!');
+        return;
+    }
+
     var dados = {
         nome: nome,
-        tipo: 'voluntario',
-        cpf: document.getElementById('cpfVoluntario').value.trim(),
-        rg: document.getElementById('rgVoluntario').value.trim(),
-        dataNasc: document.getElementById('dataNascVoluntario').value,
-        sexo: document.getElementById('sexoVoluntario').value,
-        telefone: document.getElementById('telefoneVoluntario').value.trim(),
-        whatsapp: document.getElementById('whatsappVoluntario').value.trim(),
-        email: document.getElementById('emailVoluntario').value.trim(),
-        endereco: document.getElementById('enderecoVoluntario').value.trim(),
-        cidade: document.getElementById('cidadeVoluntario').value.trim(),
-        estado: document.getElementById('estadoVoluntario').value,
-        area: document.getElementById('areaVoluntario').value.trim(),
-        dataIngresso: document.getElementById('dataIngressoVoluntario').value,
-        disponibilidade: document.getElementById('disponibilidadeVoluntario').value,
-        obs: document.getElementById('obsVoluntario').value.trim(),
+        funcao: funcao,
+        telefone: telefone,
         ativo: document.getElementById('ativoVoluntario').checked
     };
 
     if (fotoDataURL) {
         dados.foto = fotoDataURL;
     } else if (editandoId) {
-        var existente = pessoas.find(function(p) { return p.id === editandoId; });
+        var existente = voluntarios.find(function(p) { return p.id === editandoId; });
         if (existente && existente.foto) {
             dados.foto = existente.foto;
         }
@@ -602,34 +491,37 @@ window.salvarVoluntario = function() {
     console.log('📝 Dados a salvar:', dados);
 
     if (editandoId) {
-        var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
+        var idx = voluntarios.findIndex(function(p) { return p.id === editandoId; });
         if (idx >= 0) {
             for (var k in dados) {
-                pessoas[idx][k] = dados[k];
+                voluntarios[idx][k] = dados[k];
             }
-            pessoas[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
+            voluntarios[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
         }
     } else {
         dados.id = Date.now();
         dados.dataCadastro = new Date().toISOString().split('T')[0];
-        pessoas.push(dados);
+        voluntarios.push(dados);
     }
 
     salvar();
-    console.log('✅ Dados salvos! Total:', pessoas.length);
+    console.log('✅ Dados salvos! Total:', voluntarios.length);
 
-    var pessoaSalva = pessoas.find(function(p) { return p.id === (editandoId || dados.id); });
+    var pessoaSalva = editandoId ? voluntarios.find(function(p) { return p.id === editandoId; }) : dados;
     if (pessoaSalva) {
         importarParaCRM(pessoaSalva);
     }
 
     fecharForm();
     filtrar();
-    alert('✅ Voluntário atualizado com sucesso!');
+    alert('✅ Voluntário salvo com sucesso!');
 };
 
+// ============================================================
+// ENVIAR PARA CRM
+// ============================================================
 window.enviarParaCRM = function(id) {
-    var p = pessoas.find(function(x) { return x.id === id; });
+    var p = voluntarios.find(function(x) { return x.id === id; });
     if (!p) return;
 
     var importado = importarParaCRM(p);
@@ -638,6 +530,21 @@ window.enviarParaCRM = function(id) {
     } else {
         alert('ℹ️ ' + p.nome + ' já existe no CRM Social.');
     }
+};
+
+// ============================================================
+// EXCLUIR
+// ============================================================
+window.excluirVoluntario = function(id) {
+    var p = voluntarios.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    if (!confirm('⚠️ Tem certeza que deseja excluir ' + p.nome + '?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social.')) return;
+
+    p.ativo = false;
+    salvar();
+    filtrar();
+    alert('✅ ' + p.nome + ' foi marcado como INATIVO.');
 };
 
 // ============================================================
@@ -650,11 +557,11 @@ filtrar();
 // ============================================================
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = {
-    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
     recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
     consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
     financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','agenda-telefonica']
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
 };
 
 var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
