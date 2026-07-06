@@ -63,15 +63,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; }
-.rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; }
-.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
-.rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; }
-.rodape-info a { color: #C65A11; text-decoration: none; }
-.rodape-info .email { font-size: 8px; color: #aaa; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; } .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
 @media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
@@ -88,10 +82,34 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   <nav class="sidebar-nav">
     <div class="nav-categoria">Principal</div>
     <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
     <div class="nav-categoria">Pessoas</div>
     <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
     <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
     <a href="voluntarios.html" class="nav-item ativo"><span class="icone">💪</span> Voluntários</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
     <div class="nav-categoria">Sistema</div>
     <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
     <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
@@ -99,10 +117,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 </aside>
 
 <main class="main-content">
-  <div class="topo-bar">
-    <h1>💪 Voluntários</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
+  <div class="topo-bar"><h1>💪 Voluntários</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
   <div class="abas">
     <button class="aba" onclick="window.location.href='pessoas.html'">← Voltar</button>
@@ -111,9 +126,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <button class="aba aba-ativo">Voluntários</button>
   </div>
 
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div>
-  </div>
+  <div class="kpi-row"><div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div></div>
 
   <div class="busca">
     <input type="text" id="busca" placeholder="Buscar por nome ou função..." oninput="filtrar()">
@@ -123,16 +136,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
   <div id="lista"></div>
 
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
+  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
 <div class="modal" id="modalForm"><div class="modal-box">
@@ -153,47 +157,24 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <script>
 var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
 var editandoId = null;
-if (voluntarios.length === 0) {
-    voluntarios.push({id:1,nome:'Fernanda Lima',guerra:'Fê',funcao:'Informática',disponibilidade:'Sábados',horas:'16h',telefone:'(34) 99999-0001',email:'',foto:''});
-    voluntarios.push({id:2,nome:'Rafael Costa',guerra:'Rafa',funcao:'Esportes',disponibilidade:'Terças e Quintas',horas:'20h',telefone:'(34) 99999-0002',email:'',foto:''});
-    salvar();
-}
+if (voluntarios.length === 0) { voluntarios.push({id:1,nome:'Fernanda Lima',guerra:'Fê',funcao:'Informática',disponibilidade:'Sábados',horas:'16h',telefone:'(34) 99999-0001',foto:''}); voluntarios.push({id:2,nome:'Rafael Costa',guerra:'Rafa',funcao:'Esportes',disponibilidade:'Terças e Quintas',horas:'20h',telefone:'(34) 99999-0002',foto:''}); salvar(); }
 function salvar() { localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios)); }
 function atualizarKPIs() { document.getElementById('kpiTotal').textContent = voluntarios.length; popularFiltro(); }
-
-function popularFiltro() {
-    var f = []; for (var i = 0; i < voluntarios.length; i++) { if (f.indexOf(voluntarios[i].funcao) === -1) f.push(voluntarios[i].funcao); }
-    var s = document.getElementById('filtroFuncao'); s.innerHTML = '<option value="todas">Todas funções</option>';
-    for (var i = 0; i < f.length; i++) s.innerHTML += '<option value="'+f[i]+'">'+f[i]+'</option>';
-}
-
+function popularFiltro() { var f = []; for (var i = 0; i < voluntarios.length; i++) { if (f.indexOf(voluntarios[i].funcao) === -1) f.push(voluntarios[i].funcao); } var s = document.getElementById('filtroFuncao'); s.innerHTML = '<option value="todas">Todas funções</option>'; for (var i = 0; i < f.length; i++) s.innerHTML += '<option value="'+f[i]+'">'+f[i]+'</option>'; }
 function filtrar() {
     var b = document.getElementById('busca').value.toLowerCase(), o = document.getElementById('ordem').value, ff = document.getElementById('filtroFuncao').value, l = [];
-    for (var i = 0; i < voluntarios.length; i++) {
-        var v = voluntarios[i];
-        if ((v.nome.toLowerCase().indexOf(b) >= 0 || v.funcao.toLowerCase().indexOf(b) >= 0 || (v.guerra||'').toLowerCase().indexOf(b) >= 0) && (ff === 'todas' || v.funcao === ff)) l.push(v);
-    }
+    for (var i = 0; i < voluntarios.length; i++) { var v = voluntarios[i]; if ((v.nome.toLowerCase().indexOf(b) >= 0 || v.funcao.toLowerCase().indexOf(b) >= 0 || (v.guerra||'').toLowerCase().indexOf(b) >= 0) && (ff === 'todas' || v.funcao === ff)) l.push(v); }
     l.sort(function(a,b){ return o==='az' ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome); });
     var h = ''; if (l.length === 0) h = '<div class="sem-dados">Nenhum voluntário.</div>';
-    for (var i = 0; i < l.length; i++) {
-        var v = l[i], ap = v.guerra ? ' ('+v.guerra+')' : '';
-        h += '<div class="card">'+(v.foto?'<img src="'+v.foto+'" style="width:40px;height:50px;object-fit:cover;float:left;margin-right:10px;border-radius:4px;">':'');
-        h += '<h3>'+v.nome+ap+'</h3><p>'+v.funcao+' | '+(v.disponibilidade||'')+' | '+(v.horas||'')+' | Tel: '+(v.telefone||'')+'</p>';
-        if (v.email) h += '<p>Email: '+v.email+'</p>';
-        h += '<button class="btn btn-amarelo" onclick="editar('+v.id+')">Editar</button> <button class="btn btn-verde" onclick="cracha('+v.id+')">Crachá</button> <button class="btn btn-laranja" onclick="imprimirCadastro('+v.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+v.id+')">Excluir</button></div>';
-    }
+    for (var i = 0; i < l.length; i++) { var v = l[i], ap = v.guerra ? ' ('+v.guerra+')' : ''; h += '<div class="card">'+(v.foto?'<img src="'+v.foto+'" style="width:40px;height:50px;object-fit:cover;float:left;margin-right:10px;border-radius:4px;">':'')+'<h3>'+v.nome+ap+'</h3><p>'+v.funcao+' | '+(v.disponibilidade||'')+' | '+(v.horas||'')+' | Tel: '+(v.telefone||'')+'</p>'; if(v.email)h+='<p>Email: '+v.email+'</p>'; h += '<button class="btn btn-amarelo" onclick="editar('+v.id+')">Editar</button> <button class="btn btn-verde" onclick="cracha('+v.id+')">Crachá</button> <button class="btn btn-laranja" onclick="imprimirCadastro('+v.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+v.id+')">Excluir</button></div>'; }
     document.getElementById('lista').innerHTML = h;
 }
-
 window.previewFoto = function() { var f = document.getElementById('fotoUpload').files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;">'; }; r.readAsDataURL(f); };
 window.abrirForm = function(id) {
-    editandoId = id || null; document.getElementById('modalForm').style.display = 'block';
-    document.getElementById('tituloModal').textContent = id ? 'Editar' : 'Novo';
+    editandoId = id || null; document.getElementById('modalForm').style.display = 'block'; document.getElementById('tituloModal').textContent = id ? 'Editar' : 'Novo';
     document.getElementById('fotoUpload').value = ''; document.getElementById('fotoPreview').innerHTML = '3x4';
-    if (id) { var v = voluntarios.find(function(x){return x.id===id;}); if (!v) return;
-        document.getElementById('volId').value=v.id;document.getElementById('nomeVol').value=v.nome;document.getElementById('guerraVol').value=v.guerra||'';document.getElementById('funcaoVol').value=v.funcao;document.getElementById('dispoVol').value=v.disponibilidade||'';document.getElementById('horasVol').value=v.horas||'';document.getElementById('foneVol').value=v.telefone||'';document.getElementById('emailVol').value=v.email||'';document.getElementById('obsVol').value=v.obs||'';
-        if (v.foto) document.getElementById('fotoPreview').innerHTML = '<img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover;">';
-    } else { document.getElementById('volId').value='';document.getElementById('nomeVol').value='';document.getElementById('guerraVol').value='';document.getElementById('funcaoVol').value='';document.getElementById('dispoVol').value='';document.getElementById('horasVol').value='';document.getElementById('foneVol').value='';document.getElementById('emailVol').value='';document.getElementById('obsVol').value=''; }
+    if (id) { var v = voluntarios.find(function(x){return x.id===id;}); if (!v) return; document.getElementById('volId').value=v.id;document.getElementById('nomeVol').value=v.nome;document.getElementById('guerraVol').value=v.guerra||'';document.getElementById('funcaoVol').value=v.funcao;document.getElementById('dispoVol').value=v.disponibilidade||'';document.getElementById('horasVol').value=v.horas||'';document.getElementById('foneVol').value=v.telefone||'';document.getElementById('emailVol').value=v.email||'';document.getElementById('obsVol').value=v.obs||''; if(v.foto)document.getElementById('fotoPreview').innerHTML='<img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover;">'; }
+    else { document.getElementById('volId').value='';document.getElementById('nomeVol').value='';document.getElementById('guerraVol').value='';document.getElementById('funcaoVol').value='';document.getElementById('dispoVol').value='';document.getElementById('horasVol').value='';document.getElementById('foneVol').value='';document.getElementById('emailVol').value='';document.getElementById('obsVol').value=''; }
 };
 window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
 window.salvar = function() {
@@ -206,10 +187,22 @@ window.salvar = function() {
 };
 window.editar = function(id) { abrirForm(id); };
 window.excluir = function(id) { if (!confirm('Excluir?')) return; voluntarios = voluntarios.filter(function(x){return x.id!==id;}); salvar(); filtrar(); atualizarKPIs(); };
-window.cracha = function(id) { var v = voluntarios.find(function(x){return x.id===id;}); if (!v) return; var w = window.open('','_blank'); w.document.write('<html><body style="font-family:Arial;text-align:center;padding:20px"><div style="border:3px solid #C65A11;padding:20px;width:300px;margin:0 auto;border-radius:10px"><h2>AMOVIN</h2>'+(v.foto?'<div style="width:80px;height:100px;border:1px solid #ccc;margin:0 auto 10px;overflow:hidden"><img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover"></div>':'')+'<h3>'+v.nome+'</h3><p><strong>'+(v.guerra||'')+'</strong></p><p>'+v.funcao+'</p><p>Voluntário</p></div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
+window.cracha = function(id) { var v = voluntarios.find(function(x){return x.id===id;}); if (!v) return; var w = window.open('','_blank'); w.document.write('<html><body style="font-family:Arial;text-align:center;padding:20px"><div style="border:3px solid #C65A11;padding:20px;width:300px;margin:0 auto;border-radius:10px"><h2>AMOVIN</h2>'+(v.foto?'<div style="width:80px;height:100px;overflow:hidden;margin:0 auto 10px"><img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover"></div>':'')+'<h3>'+v.nome+'</h3><p><strong>'+(v.guerra||'')+'</strong></p><p>'+v.funcao+'</p><p>Voluntário</p></div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 window.imprimirCadastro = function(id) { var v = voluntarios.find(function(x){return x.id===id;}); if (!v) return; var w = window.open('','_blank'); w.document.write('<html><body style="font-family:Arial;padding:20px"><h2>AMOVIN</h2><p>Nome: '+v.nome+'</p><p>Guerra: '+(v.guerra||'-')+'</p><p>Função: '+v.funcao+'</p><p>Disponibilidade: '+(v.disponibilidade||'-')+'</p><p>Horas: '+(v.horas||'-')+'</p><p>Tel: '+(v.telefone||'-')+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 
-atualizarKPIs(); filtrar();
+// Controle de perfil
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = { admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'], recepcao: ['dashboard','pessoas','profissionais','voluntarios','agenda','documentos'], consulta: ['dashboard','agenda','assistente'], financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'], voluntario: ['dashboard','agenda'] };
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos['admin'];
+document.querySelectorAll('.nav-item').forEach(function(item) { var href = item.getAttribute('href') || ''; var pagina = href.replace('.html',''); if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') { item.style.display = 'none'; } });
+
+if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+history.pushState(null,null,location.href);
+window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
+var timeout;function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
+document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
+
+atualizarKPIs();filtrar();
 </script>
 </body>
 </html>
