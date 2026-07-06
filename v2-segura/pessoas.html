@@ -54,7 +54,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .pessoa-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .pessoa-card.inativo { opacity: 0.6; border-left: 4px solid var(--vermelho); }
 .pessoa-info { display: flex; align-items: center; gap: 14px; flex: 1; }
-.pessoa-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--cinza); flex-shrink: 0; border: 2px solid #F0E9DF; }
+.pessoa-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; border: 2px solid #F0E9DF; font-weight: 700; }
 .pessoa-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .pessoa-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
 .pessoa-dados p { font-size: 11px; color: var(--cinza); }
@@ -81,7 +81,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-group textarea { resize: vertical; min-height: 60px; }
 .form-group .campo-obrigatorio { color: var(--vermelho); }
 .form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
-.foto-preview { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #F0E9DF; margin-top: 8px; display: none; }
+.foto-container { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0; }
+.foto-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #F0E9DF; display: none; }
+.foto-preview.visible { display: block; }
+.foto-placeholder { width: 120px; height: 120px; border-radius: 50%; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--cinza); border: 4px dashed #E5E0D8; }
+.foto-placeholder.hidden { display: none; }
 .btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 .btn-salvar:hover { background: #A04A0E; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
@@ -203,6 +207,29 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <div class="modal-body">
       <input type="hidden" id="pessoaId">
       <div class="form-grid">
+        <!-- ============================================ -->
+        <!-- SEÇÃO: FOTO (NO ALTO) -->
+        <!-- ============================================ -->
+        <div class="section-title">📸 Foto <span class="campo-opcional">(opcional)</span></div>
+        
+        <div class="form-full">
+          <div class="form-group" style="text-align:center;">
+            <div class="foto-container">
+              <div id="fotoPlaceholder" class="foto-placeholder">📷</div>
+              <img id="fotoPreview" class="foto-preview" alt="Pré-visualização">
+              <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                <input type="file" id="fotoPessoa" accept="image/*" onchange="previewFoto(event)" style="display:none;">
+                <button type="button" class="btn" style="background:var(--azul);color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="document.getElementById('fotoPessoa').click()">📁 Escolher Foto</button>
+                <button type="button" class="btn" style="background:var(--vermelho);color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="removerFoto()">🗑️ Remover</button>
+              </div>
+              <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">Formatos: JPG, PNG | Tamanho máximo: 5MB</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEÇÃO: DADOS PESSOAIS -->
+        <!-- ============================================ -->
         <div class="section-title">👤 Dados Pessoais</div>
 
         <div class="form-full">
@@ -248,17 +275,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
           </select>
         </div>
 
-        <div class="section-title">📸 Foto (opcional)</div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Foto <span class="campo-opcional">(opcional - JPG, PNG)</span></label>
-            <input type="file" id="fotoPessoa" accept="image/*" onchange="previewFoto(event)">
-            <img id="fotoPreview" class="foto-preview" alt="Pré-visualização">
-            <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">📷 Clique em "Escolher arquivo" para adicionar uma foto. O cadastro é aceito mesmo sem foto.</small>
-          </div>
-        </div>
-
+        <!-- ============================================ -->
+        <!-- SEÇÃO: CONTATO -->
+        <!-- ============================================ -->
         <div class="section-title">📞 Contato</div>
 
         <div class="form-group">
@@ -278,6 +297,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
           </div>
         </div>
 
+        <!-- ============================================ -->
+        <!-- SEÇÃO: ENDEREÇO -->
+        <!-- ============================================ -->
         <div class="section-title">📍 Endereço</div>
 
         <div class="form-full">
@@ -308,7 +330,10 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
           </select>
         </div>
 
-        <div class="section-title">👨‍👩‍👦 Responsável (para beneficiários)</div>
+        <!-- ============================================ -->
+        <!-- SEÇÃO: RESPONSÁVEL (para beneficiários) -->
+        <!-- ============================================ -->
+        <div class="section-title">👨‍👩‍👦 Responsável <span class="campo-opcional">(para beneficiários)</span></div>
 
         <div class="form-full">
           <div class="form-group">
@@ -318,6 +343,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
           </div>
         </div>
 
+        <!-- ============================================ -->
+        <!-- SEÇÃO: INFORMAÇÕES ADICIONAIS -->
+        <!-- ============================================ -->
         <div class="section-title">📋 Informações Adicionais</div>
 
         <div class="form-full">
@@ -406,18 +434,34 @@ function importarParaCRM(pessoa) {
 window.previewFoto = function(event) {
     var file = event.target.files[0];
     if (!file) {
-        document.getElementById('fotoPreview').style.display = 'none';
-        fotoDataURL = null;
+        removerFoto();
         return;
     }
+    
+    // Verificar tamanho (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('⚠️ A foto não pode ter mais que 5MB. Por favor, reduza o tamanho da imagem.');
+        document.getElementById('fotoPessoa').value = '';
+        return;
+    }
+    
     var reader = new FileReader();
     reader.onload = function(e) {
         fotoDataURL = e.target.result;
         var preview = document.getElementById('fotoPreview');
         preview.src = fotoDataURL;
-        preview.style.display = 'block';
+        preview.className = 'foto-preview visible';
+        document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
     };
     reader.readAsDataURL(file);
+};
+
+window.removerFoto = function() {
+    fotoDataURL = null;
+    document.getElementById('fotoPessoa').value = '';
+    document.getElementById('fotoPreview').className = 'foto-preview';
+    document.getElementById('fotoPreview').src = '';
+    document.getElementById('fotoPlaceholder').className = 'foto-placeholder';
 };
 
 // ============================================================
@@ -442,7 +486,7 @@ function getAvatarHtml(pessoa) {
     var iniciais = pessoa.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
     var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
     var cor = cores[pessoa.id % cores.length] || '#C65A11';
-    return '<div class="pessoa-avatar" style="background:' + cor + ';color:white;font-size:18px;font-weight:700;">' + iniciais + '</div>';
+    return '<div class="pessoa-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
 }
 
 function filtrar() {
@@ -514,10 +558,7 @@ window.abrirForm = function(id) {
     document.getElementById('tituloModal').textContent = id ? '✏️ Editar Cadastro' : '📝 Novo Cadastro';
 
     // Resetar foto
-    fotoDataURL = null;
-    document.getElementById('fotoPreview').style.display = 'none';
-    document.getElementById('fotoPreview').src = '';
-    document.getElementById('fotoPessoa').value = '';
+    removerFoto();
 
     if (id) {
         var p = pessoas.find(function(x) { return x.id === id; });
@@ -542,7 +583,8 @@ window.abrirForm = function(id) {
             fotoDataURL = p.foto;
             var preview = document.getElementById('fotoPreview');
             preview.src = p.foto;
-            preview.style.display = 'block';
+            preview.className = 'foto-preview visible';
+            document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
         }
     } else {
         document.getElementById('pessoaId').value = '';
@@ -570,7 +612,10 @@ window.fecharForm = function() {
 
 window.salvarPessoa = function() {
     var nome = document.getElementById('nomePessoa').value.trim();
-    if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
+    if (!nome) { 
+        alert('⚠️ Nome é obrigatório!'); 
+        return; 
+    }
 
     var tipo = document.getElementById('tipoPessoa').value;
     var responsavel = document.getElementById('responsavelPessoa').value.trim();
@@ -625,6 +670,7 @@ window.salvarPessoa = function() {
 
     salvar();
 
+    // Importar para CRM
     var pessoaSalva = editandoId ? pessoas.find(function(p) { return p.id === editandoId; }) : dados;
     if (pessoaSalva) {
         var importado = importarParaCRM(pessoaSalva);
