@@ -37,7 +37,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .kpi-card .label { font-size: 11px; color: var(--cinza); }
 
 .tabs { display: flex; gap: 6px; margin-bottom: 22px; }
-.tab { padding: 10px 20px; background: #FFFFFF; border: 1px solid #F0E9DF; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--cinza); transition: all 0.2s; }
+.tab { padding: 10px 20px; background: #FFFFFF; border: 1px solid #F0E9DF; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--cinza); transition: all 0.2s; text-decoration: none; }
 .tab.ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
 
 .busca { margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
@@ -54,8 +54,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .card { background: #FFFFFF; padding: 18px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #F0E9DF; }
 .card h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--grafite); }
 .card p { margin: 2px 0; color: var(--cinza); font-size: 13px; }
-.status-ativo { background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-.status-inativo { background: #FFEBEE; color: #C62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.status-ativo { background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
+.status-inativo { background: #FFEBEE; color: #C62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
 .sem-dados { text-align: center; color: #9CA3AF; padding: 30px; }
 
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
@@ -93,40 +93,31 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <div class="nav-categoria">Principal</div>
     <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
     <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-
     <div class="nav-categoria">Captação</div>
     <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
     <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
     <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
-
     <div class="nav-categoria">Financeiro</div>
     <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
     <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
     <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-
     <div class="nav-categoria">Pessoas</div>
     <a href="pessoas.html" class="nav-item ativo"><span class="icone">👥</span> Gestão de Pessoas</a>
     <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-
     <div class="nav-categoria">Atendimento</div>
     <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-
     <div class="nav-categoria">Documentos</div>
     <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
     <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
     <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-
     <div class="nav-categoria">Educação</div>
     <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
     <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-
     <div class="nav-categoria">Comunicação</div>
     <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
     <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-
     <div class="nav-categoria">Relatórios</div>
     <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
-
     <div class="nav-categoria">Sistema</div>
     <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
     <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
@@ -140,15 +131,15 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 
   <div class="kpi-row">
-    <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total</div></div>
+    <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total de Cadastros</div></div>
     <div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Ativos</div></div>
     <div class="kpi-card"><div class="valor" id="kpiInativos">0</div><div class="label">Inativos</div></div>
   </div>
 
   <div class="tabs">
-    <button class="tab ativo" id="tabBenef" onclick="mudarAba('beneficiarios')">Beneficiários</button>
-    <button class="tab" id="tabProf" onclick="mudarAba('profissionais')">Profissionais</button>
-    <button class="tab" id="tabVol" onclick="mudarAba('voluntarios')">Voluntários</button>
+    <a href="pessoas.html" class="tab ativo">👥 Beneficiários</a>
+    <a href="profissionais.html" class="tab">👨‍⚕️ Profissionais</a>
+    <a href="voluntarios.html" class="tab">💪 Voluntários</a>
   </div>
 
   <div class="busca">
@@ -220,7 +211,8 @@ function mostrar(lista) {
     for (var i = 0; i < lista.length; i++) {
         var b = lista[i], sc = b.status === 'Ativo' ? 'status-ativo' : 'status-inativo';
         h += '<div class="card">' + (b.foto ? '<img src="'+b.foto+'" style="width:40px;height:50px;object-fit:cover;float:left;margin-right:10px;border-radius:4px;">' : '');
-        h += '<h3>' + b.nome + ' <span class="'+sc+'">'+b.status+'</span></h3><p>Idade: '+(b.idade||'-')+' | Projeto: '+b.projeto+' | Tel: '+(b.telefone||'-')+'</p>';
+        h += '<h3>' + b.nome + '<span class="'+sc+'">'+b.status+'</span></h3>';
+        h += '<p>Idade: '+(b.idade||'-')+' | Projeto: '+b.projeto+' | Tel: '+(b.telefone||'-')+'</p>';
         if (b.diagnostico) h += '<p>Diagnóstico: '+b.diagnostico+(b.cid?' | CID: '+b.cid:'')+'</p>';
         if (b.respNome) h += '<p>Resp: '+b.respNome+(b.respFone?' | Tel: '+b.respFone:'')+'</p>';
         h += '<button class="btn btn-amarelo" onclick="editar('+b.id+')">Editar</button> ';
@@ -254,11 +246,9 @@ window.editar = function(id) { abrirForm(id); };
 window.excluir = function(id) { if (!confirm('Excluir?')) return; beneficiarios = beneficiarios.filter(function(x){return x.id!==id;}); salvar(); filtrar(); atualizarKPIs(); };
 window.imprimir = function(id) { var b = beneficiarios.find(function(x){return x.id===id;}); if (!b) return; var w = window.open('','_blank'); w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px}</style></head><body><h2>AMOVIN</h2><p>Nome: '+b.nome+'</p><p>Idade: '+(b.idade||'-')+'</p><p>Projeto: '+b.projeto+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 window.imprimirTermo = function(id, tipo) { var b = beneficiarios.find(function(x){return x.id===id;}); if (!b) return; var d = new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}); var w = window.open('','_blank'); w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}</style></head><body><h3>AMOVIN</h3><p><strong>'+(b.respNome||'___')+'</strong></p><p>Beneficiário: '+b.nome+'</p><p>Rio Paranaíba, '+d+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura</div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
-window.mudarAba = function(a) { if (a==='profissionais') window.location.href='profissionais.html'; if (a==='voluntarios') window.location.href='voluntarios.html'; };
 
-// Controle de perfil
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = { admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'], recepcao: ['dashboard','pessoas','agenda','documentos'], consulta: ['dashboard','agenda','prontuario','assistente'], financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'], voluntario: ['dashboard','agenda'] };
+var modulosPermitidos = { admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'], recepcao: ['dashboard','pessoas','profissionais','voluntarios','agenda','documentos'], consulta: ['dashboard','agenda','assistente'], financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'], voluntario: ['dashboard','agenda'] };
 var permitidos = modulosPermitidos[perfil] || modulosPermitidos['admin'];
 document.querySelectorAll('.nav-item').forEach(function(item) { var href = item.getAttribute('href') || ''; var pagina = href.replace('.html',''); if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') { item.style.display = 'none'; } });
 
