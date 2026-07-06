@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -35,11 +41,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .kpi-card { background: #FFFFFF; padding: 18px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
 .kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--grafite); }
 .kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
-.kpi-card.alerta { border-top: 3px solid #E53935; }
-.kpi-card.alerta .kpi-valor { color: #E53935; }
+.kpi-card.alerta { border-top: 3px solid var(--vermelho); }
+.kpi-card.alerta .kpi-valor { color: var(--vermelho); }
 
-.alerta-card { padding: 12px 18px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid; font-size: 13px; display: flex; align-items: center; gap: 10px; background: #FFFFFF; }
-.alerta-vermelho { border-color: #E53935; }
+.alerta-card { padding: 12px 18px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid; font-size: 13px; display: flex; align-items: center; gap: 10px; background: #FFFFFF; flex-wrap: wrap; }
+.alerta-vermelho { border-color: var(--vermelho); }
 .alerta-laranja { border-color: #E65100; }
 
 .grid-estoque { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -53,7 +59,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
 .btn-salvar { background: var(--laranja); color: white; }
 .btn-editar { background: var(--amarelo); color: #1A1A1A; }
-.btn-excluir { background: #E53935; color: white; }
+.btn-excluir { background: var(--vermelho); color: white; }
 
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th { background: #F8F4ED; padding: 10px; text-align: left; font-size: 10px; font-weight: 700; color: var(--cinza); text-transform: uppercase; }
@@ -66,7 +72,7 @@ tr:hover { background: #FFF8E7; }
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 .busca-bar { margin-bottom: 15px; }
 .busca-bar input { width: 100%; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
-.mov-item { padding: 10px; border-bottom: 1px solid #F0E9DF; font-size: 12px; display: flex; justify-content: space-between; }
+.mov-item { padding: 10px; border-bottom: 1px solid #F0E9DF; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
@@ -83,9 +89,46 @@ tr:hover { background: #FFF8E7; }
 <aside class="sidebar">
   <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <div class="nav-categoria">Documentos</div><a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a><a href="estoque.html" class="nav-item ativo"><span class="icone">📦</span> Estoque</a><a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item ativo"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
@@ -173,6 +216,27 @@ window.salvarItem = function() {
 window.editarItem = function(id) { var i = estoque.find(function(x){ return x.id===id; }); if (!i) return; editandoId = id; document.getElementById('tituloForm').textContent = 'Editar Item'; document.getElementById('itemId').value = i.id; document.getElementById('nomeItem').value = i.nome; document.getElementById('categoriaItem').value = i.categoria; document.getElementById('unidadeItem').value = i.unidade; document.getElementById('qtdAtual').value = i.qtdAtual; document.getElementById('qtdMinima').value = i.qtdMinima; document.getElementById('valorUnitario').value = i.valorUnitario; document.getElementById('localizacaoItem').value = i.localizacao||''; document.getElementById('obsItem').value = i.obs||''; };
 window.excluirItem = function(id) { if (!confirm('Excluir?')) return; estoque = estoque.filter(function(i){ return i.id!==id; }); salvar(); filtrarItens(); atualizarKPIs(); atualizarAlertas(); };
 function limparForm() { editandoId = null; document.getElementById('tituloForm').textContent = 'Novo Item'; document.getElementById('itemId').value = ''; document.getElementById('nomeItem').value = ''; document.getElementById('qtdAtual').value = '0'; document.getElementById('qtdMinima').value = '5'; document.getElementById('valorUnitario').value = ''; document.getElementById('obsItem').value = ''; }
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
 
 if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
 history.pushState(null,null,location.href); window.addEventListener('popstate',function(){ history.pushState(null,null,location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
