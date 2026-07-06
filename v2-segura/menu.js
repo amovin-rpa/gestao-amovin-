@@ -10,6 +10,9 @@ function renderizarMenu(paginaAtiva) {
     var mapaAtivo = {
         'dashboard': 'dashboard',
         'bi': 'bi',
+        'editais': 'editais',
+        'oficios': 'oficios',
+        'projetos': 'projetos',
         'financeiro': 'financeiro',
         'orcamentos': 'orcamentos',
         'prestacao-contas': 'prestacao-contas',
@@ -132,6 +135,27 @@ function carregarMenu(paginaAtiva) {
     if (avatar) avatar.textContent = inicial;
     if (nomeEl) nomeEl.textContent = nome;
     if (cargoEl) cargoEl.textContent = cargo;
+
+    // ============================================================
+    // CONTROLE DE PERFIL (esconder módulos não permitidos)
+    // ============================================================
+    var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+    var modulosPermitidos = {
+        admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+        recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+        consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+        financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+        voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+    };
+
+    var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+        var href = item.getAttribute('href') || '';
+        var pagina = href.replace('.html', '');
+        if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+            item.style.display = 'none';
+        }
+    });
 }
 
 // ============================================================
