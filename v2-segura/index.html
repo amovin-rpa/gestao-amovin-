@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================
-   RESET E BASE
+   RESET E BASE - CORES AMOVIN
    ============================================ */
 * {
   margin: 0;
@@ -17,18 +17,19 @@
 
 :root {
   --laranja: #C65A11;
+  --laranja-escuro: #A04A0E;
   --laranja-claro: #E8A04A;
-  --laranja-gradiente: #D47B2A;
   --amarelo: #F5C518;
   --grafite: #1A1A1A;
   --grafite-claro: #2D2D2D;
   --cinza: #6B7280;
   --cinza-claro: #F5F2ED;
   --branco: #FFFFFF;
+  --fundo: #F8F4ED;
   --verde: #57C220;
   --vermelho: #E53935;
-  --sombra-forte: 0 25px 80px rgba(0, 0, 0, 0.20);
-  --sombra-media: 0 8px 32px rgba(0, 0, 0, 0.10);
+  --sombra-forte: 0 25px 80px rgba(0, 0, 0, 0.12);
+  --sombra-media: 0 8px 32px rgba(0, 0, 0, 0.08);
   --raio: 16px;
   --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -40,14 +41,12 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: var(--grafite);
+  background: var(--fundo);
   background-image: 
-    radial-gradient(ellipse at 20% 50%, rgba(198, 90, 17, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 50%, rgba(245, 197, 24, 0.08) 0%, transparent 60%),
-    linear-gradient(135deg, var(--grafite) 0%, #0D0D0D 100%);
+    radial-gradient(ellipse at 30% 40%, rgba(198, 90, 17, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 60%, rgba(245, 197, 24, 0.05) 0%, transparent 60%);
   color: var(--grafite);
   line-height: 1.6;
-  overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -94,8 +93,8 @@ body {
    ============================================ */
 .login-container {
   width: 100%;
-  max-width: 1200px;
-  min-height: 680px;
+  max-width: 1150px;
+  min-height: 650px;
   display: flex;
   border-radius: 24px;
   overflow: hidden;
@@ -105,33 +104,19 @@ body {
   position: relative;
 }
 
-.login-container::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(135deg, var(--laranja), var(--amarelo), var(--laranja));
-  border-radius: 26px;
-  z-index: -1;
-  opacity: 0.3;
-  animation: pulse 4s ease-in-out infinite;
-}
-
 /* ============================================
-   PAINEL ESQUERDO - BRANDING
+   PAINEL ESQUERDO - BRANDING AMOVIN
    ============================================ */
 .brand-panel {
   flex: 1.2;
-  background: linear-gradient(160deg, var(--grafite) 0%, #121212 50%, var(--grafite-claro) 100%);
-  padding: 60px 50px;
+  background: linear-gradient(160deg, var(--grafite) 0%, #2A2A2A 50%, var(--grafite-claro) 100%);
+  padding: 55px 45px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   overflow: hidden;
-  min-height: 680px;
+  min-height: 650px;
 }
 
 .brand-panel::before {
@@ -141,7 +126,7 @@ body {
   right: -20%;
   width: 80%;
   height: 80%;
-  background: radial-gradient(circle, rgba(198, 90, 17, 0.10) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(198, 90, 17, 0.12) 0%, transparent 70%);
   animation: float 8s ease-in-out infinite;
 }
 
@@ -164,20 +149,21 @@ body {
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 60px;
+  gap: 14px;
+  margin-bottom: 55px;
 }
 
 .brand-logo-img {
-  width: 56px;
-  height: 56px;
-  filter: drop-shadow(0 4px 20px rgba(198, 90, 17, 0.3));
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 20px rgba(198, 90, 17, 0.25));
 }
 
 .brand-logo-text {
   color: var(--branco);
   font-weight: 700;
-  font-size: 22px;
+  font-size: 20px;
   letter-spacing: -0.5px;
 }
 
@@ -187,9 +173,9 @@ body {
 
 .brand-logo-text small {
   display: block;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.4);
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-top: 2px;
@@ -197,10 +183,10 @@ body {
 
 .brand-title {
   color: var(--branco);
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   letter-spacing: -1px;
 }
 
@@ -210,19 +196,19 @@ body {
 
 .brand-subtitle {
   color: rgba(255, 255, 255, 0.5);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
-  margin-bottom: 40px;
-  max-width: 80%;
+  margin-bottom: 35px;
+  max-width: 85%;
 }
 
 .brand-quote {
-  font-size: 17px;
+  font-size: 16px;
   font-style: italic;
   color: var(--amarelo);
-  padding-left: 20px;
+  padding-left: 18px;
   border-left: 3px solid var(--amarelo);
-  margin-bottom: 48px;
+  margin-bottom: 40px;
   opacity: 0.9;
   line-height: 1.7;
 }
@@ -230,19 +216,19 @@ body {
 .features-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 40px;
+  gap: 10px;
+  margin-bottom: 35px;
 }
 
 .feature-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
   font-weight: 400;
   transition: var(--transicao);
-  padding: 6px 0;
+  padding: 5px 0;
 }
 
 .feature-item:hover {
@@ -251,14 +237,14 @@ body {
 }
 
 .feature-icon {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   background: rgba(245, 197, 24, 0.10);
-  border-radius: 6px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--amarelo);
   flex-shrink: 0;
 }
@@ -267,7 +253,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-top: 20px;
+  padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -280,7 +266,7 @@ body {
 }
 
 .status-text {
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.3);
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -289,17 +275,17 @@ body {
 .brand-footer {
   position: relative;
   z-index: 2;
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.2);
   letter-spacing: 0.3px;
 }
 
 /* ============================================
-   PAINEL DIREITO - LOGIN
+   PAINEL DIREITO - LOGIN (FUNDO CLARO)
    ============================================ */
 .login-panel {
   flex: 1;
-  padding: 60px 50px;
+  padding: 55px 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -309,7 +295,7 @@ body {
 
 .login-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 35px;
 }
 
 .login-header .logo-mobile {
@@ -317,7 +303,7 @@ body {
 }
 
 .login-header h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--grafite);
   margin-bottom: 4px;
@@ -329,7 +315,7 @@ body {
 }
 
 .login-header p {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--cinza);
   font-weight: 400;
 }
@@ -338,22 +324,23 @@ body {
    FORMULÁRIO
    ============================================ */
 .login-form {
-  max-width: 380px;
+  max-width: 360px;
   margin: 0 auto;
   width: 100%;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .form-label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--grafite);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   letter-spacing: 0.3px;
+  text-transform: uppercase;
 }
 
 .input-wrapper {
@@ -362,9 +349,9 @@ body {
 
 .form-input {
   width: 100%;
-  padding: 14px 16px 14px 46px;
+  padding: 13px 16px 13px 44px;
   border: 1.5px solid #E8E4DE;
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 14px;
   transition: var(--transicao);
   background: var(--branco);
@@ -384,13 +371,13 @@ body {
 
 .input-icon {
   position: absolute;
-  left: 16px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--cinza);
-  font-size: 17px;
+  font-size: 16px;
   transition: var(--transicao);
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .form-input:focus ~ .input-icon {
@@ -400,14 +387,14 @@ body {
 
 .password-toggle {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--cinza);
   cursor: pointer;
-  font-size: 17px;
+  font-size: 16px;
   transition: var(--transicao);
   padding: 4px;
   opacity: 0.5;
@@ -422,8 +409,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  font-size: 13px;
+  margin-bottom: 22px;
+  font-size: 12px;
 }
 
 .checkbox-wrapper {
@@ -436,8 +423,8 @@ body {
 }
 
 .checkbox-wrapper input[type="checkbox"] {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   accent-color: var(--laranja);
   cursor: pointer;
 }
@@ -446,7 +433,7 @@ body {
   color: var(--laranja);
   text-decoration: none;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12px;
   transition: var(--transicao);
 }
 
@@ -455,21 +442,23 @@ body {
   text-decoration: underline;
 }
 
-/* Botão Entrar */
+/* ============================================
+   BOTÃO ENTRAR - COR LARANJA
+   ============================================ */
 .btn-primary {
   width: 100%;
-  padding: 15px;
+  padding: 14px;
   background: var(--laranja);
   color: var(--branco);
   border: none;
-  border-radius: 12px;
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: var(--transicao);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(198, 90, 17, 0.25);
+  box-shadow: 0 4px 20px rgba(198, 90, 17, 0.2);
   letter-spacing: 0.3px;
   font-family: 'Inter', sans-serif;
 }
@@ -482,7 +471,7 @@ body {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
 }
@@ -493,9 +482,9 @@ body {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--laranja-gradiente);
+  background: var(--laranja-escuro);
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(198, 90, 17, 0.35);
+  box-shadow: 0 8px 30px rgba(198, 90, 17, 0.3);
 }
 
 .btn-primary:disabled {
@@ -520,8 +509,8 @@ body {
 }
 
 .spinner {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2.5px solid rgba(255, 255, 255, 0.25);
   border-top-color: var(--branco);
   border-radius: 50%;
@@ -535,8 +524,8 @@ body {
 
 .btn-hint {
   text-align: center;
-  margin-top: 14px;
-  font-size: 12px;
+  margin-top: 12px;
+  font-size: 11px;
   color: var(--cinza);
   display: flex;
   align-items: center;
@@ -554,10 +543,10 @@ body {
   border: 1px solid #FECACA;
   border-left: 4px solid var(--vermelho);
   color: #991B1B;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  margin-bottom: 18px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 16px;
   display: none;
 }
 
@@ -569,15 +558,15 @@ body {
    RODAPÉ DO LOGIN
    ============================================ */
 .login-footer {
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: 28px;
+  padding-top: 20px;
   border-top: 1px solid #F0EDE8;
   text-align: center;
 }
 
 .login-footer .footer-links {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -585,7 +574,7 @@ body {
 .login-footer .footer-links a {
   color: var(--cinza);
   text-decoration: none;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   transition: var(--transicao);
 }
@@ -598,12 +587,12 @@ body {
 .login-footer .footer-copy {
   font-size: 10px;
   color: #B0A99F;
-  margin-top: 12px;
+  margin-top: 10px;
   letter-spacing: 0.3px;
 }
 
 /* ============================================
-   MODAL LGPD
+   MODAL LGPD - CORES AMOVIN
    ============================================ */
 .modal-overlay {
   position: fixed;
@@ -611,8 +600,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -627,8 +616,8 @@ body {
 
 .lgpd-modal {
   background: var(--branco);
-  border-radius: 20px;
-  max-width: 560px;
+  border-radius: 18px;
+  max-width: 540px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -637,15 +626,15 @@ body {
 }
 
 .modal-header {
-  padding: 28px 32px 20px;
+  padding: 24px 28px 18px;
   border-bottom: 1px solid #F0EDE8;
 }
 
 .modal-title {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--grafite);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .modal-title span {
@@ -653,42 +642,42 @@ body {
 }
 
 .modal-subtitle {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--cinza);
 }
 
 .modal-body {
-  padding: 28px 32px 20px;
+  padding: 24px 28px 18px;
 }
 
 .lgpd-content {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.8;
   color: var(--grafite);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .lgpd-content h4 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  margin: 16px 0 8px;
+  margin: 14px 0 6px;
   color: var(--grafite);
 }
 
 .lgpd-content ul {
-  margin-left: 18px;
-  margin-bottom: 12px;
+  margin-left: 16px;
+  margin-bottom: 10px;
 }
 
 .lgpd-content li {
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: var(--cinza);
 }
 
 .lgpd-links {
   display: flex;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 14px;
+  margin-bottom: 18px;
   flex-wrap: wrap;
 }
 
@@ -708,16 +697,16 @@ body {
 .checkbox-agreement {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
+  padding: 14px;
   background: #F8F6F3;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  margin-bottom: 18px;
 }
 
 .checkbox-agreement input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   accent-color: var(--laranja);
   flex-shrink: 0;
   margin-top: 2px;
@@ -732,7 +721,7 @@ body {
 }
 
 .modal-footer {
-  padding: 16px 32px 28px;
+  padding: 14px 28px 22px;
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -740,12 +729,12 @@ body {
 }
 
 .btn-secondary {
-  padding: 12px 36px;
+  padding: 11px 32px;
   background: #E8E4DE;
   color: #9CA3AF;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: not-allowed;
   transition: var(--transicao);
@@ -760,9 +749,9 @@ body {
 }
 
 .btn-secondary.enabled:hover {
-  background: var(--laranja-gradiente);
+  background: var(--laranja-escuro);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(198, 90, 17, 0.3);
+  box-shadow: 0 8px 24px rgba(198, 90, 17, 0.25);
 }
 
 /* ============================================
@@ -771,29 +760,29 @@ body {
 @media (max-width: 1024px) {
   .brand-panel { display: none; }
   .login-panel { padding: 40px 30px; }
-  .login-container { max-width: 500px; min-height: auto; }
-  .login-header .logo-mobile { display: block; margin-bottom: 24px; }
-  .login-header .logo-mobile img { width: 56px; height: 56px; }
-  .login-header h2 { font-size: 22px; }
+  .login-container { max-width: 460px; min-height: auto; }
+  .login-header .logo-mobile { display: block; margin-bottom: 20px; }
+  .login-header .logo-mobile img { width: 48px; height: 48px; object-fit: contain; }
+  .login-header h2 { font-size: 20px; }
 }
 
 @media (max-width: 768px) {
   .login-container { max-width: 100%; border-radius: 16px; }
-  .login-panel { padding: 32px 24px; }
-  .login-header h2 { font-size: 20px; }
+  .login-panel { padding: 28px 20px; }
+  .login-header h2 { font-size: 18px; }
   .login-form { max-width: 100%; }
   .features-grid { grid-template-columns: 1fr; }
   .lgpd-modal { margin: 10px; }
-  .modal-header, .modal-body, .modal-footer { padding: 20px; }
+  .modal-header, .modal-body, .modal-footer { padding: 16px 18px; }
 }
 
 @media (max-width: 480px) {
   body { padding: 0; }
   .login-container { border-radius: 0; min-height: 100vh; }
-  .login-panel { padding: 24px 16px; }
-  .login-header h2 { font-size: 18px; }
-  .form-input { padding: 12px 14px 12px 40px; font-size: 13px; }
-  .btn-primary { padding: 13px; font-size: 14px; }
+  .login-panel { padding: 20px 14px; }
+  .login-header h2 { font-size: 16px; }
+  .form-input { padding: 11px 12px 11px 36px; font-size: 13px; }
+  .btn-primary { padding: 12px; font-size: 13px; }
   .brand-panel { display: none; }
 }
 
@@ -876,7 +865,7 @@ body {
      ============================================ -->
 <div class="login-container">
 
-  <!-- PAINEL ESQUERDO - BRANDING -->
+  <!-- PAINEL ESQUERDO - BRANDING AMOVIN -->
   <aside class="brand-panel">
     <div class="brand-content">
       <div class="brand-logo">
@@ -920,7 +909,7 @@ body {
 
     <div class="login-header">
       <div class="logo-mobile">
-        <img src="images/amovin-logo.png" alt="AMOVIN" style="width:56px;height:56px;" onerror="this.style.display='none'">
+        <img src="images/amovin-logo.png" alt="AMOVIN" style="width:48px;height:48px;object-fit:contain;" onerror="this.style.display='none'">
       </div>
       <h2>Acesso ao <span>Sistema</span></h2>
       <p>Informe suas credenciais para continuar</p>
@@ -985,7 +974,7 @@ body {
 </div>
 
 <!-- ============================================
-     JAVASCRIPT - TUDO NO ESCOPO GLOBAL
+     JAVASCRIPT
      ============================================ -->
 <script>
 // ============================================
@@ -1103,7 +1092,7 @@ function setLoading(isLoading) {
 function showNotification(msg, type) {
   var bg = type === 'success' ? '#57C220' : '#E53935';
   var n = document.createElement('div');
-  n.style.cssText = 'position:fixed;top:24px;right:24px;padding:16px 24px;background:'+bg+';color:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:400px;';
+  n.style.cssText = 'position:fixed;top:24px;right:24px;padding:14px 22px;background:'+bg+';color:#fff;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:20000;animation:slideInRight 0.3s ease;font-weight:600;max-width:360px;font-size:13px;';
   n.textContent = msg;
   document.body.appendChild(n);
   setTimeout(function() {
@@ -1150,85 +1139,54 @@ function handleLogin(e) {
 }
 
 // ============================================
-// EVENTOS - TODOS VIA JavaScript (SEM ONCLICK)
+// EVENTOS - TODOS VIA JavaScript
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 AMOVIN ERP - Sistema Corporativo inicializado');
 
-  // Verificar LGPD
   checkLGPDStatus();
 
-  // Lembrar usuário
   var lembrar = localStorage.getItem('amovin_lembrar');
   if (lembrar) {
     elements.username.value = lembrar;
     elements.rememberMe.checked = true;
   }
 
-  // EVENTO: Checkbox LGPD
   elements.checkbox.addEventListener('change', function() {
     if (this.checked) {
       elements.btnContinuar.disabled = false;
       elements.btnContinuar.classList.add('enabled');
-      console.log('✅ Botão CONTINUAR habilitado');
     } else {
       elements.btnContinuar.disabled = true;
       elements.btnContinuar.classList.remove('enabled');
-      console.log('❌ Botão CONTINUAR desabilitado');
     }
   });
 
-  // EVENTO: Botão Continuar (SEM onclick no HTML)
   elements.btnContinuar.addEventListener('click', function() {
-    console.log('🔵 Clique no botão CONTINUAR');
     aceitarLGPD();
   });
 
-  // EVENTO: Mostrar senha
   elements.togglePassword.addEventListener('click', function() {
     var t = elements.password.type === 'password' ? 'text' : 'password';
     elements.password.type = t;
     this.textContent = t === 'password' ? '👁️' : '🙈';
   });
 
-  // EVENTO: Submit do formulário
   elements.loginForm.addEventListener('submit', handleLogin);
 
-  // EVENTO: Fechar modal com ESC
   elements.modal.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-    }
+    if (e.key === 'Escape') e.preventDefault();
   });
 
-  // EVENTO: Clique fora do modal
   elements.modal.addEventListener('click', function(e) {
-    if (e.target === elements.modal) {
-      e.preventDefault();
-    }
+    if (e.target === elements.modal) e.preventDefault();
   });
 
-  // EVENTOS: Links de política (sem reload)
-  document.getElementById('linkPolitica').addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('Política de Privacidade completa');
-  });
-  document.getElementById('linkTermos').addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('Termos de Uso completos');
-  });
-  document.getElementById('footerPolitica').addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('Política de Privacidade');
-  });
-  document.getElementById('footerTermos').addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('Termos de Uso');
-  });
-  document.getElementById('footerLgpd').addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('LGPD - Lei Geral de Proteção de Dados');
-  });
+  document.getElementById('linkPolitica').addEventListener('click', function(e) { e.preventDefault(); alert('Política de Privacidade completa'); });
+  document.getElementById('linkTermos').addEventListener('click', function(e) { e.preventDefault(); alert('Termos de Uso completos'); });
+  document.getElementById('footerPolitica').addEventListener('click', function(e) { e.preventDefault(); alert('Política de Privacidade'); });
+  document.getElementById('footerTermos').addEventListener('click', function(e) { e.preventDefault(); alert('Termos de Uso'); });
+  document.getElementById('footerLgpd').addEventListener('click', function(e) { e.preventDefault(); alert('LGPD - Lei Geral de Proteção de Dados'); });
 
   console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
 });
