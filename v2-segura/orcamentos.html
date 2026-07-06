@@ -37,8 +37,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+.form-group textarea { resize: vertical; min-height: 50px; }
 .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
+.linha-tripla { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.section-title { font-size: 13px; font-weight: 700; color: var(--laranja); border-bottom: 1px solid #F0E9DF; padding-bottom: 6px; margin: 16px 0 12px; grid-column: 1 / -1; }
+.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; }
 .btn-salvar { background: var(--laranja); color: white; width: 100%; padding: 14px; font-size: 14px; }
 .btn-comparar { background: var(--azul); color: white; }
 .btn-vencedor { background: var(--verde); color: white; }
@@ -57,74 +60,81 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .badge-pendente { background: #FFF3E0; color: #E65100; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; }
-.rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; }
-.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
-.rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; }
-.rodape-info a { color: #C65A11; text-decoration: none; }
-.rodape-info .email { font-size: 8px; color: #aaa; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; } .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .cards-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .cards-grid { grid-template-columns: 1fr; } .linha-dupla, .linha-tripla { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
 <aside class="sidebar">
-  <div class="sidebar-header">
-    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-    <div class="sidebar-logo-fallback">🌻</div>
-    <div class="brand">Amovin ERP Social</div>
-  </div>
+  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div>
-    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-    <div class="nav-categoria">Financeiro</div>
-    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
-    <a href="orcamentos.html" class="nav-item ativo"><span class="icone">📊</span> Orçamentos</a>
-    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-    <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
-    <div class="nav-categoria">Atendimento</div>
-    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-    <div class="nav-categoria">Documentos</div>
-    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
-    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
-    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Sistema</div>
-    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
-    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a><a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+    <div class="nav-categoria">Captação</div><a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a><a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a><a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+    <div class="nav-categoria">Financeiro</div><a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a><a href="orcamentos.html" class="nav-item ativo"><span class="icone">📊</span> Orçamentos</a><a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+    <div class="nav-categoria">Pessoas</div><a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a><a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+    <div class="nav-categoria">Atendimento</div><a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+    <div class="nav-categoria">Documentos</div><a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a><a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a><a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+    <div class="nav-categoria">Educação</div><a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a><a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+    <div class="nav-categoria">Comunicação</div><a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a><a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+    <div class="nav-categoria">Relatórios</div><a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
 <main class="main-content">
-  <div class="topo-bar">
-    <h1>📊 Orçamentos e Compras</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
+  <div class="topo-bar"><h1>📊 Orçamentos e Compras</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
   <div class="cards-grid">
     <div class="card">
       <h3>📝 Novo Orçamento <span style="font-size:12px;color:var(--cinza);" id="contadorOrc">0/3</span></h3>
       <input type="hidden" id="orcamentoId">
-      <div class="form-group"><label>Projeto/Solicitação *</label><input type="text" id="nomeSolicitacao"></div>
-      <div class="form-group"><label>Empresa *</label><input type="text" id="empresaOrc"></div>
-      <div class="form-group"><label>CNPJ</label><input type="text" id="cnpjOrc"></div>
+      
+      <div class="section-title">👤 Dados do Solicitante</div>
+      <div class="form-group"><label>Nome/Razão Social *</label><input type="text" id="nomeSolicitacao" placeholder="Nome da empresa ou solicitante"></div>
       <div class="linha-dupla">
-        <div class="form-group"><label>Data *</label><input type="date" id="dataOrc"></div>
-        <div class="form-group"><label>Valor (R$) *</label><input type="number" id="valorOrc" step="0.01"></div>
+        <div class="form-group"><label>CPF/CNPJ</label><input type="text" id="cpfCnpjOrc" placeholder="000.000.000-00"></div>
+        <div class="form-group"><label>E-mail</label><input type="email" id="emailOrc" placeholder="email@exemplo.com"></div>
       </div>
-      <div class="form-group"><label>Observações</label><textarea id="obsOrc" rows="2"></textarea></div>
-      <button class="btn btn-salvar" onclick="salvarOrcamento()">💾 Salvar</button>
+      <div class="linha-dupla">
+        <div class="form-group"><label>Telefone</label><input type="text" id="telefoneOrc" placeholder="(34) 99999-0000"></div>
+        <div class="form-group"><label>Endereço de Entrega</label><input type="text" id="enderecoOrc" placeholder="Rua, número, bairro, cidade"></div>
+      </div>
+
+      <div class="section-title">📦 Especificação do Material</div>
+      <div class="form-group"><label>Nome do Item *</label><input type="text" id="itemOrc" placeholder="Ex: Bola de Vôlei Oficial Penalty"></div>
+      <div class="form-group"><label>Descrição Detalhada</label><textarea id="descricaoItemOrc" rows="2" placeholder="Marca, modelo, tamanho, cor, material..."></textarea></div>
+      <div class="linha-dupla">
+        <div class="form-group"><label>Quantidade *</label><input type="number" id="qtdOrc" value="1" min="1"></div>
+        <div class="form-group"><label>Unidade</label><select id="unidadeOrc"><option>Unidade</option><option>Par</option><option>Kg</option><option>Metro</option><option>Litro</option><option>Caixa</option><option>Pacote</option></select></div>
+      </div>
+
+      <div class="section-title">💰 Condições Comerciais</div>
+      <div class="linha-dupla">
+        <div class="form-group"><label>Valor Unitário (R$) *</label><input type="number" id="valorUnitarioOrc" step="0.01" placeholder="0,00"></div>
+        <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="valorTotalOrc" step="0.01" readonly style="background:#F8F4ED;"></div>
+      </div>
+      <div class="linha-tripla">
+        <div class="form-group"><label>Prazo de Entrega (dias)</label><input type="number" id="prazoOrc" placeholder="Ex: 15"></div>
+        <div class="form-group"><label>Forma de Pagamento</label><select id="pagamentoOrc"><option>PIX</option><option>Boleto</option><option>Cartão</option><option>Faturamento 30 dias</option><option>Faturamento 60 dias</option></select></div>
+        <div class="form-group"><label>Validade da Proposta (dias)</label><input type="number" id="validadeOrc" placeholder="Ex: 30"></div>
+      </div>
+      <div class="form-group"><label>Empresa Fornecedora *</label><input type="text" id="empresaOrc" placeholder="Nome da empresa que está cotando"></div>
+      <div class="linha-dupla">
+        <div class="form-group"><label>CNPJ do Fornecedor</label><input type="text" id="cnpjOrc" placeholder="00.000.000/0000-00"></div>
+        <div class="form-group"><label>Data do Orçamento *</label><input type="date" id="dataOrc"></div>
+      </div>
+      <div class="form-group"><label>Observações</label><textarea id="obsOrc" rows="2" placeholder="Informações adicionais..."></textarea></div>
+      <button class="btn btn-salvar" onclick="salvarOrcamento()">💾 Salvar Orçamento</button>
     </div>
 
     <div class="card">
-      <h3>📋 Orçamentos</h3>
-      <div id="listaOrcamentos"><div class="sem-dados">Nenhum orçamento.</div></div>
+      <h3>📋 Orçamentos Cadastrados</h3>
+      <div id="listaOrcamentos"><div class="sem-dados">Nenhum orçamento cadastrado.</div></div>
       <div class="comparativo" id="comparativo" style="display:none;">
         <h4>📊 Comparativo</h4>
         <div id="resultadoComparativo"></div>
@@ -133,16 +143,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     </div>
   </div>
 
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
+  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
 <script>
@@ -150,102 +151,105 @@ var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
 var editandoId = null, solicitacaoAtual = '';
 
 if (orcamentos.length === 0) {
-    orcamentos = [
-        {id:1,solicitacao:'Material Esportivo',empresa:'Loja A',cnpj:'12.345.678/0001-90',data:'2026-06-20',valor:1500,obs:'Bolas e cones',vencedor:false},
-        {id:2,solicitacao:'Material Esportivo',empresa:'Fornecedor B',cnpj:'98.765.432/0001-10',data:'2026-06-21',valor:1200,obs:'Frete grátis',vencedor:true},
-        {id:3,solicitacao:'Material Esportivo',empresa:'Distribuidora C',cnpj:'11.222.333/0001-45',data:'2026-06-22',valor:1350,obs:'',vencedor:false}
-    ];
+    orcamentos.push({id:1,solicitacao:'Material Esportivo',empresa:'Loja A',cnpj:'12.345.678/0001-90',data:'2026-06-20',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:150,valorTotal:1500,prazo:15,pagamento:'PIX',validade:30,cpfCnpj:'',email:'',telefone:'',endereco:'',descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'',vencedor:false});
+    orcamentos.push({id:2,solicitacao:'Material Esportivo',empresa:'Fornecedor B',cnpj:'98.765.432/0001-10',data:'2026-06-21',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:120,valorTotal:1200,prazo:10,pagamento:'Boleto',validade:30,cpfCnpj:'',email:'',telefone:'',endereco:'',descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'Frete grátis',vencedor:true});
     salvar();
 }
-
 function salvar() { localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos)); }
 function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.',','); }
 
-function atualizarContador() {
-    document.getElementById('contadorOrc').textContent = orcamentos.filter(function(o){ return o.solicitacao === solicitacaoAtual; }).length + '/3';
-}
+document.getElementById('valorUnitarioOrc').addEventListener('input', function() {
+    var unit = parseFloat(this.value) || 0, qtd = parseInt(document.getElementById('qtdOrc').value) || 0;
+    document.getElementById('valorTotalOrc').value = (unit * qtd).toFixed(2);
+});
+document.getElementById('qtdOrc').addEventListener('input', function() {
+    var unit = parseFloat(document.getElementById('valorUnitarioOrc').value) || 0, qtd = parseInt(this.value) || 0;
+    document.getElementById('valorTotalOrc').value = (unit * qtd).toFixed(2);
+});
+
+function atualizarContador() { document.getElementById('contadorOrc').textContent = orcamentos.filter(function(o){return o.solicitacao===solicitacaoAtual;}).length + '/3'; }
 
 function renderizar() {
-    var grupos = {};
-    orcamentos.forEach(function(o) { if (!grupos[o.solicitacao]) grupos[o.solicitacao] = []; grupos[o.solicitacao].push(o); });
+    var grupos = {}; orcamentos.forEach(function(o){if(!grupos[o.solicitacao])grupos[o.solicitacao]=[];grupos[o.solicitacao].push(o);});
     var html = '';
-    Object.keys(grupos).forEach(function(sol) {
-        var orcs = grupos[sol];
-        var vencedor = orcs.find(function(o){ return o.vencedor; });
-        html += '<div style="margin-bottom:18px;"><h4 style="margin-bottom:8px;">📋 ' + sol + ' (' + orcs.length + ') ' + (vencedor ? '<span class="badge badge-vencedor">Vencedor: '+vencedor.empresa+'</span>' : '<span class="badge badge-pendente">Pendente</span>') + '</h4>';
-        orcs.forEach(function(o) {
-            html += '<div class="orcamento-card' + (o.vencedor ? ' vencedor' : '') + '"><h4>' + o.empresa + (o.vencedor ? ' 🏆' : '') + '</h4><p>CNPJ: ' + (o.cnpj||'-') + ' | Data: ' + (o.data ? new Date(o.data+'T00:00:00').toLocaleDateString('pt-BR') : '-') + '</p><p><strong>' + fm(o.valor) + '</strong> ' + (o.obs||'') + '</p><button class="btn btn-editar" onclick="editarOrc(' + o.id + ')">✏️</button> <button class="btn btn-excluir" onclick="excluirOrc(' + o.id + ')">🗑️</button></div>';
+    Object.keys(grupos).forEach(function(sol){
+        var orcs = grupos[sol], vencedor = orcs.find(function(o){return o.vencedor;});
+        html += '<div style="margin-bottom:18px;"><h4 style="margin-bottom:8px;">📋 '+sol+' ('+orcs.length+') '+(vencedor?'<span class="badge badge-vencedor">Vencedor: '+vencedor.empresa+'</span>':'<span class="badge badge-pendente">Pendente</span>')+'</h4>';
+        orcs.forEach(function(o){
+            html += '<div class="orcamento-card'+(o.vencedor?' vencedor':'')+'"><h4>'+o.empresa+(o.vencedor?' 🏆':'')+'</h4>';
+            html += '<p>📦 '+o.item+' | Qtd: '+o.qtd+' | Unit: '+fm(o.valorUnitario)+' | Total: <strong>'+fm(o.valorTotal)+'</strong></p>';
+            html += '<p>⏱️ Prazo: '+(o.prazo||'-')+' dias | 💳 '+(o.pagamento||'-')+' | 📅 Validade: '+(o.validade||'-')+' dias</p>';
+            if(o.obs) html += '<p>📝 '+o.obs+'</p>';
+            html += '<button class="btn btn-editar" onclick="editarOrc('+o.id+')">✏️</button> <button class="btn btn-excluir" onclick="excluirOrc('+o.id+')">🗑️</button></div>';
         });
-        html += '<button class="btn btn-comparar" onclick="comparar(\'' + sol + '\')">📊 Comparar</button></div>';
+        html += '<button class="btn btn-comparar" onclick="comparar(\''+sol+'\')">📊 Comparar</button></div>';
     });
     document.getElementById('listaOrcamentos').innerHTML = html || '<div class="sem-dados">Nenhum orçamento.</div>';
 }
 
 window.salvarOrcamento = function() {
-    var sol = document.getElementById('nomeSolicitacao').value.trim();
-    var emp = document.getElementById('empresaOrc').value.trim();
-    var val = parseFloat(document.getElementById('valorOrc').value);
-    if (!sol || !emp || !val) { alert('Preencha os campos obrigatórios!'); return; }
-    var count = orcamentos.filter(function(o){ return o.solicitacao === sol && o.id !== editandoId; }).length;
-    if (!editandoId && count >= 3) { alert('Máximo de 3 orçamentos!'); return; }
-    var dados = { solicitacao: sol, empresa: emp, cnpj: document.getElementById('cnpjOrc').value, data: document.getElementById('dataOrc').value, valor: val, obs: document.getElementById('obsOrc').value, vencedor: false };
-    if (editandoId) { var idx = orcamentos.findIndex(function(o){ return o.id === editandoId; }); if (idx >= 0) orcamentos[idx] = Object.assign({}, orcamentos[idx], dados); }
-    else { orcamentos.push(Object.assign({ id: Date.now() }, dados)); }
+    var sol = document.getElementById('nomeSolicitacao').value.trim(), emp = document.getElementById('empresaOrc').value.trim(), item = document.getElementById('itemOrc').value.trim(), qtd = parseInt(document.getElementById('qtdOrc').value)||0, vu = parseFloat(document.getElementById('valorUnitarioOrc').value)||0, vt = parseFloat(document.getElementById('valorTotalOrc').value)||0;
+    if (!sol || !emp || !item || !qtd || !vu) { alert('Preencha os campos obrigatórios!'); return; }
+    var count = orcamentos.filter(function(o){return o.solicitacao===sol&&o.id!==editandoId;}).length;
+    if (!editandoId && count >= 3) { alert('Máximo de 3 orçamentos por solicitação!'); return; }
+    var dados = { solicitacao:sol, empresa:emp, cnpj:document.getElementById('cnpjOrc').value, data:document.getElementById('dataOrc').value, item:item, descricaoItem:document.getElementById('descricaoItemOrc').value, qtd:qtd, unidade:document.getElementById('unidadeOrc').value, valorUnitario:vu, valorTotal:vt, prazo:document.getElementById('prazoOrc').value, pagamento:document.getElementById('pagamentoOrc').value, validade:document.getElementById('validadeOrc').value, cpfCnpj:document.getElementById('cpfCnpjOrc').value, email:document.getElementById('emailOrc').value, telefone:document.getElementById('telefoneOrc').value, endereco:document.getElementById('enderecoOrc').value, obs:document.getElementById('obsOrc').value, vencedor:false };
+    if (editandoId) { var idx = orcamentos.findIndex(function(o){return o.id===editandoId;}); if(idx>=0) orcamentos[idx] = Object.assign({},orcamentos[idx],dados); }
+    else { orcamentos.push(Object.assign({id:Date.now()},dados)); }
     salvar(); limparForm(); renderizar(); atualizarContador();
 };
 
 window.editarOrc = function(id) {
-    var o = orcamentos.find(function(o){ return o.id === id; }); if (!o) return;
+    var o = orcamentos.find(function(o){return o.id===id;}); if(!o)return;
     editandoId = id; document.getElementById('orcamentoId').value = id;
-    document.getElementById('nomeSolicitacao').value = o.solicitacao;
-    document.getElementById('empresaOrc').value = o.empresa;
-    document.getElementById('cnpjOrc').value = o.cnpj || '';
-    document.getElementById('dataOrc').value = o.data || '';
-    document.getElementById('valorOrc').value = o.valor;
-    document.getElementById('obsOrc').value = o.obs || '';
+    document.getElementById('nomeSolicitacao').value = o.solicitacao; document.getElementById('empresaOrc').value = o.empresa;
+    document.getElementById('cnpjOrc').value = o.cnpj||''; document.getElementById('dataOrc').value = o.data||'';
+    document.getElementById('itemOrc').value = o.item||''; document.getElementById('descricaoItemOrc').value = o.descricaoItem||'';
+    document.getElementById('qtdOrc').value = o.qtd||1; document.getElementById('unidadeOrc').value = o.unidade||'Unidade';
+    document.getElementById('valorUnitarioOrc').value = o.valorUnitario||''; document.getElementById('valorTotalOrc').value = o.valorTotal||'';
+    document.getElementById('prazoOrc').value = o.prazo||''; document.getElementById('pagamentoOrc').value = o.pagamento||'PIX';
+    document.getElementById('validadeOrc').value = o.validade||''; document.getElementById('cpfCnpjOrc').value = o.cpfCnpj||'';
+    document.getElementById('emailOrc').value = o.email||''; document.getElementById('telefoneOrc').value = o.telefone||'';
+    document.getElementById('enderecoOrc').value = o.endereco||''; document.getElementById('obsOrc').value = o.obs||'';
     solicitacaoAtual = o.solicitacao; atualizarContador();
 };
 
-window.excluirOrc = function(id) { if (!confirm('Excluir?')) return; orcamentos = orcamentos.filter(function(o){ return o.id !== id; }); salvar(); renderizar(); atualizarContador(); };
+window.excluirOrc = function(id) { if(!confirm('Excluir?'))return; orcamentos = orcamentos.filter(function(o){return o.id!==id;}); salvar(); renderizar(); atualizarContador(); };
 
 function limparForm() {
     editandoId = null; document.getElementById('orcamentoId').value = '';
     document.getElementById('nomeSolicitacao').value = ''; document.getElementById('empresaOrc').value = '';
     document.getElementById('cnpjOrc').value = ''; document.getElementById('dataOrc').value = '';
-    document.getElementById('valorOrc').value = ''; document.getElementById('obsOrc').value = '';
+    document.getElementById('itemOrc').value = ''; document.getElementById('descricaoItemOrc').value = '';
+    document.getElementById('qtdOrc').value = '1'; document.getElementById('unidadeOrc').value = 'Unidade';
+    document.getElementById('valorUnitarioOrc').value = ''; document.getElementById('valorTotalOrc').value = '';
+    document.getElementById('prazoOrc').value = ''; document.getElementById('pagamentoOrc').value = 'PIX';
+    document.getElementById('validadeOrc').value = ''; document.getElementById('cpfCnpjOrc').value = '';
+    document.getElementById('emailOrc').value = ''; document.getElementById('telefoneOrc').value = '';
+    document.getElementById('enderecoOrc').value = ''; document.getElementById('obsOrc').value = '';
     solicitacaoAtual = ''; atualizarContador();
 }
 
 window.comparar = function(sol) {
-    var orcs = orcamentos.filter(function(o){ return o.solicitacao === sol; }).sort(function(a,b){ return a.valor - b.valor; });
-    if (orcs.length < 2) { alert('Precisa de pelo menos 2!'); return; }
-    var menor = orcs[0], maior = orcs[orcs.length-1], economia = maior.valor - menor.valor;
-    var html = '<p><strong>Menor:</strong> ' + menor.empresa + ' - ' + fm(menor.valor) + '</p>';
-    html += '<p><strong>Maior:</strong> ' + maior.empresa + ' - ' + fm(maior.valor) + '</p>';
-    html += '<p><strong>Economia:</strong> ' + fm(economia) + ' (' + ((economia/maior.valor)*100).toFixed(1) + '%)</p>';
-    html += '<ol>' + orcs.map(function(o){ return '<li>' + o.empresa + ' - ' + fm(o.valor) + '</li>'; }).join('') + '</ol>';
-    html += '<p style="color:#2E7D32;font-weight:600;">🏆 Vencedor: <strong>' + menor.empresa + '</strong></p>';
+    var orcs = orcamentos.filter(function(o){return o.solicitacao===sol;}).sort(function(a,b){return a.valorTotal - b.valorTotal;});
+    if (orcs.length < 2) { alert('Precisa de pelo menos 2 orçamentos!'); return; }
+    var menor = orcs[0], maior = orcs[orcs.length-1], economia = maior.valorTotal - menor.valorTotal;
+    var html = '<p><strong>Menor Preço:</strong> '+menor.empresa+' - '+fm(menor.valorTotal)+'</p>';
+    html += '<p><strong>Maior Preço:</strong> '+maior.empresa+' - '+fm(maior.valorTotal)+'</p>';
+    html += '<p><strong>Economia:</strong> '+fm(economia)+' ('+((economia/maior.valorTotal)*100).toFixed(1)+'%)</p>';
+    html += '<ol>'+orcs.map(function(o){return '<li>'+o.empresa+' - '+fm(o.valorTotal)+(o.prazo?' | Prazo: '+o.prazo+' dias':'')+'</li>';}).join('')+'</ol>';
+    html += '<p style="color:#2E7D32;font-weight:600;">🏆 Melhor Preço: <strong>'+menor.empresa+'</strong></p>';
     document.getElementById('resultadoComparativo').innerHTML = html;
-    document.getElementById('comparativo').style.display = 'block';
-    solicitacaoAtual = sol;
+    document.getElementById('comparativo').style.display = 'block'; solicitacaoAtual = sol;
 };
 
 window.definirVencedor = function() {
-    if (!solicitacaoAtual) return;
-    var orcs = orcamentos.filter(function(o){ return o.solicitacao === solicitacaoAtual; }).sort(function(a,b){ return a.valor - b.valor; });
-    if (orcs.length === 0) return;
-    orcamentos.forEach(function(o){ if (o.solicitacao === solicitacaoAtual) o.vencedor = false; });
+    if(!solicitacaoAtual)return;
+    var orcs = orcamentos.filter(function(o){return o.solicitacao===solicitacaoAtual;}).sort(function(a,b){return a.valorTotal - b.valorTotal;});
+    if(orcs.length===0)return;
+    orcamentos.forEach(function(o){if(o.solicitacao===solicitacaoAtual)o.vencedor=false;});
     orcs[0].vencedor = true;
-    salvar(); renderizar();
-    document.getElementById('comparativo').style.display = 'none';
+    salvar(); renderizar(); document.getElementById('comparativo').style.display = 'none';
 };
-
-if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-history.pushState(null, null, location.href);
-window.addEventListener('popstate', function() { history.pushState(null, null, location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
-var timeout;
-function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(function() { sessionStorage.clear(); alert('Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
 
 document.getElementById('dataOrc').value = new Date().toISOString().split('T')[0];
 renderizar(); atualizarContador();
