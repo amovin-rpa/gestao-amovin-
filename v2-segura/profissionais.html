@@ -53,14 +53,16 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .card { background: #FFFFFF; padding: 18px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #F0E9DF; }
 .card h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--grafite); }
 .card p { margin: 2px 0; color: var(--cinza); font-size: 13px; }
+.card-foto { width: 45px; height: 55px; border-radius: 6px; object-fit: cover; float: left; margin-right: 12px; border: 1px solid #E5E0D8; }
 .status-ativo { background: #E8F5E9; color: #2E7D32; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
-.status-inativo { background: #FFEBEE; color: #C62828; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-left: 8px; }
 .sem-dados { text-align: center; color: #9CA3AF; padding: 30px; }
 
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
 .modal-box { background: white; padding: 28px; border-radius: 14px; width: 500px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
 .modal-box input, .modal-box select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; }
 .modal-box label { font-weight: 600; font-size: 11px; display: block; margin-bottom: 3px; color: var(--cinza); text-transform: uppercase; }
+.foto-preview { width: 70px; height: 90px; border: 2px dashed #E5E0D8; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #9CA3AF; overflow: hidden; border-radius: 6px; }
+.foto-preview img { width: 100%; height: 100%; object-fit: cover; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
@@ -75,76 +77,33 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <body>
 
 <aside class="sidebar">
-  <div class="sidebar-header">
-    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-    <div class="sidebar-logo-fallback">🌻</div>
-    <div class="brand">Amovin ERP Social</div>
-  </div>
+  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div>
-    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-    <div class="nav-categoria">Captação</div>
-    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
-    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
-    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
-    <div class="nav-categoria">Financeiro</div>
-    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
-    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
-    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-    <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
-    <a href="profissionais.html" class="nav-item ativo"><span class="icone">👨‍⚕️</span> Profissionais</a>
-    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
-    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-    <div class="nav-categoria">Atendimento</div>
-    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-    <div class="nav-categoria">Documentos</div>
-    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
-    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
-    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Educação</div>
-    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
-    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-    <div class="nav-categoria">Comunicação</div>
-    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
-    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-    <div class="nav-categoria">Relatórios</div>
-    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
-    <div class="nav-categoria">Sistema</div>
-    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
-    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a><a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+    <div class="nav-categoria">Captação</div><a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a><a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a><a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+    <div class="nav-categoria">Financeiro</div><a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a><a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a><a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+    <div class="nav-categoria">Pessoas</div><a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a><a href="profissionais.html" class="nav-item ativo"><span class="icone">👨‍⚕️</span> Profissionais</a><a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a><a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+    <div class="nav-categoria">Atendimento</div><a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+    <div class="nav-categoria">Documentos</div><a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a><a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a><a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+    <div class="nav-categoria">Educação</div><a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a><a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+    <div class="nav-categoria">Comunicação</div><a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a><a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+    <div class="nav-categoria">Relatórios</div><a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
 <main class="main-content">
   <div class="topo-bar"><h1>👨‍⚕️ Profissionais</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
-
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total de Cadastros</div></div>
-    <div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Contratados</div></div>
-    <div class="kpi-card"><div class="valor" id="kpiVoluntarios">0</div><div class="label">Voluntários</div></div>
-  </div>
-
-  <div class="tabs">
-    <a href="pessoas.html" class="tab">👥 Beneficiários</a>
-    <a href="profissionais.html" class="tab ativo">👨‍⚕️ Profissionais</a>
-    <a href="voluntarios.html" class="tab">💪 Voluntários</a>
-  </div>
-
-  <div class="busca">
-    <input type="text" id="busca" placeholder="Buscar por nome ou especialidade..." oninput="filtrar()">
-    <select id="ordem" onchange="filtrar()"><option value="az">A-Z</option><option value="za">Z-A</option></select>
-    <select id="filtroVinculo" onchange="filtrar()"><option value="todos">Todos vínculos</option></select>
-    <button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button>
-  </div>
+  <div class="kpi-row"><div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total de Cadastros</div></div><div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Contratados</div></div><div class="kpi-card"><div class="valor" id="kpiVoluntarios">0</div><div class="label">Voluntários</div></div></div>
+  <div class="tabs"><a href="pessoas.html" class="tab">👥 Beneficiários</a><a href="profissionais.html" class="tab ativo">👨‍⚕️ Profissionais</a><a href="voluntarios.html" class="tab">💪 Voluntários</a></div>
+  <div class="busca"><input type="text" id="busca" placeholder="Buscar por nome ou especialidade..." oninput="filtrar()"><select id="ordem" onchange="filtrar()"><option value="az">A-Z</option><option value="za">Z-A</option></select><select id="filtroVinculo" onchange="filtrar()"><option value="todos">Todos vínculos</option></select><button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button></div>
   <div id="lista"></div>
-
   <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
 <div class="modal" id="modalForm"><div class="modal-box">
   <h3 id="tituloModal">Novo Profissional</h3><input type="hidden" id="profId">
+  <div class="foto-preview" id="fotoPreview">3x4</div><input type="file" id="fotoUpload" accept="image/*" onchange="previewFoto()" style="font-size:12px;">
   <label>Nome completo *</label><input type="text" id="nomeProf">
   <label>Especialidade *</label><select id="especialidadeProf"><option value="">Selecione...</option><option>Psicólogo</option><option>Assistente Social</option><option>Fisioterapeuta</option><option>Pedagogo</option><option>Nutricionista</option><option>Advogado</option></select>
   <div class="form-row"><div><label>CPF</label><input type="text" id="cpfProf"></div><div><label>Telefone *</label><input type="text" id="telefoneProf"></div></div>
@@ -162,40 +121,25 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <script>
 var profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
 var editandoId = null;
-if (profissionais.length === 0) {
-    profissionais.push({id:1,nome:'Dr. Carlos Mendes',especialidade:'Psicólogo',cpf:'111.222.333-44',telefone:'(34) 99999-0001',temRegistro:'Sim',conselho:'CRP-MG',registro:'12345',vinculo:'Contratado',acesso:'consulta',login:'carlos',senha:'123456'});
-    profissionais.push({id:2,nome:'Dra. Lucia Ferreira',especialidade:'Assistente Social',cpf:'222.333.444-55',telefone:'(34) 99999-0002',temRegistro:'Sim',conselho:'CRESS-MG',registro:'54321',vinculo:'Contratado',acesso:'consulta',login:'lucia',senha:'123456'});
-    salvar();
-}
+if (profissionais.length === 0) { profissionais.push({id:1,nome:'Dr. Carlos Mendes',especialidade:'Psicólogo',cpf:'111.222.333-44',telefone:'(34) 99999-0001',temRegistro:'Sim',conselho:'CRP-MG',registro:'12345',vinculo:'Contratado',acesso:'consulta',login:'carlos',senha:'123456',foto:''}); profissionais.push({id:2,nome:'Dra. Lucia Ferreira',especialidade:'Assistente Social',cpf:'222.333.444-55',telefone:'(34) 99999-0002',temRegistro:'Sim',conselho:'CRESS-MG',registro:'54321',vinculo:'Contratado',acesso:'consulta',login:'lucia',senha:'123456',foto:''}); salvar(); }
 function salvar() { localStorage.setItem('amovin_profissionais', JSON.stringify(profissionais)); }
-function atualizarKPIs() {
-    document.getElementById('kpiTotal').textContent = profissionais.length;
-    document.getElementById('kpiAtivos').textContent = profissionais.filter(function(p){return p.vinculo==='Contratado';}).length;
-    document.getElementById('kpiVoluntarios').textContent = profissionais.filter(function(p){return p.vinculo==='Voluntário';}).length;
-}
+function atualizarKPIs() { document.getElementById('kpiTotal').textContent = profissionais.length; document.getElementById('kpiAtivos').textContent = profissionais.filter(function(p){return p.vinculo==='Contratado';}).length; document.getElementById('kpiVoluntarios').textContent = profissionais.filter(function(p){return p.vinculo==='Voluntário';}).length; }
 function popularFiltro() { var v = []; for (var i = 0; i < profissionais.length; i++) { if (v.indexOf(profissionais[i].vinculo) === -1) v.push(profissionais[i].vinculo); } var s = document.getElementById('filtroVinculo'); s.innerHTML = '<option value="todos">Todos vínculos</option>'; for (var i = 0; i < v.length; i++) s.innerHTML += '<option value="'+v[i]+'">'+v[i]+'</option>'; }
-function filtrar() {
-    var busca = document.getElementById('busca').value.toLowerCase(), ordem = document.getElementById('ordem').value, vf = document.getElementById('filtroVinculo').value, lista = [];
-    for (var i = 0; i < profissionais.length; i++) { if ((profissionais[i].nome.toLowerCase().indexOf(busca) >= 0 || profissionais[i].especialidade.toLowerCase().indexOf(busca) >= 0) && (vf === 'todos' || profissionais[i].vinculo === vf)) lista.push(profissionais[i]); }
-    lista.sort(function(a,b){ return ordem==='az' ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome); });
-    var h = ''; if (lista.length === 0) h = '<div class="sem-dados">Nenhum profissional.</div>';
-    for (var i = 0; i < lista.length; i++) { var p = lista[i], reg = p.temRegistro==='Sim'?' | '+(p.conselho||'')+' '+(p.registro||''):''; h += '<div class="card"><h3>'+p.nome+'</h3><p>'+p.especialidade+reg+'</p><p>Tel: '+p.telefone+' | '+p.vinculo+' | Acesso: '+p.acesso+'</p><button class="btn btn-amarelo" onclick="editar('+p.id+')">Editar</button> <button class="btn btn-laranja" onclick="gerarTermoProf('+p.id+')">Termo</button> <button class="btn btn-azul" onclick="imprimir('+p.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+p.id+')">Excluir</button></div>'; }
-    document.getElementById('lista').innerHTML = h;
-}
+function filtrar() { var busca = document.getElementById('busca').value.toLowerCase(), ordem = document.getElementById('ordem').value, vf = document.getElementById('filtroVinculo').value, lista = []; for (var i = 0; i < profissionais.length; i++) { if ((profissionais[i].nome.toLowerCase().indexOf(busca) >= 0 || profissionais[i].especialidade.toLowerCase().indexOf(busca) >= 0) && (vf === 'todos' || profissionais[i].vinculo === vf)) lista.push(profissionais[i]); } lista.sort(function(a,b){ return ordem==='az' ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome); }); var h = ''; if (lista.length === 0) h = '<div class="sem-dados">Nenhum profissional.</div>'; for (var i = 0; i < lista.length; i++) { var p = lista[i], reg = p.temRegistro==='Sim'?' | '+(p.conselho||'')+' '+(p.registro||''):''; h += '<div class="card">' + (p.foto ? '<img src="'+p.foto+'" class="card-foto" alt="">' : '<div class="card-foto" style="background:#F8F4ED;display:flex;align-items:center;justify-content:center;font-size:9px;color:#9CA3AF;">3x4</div>'); h += '<h3>'+p.nome+'</h3><p>'+p.especialidade+reg+'</p><p>Tel: '+p.telefone+' | '+p.vinculo+' | Acesso: '+p.acesso+'</p><button class="btn btn-amarelo" onclick="editar('+p.id+')">Editar</button> <button class="btn btn-laranja" onclick="gerarTermoProf('+p.id+')">Termo</button> <button class="btn btn-azul" onclick="imprimir('+p.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+p.id+')">Excluir</button></div>'; } document.getElementById('lista').innerHTML = h; }
 window.toggleRegistro = function() { var t = document.getElementById('temRegistro').value==='Sim'; document.getElementById('campoConselho').style.display = t?'block':'none'; document.getElementById('campoRegistro').style.display = t?'block':'none'; };
+window.previewFoto = function() { var f = document.getElementById('fotoUpload').files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;">'; }; r.readAsDataURL(f); };
 window.abrirForm = function(id) {
-    editandoId = id || null; document.getElementById('modalForm').style.display = 'block';
-    document.getElementById('tituloModal').textContent = id ? 'Editar' : 'Novo';
-    if (id) { var p = null; for (var i = 0; i < profissionais.length; i++) { if (profissionais[i].id === id) { p = profissionais[i]; break; } } if (p) {
-        document.getElementById('profId').value=p.id;document.getElementById('nomeProf').value=p.nome;document.getElementById('especialidadeProf').value=p.especialidade;document.getElementById('cpfProf').value=p.cpf||'';document.getElementById('telefoneProf').value=p.telefone;document.getElementById('temRegistro').value=p.temRegistro||'Nao';document.getElementById('conselhoProf').value=p.conselho||'';document.getElementById('registroProf').value=p.registro||'';document.getElementById('vinculoProf').value=p.vinculo;document.getElementById('acessoProf').value=p.acesso||'consulta';document.getElementById('loginProf').value=p.login||'';document.getElementById('senhaProf').value=p.senha||'';
-    }}
+    editandoId = id || null; document.getElementById('modalForm').style.display = 'block'; document.getElementById('tituloModal').textContent = id ? 'Editar' : 'Novo';
+    document.getElementById('fotoUpload').value = ''; document.getElementById('fotoPreview').innerHTML = '3x4';
+    if (id) { var p = null; for (var i = 0; i < profissionais.length; i++) { if (profissionais[i].id === id) { p = profissionais[i]; break; } } if (p) { document.getElementById('profId').value=p.id;document.getElementById('nomeProf').value=p.nome;document.getElementById('especialidadeProf').value=p.especialidade;document.getElementById('cpfProf').value=p.cpf||'';document.getElementById('telefoneProf').value=p.telefone;document.getElementById('temRegistro').value=p.temRegistro||'Nao';document.getElementById('conselhoProf').value=p.conselho||'';document.getElementById('registroProf').value=p.registro||'';document.getElementById('vinculoProf').value=p.vinculo;document.getElementById('acessoProf').value=p.acesso||'consulta';document.getElementById('loginProf').value=p.login||'';document.getElementById('senhaProf').value=p.senha||''; if (p.foto) { document.getElementById('fotoPreview').innerHTML = '<img src="'+p.foto+'" style="width:100%;height:100%;object-fit:cover;">'; } } }
     else { document.getElementById('profId').value='';document.getElementById('nomeProf').value='';document.getElementById('especialidadeProf').value='';document.getElementById('cpfProf').value='';document.getElementById('telefoneProf').value='';document.getElementById('temRegistro').value='Nao';document.getElementById('vinculoProf').value='';document.getElementById('acessoProf').value='consulta';document.getElementById('loginProf').value='';document.getElementById('senhaProf').value=''; }
     toggleRegistro();
 };
 window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
 window.salvar = function() {
     var n = document.getElementById('nomeProf').value; if (!n) { alert('Preencha o nome!'); return; }
-    var d = { nome:n, especialidade:document.getElementById('especialidadeProf').value, cpf:document.getElementById('cpfProf').value, telefone:document.getElementById('telefoneProf').value, temRegistro:document.getElementById('temRegistro').value, conselho:document.getElementById('conselhoProf').value, registro:document.getElementById('registroProf').value, vinculo:document.getElementById('vinculoProf').value, acesso:document.getElementById('acessoProf').value, login:document.getElementById('loginProf').value, senha:document.getElementById('senhaProf').value };
+    var fotoSalvar = ''; var imgEl = document.getElementById('fotoPreview').querySelector('img'); if (imgEl) { fotoSalvar = imgEl.src; }
+    var d = { nome:n, especialidade:document.getElementById('especialidadeProf').value, cpf:document.getElementById('cpfProf').value, telefone:document.getElementById('telefoneProf').value, temRegistro:document.getElementById('temRegistro').value, conselho:document.getElementById('conselhoProf').value, registro:document.getElementById('registroProf').value, vinculo:document.getElementById('vinculoProf').value, acesso:document.getElementById('acessoProf').value, login:document.getElementById('loginProf').value, senha:document.getElementById('senhaProf').value, foto: fotoSalvar };
     if (editandoId) { var idx = -1; for (var i = 0; i < profissionais.length; i++) { if (profissionais[i].id === editandoId) { idx = i; break; } } if (idx >= 0) { for (var k in d) { profissionais[idx][k] = d[k]; } } }
     else { d.id = Date.now(); profissionais.push(d); }
     salvar(); filtrar(); popularFiltro(); atualizarKPIs(); fecharForm();
@@ -212,8 +156,7 @@ var permitidos = modulosPermitidos[perfil] || modulosPermitidos['admin'];
 document.querySelectorAll('.nav-item').forEach(function(item) { var href = item.getAttribute('href') || ''; var pagina = href.replace('.html',''); if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') { item.style.display = 'none'; } });
 
 if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-history.pushState(null,null,location.href);
-window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
+history.pushState(null,null,location.href); window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
 var timeout;function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
 document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
 
