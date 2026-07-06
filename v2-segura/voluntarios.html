@@ -48,14 +48,36 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 .voluntario-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .voluntario-card.inativo { opacity: 0.6; border-left: 4px solid var(--vermelho); }
-.voluntario-info h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
-.voluntario-info p { font-size: 11px; color: var(--cinza); }
-.voluntario-info .badge-area { font-size: 9px; padding: 2px 10px; border-radius: 12px; background: #FFF3E0; color: #E65100; margin-left: 6px; }
+.voluntario-info { display: flex; align-items: center; gap: 14px; flex: 1; }
+.voluntario-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0; border: 2px solid #F0E9DF; font-weight: 700; }
+.voluntario-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.voluntario-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
+.voluntario-dados p { font-size: 11px; color: var(--cinza); }
+.voluntario-dados .badge-area { font-size: 9px; padding: 2px 10px; border-radius: 12px; background: #FFF3E0; color: #E65100; margin-left: 6px; }
 .btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
 .btn-editar { background: #F5A623; color: white; }
 .btn-excluir { background: var(--vermelho); color: white; }
 .btn-crm { background: var(--azul); color: white; }
 .sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
+.modal-header h3 { font-size: 18px; }
+.modal-body { padding: 22px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-full { grid-column: 1 / -1; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
+.form-group textarea { resize: vertical; min-height: 60px; }
+.form-group .campo-obrigatorio { color: var(--vermelho); }
+.form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
+.foto-preview { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #F0E9DF; margin-top: 8px; display: none; }
+.btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.btn-salvar:hover { background: #A04A0E; }
+.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
+.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
@@ -65,7 +87,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
 @media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
-@media (max-width: 600px) { .busca-bar { flex-direction: column; } }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -154,11 +176,175 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </main>
 
+<!-- MODAL EDITAR -->
+<div class="modal-overlay" id="modalForm" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tituloModal">✏️ Editar Voluntário</h3>
+      <button class="btn-fechar" onclick="fecharForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="voluntarioId">
+      <div class="form-grid">
+        <div class="section-title">👤 Dados Pessoais</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="nomeVoluntario" placeholder="Nome completo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>CPF</label>
+          <input type="text" id="cpfVoluntario" placeholder="123.456.789-00">
+        </div>
+
+        <div class="form-group">
+          <label>RG</label>
+          <input type="text" id="rgVoluntario" placeholder="RG">
+        </div>
+
+        <div class="form-group">
+          <label>Data de Nascimento</label>
+          <input type="date" id="dataNascVoluntario">
+        </div>
+
+        <div class="form-group">
+          <label>Sexo</label>
+          <select id="sexoVoluntario">
+            <option value="">Selecione...</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <div class="section-title">📸 Foto (opcional)</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Foto <span class="campo-opcional">(opcional - JPG, PNG)</span></label>
+            <input type="file" id="fotoVoluntario" accept="image/*" onchange="previewFoto(event)">
+            <img id="fotoPreview" class="foto-preview" alt="Pré-visualização">
+            <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">📷 Clique em "Escolher arquivo" para adicionar uma foto. O cadastro é aceito mesmo sem foto.</small>
+          </div>
+        </div>
+
+        <div class="section-title">📞 Contato</div>
+
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="text" id="telefoneVoluntario" placeholder="(34) 99999-9999">
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="text" id="whatsappVoluntario" placeholder="(34) 99999-9999">
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="emailVoluntario" placeholder="email@exemplo.com">
+          </div>
+        </div>
+
+        <div class="section-title">📍 Endereço</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" id="enderecoVoluntario" placeholder="Rua, número, bairro">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cidade</label>
+          <input type="text" id="cidadeVoluntario" placeholder="Cidade">
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="estadoVoluntario">
+            <option value="">Selecione...</option>
+            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+          </select>
+        </div>
+
+        <div class="section-title">💪 Dados de Voluntariado</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Área de Atuação</label>
+            <input type="text" id="areaVoluntario" placeholder="Ex: Recreação, Administração, Captação">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Data de Ingresso</label>
+          <input type="date" id="dataIngressoVoluntario">
+        </div>
+
+        <div class="form-group">
+          <label>Disponibilidade</label>
+          <select id="disponibilidadeVoluntario">
+            <option value="">Selecione...</option>
+            <option value="Finais de semana">Finais de semana</option>
+            <option value="Dias úteis - Manhã">Dias úteis - Manhã</option>
+            <option value="Dias úteis - Tarde">Dias úteis - Tarde</option>
+            <option value="Dias úteis - Noite">Dias úteis - Noite</option>
+            <option value="Todos os dias">Todos os dias</option>
+            <option value="Flexível">Flexível</option>
+          </select>
+        </div>
+
+        <div class="section-title">📋 Informações Adicionais</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea id="obsVoluntario" rows="3" placeholder="Informações adicionais..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" id="ativoVoluntario" checked>
+            <label for="ativoVoluntario" style="text-transform:none;font-weight:400;color:var(--grafite);">✅ Ativo</label>
+          </div>
+        </div>
+      </div>
+      <button class="btn-salvar" onclick="salvarVoluntario()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // BANCO DE DADOS LOCAL
 // ============================================================
 var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+var editandoId = null;
+var fotoDataURL = null;
+
+function getAvatarHtml(pessoa) {
+    if (pessoa.foto) {
+        return '<img src="' + pessoa.foto + '" alt="' + pessoa.nome + '" class="voluntario-avatar">';
+    }
+    var iniciais = pessoa.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
+    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
+    var cor = cores[pessoa.id % cores.length] || '#C65A11';
+    return '<div class="voluntario-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
+}
 
 function filtrar() {
     var lista = pessoas.filter(function(p) { return p.tipo === 'voluntario'; });
@@ -168,7 +354,8 @@ function filtrar() {
         lista = lista.filter(function(p) {
             return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
                    (p.cpf || '').indexOf(busca) >= 0 ||
-                   (p.obs || '').toLowerCase().indexOf(busca) >= 0;
+                   (p.obs || '').toLowerCase().indexOf(busca) >= 0 ||
+                   (p.area || '').toLowerCase().indexOf(busca) >= 0;
         });
     }
 
@@ -182,15 +369,19 @@ function filtrar() {
     } else {
         container.innerHTML = lista.map(function(p) {
             var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
+            var area = p.area || p.obs || 'Voluntário';
+            var disponibilidade = p.disponibilidade ? ' | 🕐 ' + p.disponibilidade : '';
 
             return '<div class="voluntario-card' + (p.ativo === false ? ' inativo' : '') + '">' +
                 '<div class="voluntario-info">' +
-                '<h4>' + p.nome + ' <span class="badge-area">' + (p.obs ? p.obs : 'Voluntário') + '</span></h4>' +
-                '<p>📞 ' + (p.telefone || p.whatsapp || '-') + ' | 📧 ' + (p.email || '-') + '</p>' +
+                getAvatarHtml(p) +
+                '<div class="voluntario-dados">' +
+                '<h4>' + p.nome + ' <span class="badge-area">' + area + '</span></h4>' +
+                '<p>📞 ' + (p.telefone || p.whatsapp || '-') + ' | 📧 ' + (p.email || '-') + disponibilidade + '</p>' +
                 '<p style="font-size:10px;color:#9CA3AF;">📍 ' + (p.cidade || '') + (p.estado ? '/' + p.estado : '') + ' | ' + status + ' | 📅 ' + (p.dataCadastro || '') + '</p>' +
-                '</div>' +
+                '</div></div>' +
                 '<div class="contato-acoes">' +
-                '<button class="btn-acao btn-editar" onclick="window.location.href=\'pessoas.html\'">✏️</button>' +
+                '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
                 '<button class="btn-acao btn-crm" onclick="enviarParaCRM(' + p.id + ')">📤 CRM</button>' +
                 '</div></div>';
         }).join('');
@@ -204,9 +395,135 @@ function atualizarKPIs(lista) {
     document.getElementById('kpiAtivos').textContent = lista.filter(function(p) { return p.ativo !== false; }).length;
     var areas = {};
     lista.forEach(function(p) {
-        if (p.obs) areas[p.obs] = (areas[p.obs] || 0) + 1;
+        var area = p.area || p.obs || 'Voluntário';
+        areas[area] = (areas[area] || 0) + 1;
     });
     document.getElementById('kpiAreas').textContent = Object.keys(areas).length;
+}
+
+// ============================================================
+// PRÉ-VISUALIZAÇÃO DA FOTO
+// ============================================================
+window.previewFoto = function(event) {
+    var file = event.target.files[0];
+    if (!file) {
+        document.getElementById('fotoPreview').style.display = 'none';
+        fotoDataURL = null;
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        fotoDataURL = e.target.result;
+        var preview = document.getElementById('fotoPreview');
+        preview.src = fotoDataURL;
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+};
+
+// ============================================================
+// FORMULÁRIO
+// ============================================================
+window.abrirForm = function(id) {
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'flex';
+    document.getElementById('tituloModal').textContent = '✏️ Editar Voluntário';
+
+    fotoDataURL = null;
+    document.getElementById('fotoPreview').style.display = 'none';
+    document.getElementById('fotoPreview').src = '';
+    document.getElementById('fotoVoluntario').value = '';
+
+    if (id) {
+        var p = pessoas.find(function(x) { return x.id === id; });
+        if (!p) return;
+        document.getElementById('voluntarioId').value = p.id;
+        document.getElementById('nomeVoluntario').value = p.nome || '';
+        document.getElementById('cpfVoluntario').value = p.cpf || '';
+        document.getElementById('rgVoluntario').value = p.rg || '';
+        document.getElementById('dataNascVoluntario').value = p.dataNasc || '';
+        document.getElementById('sexoVoluntario').value = p.sexo || '';
+        document.getElementById('telefoneVoluntario').value = p.telefone || '';
+        document.getElementById('whatsappVoluntario').value = p.whatsapp || '';
+        document.getElementById('emailVoluntario').value = p.email || '';
+        document.getElementById('enderecoVoluntario').value = p.endereco || '';
+        document.getElementById('cidadeVoluntario').value = p.cidade || '';
+        document.getElementById('estadoVoluntario').value = p.estado || '';
+        document.getElementById('areaVoluntario').value = p.area || p.obs || '';
+        document.getElementById('dataIngressoVoluntario').value = p.dataIngresso || '';
+        document.getElementById('disponibilidadeVoluntario').value = p.disponibilidade || '';
+        document.getElementById('obsVoluntario').value = p.obs || '';
+        document.getElementById('ativoVoluntario').checked = p.ativo !== false;
+        if (p.foto) {
+            fotoDataURL = p.foto;
+            var preview = document.getElementById('fotoPreview');
+            preview.src = p.foto;
+            preview.style.display = 'block';
+        }
+    }
+};
+
+window.fecharForm = function() {
+    document.getElementById('modalForm').style.display = 'none';
+};
+
+window.salvarVoluntario = function() {
+    var nome = document.getElementById('nomeVoluntario').value.trim();
+    if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
+
+    var dados = {
+        nome: nome,
+        tipo: 'voluntario',
+        cpf: document.getElementById('cpfVoluntario').value.trim(),
+        rg: document.getElementById('rgVoluntario').value.trim(),
+        dataNasc: document.getElementById('dataNascVoluntario').value,
+        sexo: document.getElementById('sexoVoluntario').value,
+        telefone: document.getElementById('telefoneVoluntario').value.trim(),
+        whatsapp: document.getElementById('whatsappVoluntario').value.trim(),
+        email: document.getElementById('emailVoluntario').value.trim(),
+        endereco: document.getElementById('enderecoVoluntario').value.trim(),
+        cidade: document.getElementById('cidadeVoluntario').value.trim(),
+        estado: document.getElementById('estadoVoluntario').value,
+        area: document.getElementById('areaVoluntario').value.trim(),
+        dataIngresso: document.getElementById('dataIngressoVoluntario').value,
+        disponibilidade: document.getElementById('disponibilidadeVoluntario').value,
+        obs: document.getElementById('obsVoluntario').value.trim(),
+        ativo: document.getElementById('ativoVoluntario').checked
+    };
+
+    if (fotoDataURL) {
+        dados.foto = fotoDataURL;
+    } else if (editandoId) {
+        var existente = pessoas.find(function(p) { return p.id === editandoId; });
+        if (existente && existente.foto) {
+            dados.foto = existente.foto;
+        }
+    }
+
+    if (editandoId) {
+        var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) {
+                pessoas[idx][k] = dados[k];
+            }
+            pessoas[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
+        }
+    }
+
+    salvar();
+    fecharForm();
+    filtrar();
+
+    var pessoaSalva = pessoas.find(function(p) { return p.id === (editandoId || dados.id); });
+    if (pessoaSalva) {
+        importarParaCRM(pessoaSalva);
+    }
+
+    alert('✅ Voluntário atualizado com sucesso!');
+};
+
+function salvar() {
+    localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
 }
 
 // ============================================================
@@ -237,6 +554,7 @@ function importarParaCRM(pessoa) {
             favorito: false,
             origem: 'pessoas',
             ativo: true,
+            foto: pessoa.foto || null,
             dataCadastro: new Date().toISOString().split('T')[0]
         };
         contatos.push(novoContato);
