@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social • Gestão de Pessoas</title>
+<title>Amovin ERP Social • Beneficiários</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -42,11 +42,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
 .kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
 
-.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #FFFFFF; padding: 6px; border-radius: 12px; border: 1px solid #F0E9DF; flex-wrap: wrap; }
-.tab-btn { padding: 10px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; background: transparent; color: var(--cinza); transition: all 0.2s; font-family: 'Inter', sans-serif; }
-.tab-btn:hover { background: #F8F4ED; }
-.tab-btn.ativo { background: var(--laranja); color: white; }
-
 .busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
 .btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
@@ -58,10 +53,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .pessoa-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .pessoa-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
 .pessoa-dados p { font-size: 11px; color: var(--cinza); margin: 1px 0; }
-.pessoa-dados .badge-tipo { font-size: 9px; padding: 2px 10px; border-radius: 12px; margin-left: 6px; }
-.badge-beneficiario { background: #E3F2FD; color: #1565C0; }
-.badge-profissional { background: #E8F5E9; color: #2E7D32; }
-.badge-voluntario { background: #FFF3E0; color: #E65100; }
 .btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
 .btn-editar { background: #F5A623; color: white; }
 .btn-excluir { background: var(--vermelho); color: white; }
@@ -90,10 +81,14 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 .btn-salvar:hover { background: #A04A0E; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
-.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
+.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; background: #FFF8E7; padding: 8px 12px; border-radius: 6px; }
 .idade-info { font-size: 13px; font-weight: 400; color: var(--verde); margin-left: 6px; }
 .sub-campo { display: none; }
 .sub-campo.visible { display: block; }
+
+.checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+.checkbox-group label { font-size: 12px; font-weight: 400; text-transform: none; color: var(--grafite); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.checkbox-group input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
@@ -101,10 +96,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
-
-.checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
-.checkbox-group label { font-size: 12px; font-weight: 400; text-transform: none; color: var(--grafite); display: flex; align-items: center; gap: 6px; cursor: pointer; }
-.checkbox-group input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
 
 @media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
 @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } .checkbox-group { grid-template-columns: 1fr; } }
@@ -134,7 +125,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
 
     <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item ativo"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="pessoas.html" class="nav-item ativo"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
     <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
 
     <div class="nav-categoria">Atendimento</div>
@@ -164,28 +157,19 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 <main class="main-content">
   <div class="topo-bar">
-    <h1>👥 Gestão de Pessoas</h1>
+    <h1>👥 Beneficiários</h1>
     <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
   </div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiBeneficiarios">0</div><div class="kpi-label">👥 Beneficiários</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiProfissionais">0</div><div class="kpi-label">👨‍⚕️ Profissionais</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiVoluntarios">0</div><div class="kpi-label">💪 Voluntários</div></div>
     <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
-  </div>
-
-  <div class="tabs">
-    <button class="tab-btn ativo" onclick="mudarAba('beneficiario')">👥 Beneficiários</button>
-    <button class="tab-btn" onclick="mudarAba('profissional')">👨‍⚕️ Profissionais</button>
-    <button class="tab-btn" onclick="mudarAba('voluntario')">💪 Voluntários</button>
-    <button class="tab-btn" onclick="mudarAba('todos')">📋 Todos</button>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiEstudantes">0</div><div class="kpi-label">📚 Estudantes</div></div>
   </div>
 
   <div class="busca-bar">
-    <input type="text" id="buscaPessoa" placeholder="Buscar por nome, CPF, responsável..." oninput="filtrar()">
-    <button class="btn-novo" onclick="abrirForm()">+ Novo Cadastro</button>
+    <input type="text" id="buscaPessoa" placeholder="Buscar por nome, matrícula, CPF, responsável..." oninput="filtrar()">
+    <button class="btn-novo" onclick="abrirForm()">+ Novo Beneficiário</button>
   </div>
 
   <div id="listaPessoas"></div>
@@ -209,7 +193,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <div class="modal-overlay" id="modalForm" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="tituloModal">📝 Novo Cadastro - Beneficiário</h3>
+      <h3 id="tituloModal">📝 Novo Beneficiário</h3>
       <button class="btn-fechar" onclick="fecharForm()">✕</button>
     </div>
     <div class="modal-body">
@@ -219,7 +203,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         <!-- ============================================ -->
         <!-- FOTO -->
         <!-- ============================================ -->
-        <div class="section-title">📸 Foto <span class="campo-opcional">(opcional)</span></div>
+        <div class="section-title">📸 Foto do Beneficiário <span class="campo-opcional">(opcional)</span></div>
         <div class="form-full">
           <div class="form-group" style="text-align:center;">
             <div class="foto-container">
@@ -236,9 +220,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         </div>
 
         <!-- ============================================ -->
-        <!-- DADOS DO BENEFICIÁRIO -->
+        <!-- PARTE 1: DADOS DO BENEFICIÁRIO -->
         <!-- ============================================ -->
-        <div class="section-title">👤 DADOS DO BENEFICIÁRIO</div>
+        <div class="section-title">📋 PARTE 1 - DADOS DO BENEFICIÁRIO</div>
 
         <div class="form-full">
           <div class="form-group">
@@ -303,6 +287,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
             <input type="text" id="cidPessoa" placeholder="Ex: CID-10:F84.0">
           </div>
         </div>
+
+        <!-- ============================================ -->
+        <!-- PARTE 2: PERFIL E NECESSIDADES -->
+        <!-- ============================================ -->
+        <div class="section-title">📋 PARTE 2 - PERFIL E NECESSIDADES</div>
 
         <!-- Nível de Suporte -->
         <div class="form-full">
@@ -399,7 +388,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         </div>
 
         <!-- Atendimentos -->
-        <div class="section-title">📋 Atendimentos/Atividades que busca</div>
         <div class="form-full">
           <div class="form-group">
             <label>Quais atendimentos ou atividades você mais busca na associação hoje:</label>
@@ -414,9 +402,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         </div>
 
         <!-- ============================================ -->
-        <!-- DADOS DO RESPONSÁVEL -->
+        <!-- PARTE 3: DADOS DO RESPONSÁVEL -->
         <!-- ============================================ -->
-        <div class="section-title">👨‍👩‍👦 DADOS DO RESPONSÁVEL</div>
+        <div class="section-title">📋 PARTE 3 - DADOS DO RESPONSÁVEL</div>
 
         <div class="form-full">
           <div class="form-group">
@@ -465,7 +453,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
             <label>Renda familiar</label>
             <select id="rendaPessoa">
               <option value="">Selecione...</option>
-              <option value="Ate 2.000">Até 2.000</option>
+              <option value="Até 2.000">Até 2.000</option>
               <option value="2.001 a 5.000">2.001 a 5.000</option>
               <option value="5.001 a 10.000">5.001 a 10.000</option>
               <option value="Acima de 10.001">Acima de 10.001</option>
@@ -501,23 +489,20 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 // ============================================================
 // BANCO DE DADOS LOCAL
 // ============================================================
-var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
-var abaAtual = 'beneficiario';
+var pessoas = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
 var editandoId = null;
 var fotoDataURL = null;
 
 // Dados iniciais
 if (pessoas.length === 0) {
     pessoas = [
-        { id: 1, nome: 'João Silva', tipo: 'beneficiario', cpf: '12345678900', matricula: '123456', rg: 'MG-12.345.678', dataNasc: '2010-05-15', sexo: 'Masculino', diagnostico: 'TEA', cid: 'F84.0', nivelSuporte: 'Sim', nivelSuporteTexto: '3', comorbidades: 'Sim', comorbidadesTexto: 'Epilepsia', estudante: 'Sim', escola: 'Apae', serie: '5º ANO', alergia: 'Sim', alergiaTexto: 'Sardinha', medicacao: 'Sim', medicacaoTexto: 'Varios', atendimentos: ['Terapias', 'Lazer/Socialização'], responsavel: 'Mãe do beneficiário João Silva', telefone: '(34) 99999-1111', vinculo: 'Mãe', rgResponsavel: 'MG-12.345.678', cpfResponsavel: '98765432100', endereco: 'Rua das Flores, 123', renda: 'Até 2.000', irpf: 'Não', ativo: true, dataCadastro: '2026-07-01', foto: null },
-        { id: 2, nome: 'Dra. Lucia Ferreira', tipo: 'profissional', cpf: '98765432100', dataNasc: '1985-03-20', sexo: 'Feminino', telefone: '(34) 99999-2222', email: 'lucia@clinica.com', endereco: 'Rua Saúde, 456', cidade: 'Rio Paranaíba', estado: 'MG', obs: 'Assistente Social - CRESS MG 12345', ativo: true, dataCadastro: '2026-07-01', foto: null },
-        { id: 3, nome: 'Carlos Oliveira', tipo: 'voluntario', cpf: '45678912300', dataNasc: '1990-11-10', sexo: 'Masculino', telefone: '(34) 99999-3333', email: 'carlos@email.com', endereco: 'Rua Voluntários, 789', cidade: 'Rio Paranaíba', estado: 'MG', obs: 'Disponível fins de semana', ativo: true, dataCadastro: '2026-07-01', foto: null }
+        { id: 1, nome: 'João Silva', matricula: '123456', cpf: '12345678900', dataNasc: '2010-05-15', sexo: 'Masculino', rg: 'MG-12.345.678', diagnostico: 'TEA', cid: 'F84.0', nivelSuporte: 'Sim', nivelSuporteTexto: '3', comorbidades: 'Sim', comorbidadesTexto: 'Epilepsia', estudante: 'Sim', escola: 'Apae', serie: '5º ANO', alergia: 'Sim', alergiaTexto: 'Sardinha', medicacao: 'Sim', medicacaoTexto: 'Varios', atendimentos: ['Terapias', 'Lazer/Socialização'], responsavel: 'Maria Silva', telefone: '(34) 99999-1111', vinculo: 'Mãe', rgResponsavel: 'MG-12.345.678', cpfResponsavel: '98765432100', endereco: 'Rua das Flores, 123', renda: 'Até 2.000', irpf: 'Não', ativo: true, dataCadastro: '2026-07-01', foto: null }
     ];
     salvar();
 }
 
 function salvar() {
-    localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
+    localStorage.setItem('amovin_beneficiarios', JSON.stringify(pessoas));
 }
 
 // ============================================================
@@ -589,8 +574,6 @@ function calcularIdadeDisplay() {
 // SUB-CAMPOS (mostrar/esconder)
 // ============================================================
 function toggleSubCampo(tipo) {
-    var selectId = '';
-    var subId = '';
     var map = {
         'nivelSuporte': { select: 'nivelSuportePessoa', sub: 'subNivelSuporte' },
         'comorbidades': { select: 'comorbidadesPessoa', sub: 'subComorbidades' },
@@ -648,25 +631,25 @@ window.removerFoto = function() {
 function importarParaCRM(pessoa) {
     var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
     var existe = contatos.some(function(c) {
-        return c.nome === pessoa.nome && c.tipo === pessoa.tipo && c.origem === 'pessoas';
+        return c.nome === pessoa.nome && c.tipo === 'beneficiario' && c.origem === 'pessoas';
     });
 
     if (!existe) {
         var novoContato = {
             id: Date.now(),
             nome: pessoa.nome || '',
-            tipo: pessoa.tipo || 'crm',
+            tipo: 'beneficiario',
             cpf: pessoa.cpf || '',
             rg: pessoa.rg || '',
             tel1: pessoa.telefone || '',
             whatsapp: pessoa.telefone || '',
-            email: pessoa.email || '',
+            email: '',
             endereco: pessoa.endereco || '',
             cidade: '',
             estado: '',
             responsavel: pessoa.responsavel || '',
-            categoria: pessoa.tipo === 'beneficiario' ? 'Beneficiário' : pessoa.tipo === 'profissional' ? 'Profissional' : 'Voluntário',
-            obs: pessoa.obs || '',
+            categoria: 'Beneficiário',
+            obs: pessoa.diagnostico || '',
             favorito: false,
             origem: 'pessoas',
             ativo: true,
@@ -683,67 +666,37 @@ function importarParaCRM(pessoa) {
 // ============================================================
 // RENDERIZAÇÃO
 // ============================================================
-function mudarAba(aba) {
-    abaAtual = aba;
-    document.querySelectorAll('.tab-btn').forEach(function(el) {
-        el.classList.remove('ativo');
-        var txt = el.textContent;
-        if (txt.includes('Beneficiários') && aba === 'beneficiario') el.classList.add('ativo');
-        else if (txt.includes('Profissionais') && aba === 'profissional') el.classList.add('ativo');
-        else if (txt.includes('Voluntários') && aba === 'voluntario') el.classList.add('ativo');
-        else if (txt.includes('Todos') && aba === 'todos') el.classList.add('ativo');
-    });
-    filtrar();
-}
-
 function filtrar() {
     var lista = pessoas.slice();
-
-    if (abaAtual !== 'todos') {
-        lista = lista.filter(function(p) { return p.tipo === abaAtual; });
-    }
 
     var busca = document.getElementById('buscaPessoa').value.toLowerCase();
     if (busca) {
         lista = lista.filter(function(p) {
             return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
+                   (p.matricula || '').indexOf(busca) >= 0 ||
                    (p.cpf || '').indexOf(busca) >= 0 ||
                    (p.responsavel || '').toLowerCase().indexOf(busca) >= 0;
         });
     }
 
-    // ORDEM ALFABÉTICA
     lista.sort(function(a, b) {
         return (a.nome || '').localeCompare(b.nome || '');
     });
 
     var container = document.getElementById('listaPessoas');
     if (lista.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhum registro encontrado.</div>';
+        container.innerHTML = '<div class="sem-dados">Nenhum beneficiário cadastrado.</div>';
     } else {
         container.innerHTML = lista.map(function(p) {
-            var badge = '';
-            if (p.tipo === 'beneficiario') badge = '<span class="badge-tipo badge-beneficiario">👥 Beneficiário</span>';
-            else if (p.tipo === 'profissional') badge = '<span class="badge-tipo badge-profissional">👨‍⚕️ Profissional</span>';
-            else if (p.tipo === 'voluntario') badge = '<span class="badge-tipo badge-voluntario">💪 Voluntário</span>';
-
-            var idadeInfo = '';
-            if (p.tipo === 'beneficiario') {
-                var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
-                idadeInfo = ' | ' + idade;
-            }
-
-            var responsavel = p.responsavel || '-';
-            var telefone = p.telefone || '-';
-            var cidadeEstado = '-';
+            var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
             var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
 
             return '<div class="pessoa-card' + (p.ativo === false ? ' inativo' : '') + '">' +
                 '<div class="pessoa-info">' +
                 getAvatarHtml(p) +
                 '<div class="pessoa-dados">' +
-                '<h4>' + p.nome + ' ' + badge + idadeInfo + ' | Matrícula: ' + (p.matricula || '-') + '</h4>' +
-                '<p>👤 Responsável: ' + responsavel + ' | 📞 ' + telefone + '</p>' +
+                '<h4>' + p.nome + ' | Matrícula: ' + (p.matricula || '-') + ' | ' + idade + '</h4>' +
+                '<p>👤 Responsável: ' + (p.responsavel || '-') + ' | 📞 ' + (p.telefone || '-') + '</p>' +
                 '<p>' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
                 '</div></div>' +
                 '<div class="contato-acoes">' +
@@ -759,10 +712,8 @@ function filtrar() {
 
 function atualizarKPIs() {
     document.getElementById('kpiTotal').textContent = pessoas.length;
-    document.getElementById('kpiBeneficiarios').textContent = pessoas.filter(function(p) { return p.tipo === 'beneficiario'; }).length;
-    document.getElementById('kpiProfissionais').textContent = pessoas.filter(function(p) { return p.tipo === 'profissional'; }).length;
-    document.getElementById('kpiVoluntarios').textContent = pessoas.filter(function(p) { return p.tipo === 'voluntario'; }).length;
     document.getElementById('kpiAtivos').textContent = pessoas.filter(function(p) { return p.ativo !== false; }).length;
+    document.getElementById('kpiEstudantes').textContent = pessoas.filter(function(p) { return p.estudante === 'Sim'; }).length;
 }
 
 // ============================================================
@@ -771,7 +722,7 @@ function atualizarKPIs() {
 window.abrirForm = function(id) {
     editandoId = id || null;
     document.getElementById('modalForm').style.display = 'flex';
-    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Cadastro' : '📝 Novo Cadastro - Beneficiário';
+    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Beneficiário' : '📝 Novo Beneficiário';
 
     removerFoto();
 
@@ -779,7 +730,6 @@ window.abrirForm = function(id) {
         var p = pessoas.find(function(x) { return x.id === id; });
         if (!p) return;
         document.getElementById('pessoaId').value = p.id;
-        document.getElementById('tipoPessoa').value = p.tipo || 'beneficiario';
         document.getElementById('nomePessoa').value = p.nome || '';
         document.getElementById('cpfPessoa').value = p.cpf || '';
         document.getElementById('matriculaPessoa').value = p.matricula || '';
@@ -809,15 +759,11 @@ window.abrirForm = function(id) {
         document.getElementById('irpfPessoa').value = p.irpf || '';
         document.getElementById('ativoPessoa').checked = p.ativo !== false;
 
-        // Atendimentos
         document.querySelectorAll('.atendimento-check').forEach(function(cb) {
             cb.checked = p.atendimentos && p.atendimentos.indexOf(cb.value) >= 0;
         });
 
-        // Recalcular idade
         calcularIdadeDisplay();
-
-        // Sub-campos
         ['nivelSuporte', 'comorbidades', 'estudante', 'alergia', 'medicacao'].forEach(function(tipo) {
             toggleSubCampo(tipo);
         });
@@ -831,7 +777,6 @@ window.abrirForm = function(id) {
         }
     } else {
         document.getElementById('pessoaId').value = '';
-        document.getElementById('tipoPessoa').value = 'beneficiario';
         document.getElementById('nomePessoa').value = '';
         document.getElementById('cpfPessoa').value = '';
         document.getElementById('matriculaPessoa').value = '';
@@ -881,7 +826,6 @@ window.salvarPessoa = function() {
         return; 
     }
 
-    var tipo = document.getElementById('tipoPessoa').value || 'beneficiario';
     var cpf = document.getElementById('cpfPessoa').value.replace(/\D/g, '');
     if (!cpf || cpf.length < 6) {
         alert('⚠️ CPF inválido! Digite um CPF válido.');
@@ -894,14 +838,24 @@ window.salvarPessoa = function() {
         return;
     }
 
-    // Verificar matrícula
     var matricula = document.getElementById('matriculaPessoa').value;
     if (!matricula) {
         alert('⚠️ Matrícula não gerada. Verifique o CPF.');
         return;
     }
 
-    // Atendimentos selecionados
+    var responsavel = document.getElementById('responsavelPessoa').value.trim();
+    if (!responsavel) {
+        alert('⚠️ Nome do responsável é obrigatório!');
+        return;
+    }
+
+    var telefone = document.getElementById('telefonePessoa').value.trim();
+    if (!telefone) {
+        alert('⚠️ Telefone do responsável é obrigatório!');
+        return;
+    }
+
     var atendimentos = [];
     document.querySelectorAll('.atendimento-check:checked').forEach(function(cb) {
         atendimentos.push(cb.value);
@@ -909,7 +863,7 @@ window.salvarPessoa = function() {
 
     var dados = {
         nome: nome,
-        tipo: tipo,
+        tipo: 'beneficiario',
         cpf: cpf,
         matricula: matricula,
         dataNasc: dataNasc,
@@ -929,8 +883,8 @@ window.salvarPessoa = function() {
         medicacao: document.getElementById('medicacaoPessoa').value,
         medicacaoTexto: document.getElementById('medicacaoTexto').value.trim(),
         atendimentos: atendimentos,
-        responsavel: document.getElementById('responsavelPessoa').value.trim(),
-        telefone: document.getElementById('telefonePessoa').value.trim(),
+        responsavel: responsavel,
+        telefone: telefone,
         vinculo: document.getElementById('vinculoPessoa').value.trim(),
         rgResponsavel: document.getElementById('rgResponsavel').value.trim(),
         cpfResponsavel: document.getElementById('cpfResponsavel').value.replace(/\D/g, ''),
@@ -975,7 +929,7 @@ window.salvarPessoa = function() {
 
     fecharForm();
     filtrar();
-    alert('✅ Cadastro salvo com sucesso!');
+    alert('✅ Beneficiário salvo com sucesso!');
 };
 
 // ============================================================
@@ -1018,11 +972,11 @@ filtrar();
 // ============================================================
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = {
-    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
     recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
     consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
     financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','agenda-telefonica']
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
 };
 
 var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
