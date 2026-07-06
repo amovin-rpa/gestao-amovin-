@@ -57,7 +57,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .pessoa-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; border: 2px solid #F0E9DF; font-weight: 700; }
 .pessoa-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .pessoa-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
-.pessoa-dados p { font-size: 11px; color: var(--cinza); }
+.pessoa-dados p { font-size: 11px; color: var(--cinza); margin: 1px 0; }
 .pessoa-dados .badge-tipo { font-size: 9px; padding: 2px 10px; border-radius: 12px; margin-left: 6px; }
 .badge-beneficiario { background: #E3F2FD; color: #1565C0; }
 .badge-profissional { background: #E8F5E9; color: #2E7D32; }
@@ -391,7 +391,38 @@ function salvar() {
 }
 
 // ============================================================
-// FUNÇÃO PARA IMPORTAR PARA O CRM
+// FUNÇÕES DE FORMATAÇÃO
+// ============================================================
+function formatarDataBR(dataISO) {
+    if (!dataISO) return '-';
+    var partes = dataISO.split('-');
+    return partes[2] + '/' + partes[1] + '/' + partes[0];
+}
+
+function calcularIdade(dataNasc) {
+    if (!dataNasc) return '-';
+    var hoje = new Date();
+    var nasc = new Date(dataNasc + 'T00:00:00');
+    var idade = hoje.getFullYear() - nasc.getFullYear();
+    var m = hoje.getMonth() - nasc.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) {
+        idade--;
+    }
+    return idade;
+}
+
+function getAvatarHtml(pessoa) {
+    if (pessoa.foto) {
+        return '<img src="' + pessoa.foto + '" alt="' + pessoa.nome + '" class="pessoa-avatar">';
+    }
+    var iniciais = pessoa.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
+    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
+    var cor = cores[pessoa.id % cores.length] || '#C65A11';
+    return '<div class="pessoa-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
+}
+
+// ============================================================
+// IMPORTAR PARA CRM
 // ============================================================
 function importarParaCRM(pessoa) {
     var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
@@ -438,9 +469,8 @@ window.previewFoto = function(event) {
         return;
     }
     
-    // Verificar tamanho (máximo 5MB)
     if (file.size > 5 * 1024 * 1024) {
-        alert('⚠️ A foto não pode ter mais que 5MB. Por favor, reduza o tamanho da imagem.');
+        alert('⚠️ A foto não pode ter mais que 5MB.');
         document.getElementById('fotoPessoa').value = '';
         return;
     }
@@ -471,22 +501,13 @@ function mudarAba(aba) {
     abaAtual = aba;
     document.querySelectorAll('.tab-btn').forEach(function(el) {
         el.classList.remove('ativo');
-        if (el.textContent.includes('Beneficiários') && aba === 'beneficiario') el.classList.add('ativo');
-        else if (el.textContent.includes('Profissionais') && aba === 'profissional') el.classList.add('ativo');
-        else if (el.textContent.includes('Voluntários') && aba === 'voluntario') el.classList.add('ativo');
-        else if (el.textContent.includes('Todos') && aba === 'todos') el.classList.add('ativo');
+        var txt = el.textContent;
+        if (txt.includes('Beneficiários') && aba === 'beneficiario') el.classList.add('ativo');
+        else if (txt.includes('Profissionais') && aba === 'profissional') el.classList.add('ativo');
+        else if (txt.includes('Voluntários') && aba === 'voluntario') el.classList.add('ativo');
+        else if (txt.includes('Todos') && aba === 'todos') el.classList.add('ativo');
     });
     filtrar();
-}
-
-function getAvatarHtml(pessoa) {
-    if (pessoa.foto) {
-        return '<img src="' + pessoa.foto + '" alt="' + pessoa.nome + '" class="pessoa-avatar">';
-    }
-    var iniciais = pessoa.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
-    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
-    var cor = cores[pessoa.id % cores.length] || '#C65A11';
-    return '<div class="pessoa-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
 }
 
 function filtrar() {
@@ -505,6 +526,7 @@ function filtrar() {
         });
     }
 
+    // ORDEM ALFABÉTICA
     lista.sort(function(a, b) {
         return (a.nome || '').localeCompare(b.nome || '');
     });
@@ -519,16 +541,20 @@ function filtrar() {
             else if (p.tipo === 'profissional') badge = '<span class="badge-tipo badge-profissional">👨‍⚕️ Profissional</span>';
             else if (p.tipo === 'voluntario') badge = '<span class="badge-tipo badge-voluntario">💪 Voluntário</span>';
 
-            var responsavelInfo = p.responsavel ? ' | 👤 ' + p.responsavel : '';
+            var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
+            var responsavel = p.responsavel || '-';
+            var telefone = p.telefone || p.whatsapp || '-';
+            var cidadeEstado = (p.cidade || '') + (p.estado ? '/' + p.estado : '');
+            if (!cidadeEstado) cidadeEstado = '-';
             var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
 
             return '<div class="pessoa-card' + (p.ativo === false ? ' inativo' : '') + '">' +
                 '<div class="pessoa-info">' +
                 getAvatarHtml(p) +
                 '<div class="pessoa-dados">' +
-                '<h4>' + p.nome + ' ' + badge + '</h4>' +
-                '<p>📞 ' + (p.telefone || p.whatsapp || '-') + ' | 📧 ' + (p.email || '-') + responsavelInfo + '</p>' +
-                '<p style="font-size:10px;color:#9CA3AF;">📍 ' + (p.cidade || '') + (p.estado ? '/' + p.estado : '') + ' | ' + status + ' | 📅 ' + (p.dataCadastro || '') + '</p>' +
+                '<h4>' + p.nome + ' ' + badge + ' | ' + idade + '</h4>' +
+                '<p>👤 Responsável: ' + responsavel + ' | 📞 ' + telefone + '</p>' +
+                '<p>📍 ' + cidadeEstado + ' | ' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
                 '</div></div>' +
                 '<div class="contato-acoes">' +
                 '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
@@ -557,7 +583,6 @@ window.abrirForm = function(id) {
     document.getElementById('modalForm').style.display = 'flex';
     document.getElementById('tituloModal').textContent = id ? '✏️ Editar Cadastro' : '📝 Novo Cadastro';
 
-    // Resetar foto
     removerFoto();
 
     if (id) {
@@ -611,6 +636,8 @@ window.fecharForm = function() {
 };
 
 window.salvarPessoa = function() {
+    console.log('🔵 Botão Salvar clicado!');
+    
     var nome = document.getElementById('nomePessoa').value.trim();
     if (!nome) { 
         alert('⚠️ Nome é obrigatório!'); 
@@ -643,16 +670,16 @@ window.salvarPessoa = function() {
         ativo: document.getElementById('ativoPessoa').checked
     };
 
-    // Só adiciona foto se tiver (opcional)
     if (fotoDataURL) {
         dados.foto = fotoDataURL;
     } else if (editandoId) {
-        // Manter foto existente se não foi alterada
         var existente = pessoas.find(function(p) { return p.id === editandoId; });
         if (existente && existente.foto) {
             dados.foto = existente.foto;
         }
     }
+
+    console.log('📝 Dados a salvar:', dados);
 
     if (editandoId) {
         var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
@@ -669,24 +696,20 @@ window.salvarPessoa = function() {
     }
 
     salvar();
+    console.log('✅ Dados salvos! Total:', pessoas.length);
 
-    // Importar para CRM
     var pessoaSalva = editandoId ? pessoas.find(function(p) { return p.id === editandoId; }) : dados;
     if (pessoaSalva) {
-        var importado = importarParaCRM(pessoaSalva);
-        if (importado) {
-            alert('✅ Cadastro salvo e importado para o CRM Social!');
-        } else {
-            alert('✅ Cadastro salvo! (Já existe no CRM)');
-        }
+        importarParaCRM(pessoaSalva);
     }
 
     fecharForm();
     filtrar();
+    alert('✅ Cadastro salvo com sucesso!');
 };
 
 // ============================================================
-// ENVIAR PARA CRM (botão manual)
+// ENVIAR PARA CRM
 // ============================================================
 window.enviarParaCRM = function(id) {
     var p = pessoas.find(function(x) { return x.id === id; });
@@ -701,18 +724,18 @@ window.enviarParaCRM = function(id) {
 };
 
 // ============================================================
-// EXCLUIR (NÃO EXCLUI DO CRM)
+// EXCLUIR
 // ============================================================
 window.excluirPessoa = function(id) {
     var p = pessoas.find(function(x) { return x.id === id; });
     if (!p) return;
 
-    if (!confirm('⚠️ Tem certeza que deseja excluir ' + p.nome + '?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social. O contato permanecerá no CRM como inativo.')) return;
+    if (!confirm('⚠️ Tem certeza que deseja excluir ' + p.nome + '?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social.')) return;
 
     p.ativo = false;
     salvar();
     filtrar();
-    alert('✅ ' + p.nome + ' foi marcado como INATIVO.\nO registro permanece no CRM Social.');
+    alert('✅ ' + p.nome + ' foi marcado como INATIVO.');
 };
 
 // ============================================================
