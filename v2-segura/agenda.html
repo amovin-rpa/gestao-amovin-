@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -31,7 +37,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.abas { display: flex; gap: 6px; margin-bottom: 22px; }
+.abas { display: flex; gap: 6px; margin-bottom: 22px; flex-wrap: wrap; }
 .aba { padding: 10px 22px; border: 1px solid #F0E9DF; border-radius: 10px 10px 0 0; cursor: pointer; font-weight: 600; font-size: 13px; background: #FFFFFF; color: var(--cinza); }
 .aba.ativa { background: var(--laranja); color: white; border-color: var(--laranja); }
 
@@ -47,9 +53,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-salvar { width: 100%; padding: 12px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
 .btn-cancelar { width: 100%; padding: 10px; background: #F0E9DF; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; margin-top: 5px; }
 
-.evento-item { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 10px; margin-bottom: 8px; background: #F8F4ED; border-left: 4px solid var(--laranja); }
+.evento-item { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 10px; margin-bottom: 8px; background: #F8F4ED; border-left: 4px solid var(--laranja); flex-wrap: wrap; }
 .evento-item.presente { border-left-color: var(--verde); background: #E8F5E9; }
-.evento-item.falta { border-left-color: #E53935; background: #FFEBEE; }
+.evento-item.falta { border-left-color: var(--vermelho); background: #FFEBEE; }
 .evento-item.cancelado { border-left-color: #7B1FA2; background: #F3E5F5; }
 .evento-hora { font-weight: 700; font-size: 15px; color: var(--laranja); min-width: 55px; }
 .evento-info { flex: 1; }
@@ -58,7 +64,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 .btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: 700; margin: 2px; }
 .btn-presente { background: var(--verde); color: white; }
-.btn-falta { background: #E53935; color: white; }
+.btn-falta { background: var(--vermelho); color: white; }
 .btn-editar { background: var(--amarelo); color: #1A1A1A; }
 .btn-excluir { background: #E5E0D8; color: #1A1A1A; }
 .btn-wpp { background: #25D366; color: white; }
@@ -72,14 +78,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; }
-.rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; }
-.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
-.rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; }
-.rodape-info a { color: #C65A11; text-decoration: none; }
-.rodape-info .email { font-size: 8px; color: #aaa; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
 @media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-agenda { grid-template-columns: 1fr; } }
@@ -97,14 +98,40 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <div class="nav-categoria">Principal</div>
     <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
     <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-    <div class="nav-categoria">Atendimento</div>
-    <a href="agenda.html" class="nav-item ativo"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
     <div class="nav-categoria">Pessoas</div>
     <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item ativo"><span class="icone">📅</span> Agenda</a>
+
     <div class="nav-categoria">Documentos</div>
     <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
     <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
     <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
     <div class="nav-categoria">Sistema</div>
     <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
     <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
@@ -159,7 +186,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <div class="rodape-grid">
       <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
       <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
         <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
         <div class="email">contato@vigorre.com.br</div>
       </div>
@@ -176,8 +203,8 @@ var sn = {1:'Sala 1',2:'Sala 2',3:'Sala 3'};
 
 if (agendamentos.length === 0) {
     agendamentos = [
-        {id:1,beneficiario:'1',profissional:'Dr. Carlos Mendes',data:'2026-06-26',hora:'09:00',sala:'1',obs:'Psicologia',status:'agendado'},
-        {id:2,beneficiario:'2',profissional:'Dra. Lucia Ferreira',data:'2026-06-26',hora:'10:00',sala:'2',obs:'Social',status:'presente'}
+        {id:1,beneficiario:'1',profissional:'Dr. Carlos Mendes',data:'2026-07-06',hora:'09:00',sala:'1',obs:'Psicologia',status:'agendado'},
+        {id:2,beneficiario:'2',profissional:'Dra. Lucia Ferreira',data:'2026-07-06',hora:'10:00',sala:'2',obs:'Social',status:'presente'}
     ];
     salvar();
 }
@@ -192,7 +219,7 @@ function renderizarAgendamentos() {
     if (lista.length === 0) { c.innerHTML = '<div class="sem-dados">Nenhum agendamento.</div>'; return; }
     c.innerHTML = lista.map(function(a){
         var cs = a.status==='presente'?'presente':a.status==='falta'?'falta':a.status==='cancelado'?'cancelado':'';
-        return '<div class="evento-item '+cs+'"><div class="evento-hora">'+a.hora+'</div><div class="evento-info"><div class="nome">'+(bn[a.beneficiario]||'Beneficiário')+' <span class="status-badge badge-'+(a.status||'agendado')+'">'+(a.status||'Agendado')+'</span></div><div class="detalhe">👤 '+a.profissional+' | 🏠 '+sn[a.sala]+(a.obs?' | 📝 '+a.obs:'')+'</div></div><div style="display:flex;gap:3px;">'+(a.status==='agendado'?'<button class="btn-acao btn-presente" onclick="marcarPresenca('+a.id+')">✅</button><button class="btn-acao btn-falta" onclick="marcarFalta('+a.id+')">❌</button>':'')+'<button class="btn-acao btn-editar" onclick="editarAgendamento('+a.id+')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirAgendamento('+a.id+')">🗑️</button></div></div>';
+        return '<div class="evento-item '+cs+'"><div class="evento-hora">'+a.hora+'</div><div class="evento-info"><div class="nome">'+(bn[a.beneficiario]||'Beneficiário')+' <span class="status-badge badge-'+(a.status||'agendado')+'">'+(a.status||'Agendado')+'</span></div><div class="detalhe">👤 '+a.profissional+' | 🏠 '+sn[a.sala]+(a.obs?' | 📝 '+a.obs:'')+'</div></div><div style="display:flex;gap:3px;flex-wrap:wrap;">'+(a.status==='agendado'?'<button class="btn-acao btn-presente" onclick="marcarPresenca('+a.id+')">✅</button><button class="btn-acao btn-falta" onclick="marcarFalta('+a.id+')">❌</button>':'')+'<button class="btn-acao btn-editar" onclick="editarAgendamento('+a.id+')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirAgendamento('+a.id+')">🗑️</button></div></div>';
     }).join('');
 }
 
@@ -214,9 +241,30 @@ function limparForm() { document.getElementById('beneficiario').value='';documen
 
 window.adicionarSlot = function() { var d=document.getElementById('slotData').value,h=document.getElementById('slotHora').value,s=document.getElementById('slotSala').value; if(!d||!h)return; slots.push({data:d,hora:h,sala:s}); salvar(); renderizarSlots(); };
 window.removerSlot = function(d,h,s) { slots=slots.filter(function(sl){return !(sl.data===d&&sl.hora===h&&sl.sala===s);}); salvar(); renderizarSlots(); };
-function renderizarSlots() { var c=document.getElementById('listaSlots'); if(slots.length===0){c.innerHTML='<div class="sem-dados">Nenhum horário.</div>';return;} c.innerHTML=slots.sort(function(a,b){return a.data.localeCompare(b.data)||a.hora.localeCompare(b.hora);}).map(function(s){return '<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #F0E9DF;"><span>📅 '+new Date(s.data+'T00:00:00').toLocaleDateString('pt-BR')+' 🕐 '+s.hora+' | '+sn[s.sala]+'</span><button class="btn-acao btn-excluir" onclick="removerSlot(\''+s.data+'\',\''+s.hora+'\',\''+s.sala+'\')">🗑️</button></div>';}).join(''); }
+function renderizarSlots() { var c=document.getElementById('listaSlots'); if(slots.length===0){c.innerHTML='<div class="sem-dados">Nenhum horário.</div>';return;} c.innerHTML=slots.sort(function(a,b){return a.data.localeCompare(b.data)||a.hora.localeCompare(b.hora);}).map(function(s){return '<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #F0E9DF;flex-wrap:wrap;gap:6px;"><span>📅 '+new Date(s.data+'T00:00:00').toLocaleDateString('pt-BR')+' 🕐 '+s.hora+' | '+sn[s.sala]+'</span><button class="btn-acao btn-excluir" onclick="removerSlot(\''+s.data+'\',\''+s.hora+'\',\''+s.sala+'\')">🗑️</button></div>';}).join(''); }
 
 window.mudarAba = function(aba, btn) { document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('ativa');}); btn.classList.add('ativa'); document.getElementById('aba-agendamentos').style.display = aba==='agendamentos'?'block':'none'; document.getElementById('aba-disponibilidade').style.display = aba==='disponibilidade'?'block':'none'; };
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
 
 if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
 history.pushState(null,null,location.href);
