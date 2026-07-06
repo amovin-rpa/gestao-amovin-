@@ -51,7 +51,7 @@ function renderizarMenu(paginaAtiva) {
     
     // Captação - APENAS AMOVIN CAPTA+
     html += '    <div class="nav-categoria">Captação</div>';
-    html += '    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item ' + (ativo === 'capta' ? 'ativo' : '') + '"><span class="icone">🚀</span> Amovin Capta+</a>';
+    html += '    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>';
     
     // Financeiro
     html += '    <div class="nav-categoria">Financeiro</div>';
@@ -119,16 +119,13 @@ function carregarMenu(paginaAtiva) {
     // Verificar se já existe um container para o menu
     var container = document.getElementById('menu-container');
     if (!container) {
-        // Se não existir, criar um no início do body
         container = document.createElement('div');
         container.id = 'menu-container';
         document.body.insertBefore(container, document.body.firstChild);
     }
 
-    // Renderizar e inserir o menu
     container.innerHTML = renderizarMenu(paginaAtiva);
 
-    // Atualizar informações do usuário
     var nome = sessionStorage.getItem('amovin_nome') || 'Administrador';
     var cargo = sessionStorage.getItem('amovin_perfil') || 'Admin';
     var inicial = nome.charAt(0).toUpperCase();
@@ -146,7 +143,6 @@ function carregarMenu(paginaAtiva) {
     // ============================================================
     var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
     
-    // LISTA COMPLETA DE MÓDULOS (INCLUINDO CAPTA+)
     var modulosPermitidos = {
         admin: ['dashboard','bi','capta','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
         recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
@@ -159,16 +155,15 @@ function carregarMenu(paginaAtiva) {
     
     document.querySelectorAll('.nav-item').forEach(function(item) {
         var href = item.getAttribute('href') || '';
-        // Verifica se é um link interno (.html) ou externo (http)
         var pagina = href.replace('.html', '');
-        // Se for link externo (Amovin Capta+), não esconde
-        if (href.indexOf('http') === 0) {
-            // Links externos sempre visíveis para admin
-            if (perfil !== 'admin') {
-                item.style.display = 'none';
-            }
+        
+        // Se for ADMIN, mostra TUDO
+        if (perfil === 'admin') {
+            item.style.display = 'flex';
             return;
         }
+        
+        // Se não for admin, esconde itens não permitidos
         if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
             item.style.display = 'none';
         }
@@ -184,11 +179,9 @@ function fazerLogout() {
 }
 
 // ============================================================
-// CARREGAR MENU AUTOMATICAMENTE QUANDO A PÁGINA CARREGAR
+// CARREGAR MENU AUTOMATICAMENTE
 // ============================================================
-// Detecta a página atual pelo nome do arquivo
 var paginaAtual = window.location.pathname.split('/').pop().replace('.html', '');
 if (!paginaAtual || paginaAtual === '') paginaAtual = 'dashboard';
 
-// Carregar o menu
 carregarMenu(paginaAtual);
