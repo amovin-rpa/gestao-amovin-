@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -27,133 +33,260 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
 
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.kpi-row { display: flex; gap: 15px; margin-bottom: 22px; flex-wrap: wrap; }
-.kpi-card { background: #FFFFFF; padding: 16px 22px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; flex: 1; min-width: 120px; }
-.kpi-card .valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
-.kpi-card .label { font-size: 11px; color: var(--cinza); }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
 
-.tabs { display: flex; gap: 6px; margin-bottom: 22px; }
-.tab { padding: 10px 20px; background: #FFFFFF; border: 1px solid #F0E9DF; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--cinza); transition: all 0.2s; text-decoration: none; }
-.tab.ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
+.busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
+.btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
 
-.busca { margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
-.busca input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
-.busca select { padding: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; }
-.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; }
-.btn-roxo { background: var(--laranja); color: white; }
-.btn-amarelo { background: var(--amarelo); color: #1A1A1A; }
-.btn-vermelho { background: #E53935; color: white; }
-.btn-verde { background: var(--verde); color: white; }
-.btn-laranja { background: #F5A623; color: white; }
-
-.card { background: #FFFFFF; padding: 18px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #F0E9DF; }
-.card h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--grafite); }
-.card p { margin: 2px 0; color: var(--cinza); font-size: 13px; }
-.card-foto { width: 45px; height: 55px; border-radius: 6px; object-fit: cover; float: left; margin-right: 12px; border: 1px solid #E5E0D8; }
-.sem-dados { text-align: center; color: #9CA3AF; padding: 30px; }
-
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
-.modal-box { background: white; padding: 28px; border-radius: 14px; width: 450px; margin: 30px auto; max-height: 80vh; overflow-y: auto; }
-.modal-box input, .modal-box textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; }
-.modal-box label { font-weight: 600; font-size: 11px; display: block; margin-bottom: 3px; color: var(--cinza); text-transform: uppercase; }
-.foto-preview { width: 70px; height: 90px; border: 2px dashed #E5E0D8; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #9CA3AF; overflow: hidden; border-radius: 6px; }
-.foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+.voluntario-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.voluntario-card.inativo { opacity: 0.6; border-left: 4px solid var(--vermelho); }
+.voluntario-info h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
+.voluntario-info p { font-size: 11px; color: var(--cinza); }
+.voluntario-info .badge-area { font-size: 9px; padding: 2px 10px; border-radius: 12px; background: #FFF3E0; color: #E65100; margin-left: 6px; }
+.btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
+.btn-editar { background: #F5A623; color: white; }
+.btn-excluir { background: var(--vermelho); color: white; }
+.btn-crm { background: var(--azul); color: white; }
+.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; } .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
+@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
+@media (max-width: 600px) { .busca-bar { flex-direction: column; } }
 </style>
 </head>
 <body>
 
 <aside class="sidebar">
-  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a><a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-    <div class="nav-categoria">Captação</div><a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a><a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a><a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
-    <div class="nav-categoria">Financeiro</div><a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a><a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a><a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-    <div class="nav-categoria">Pessoas</div><a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a><a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a><a href="voluntarios.html" class="nav-item ativo"><span class="icone">💪</span> Voluntários</a><a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-    <div class="nav-categoria">Atendimento</div><a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-    <div class="nav-categoria">Documentos</div><a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a><a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a><a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Educação</div><a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a><a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-    <div class="nav-categoria">Comunicação</div><a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a><a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-    <div class="nav-categoria">Relatórios</div><a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
-    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>💪 Voluntários</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
-  <div class="kpi-row"><div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">Total de Cadastros</div></div><div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">Ativos</div></div><div class="kpi-card"><div class="valor" id="kpiHoras">0h</div><div class="label">Horas Totais</div></div></div>
-  <div class="tabs"><a href="pessoas.html" class="tab">👥 Beneficiários</a><a href="profissionais.html" class="tab">👨‍⚕️ Profissionais</a><a href="voluntarios.html" class="tab ativo">💪 Voluntários</a></div>
-  <div class="busca"><input type="text" id="busca" placeholder="Buscar por nome ou função..." oninput="filtrar()"><select id="ordem" onchange="filtrar()"><option value="az">A-Z</option><option value="za">Z-A</option></select><select id="filtroFuncao" onchange="filtrar()"><option value="todas">Todas funções</option></select><button class="btn btn-roxo" onclick="abrirForm()">+ Novo</button></div>
-  <div id="lista"></div>
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="topo-bar">
+    <h1>💪 Voluntários</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiAreas">0</div><div class="kpi-label">📌 Áreas</div></div>
+  </div>
+
+  <div class="busca-bar">
+    <input type="text" id="buscaVoluntario" placeholder="Buscar por nome, área, CPF..." oninput="filtrar()">
+    <button class="btn-novo" onclick="window.location.href='pessoas.html'">+ Novo Voluntário</button>
+  </div>
+
+  <div id="listaVoluntarios"></div>
+
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
-<div class="modal" id="modalForm"><div class="modal-box">
-  <h3 id="tituloModal">Novo Voluntário</h3><input type="hidden" id="volId">
-  <div class="foto-preview" id="fotoPreview">3x4</div><input type="file" id="fotoUpload" accept="image/*" onchange="previewFoto()" style="font-size:12px;">
-  <label>Nome completo *</label><input type="text" id="nomeVol">
-  <label>Nome de guerra</label><input type="text" id="guerraVol">
-  <label>Função *</label><input type="text" id="funcaoVol">
-  <label>Disponibilidade</label><input type="text" id="dispoVol">
-  <label>Horas/mês</label><input type="text" id="horasVol">
-  <label>Telefone</label><input type="text" id="foneVol">
-  <label>Email</label><input type="text" id="emailVol">
-  <label>Observações</label><textarea id="obsVol" rows="2"></textarea>
-  <button class="btn btn-roxo" onclick="salvar()" style="width:100%;">Salvar</button>
-  <button class="btn btn-vermelho" onclick="fecharForm()" style="width:100%;">Cancelar</button>
-</div></div>
-
 <script>
-var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
-var editandoId = null;
-if (voluntarios.length === 0) { voluntarios.push({id:1,nome:'Fernanda Lima',guerra:'Fê',funcao:'Informática',disponibilidade:'Sábados',horas:'16h',telefone:'(34) 99999-0001',foto:''}); voluntarios.push({id:2,nome:'Rafael Costa',guerra:'Rafa',funcao:'Esportes',disponibilidade:'Terças e Quintas',horas:'20h',telefone:'(34) 99999-0002',foto:''}); salvarDados(); }
-function salvarDados() { localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios)); }
-function atualizarKPIs() { document.getElementById('kpiTotal').textContent = voluntarios.length; document.getElementById('kpiAtivos').textContent = voluntarios.length; var th = 0; for (var i = 0; i < voluntarios.length; i++) { var h = parseInt(voluntarios[i].horas) || 0; th += h; } document.getElementById('kpiHoras').textContent = th + 'h'; popularFiltro(); }
-function popularFiltro() { var f = []; for (var i = 0; i < voluntarios.length; i++) { if (f.indexOf(voluntarios[i].funcao) === -1) f.push(voluntarios[i].funcao); } var s = document.getElementById('filtroFuncao'); s.innerHTML = '<option value="todas">Todas funções</option>'; for (var i = 0; i < f.length; i++) s.innerHTML += '<option value="'+f[i]+'">'+f[i]+'</option>'; }
-function filtrar() { var b = document.getElementById('busca').value.toLowerCase(), o = document.getElementById('ordem').value, ff = document.getElementById('filtroFuncao').value, l = []; for (var i = 0; i < voluntarios.length; i++) { var v = voluntarios[i]; if ((v.nome.toLowerCase().indexOf(b) >= 0 || v.funcao.toLowerCase().indexOf(b) >= 0 || (v.guerra||'').toLowerCase().indexOf(b) >= 0) && (ff === 'todas' || v.funcao === ff)) l.push(v); } l.sort(function(a,b){ return o==='az' ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome); }); var h = ''; if (l.length === 0) h = '<div class="sem-dados">Nenhum voluntário.</div>'; for (var i = 0; i < l.length; i++) { var v = l[i], ap = v.guerra ? ' ('+v.guerra+')' : ''; h += '<div class="card">' + (v.foto ? '<img src="'+v.foto+'" class="card-foto" alt="">' : '<div class="card-foto" style="background:#F8F4ED;display:flex;align-items:center;justify-content:center;font-size:9px;color:#9CA3AF;">3x4</div>'); h += '<h3>'+v.nome+ap+'</h3><p>'+v.funcao+' | '+(v.disponibilidade||'')+' | '+(v.horas||'')+' | Tel: '+(v.telefone||'')+'</p>'; if(v.email)h+='<p>Email: '+v.email+'</p>'; h += '<button class="btn btn-amarelo" onclick="editar('+v.id+')">Editar</button> <button class="btn btn-verde" onclick="cracha('+v.id+')">Crachá</button> <button class="btn btn-laranja" onclick="imprimirCadastro('+v.id+')">Imprimir</button> <button class="btn btn-vermelho" onclick="excluir('+v.id+')">Excluir</button></div>'; } document.getElementById('lista').innerHTML = h; }
-window.previewFoto = function() { var f = document.getElementById('fotoUpload').files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e) { document.getElementById('fotoPreview').innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;">'; }; r.readAsDataURL(f); };
-window.abrirForm = function(id) {
-    editandoId = id || null; document.getElementById('modalForm').style.display = 'block'; document.getElementById('tituloModal').textContent = id ? 'Editar' : 'Novo';
-    document.getElementById('fotoUpload').value = ''; document.getElementById('fotoPreview').innerHTML = '3x4';
-    if (id) { var v = null; for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } } if (v) { document.getElementById('volId').value=v.id;document.getElementById('nomeVol').value=v.nome;document.getElementById('guerraVol').value=v.guerra||'';document.getElementById('funcaoVol').value=v.funcao;document.getElementById('dispoVol').value=v.disponibilidade||'';document.getElementById('horasVol').value=v.horas||'';document.getElementById('foneVol').value=v.telefone||'';document.getElementById('emailVol').value=v.email||'';document.getElementById('obsVol').value=v.obs||''; if(v.foto)document.getElementById('fotoPreview').innerHTML='<img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover;">'; } }
-    else { document.getElementById('volId').value='';document.getElementById('nomeVol').value='';document.getElementById('guerraVol').value='';document.getElementById('funcaoVol').value='';document.getElementById('dispoVol').value='';document.getElementById('horasVol').value='';document.getElementById('foneVol').value='';document.getElementById('emailVol').value='';document.getElementById('obsVol').value=''; }
-};
-window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
-window.salvar = function() {
-    var n = document.getElementById('nomeVol').value; if (!n) { alert('Preencha o nome!'); return; }
-    var fotoSalvar = ''; var previewDiv = document.getElementById('fotoPreview'); if (previewDiv) { var imgEl = previewDiv.querySelector('img'); if (imgEl && imgEl.src && imgEl.src.indexOf('data:') >= 0) { fotoSalvar = imgEl.src; } }
-    var d = { nome:n, guerra:document.getElementById('guerraVol').value, funcao:document.getElementById('funcaoVol').value, disponibilidade:document.getElementById('dispoVol').value, horas:document.getElementById('horasVol').value, telefone:document.getElementById('foneVol').value, email:document.getElementById('emailVol').value, obs:document.getElementById('obsVol').value, foto: fotoSalvar };
-    if (editandoId) { for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === editandoId) { for (var k in d) { voluntarios[i][k] = d[k]; } break; } } }
-    else { d.id = Date.now(); voluntarios.push(d); }
-    salvarDados(); document.getElementById('modalForm').style.display = 'none'; filtrar(); atualizarKPIs();
-};
-window.editar = function(id) { abrirForm(id); };
-window.excluir = function(id) { if (!confirm('Excluir?')) return; var novo = []; for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id !== id) novo.push(voluntarios[i]); } voluntarios = novo; salvarDados(); filtrar(); atualizarKPIs(); };
-window.cracha = function(id) { var v = null; for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } } if (!v) return; var w = window.open('','_blank'); w.document.write('<html><body style="font-family:Arial;text-align:center;padding:20px"><div style="border:3px solid #C65A11;padding:20px;width:300px;margin:0 auto;border-radius:10px"><h2>AMOVIN</h2>'+(v.foto?'<div style="width:80px;height:100px;overflow:hidden;margin:0 auto 10px"><img src="'+v.foto+'" style="width:100%;height:100%;object-fit:cover"></div>':'')+'<h3>'+v.nome+'</h3><p><strong>'+(v.guerra||'')+'</strong></p><p>'+v.funcao+'</p><p>Voluntário</p></div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
-window.imprimirCadastro = function(id) { var v = null; for (var i = 0; i < voluntarios.length; i++) { if (voluntarios[i].id === id) { v = voluntarios[i]; break; } } if (!v) return; var w = window.open('','_blank'); w.document.write('<html><body style="font-family:Arial;padding:20px"><h2>AMOVIN</h2><p>Nome: '+v.nome+'</p><p>Guerra: '+(v.guerra||'-')+'</p><p>Função: '+v.funcao+'</p><p>Disponibilidade: '+(v.disponibilidade||'-')+'</p><p>Horas: '+(v.horas||'-')+'</p><p>Tel: '+(v.telefone||'-')+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
+// ============================================================
+// BANCO DE DADOS LOCAL
+// ============================================================
+var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
 
+function filtrar() {
+    var lista = pessoas.filter(function(p) { return p.tipo === 'voluntario'; });
+
+    var busca = document.getElementById('buscaVoluntario').value.toLowerCase();
+    if (busca) {
+        lista = lista.filter(function(p) {
+            return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
+                   (p.cpf || '').indexOf(busca) >= 0 ||
+                   (p.obs || '').toLowerCase().indexOf(busca) >= 0;
+        });
+    }
+
+    lista.sort(function(a, b) {
+        return (a.nome || '').localeCompare(b.nome || '');
+    });
+
+    var container = document.getElementById('listaVoluntarios');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum voluntário cadastrado.</div>';
+    } else {
+        container.innerHTML = lista.map(function(p) {
+            var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
+
+            return '<div class="voluntario-card' + (p.ativo === false ? ' inativo' : '') + '">' +
+                '<div class="voluntario-info">' +
+                '<h4>' + p.nome + ' <span class="badge-area">' + (p.obs ? p.obs : 'Voluntário') + '</span></h4>' +
+                '<p>📞 ' + (p.telefone || p.whatsapp || '-') + ' | 📧 ' + (p.email || '-') + '</p>' +
+                '<p style="font-size:10px;color:#9CA3AF;">📍 ' + (p.cidade || '') + (p.estado ? '/' + p.estado : '') + ' | ' + status + ' | 📅 ' + (p.dataCadastro || '') + '</p>' +
+                '</div>' +
+                '<div class="contato-acoes">' +
+                '<button class="btn-acao btn-editar" onclick="window.location.href=\'pessoas.html\'">✏️</button>' +
+                '<button class="btn-acao btn-crm" onclick="enviarParaCRM(' + p.id + ')">📤 CRM</button>' +
+                '</div></div>';
+        }).join('');
+    }
+
+    atualizarKPIs(lista);
+}
+
+function atualizarKPIs(lista) {
+    document.getElementById('kpiTotal').textContent = lista.length;
+    document.getElementById('kpiAtivos').textContent = lista.filter(function(p) { return p.ativo !== false; }).length;
+    var areas = {};
+    lista.forEach(function(p) {
+        if (p.obs) areas[p.obs] = (areas[p.obs] || 0) + 1;
+    });
+    document.getElementById('kpiAreas').textContent = Object.keys(areas).length;
+}
+
+// ============================================================
+// ENVIAR PARA CRM
+// ============================================================
+function importarParaCRM(pessoa) {
+    var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
+    var existe = contatos.some(function(c) {
+        return c.nome === pessoa.nome && c.tipo === pessoa.tipo && c.origem === 'pessoas';
+    });
+
+    if (!existe) {
+        var novoContato = {
+            id: Date.now(),
+            nome: pessoa.nome || '',
+            tipo: pessoa.tipo || 'crm',
+            cpf: pessoa.cpf || '',
+            rg: pessoa.rg || '',
+            tel1: pessoa.telefone || '',
+            whatsapp: pessoa.whatsapp || pessoa.telefone || '',
+            email: pessoa.email || '',
+            endereco: pessoa.endereco || '',
+            cidade: pessoa.cidade || '',
+            estado: pessoa.estado || '',
+            responsavel: pessoa.responsavel || '',
+            categoria: 'Voluntário',
+            obs: pessoa.obs || '',
+            favorito: false,
+            origem: 'pessoas',
+            ativo: true,
+            dataCadastro: new Date().toISOString().split('T')[0]
+        };
+        contatos.push(novoContato);
+        localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
+        return true;
+    }
+    return false;
+}
+
+window.enviarParaCRM = function(id) {
+    var p = pessoas.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    var importado = importarParaCRM(p);
+    if (importado) {
+        alert('✅ ' + p.nome + ' foi importado para o CRM Social!');
+    } else {
+        alert('ℹ️ ' + p.nome + ' já existe no CRM Social.');
+    }
+};
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+filtrar();
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = { admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'], recepcao: ['dashboard','pessoas','profissionais','voluntarios','agenda','documentos'], consulta: ['dashboard','agenda','assistente'], financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'], voluntario: ['dashboard','agenda'] };
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos['admin'];
-document.querySelectorAll('.nav-item').forEach(function(item) { var href = item.getAttribute('href') || ''; var pagina = href.replace('.html',''); if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') { item.style.display = 'none'; } });
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
 
-if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-history.pushState(null,null,location.href); window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
-var timeout;function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
-document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
 
-atualizarKPIs();filtrar();
+if (!sessionStorage.getItem('amovin_logado')) {
+    window.location.href = 'index.html';
+}
 </script>
 </body>
 </html>
