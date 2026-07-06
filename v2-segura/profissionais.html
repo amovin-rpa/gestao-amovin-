@@ -53,7 +53,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .profissional-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .profissional-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
 .profissional-dados p { font-size: 11px; color: var(--cinza); margin: 1px 0; }
-.profissional-dados .badge-especialidade { font-size: 9px; padding: 2px 10px; border-radius: 12px; background: #E8F5E9; color: #2E7D32; margin-left: 6px; }
 .btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
 .btn-editar { background: #F5A623; color: white; }
 .btn-excluir { background: var(--vermelho); color: white; }
@@ -70,7 +69,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
-.form-group textarea { resize: vertical; min-height: 60px; }
+.form-group textarea { resize: vertical; min-height: 50px; }
 .form-group .campo-obrigatorio { color: var(--vermelho); }
 .form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
 .foto-container { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0; }
@@ -81,7 +80,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 .btn-salvar:hover { background: #A04A0E; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
-.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
+.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; background: #FFF8E7; padding: 8px 12px; border-radius: 6px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; }
@@ -118,7 +117,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
 
     <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item ativo"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
     <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
 
     <div class="nav-categoria">Atendimento</div>
@@ -155,12 +156,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
     <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiEspecialidades">0</div><div class="kpi-label">📌 Especialidades</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiRegistrados">0</div><div class="kpi-label">📜 Com Registro</div></div>
   </div>
 
   <div class="busca-bar">
-    <input type="text" id="buscaProfissional" placeholder="Buscar por nome, especialidade, CPF..." oninput="filtrar()">
-    <button class="btn-novo" onclick="window.location.href='pessoas.html'">+ Novo Profissional</button>
+    <input type="text" id="buscaProfissional" placeholder="Buscar por nome, profissão, CPF..." oninput="filtrar()">
+    <button class="btn-novo" onclick="abrirForm()">+ Novo Profissional</button>
   </div>
 
   <div id="listaProfissionais"></div>
@@ -180,21 +181,21 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </main>
 
-<!-- MODAL EDITAR -->
+<!-- MODAL FORM -->
 <div class="modal-overlay" id="modalForm" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="tituloModal">✏️ Editar Profissional</h3>
+      <h3 id="tituloModal">📝 Novo Profissional</h3>
       <button class="btn-fechar" onclick="fecharForm()">✕</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="profissionalId">
       <div class="form-grid">
-        <!-- ============================================ -->
-        <!-- SEÇÃO: FOTO (NO ALTO) -->
-        <!-- ============================================ -->
-        <div class="section-title">📸 Foto <span class="campo-opcional">(opcional)</span></div>
         
+        <!-- ============================================ -->
+        <!-- FOTO -->
+        <!-- ============================================ -->
+        <div class="section-title">📸 Foto do Profissional <span class="campo-opcional">(opcional)</span></div>
         <div class="form-full">
           <div class="form-group" style="text-align:center;">
             <div class="foto-container">
@@ -211,128 +212,111 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         </div>
 
         <!-- ============================================ -->
-        <!-- SEÇÃO: DADOS PESSOAIS -->
+        <!-- DADOS DO PROFISSIONAL -->
         <!-- ============================================ -->
-        <div class="section-title">👤 Dados Pessoais</div>
+        <div class="section-title">📋 DADOS DO PROFISSIONAL</div>
 
         <div class="form-full">
           <div class="form-group">
             <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="nomeProfissional" placeholder="Nome completo">
+            <input type="text" id="nomeProfissional" placeholder="Nome completo do profissional">
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>CPF</label>
-          <input type="text" id="cpfProfissional" placeholder="123.456.789-00">
-        </div>
-
-        <div class="form-group">
-          <label>RG</label>
-          <input type="text" id="rgProfissional" placeholder="RG">
-        </div>
-
-        <div class="form-group">
-          <label>Data de Nascimento</label>
-          <input type="date" id="dataNascProfissional">
-        </div>
-
-        <div class="form-group">
-          <label>Sexo</label>
-          <select id="sexoProfissional">
-            <option value="">Selecione...</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: CONTATO -->
-        <!-- ============================================ -->
-        <div class="section-title">📞 Contato</div>
-
-        <div class="form-group">
-          <label>Telefone</label>
-          <input type="text" id="telefoneProfissional" placeholder="(34) 99999-9999">
-        </div>
-
-        <div class="form-group">
-          <label>WhatsApp</label>
-          <input type="text" id="whatsappProfissional" placeholder="(34) 99999-9999">
         </div>
 
         <div class="form-full">
           <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" id="emailProfissional" placeholder="email@exemplo.com">
+            <label>Profissão <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="profissaoProfissional" placeholder="Ex: Psicólogo, Assistente Social, Pedagogo">
           </div>
         </div>
 
-        <!-- ============================================ -->
-        <!-- SEÇÃO: ENDEREÇO -->
-        <!-- ============================================ -->
-        <div class="section-title">📍 Endereço</div>
-
         <div class="form-full">
           <div class="form-group">
-            <label>Endereço</label>
-            <input type="text" id="enderecoProfissional" placeholder="Rua, número, bairro">
+            <label>Tem registro profissional? <span class="campo-obrigatorio">*</span></label>
+            <select id="registroProfissional" onchange="toggleSubCampo('registro')">
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
           </div>
         </div>
-
-        <div class="form-group">
-          <label>Cidade</label>
-          <input type="text" id="cidadeProfissional" placeholder="Cidade">
-        </div>
-
-        <div class="form-group">
-          <label>Estado</label>
-          <select id="estadoProfissional">
-            <option value="">Selecione...</option>
-            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
-            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
-            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
-            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
-            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
-            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
-            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
-            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
-            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-          </select>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: DADOS PROFISSIONAIS -->
-        <!-- ============================================ -->
-        <div class="section-title">💼 Dados Profissionais</div>
-
-        <div class="form-full">
+        <div class="form-full sub-campo" id="subRegistro">
           <div class="form-group">
-            <label>Especialidade / Área de Atuação</label>
-            <input type="text" id="especialidadeProfissional" placeholder="Ex: Psicólogo, Assistente Social, Pedagogo">
+            <label>Número do Registro</label>
+            <input type="text" id="registroNumero" placeholder="Ex: CRP 12/12345, CRESS 12345">
           </div>
         </div>
 
         <div class="form-group">
-          <label>Registro Profissional</label>
-          <input type="text" id="registroProfissional" placeholder="Ex: CRP 12/12345, CRESS 12345">
+          <div class="form-group">
+            <label>CPF <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="cpfProfissional" placeholder="000.000.000-00">
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Data de Admissão</label>
-          <input type="date" id="dataAdmissaoProfissional">
+          <div class="form-group">
+            <label>Telefone <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="telefoneProfissional" placeholder="(34) 99999-9999">
+          </div>
         </div>
-
-        <!-- ============================================ -->
-        <!-- SEÇÃO: INFORMAÇÕES ADICIONAIS -->
-        <!-- ============================================ -->
-        <div class="section-title">📋 Informações Adicionais</div>
 
         <div class="form-full">
           <div class="form-group">
-            <label>Observações</label>
-            <textarea id="obsProfissional" rows="3" placeholder="Informações adicionais..."></textarea>
+            <label>Tipo de vínculo <span class="campo-obrigatorio">*</span></label>
+            <select id="vinculoProfissional">
+              <option value="">Selecione...</option>
+              <option value="Colaborador">Colaborador</option>
+              <option value="Parceiro Social">Parceiro Social</option>
+              <option value="Prestador de Serviço">Prestador de Serviço</option>
+              <option value="Voluntário">Voluntário</option>
+              <option value="Estagiário">Estagiário</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- CREDENCIAIS DE ACESSO -->
+        <!-- ============================================ -->
+        <div class="section-title">🔐 CREDENCIAIS DE ACESSO</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Ambiente de Acesso</label>
+            <select id="ambienteAcesso">
+              <option value="">Selecione...</option>
+              <option value="Consulta">Consulta</option>
+              <option value="Administrativo">Administrativo</option>
+              <option value="Gestão">Gestão</option>
+              <option value="Atendimento">Atendimento</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Usuário</label>
+            <input type="text" id="usuarioAcesso" placeholder="Nome de usuário">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="senhaAcesso" placeholder="••••••••">
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- GERAR TERMOS -->
+        <!-- ============================================ -->
+        <div class="section-title">📄 GERAR TERMOS</div>
+
+        <div class="form-full">
+          <div class="form-group" style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="btn" style="background:var(--azul);color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="gerarTermo('Compromisso')">📄 Termo de Compromisso</button>
+            <button type="button" class="btn" style="background:var(--verde);color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="gerarTermo('Confidencialidade')">🔒 Termo de Confidencialidade</button>
+            <button type="button" class="btn" style="background:var(--laranja);color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="gerarTermo('PrestacaoServicos')">📋 Prestação de Serviços</button>
           </div>
         </div>
 
@@ -352,10 +336,25 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 // ============================================================
 // BANCO DE DADOS LOCAL
 // ============================================================
-var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+var profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
 var editandoId = null;
 var fotoDataURL = null;
 
+// Dados iniciais
+if (profissionais.length === 0) {
+    profissionais = [
+        { id: 1, nome: 'Constance Bonvicini', profissao: 'Psicólogo', registro: 'Não', registroNumero: '', cpf: '04434651692', telefone: '34 988105402', vinculo: 'Parceiro Social', ambienteAcesso: 'Consulta', usuarioAcesso: 'constance', senhaAcesso: '****', ativo: true, dataCadastro: '2026-07-01', foto: null }
+    ];
+    salvar();
+}
+
+function salvar() {
+    localStorage.setItem('amovin_profissionais', JSON.stringify(profissionais));
+}
+
+// ============================================================
+// FUNÇÕES DE FORMATAÇÃO
+// ============================================================
 function formatarDataBR(dataISO) {
     if (!dataISO) return '-';
     var partes = dataISO.split('-');
@@ -372,8 +371,22 @@ function getAvatarHtml(pessoa) {
     return '<div class="profissional-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
 }
 
-function salvar() {
-    localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
+// ============================================================
+// SUB-CAMPOS (mostrar/esconder)
+// ============================================================
+function toggleSubCampo(tipo) {
+    var map = {
+        'registro': { select: 'registroProfissional', sub: 'subRegistro' }
+    };
+    var item = map[tipo];
+    if (!item) return;
+    var select = document.getElementById(item.select);
+    var sub = document.getElementById(item.sub);
+    if (select.value === 'Sim') {
+        sub.classList.add('visible');
+    } else {
+        sub.classList.remove('visible');
+    }
 }
 
 // ============================================================
@@ -410,34 +423,55 @@ window.removerFoto = function() {
 };
 
 // ============================================================
+// GERAR TERMOS
+// ============================================================
+window.gerarTermo = function(tipo) {
+    var nome = document.getElementById('nomeProfissional').value.trim() || 'Profissional';
+    var profissao = document.getElementById('profissaoProfissional').value.trim() || 'Profissional';
+    var data = new Date().toLocaleDateString('pt-BR');
+    
+    var textos = {
+        'Compromisso': 'TERMO DE COMPROMISSO\n\nEu, ' + nome + ', profissional de ' + profissao + ', comprometo-me a desempenhar minhas atividades na AMOVIN com ética, responsabilidade e dedicação, respeitando o estatuto da instituição e as normas internas.\n\nRio Paranaíba/MG, ' + data,
+        'Confidencialidade': 'TERMO DE CONFIDENCIALIDADE\n\nEu, ' + nome + ', declaro que todas as informações a que tiver acesso durante minhas atividades na AMOVIN são de caráter confidencial e não serão divulgadas a terceiros sem autorização expressa.\n\nRio Paranaíba/MG, ' + data,
+        'PrestacaoServicos': 'TERMO DE PRESTAÇÃO DE SERVIÇOS\n\nEu, ' + nome + ', profissional de ' + profissao + ', comprometo-me a prestar serviços à AMOVIN conforme diretrizes estabelecidas, zelando pela qualidade e pelo bem-estar dos beneficiários.\n\nRio Paranaíba/MG, ' + data
+    };
+    
+    var texto = textos[tipo] || 'Termo gerado para ' + nome;
+    
+    var w = window.open('', '_blank');
+    w.document.write('<html><head><title>Termo - ' + tipo + '</title><style>body{font-family:Arial, sans-serif;padding:40px;line-height:1.8;max-width:600px;margin:0 auto;}h1{color:#C65A11;text-align:center;}pre{font-size:14px;white-space:pre-wrap;word-wrap:break-word;}</style></head><body><h1>AMOVIN</h1><pre>' + texto + '</pre><p style="text-align:center;margin-top:30px;">_________________________________<br>Assinatura</p><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+};
+
+// ============================================================
 // IMPORTAR PARA CRM
 // ============================================================
-function importarParaCRM(pessoa) {
+function importarParaCRM(profissional) {
     var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
     var existe = contatos.some(function(c) {
-        return c.nome === pessoa.nome && c.tipo === pessoa.tipo && c.origem === 'pessoas';
+        return c.nome === profissional.nome && c.tipo === 'profissional' && c.origem === 'pessoas';
     });
 
     if (!existe) {
         var novoContato = {
             id: Date.now(),
-            nome: pessoa.nome || '',
-            tipo: pessoa.tipo || 'crm',
-            cpf: pessoa.cpf || '',
-            rg: pessoa.rg || '',
-            tel1: pessoa.telefone || '',
-            whatsapp: pessoa.whatsapp || pessoa.telefone || '',
-            email: pessoa.email || '',
-            endereco: pessoa.endereco || '',
-            cidade: pessoa.cidade || '',
-            estado: pessoa.estado || '',
-            responsavel: pessoa.responsavel || '',
+            nome: profissional.nome || '',
+            tipo: 'profissional',
+            cpf: profissional.cpf || '',
+            rg: '',
+            tel1: profissional.telefone || '',
+            whatsapp: profissional.telefone || '',
+            email: '',
+            endereco: '',
+            cidade: '',
+            estado: '',
+            responsavel: '',
             categoria: 'Profissional',
-            obs: pessoa.obs || '',
+            obs: profissional.profissao || '',
             favorito: false,
             origem: 'pessoas',
             ativo: true,
-            foto: pessoa.foto || null,
+            foto: profissional.foto || null,
             dataCadastro: new Date().toISOString().split('T')[0]
         };
         contatos.push(novoContato);
@@ -451,19 +485,17 @@ function importarParaCRM(pessoa) {
 // RENDERIZAÇÃO
 // ============================================================
 function filtrar() {
-    var lista = pessoas.filter(function(p) { return p.tipo === 'profissional'; });
+    var lista = profissionais.slice();
 
     var busca = document.getElementById('buscaProfissional').value.toLowerCase();
     if (busca) {
         lista = lista.filter(function(p) {
             return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
-                   (p.cpf || '').indexOf(busca) >= 0 ||
-                   (p.especialidade || '').toLowerCase().indexOf(busca) >= 0 ||
-                   (p.obs || '').toLowerCase().indexOf(busca) >= 0;
+                   (p.profissao || '').toLowerCase().indexOf(busca) >= 0 ||
+                   (p.cpf || '').indexOf(busca) >= 0;
         });
     }
 
-    // ORDEM ALFABÉTICA
     lista.sort(function(a, b) {
         return (a.nome || '').localeCompare(b.nome || '');
     });
@@ -474,39 +506,31 @@ function filtrar() {
     } else {
         container.innerHTML = lista.map(function(p) {
             var status = p.ativo ? '✅ Ativo' : '❌ Inativo';
-            var especialidade = p.especialidade || p.obs || 'Profissional';
-            var registro = p.registro ? ' | 📜 ' + p.registro : '';
-            var telefone = p.telefone || p.whatsapp || '-';
-            var cidadeEstado = (p.cidade || '') + (p.estado ? '/' + p.estado : '');
-            if (!cidadeEstado) cidadeEstado = '-';
+            var registro = p.registro === 'Sim' ? '📜 ' + (p.registroNumero || 'Registrado') : 'Sem registro';
 
             return '<div class="profissional-card' + (p.ativo === false ? ' inativo' : '') + '">' +
                 '<div class="profissional-info">' +
                 getAvatarHtml(p) +
                 '<div class="profissional-dados">' +
-                '<h4>' + p.nome + ' <span class="badge-especialidade">' + especialidade + '</span></h4>' +
-                '<p>📞 ' + telefone + ' | 📧 ' + (p.email || '-') + registro + '</p>' +
-                '<p>📍 ' + cidadeEstado + ' | ' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
+                '<h4>' + p.nome + ' | ' + p.profissao + '</h4>' +
+                '<p>📞 ' + (p.telefone || '-') + ' | ' + registro + ' | 📋 ' + (p.vinculo || '-') + '</p>' +
+                '<p>' + status + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
                 '</div></div>' +
                 '<div class="contato-acoes">' +
                 '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
+                '<button class="btn-acao btn-excluir" onclick="excluirProfissional(' + p.id + ')">🗑️</button>' +
                 '<button class="btn-acao btn-crm" onclick="enviarParaCRM(' + p.id + ')">📤 CRM</button>' +
                 '</div></div>';
         }).join('');
     }
 
-    atualizarKPIs(lista);
+    atualizarKPIs();
 }
 
-function atualizarKPIs(lista) {
-    document.getElementById('kpiTotal').textContent = lista.length;
-    document.getElementById('kpiAtivos').textContent = lista.filter(function(p) { return p.ativo !== false; }).length;
-    var especialidades = {};
-    lista.forEach(function(p) {
-        var esp = p.especialidade || p.obs || 'Profissional';
-        especialidades[esp] = (especialidades[esp] || 0) + 1;
-    });
-    document.getElementById('kpiEspecialidades').textContent = Object.keys(especialidades).length;
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = profissionais.length;
+    document.getElementById('kpiAtivos').textContent = profissionais.filter(function(p) { return p.ativo !== false; }).length;
+    document.getElementById('kpiRegistrados').textContent = profissionais.filter(function(p) { return p.registro === 'Sim'; }).length;
 }
 
 // ============================================================
@@ -515,30 +539,28 @@ function atualizarKPIs(lista) {
 window.abrirForm = function(id) {
     editandoId = id || null;
     document.getElementById('modalForm').style.display = 'flex';
-    document.getElementById('tituloModal').textContent = '✏️ Editar Profissional';
+    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Profissional' : '📝 Novo Profissional';
 
     removerFoto();
 
     if (id) {
-        var p = pessoas.find(function(x) { return x.id === id; });
+        var p = profissionais.find(function(x) { return x.id === id; });
         if (!p) return;
         document.getElementById('profissionalId').value = p.id;
         document.getElementById('nomeProfissional').value = p.nome || '';
-        document.getElementById('cpfProfissional').value = p.cpf || '';
-        document.getElementById('rgProfissional').value = p.rg || '';
-        document.getElementById('dataNascProfissional').value = p.dataNasc || '';
-        document.getElementById('sexoProfissional').value = p.sexo || '';
-        document.getElementById('telefoneProfissional').value = p.telefone || '';
-        document.getElementById('whatsappProfissional').value = p.whatsapp || '';
-        document.getElementById('emailProfissional').value = p.email || '';
-        document.getElementById('enderecoProfissional').value = p.endereco || '';
-        document.getElementById('cidadeProfissional').value = p.cidade || '';
-        document.getElementById('estadoProfissional').value = p.estado || '';
-        document.getElementById('especialidadeProfissional').value = p.especialidade || p.obs || '';
+        document.getElementById('profissaoProfissional').value = p.profissao || '';
         document.getElementById('registroProfissional').value = p.registro || '';
-        document.getElementById('dataAdmissaoProfissional').value = p.dataAdmissao || '';
-        document.getElementById('obsProfissional').value = p.obs || '';
+        document.getElementById('registroNumero').value = p.registroNumero || '';
+        document.getElementById('cpfProfissional').value = p.cpf || '';
+        document.getElementById('telefoneProfissional').value = p.telefone || '';
+        document.getElementById('vinculoProfissional').value = p.vinculo || '';
+        document.getElementById('ambienteAcesso').value = p.ambienteAcesso || '';
+        document.getElementById('usuarioAcesso').value = p.usuarioAcesso || '';
+        document.getElementById('senhaAcesso').value = p.senhaAcesso || '';
         document.getElementById('ativoProfissional').checked = p.ativo !== false;
+
+        toggleSubCampo('registro');
+
         if (p.foto) {
             fotoDataURL = p.foto;
             var preview = document.getElementById('fotoPreview');
@@ -546,6 +568,20 @@ window.abrirForm = function(id) {
             preview.className = 'foto-preview visible';
             document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
         }
+    } else {
+        document.getElementById('profissionalId').value = '';
+        document.getElementById('nomeProfissional').value = '';
+        document.getElementById('profissaoProfissional').value = '';
+        document.getElementById('registroProfissional').value = '';
+        document.getElementById('registroNumero').value = '';
+        document.getElementById('cpfProfissional').value = '';
+        document.getElementById('telefoneProfissional').value = '';
+        document.getElementById('vinculoProfissional').value = '';
+        document.getElementById('ambienteAcesso').value = '';
+        document.getElementById('usuarioAcesso').value = '';
+        document.getElementById('senhaAcesso').value = '';
+        document.getElementById('ativoProfissional').checked = true;
+        toggleSubCampo('registro');
     }
 };
 
@@ -562,30 +598,48 @@ window.salvarProfissional = function() {
         return;
     }
 
+    var profissao = document.getElementById('profissaoProfissional').value.trim();
+    if (!profissao) {
+        alert('⚠️ Profissão é obrigatória!');
+        return;
+    }
+
+    var cpf = document.getElementById('cpfProfissional').value.replace(/\D/g, '');
+    if (!cpf || cpf.length < 6) {
+        alert('⚠️ CPF inválido! Digite um CPF válido.');
+        return;
+    }
+
+    var telefone = document.getElementById('telefoneProfissional').value.trim();
+    if (!telefone) {
+        alert('⚠️ Telefone é obrigatório!');
+        return;
+    }
+
+    var vinculo = document.getElementById('vinculoProfissional').value;
+    if (!vinculo) {
+        alert('⚠️ Tipo de vínculo é obrigatório!');
+        return;
+    }
+
     var dados = {
         nome: nome,
-        tipo: 'profissional',
-        cpf: document.getElementById('cpfProfissional').value.trim(),
-        rg: document.getElementById('rgProfissional').value.trim(),
-        dataNasc: document.getElementById('dataNascProfissional').value,
-        sexo: document.getElementById('sexoProfissional').value,
-        telefone: document.getElementById('telefoneProfissional').value.trim(),
-        whatsapp: document.getElementById('whatsappProfissional').value.trim(),
-        email: document.getElementById('emailProfissional').value.trim(),
-        endereco: document.getElementById('enderecoProfissional').value.trim(),
-        cidade: document.getElementById('cidadeProfissional').value.trim(),
-        estado: document.getElementById('estadoProfissional').value,
-        especialidade: document.getElementById('especialidadeProfissional').value.trim(),
-        registro: document.getElementById('registroProfissional').value.trim(),
-        dataAdmissao: document.getElementById('dataAdmissaoProfissional').value,
-        obs: document.getElementById('obsProfissional').value.trim(),
+        profissao: profissao,
+        registro: document.getElementById('registroProfissional').value,
+        registroNumero: document.getElementById('registroNumero').value.trim(),
+        cpf: cpf,
+        telefone: telefone,
+        vinculo: vinculo,
+        ambienteAcesso: document.getElementById('ambienteAcesso').value,
+        usuarioAcesso: document.getElementById('usuarioAcesso').value.trim(),
+        senhaAcesso: document.getElementById('senhaAcesso').value,
         ativo: document.getElementById('ativoProfissional').checked
     };
 
     if (fotoDataURL) {
         dados.foto = fotoDataURL;
     } else if (editandoId) {
-        var existente = pessoas.find(function(p) { return p.id === editandoId; });
+        var existente = profissionais.find(function(p) { return p.id === editandoId; });
         if (existente && existente.foto) {
             dados.foto = existente.foto;
         }
@@ -594,34 +648,37 @@ window.salvarProfissional = function() {
     console.log('📝 Dados a salvar:', dados);
 
     if (editandoId) {
-        var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
+        var idx = profissionais.findIndex(function(p) { return p.id === editandoId; });
         if (idx >= 0) {
             for (var k in dados) {
-                pessoas[idx][k] = dados[k];
+                profissionais[idx][k] = dados[k];
             }
-            pessoas[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
+            profissionais[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
         }
     } else {
         dados.id = Date.now();
         dados.dataCadastro = new Date().toISOString().split('T')[0];
-        pessoas.push(dados);
+        profissionais.push(dados);
     }
 
     salvar();
-    console.log('✅ Dados salvos! Total:', pessoas.length);
+    console.log('✅ Dados salvos! Total:', profissionais.length);
 
-    var pessoaSalva = pessoas.find(function(p) { return p.id === (editandoId || dados.id); });
+    var pessoaSalva = editandoId ? profissionais.find(function(p) { return p.id === editandoId; }) : dados;
     if (pessoaSalva) {
         importarParaCRM(pessoaSalva);
     }
 
     fecharForm();
     filtrar();
-    alert('✅ Profissional atualizado com sucesso!');
+    alert('✅ Profissional salvo com sucesso!');
 };
 
+// ============================================================
+// ENVIAR PARA CRM
+// ============================================================
 window.enviarParaCRM = function(id) {
-    var p = pessoas.find(function(x) { return x.id === id; });
+    var p = profissionais.find(function(x) { return x.id === id; });
     if (!p) return;
 
     var importado = importarParaCRM(p);
@@ -630,6 +687,21 @@ window.enviarParaCRM = function(id) {
     } else {
         alert('ℹ️ ' + p.nome + ' já existe no CRM Social.');
     }
+};
+
+// ============================================================
+// EXCLUIR
+// ============================================================
+window.excluirProfissional = function(id) {
+    var p = profissionais.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    if (!confirm('⚠️ Tem certeza que deseja excluir ' + p.nome + '?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social.')) return;
+
+    p.ativo = false;
+    salvar();
+    filtrar();
+    alert('✅ ' + p.nome + ' foi marcado como INATIVO.');
 };
 
 // ============================================================
@@ -642,11 +714,11 @@ filtrar();
 // ============================================================
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = {
-    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
     recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
     consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
     financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','agenda-telefonica']
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
 };
 
 var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
