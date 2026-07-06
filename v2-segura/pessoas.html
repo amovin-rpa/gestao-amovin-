@@ -125,8 +125,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <script>
 var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
 var editandoId = null;
-if (beneficiarios.length === 0) { beneficiarios.push({id:1,nome:'Maria Silva',idade:17,telefone:'(34) 99999-0001',projeto:'Inclusão Digital',status:'Ativo',foto:''}); beneficiarios.push({id:2,nome:'João Santos',idade:22,telefone:'(34) 99999-0002',projeto:'Esporte para Todos',status:'Ativo',foto:''}); salvar(); }
-function salvar() { localStorage.setItem('amovin_beneficiarios', JSON.stringify(beneficiarios)); }
+if (beneficiarios.length === 0) { beneficiarios.push({id:1,nome:'Maria Silva',idade:17,telefone:'(34) 99999-0001',projeto:'Inclusão Digital',status:'Ativo',foto:''}); beneficiarios.push({id:2,nome:'João Santos',idade:22,telefone:'(34) 99999-0002',projeto:'Esporte para Todos',status:'Ativo',foto:''}); salvarDados(); }
+function salvarDados() { localStorage.setItem('amovin_beneficiarios', JSON.stringify(beneficiarios)); }
 function atualizarKPIs() { document.getElementById('kpiTotal').textContent = beneficiarios.length; document.getElementById('kpiAtivos').textContent = beneficiarios.filter(function(b){return b.status==='Ativo';}).length; document.getElementById('kpiInativos').textContent = beneficiarios.filter(function(b){return b.status==='Inativo';}).length; }
 function filtrar() { var busca = document.getElementById('busca').value.toLowerCase(), ordem = document.getElementById('ordem').value, st = document.getElementById('filtroStatus').value, lista = []; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].nome.toLowerCase().indexOf(busca) >= 0 && (st === 'todos' || beneficiarios[i].status === st)) lista.push(beneficiarios[i]); } lista.sort(function(a,b){return ordem==='az'?a.nome.localeCompare(b.nome):b.nome.localeCompare(a.nome);}); mostrar(lista); }
 function mostrar(lista) {
@@ -153,15 +153,38 @@ window.abrirForm = function(id) {
 };
 window.fecharForm = function() { document.getElementById('modalForm').style.display = 'none'; };
 window.salvar = function() {
-    var n = document.getElementById('nomePessoa').value; if (!n) { alert('Preencha o nome!'); return; }
-    var fotoSalvar = ''; var imgEl = document.getElementById('fotoPreview').querySelector('img'); if (imgEl) { fotoSalvar = imgEl.src; }
-    var d = { nome:n, idade:document.getElementById('idadePessoa').value, nascimento:document.getElementById('nascimentoPessoa').value, cpf:document.getElementById('cpfPessoa').value, rg:document.getElementById('rgPessoa').value, telefone:document.getElementById('telefonePessoa').value, projeto:document.getElementById('projetoPessoa').value, status:document.getElementById('statusPessoa').value, diagnostico:document.getElementById('diagnosticoPessoa').value, cid:document.getElementById('cidPessoa').value, respNome:document.getElementById('respNome').value, respFone:document.getElementById('respFone').value, endereco:document.getElementById('enderecoPessoa').value, obs:document.getElementById('obsPessoa').value, foto: fotoSalvar };
-    if (editandoId) { var idx = -1; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === editandoId) { idx = i; break; } } if (idx >= 0) { for (var k in d) { beneficiarios[idx][k] = d[k]; } } }
-    else { d.id = Date.now(); beneficiarios.push(d); }
-    salvar(); filtrar(); atualizarKPIs(); fecharForm();
+    var nome = document.getElementById('nomePessoa').value;
+    if (!nome) { alert('Preencha o nome!'); return; }
+    
+    var fotoSalvar = '';
+    var previewDiv = document.getElementById('fotoPreview');
+    if (previewDiv) {
+        var imgElement = previewDiv.querySelector('img');
+        if (imgElement && imgElement.src && imgElement.src.indexOf('data:') >= 0) {
+            fotoSalvar = imgElement.src;
+        }
+    }
+    
+    var dados = {
+        nome: nome, idade: document.getElementById('idadePessoa').value, nascimento: document.getElementById('nascimentoPessoa').value,
+        cpf: document.getElementById('cpfPessoa').value, rg: document.getElementById('rgPessoa').value,
+        telefone: document.getElementById('telefonePessoa').value, projeto: document.getElementById('projetoPessoa').value,
+        status: document.getElementById('statusPessoa').value, diagnostico: document.getElementById('diagnosticoPessoa').value,
+        cid: document.getElementById('cidPessoa').value, respNome: document.getElementById('respNome').value,
+        respFone: document.getElementById('respFone').value, endereco: document.getElementById('enderecoPessoa').value,
+        obs: document.getElementById('obsPessoa').value, foto: fotoSalvar
+    };
+    
+    if (editandoId) {
+        for (var i = 0; i < beneficiarios.length; i++) {
+            if (beneficiarios[i].id === editandoId) { for (var k in dados) { beneficiarios[i][k] = dados[k]; } break; }
+        }
+    } else { dados.id = Date.now(); beneficiarios.push(dados); }
+    
+    salvarDados(); document.getElementById('modalForm').style.display = 'none'; filtrar(); atualizarKPIs();
 };
 window.editar = function(id) { abrirForm(id); };
-window.excluir = function(id) { if (!confirm('Excluir?')) return; var novo = []; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id !== id) novo.push(beneficiarios[i]); } beneficiarios = novo; salvar(); filtrar(); atualizarKPIs(); };
+window.excluir = function(id) { if (!confirm('Excluir?')) return; var novo = []; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id !== id) novo.push(beneficiarios[i]); } beneficiarios = novo; salvarDados(); filtrar(); atualizarKPIs(); };
 window.imprimir = function(id) { var b = null; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } } if (!b) return; var w = window.open('','_blank'); w.document.write('<html><head><title>Cadastro</title><style>body{font-family:Arial;padding:20px}</style></head><body><h2>AMOVIN</h2><p>Nome: '+b.nome+'</p><p>Idade: '+(b.idade||'-')+'</p><p>Projeto: '+b.projeto+'</p><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 window.imprimirTermo = function(id, tipo) { var b = null; for (var i = 0; i < beneficiarios.length; i++) { if (beneficiarios[i].id === id) { b = beneficiarios[i]; break; } } if (!b) return; var d = new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}); var w = window.open('','_blank'); w.document.write('<html><head><title>Termo</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}</style></head><body><h3>AMOVIN</h3><p><strong>'+(b.respNome||'___')+'</strong></p><p>Beneficiário: '+b.nome+'</p><p>Rio Paranaíba, '+d+'</p><div style="margin-top:50px;text-align:center;"><hr style="width:300px;">Assinatura</div><script>window.onload=function(){window.print()}<\/script></body></html>'); w.document.close(); };
 
