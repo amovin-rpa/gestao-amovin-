@@ -14,7 +14,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
 .sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
 .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
 .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
@@ -30,9 +30,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-.btn-sair-topo:hover { background: #F0E9DF; }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 22px; }
 .kpi-card { background: #FFFFFF; padding: 20px; border-radius: 14px; border: 1px solid #F0E9DF; display: flex; align-items: center; gap: 14px; }
 .kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
 .kpi-green { background: #E8F5E9; color: #2E7D32; }
@@ -45,14 +44,14 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .filtros-bar { background: #FFFFFF; padding: 16px 20px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
 .filtro-group { display: flex; flex-direction: column; gap: 4px; }
 .filtro-group label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; }
-.filtro-group select, .filtro-group input { padding: 9px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; background: white; min-width: 110px; }
-.btn-filtro { padding: 9px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; border: none; }
+.filtro-group select, .filtro-group input { padding: 9px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; background: white; min-width: 110px; font-family: 'Inter', sans-serif; }
+.btn-filtro { padding: 9px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
 .btn-limpar { background: #F0E9DF; color: #4B5563; }
 .btn-novo { background: var(--laranja); color: white; }
 .btn-export { background: var(--azul); color: white; }
 
 .tabela-container { background: #FFFFFF; border-radius: 14px; border: 1px solid #F0E9DF; overflow: hidden; margin-bottom: 20px; }
-.tabela-header { padding: 16px 20px; font-weight: 700; font-size: 15px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; }
+.tabela-header { padding: 16px 20px; font-weight: 700; font-size: 15px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; color: var(--grafite); }
 table { width: 100%; border-collapse: collapse; }
 th { background: #F8F4ED; padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 700; color: var(--cinza); text-transform: uppercase; }
 td { padding: 10px 12px; border-bottom: 1px solid #F0E9DF; font-size: 13px; }
@@ -65,41 +64,36 @@ tr:hover { background: #FFF8E7; }
 .badge-sim { background: #E8F5E9; color: #2E7D32; }
 .badge-nao { background: #FFEBEE; color: #C62828; }
 .btn-acao { padding: 5px 8px; border-radius: 5px; border: none; cursor: pointer; font-size: 10px; font-weight: 700; margin: 1px; }
-.btn-editar { background: #F5C518; color: #1A1A1A; }
+.btn-editar { background: var(--amarelo); color: #1A1A1A; }
 .btn-excluir { background: #E53935; color: white; }
 .btn-historico { background: #7B1FA2; color: white; }
 
 .log-container { background: #FFFFFF; border-radius: 14px; border: 1px solid #F0E9DF; overflow: hidden; margin-top: 20px; }
-.log-container h3 { padding: 16px 20px; font-size: 15px; border-bottom: 1px solid #F0E9DF; }
+.log-container h3 { padding: 16px 20px; font-size: 15px; border-bottom: 1px solid #F0E9DF; color: var(--grafite); }
 .log-item { padding: 10px 20px; border-bottom: 1px solid #F0E9DF; font-size: 12px; display: flex; justify-content: space-between; }
 .log-acao { font-weight: 600; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal { background: white; border-radius: 16px; width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 580px; max-height: 85vh; overflow-y: auto; }
 .modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
-.modal-header h3 { color: var(--grafite); }
+.modal-header h3 { color: var(--grafite); font-size: 16px; }
 .modal-body { padding: 22px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form-full { grid-column: 1 / -1; }
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-weight: 600; font-size: 11px; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+.form-group textarea { resize: vertical; min-height: 60px; }
 .toggle-group { display: flex; gap: 6px; }
-.toggle-btn { flex: 1; padding: 10px; border: 2px solid #E5E0D8; border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600; font-size: 12px; background: white; }
+.toggle-btn { flex: 1; padding: 10px; border: 2px solid #E5E0D8; border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600; font-size: 12px; background: white; transition: all 0.2s; }
 .toggle-btn.ativo { border-color: var(--laranja); background: #FFF3E0; color: var(--laranja); }
 .btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; }
-.rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; }
-.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
-.rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; }
-.rodape-info a { color: #C65A11; text-decoration: none; }
-.rodape-info .email { font-size: 8px; color: #aaa; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; } .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
@@ -109,47 +103,22 @@ tr:hover { background: #FFF8E7; }
 <body>
 
 <aside class="sidebar">
-  <div class="sidebar-header">
-    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-    <div class="sidebar-logo-fallback">🌻</div>
-    <div class="brand">Amovin ERP Social</div>
-  </div>
+  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div>
-    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
-    <div class="nav-categoria">Financeiro</div>
-    <a href="financeiro.html" class="nav-item ativo"><span class="icone">💰</span> Financeiro</a>
-    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
-    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
-    <div class="nav-categoria">Pessoas</div>
-    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
-    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
-    <div class="nav-categoria">Atendimento</div>
-    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
-    <div class="nav-categoria">Documentos</div>
-    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
-    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
-    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
-    <div class="nav-categoria">Educação</div>
-    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
-    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
-    <div class="nav-categoria">Comunicação</div>
-    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
-    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
-    <div class="nav-categoria">Relatórios</div>
-    <a href="relatorios.html" class="nav-item"><span class="icone">📋</span> Relatórios</a>
-    <div class="nav-categoria">Sistema</div>
-    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
-    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a><a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+    <div class="nav-categoria">Financeiro</div><a href="financeiro.html" class="nav-item ativo"><span class="icone">💰</span> Financeiro</a><a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a><a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+    <div class="nav-categoria">Pessoas</div><a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a><a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+    <div class="nav-categoria">Atendimento</div><a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+    <div class="nav-categoria">Documentos</div><a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a><a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a><a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+    <div class="nav-categoria">Educação</div><a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a><a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+    <div class="nav-categoria">Comunicação</div><a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a><a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+    <div class="nav-categoria">Relatórios</div><a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
 <main class="main-content">
-  <div class="topo-bar">
-    <h1>💰 Gestão Financeira</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
+  <div class="topo-bar"><h1>💰 Gestão Financeira</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-icon kpi-green">📥</div><div class="kpi-info"><div class="kpi-valor" id="kpiReceitas">R$ 0</div><div class="kpi-label">Receitas</div></div></div>
@@ -178,28 +147,19 @@ tr:hover { background: #FFF8E7; }
 
   <div class="log-container"><h3>📝 Histórico</h3><div id="logBody"></div></div>
 
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
+  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
 <div class="modal-overlay" id="modalForm" style="display:none;"><div class="modal"><div class="modal-header"><h3 id="tituloModal">Novo Lançamento</h3><button class="btn-fechar" onclick="fecharForm()">✕</button></div><div class="modal-body"><input type="hidden" id="transacaoId"><div class="form-grid">
   <div class="form-group"><label>Tipo</label><div class="toggle-group"><div class="toggle-btn ativo" id="toggleReceita" onclick="setTipo('receita')">📥 Receita</div><div class="toggle-btn" id="toggleDespesa" onclick="setTipo('despesa')">📤 Despesa</div></div></div>
   <div class="form-group"><label>Status</label><select id="statusTransacao"><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
   <div class="form-group"><label>Categoria</label><select id="categoriaTransacao"><option value="">Selecione...</option><option>Doação</option><option>Evento</option><option>Subvenção</option><option>Material</option><option>Serviços</option><option>Convênio</option><option>Emenda</option><option>Patrocínio</option><option>Salário</option><option>Aluguel</option><option>Transporte</option><option>Outros</option></select></div>
-  <div class="form-group"><label>Empresa</label><input type="text" id="empresaTransacao"></div>
-  <div class="form-group"><label>Descrição *</label><input type="text" id="descricaoTransacao" required></div>
-  <div class="form-group"><label>Data *</label><input type="date" id="dataTransacao" required></div>
+  <div class="form-group"><label>Empresa/Pessoa</label><input type="text" id="empresaTransacao"></div>
+  <div class="form-full"><div class="form-group"><label>Descrição *</label><input type="text" id="descricaoTransacao"></div></div>
+  <div class="form-group"><label>Data *</label><input type="date" id="dataTransacao"></div>
   <div class="form-group"><label>Valor (R$) *</label><input type="number" id="valorTransacao" step="0.01" min="0.01"></div>
-  <div class="form-full"><label>Comprovante Fiscal</label><div class="toggle-group"><div class="toggle-btn ativo" id="toggleCompSim" onclick="setComprovante(true)">✅ Sim</div><div class="toggle-btn" id="toggleCompNao" onclick="setComprovante(false)">❌ Não</div></div></div>
-  <div class="form-full"><label>Observações</label><textarea id="obsTransacao" rows="2"></textarea></div>
+  <div class="form-full"><div class="form-group"><label>Comprovante Fiscal</label><div class="toggle-group"><div class="toggle-btn ativo" id="toggleCompSim" onclick="setComprovante(true)">✅ Sim</div><div class="toggle-btn" id="toggleCompNao" onclick="setComprovante(false)">❌ Não</div></div></div></div>
+  <div class="form-full"><div class="form-group"><label>Observações</label><textarea id="obsTransacao" rows="2" placeholder="Detalhes adicionais..."></textarea></div></div>
 </div><button class="btn-salvar" onclick="salvarTransacao()">💾 Salvar</button></div></div></div>
 
 <script>
@@ -215,11 +175,11 @@ if (transacoes.length === 0) {
         {id:3,tipo:'despesa',descricao:'Salários',categoria:'Salário',empresa:'',valor:12000,data:'2026-06-14',status:'Pago',comprovante:true,obs:'',criadoPor:'Admin',criadoEm:'2026-06-14T09:00:00'},
         {id:4,tipo:'despesa',descricao:'Material Inclusão',categoria:'Material',empresa:'Papelaria',valor:5200,data:'2026-06-16',status:'Pendente',comprovante:false,obs:'',criadoPor:'Financeiro',criadoEm:'2026-06-16T11:00:00'}
     ];
-    salvar();
+    salvarDados();
 }
 
-function salvar() { localStorage.setItem('amovin_financeiro', JSON.stringify(transacoes)); localStorage.setItem('amovin_financeiro_logs', JSON.stringify(logs)); }
-function addLog(a,d) { logs.unshift({id:Date.now(),acao:a,detalhes:d,usuario:usuarioAtual,data:new Date().toISOString()}); if(logs.length>100)logs=logs.slice(0,100); salvar(); renderizarLogs(); }
+function salvarDados() { localStorage.setItem('amovin_financeiro', JSON.stringify(transacoes)); localStorage.setItem('amovin_financeiro_logs', JSON.stringify(logs)); }
+function addLog(a,d) { logs.unshift({id:Date.now(),acao:a,detalhes:d,usuario:usuarioAtual,data:new Date().toISOString()}); if(logs.length>100)logs=logs.slice(0,100); salvarDados(); renderizarLogs(); }
 function fm(v){ return 'R$ '+v.toFixed(2).replace('.',','); }
 function fd(d){ if(!d)return'-'; var p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
 
@@ -248,11 +208,7 @@ function filtrar() {
     document.getElementById('totalRegistros').textContent=l.length+' registros';
 }
 
-function renderizarLogs() {
-    var c=document.getElementById('logBody');
-    if(logs.length===0){c.innerHTML='<div class="sem-dados">Nenhuma alteração.</div>';return;}
-    c.innerHTML=logs.slice(0,15).map(function(l){return '<div class="log-item"><span><strong>'+l.acao+'</strong> - '+l.detalhes+'</span><span style="color:var(--cinza);font-size:10px;">👤 '+l.usuario+' • '+new Date(l.data).toLocaleString('pt-BR')+'</span></div>';}).join('');
-}
+function renderizarLogs() { var c=document.getElementById('logBody'); if(logs.length===0){c.innerHTML='<div class="sem-dados">Nenhuma alteração.</div>';return;} c.innerHTML=logs.slice(0,15).map(function(l){return '<div class="log-item"><span><strong>'+l.acao+'</strong> - '+l.detalhes+'</span><span style="color:var(--cinza);font-size:10px;">👤 '+l.usuario+' • '+new Date(l.data).toLocaleString('pt-BR')+'</span></div>';}).join(''); }
 
 function popularFiltros() {
     var anos=new Set(transacoes.map(function(t){return (t.data||'').substring(0,4);}).filter(Boolean));
@@ -262,8 +218,7 @@ function popularFiltros() {
 }
 
 window.abrirForm=function(id){
-    editandoId=id||null;
-    document.getElementById('modalForm').style.display='flex';
+    editandoId=id||null; document.getElementById('modalForm').style.display='flex';
     document.getElementById('tituloModal').textContent=id?'Editar Lançamento':'Novo Lançamento';
     document.getElementById('dataTransacao').value=new Date().toISOString().split('T')[0];
     if(id){var t=transacoes.find(function(t){return t.id===id;});if(!t)return;
@@ -288,16 +243,15 @@ window.salvarTransacao=function(){
     var dados={tipo:tipoAtual,descricao:d,categoria:c,empresa:document.getElementById('empresaTransacao').value.trim(),valor:v,data:dt,status:document.getElementById('statusTransacao').value,comprovante:comprovanteAtual,obs:document.getElementById('obsTransacao').value.trim()};
     if(editandoId){var idx=transacoes.findIndex(function(t){return t.id===editandoId;});if(idx>=0){transacoes[idx]=Object.assign({},transacoes[idx],dados,{atualizadoPor:usuarioAtual,atualizadoEm:new Date().toISOString()});addLog('✏️ Editou','"'+d+'" - R$ '+v.toFixed(2));}}
     else{var novo=Object.assign({id:Date.now()},dados,{criadoPor:usuarioAtual,criadoEm:new Date().toISOString()});transacoes.push(novo);addLog('➕ Criou','"'+d+'" - R$ '+v.toFixed(2));}
-    salvar();fecharForm();popularFiltros();filtrar();renderizarLogs();
+    salvarDados();fecharForm();popularFiltros();filtrar();renderizarLogs();
 };
 window.editar=function(id){abrirForm(id);};
-window.excluir=function(id){var t=transacoes.find(function(t){return t.id===id;});if(!t||!confirm('Excluir?'))return;addLog('🗑️ Excluiu','"'+t.descricao+'"');transacoes=transacoes.filter(function(t){return t.id!==id;});salvar();popularFiltros();filtrar();renderizarLogs();};
+window.excluir=function(id){var t=transacoes.find(function(t){return t.id===id;});if(!t||!confirm('Excluir?'))return;addLog('🗑️ Excluiu','"'+t.descricao+'"');transacoes=transacoes.filter(function(t){return t.id!==id;});salvarDados();popularFiltros();filtrar();renderizarLogs();};
 window.limparFiltros=function(){document.getElementById('filtroAno').value='todos';document.getElementById('filtroMes').value='todos';document.getElementById('filtroTipo').value='todos';document.getElementById('filtroCategoria').value='todos';document.getElementById('filtroStatus').value='todos';document.getElementById('filtroComprovante').value='todos';document.getElementById('filtroBusca').value='';filtrar();};
-window.exportarCSV=function(){var l=[...transacoes].sort(function(a,b){return new Date(b.data)-new Date(a.data);});var csv='Data;Tipo;Categoria;Empresa;Descrição;Valor;Status;Comprovante\n';l.forEach(function(t){csv+=fd(t.data)+';'+(t.tipo==='receita'?'Receita':'Despesa')+';'+t.categoria+';'+(t.empresa||'')+';"'+t.descricao+'";'+t.valor.toFixed(2).replace('.',',')+';'+t.status+';'+(t.comprovante?'Sim':'Não')+'\n';});var blob=new Blob(['\uFEFF'+csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AMOVIN_Financeiro.csv';a.click();};
+window.exportarCSV=function(){var l=[...transacoes].sort(function(a,b){return new Date(b.data)-new Date(a.data);});var csv='Data;Tipo;Categoria;Empresa;Descrição;Valor;Status;Comprovante;Obs\n';l.forEach(function(t){csv+=fd(t.data)+';'+(t.tipo==='receita'?'Receita':'Despesa')+';'+t.categoria+';'+(t.empresa||'')+';"'+t.descricao+'";'+t.valor.toFixed(2).replace('.',',')+';'+t.status+';'+(t.comprovante?'Sim':'Não')+';"'+(t.obs||'')+'"\n';});var blob=new Blob(['\uFEFF'+csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AMOVIN_Financeiro.csv';a.click();};
 
 if(!sessionStorage.getItem('amovin_logado'))window.location.href='index.html';
-history.pushState(null,null,location.href);
-window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
+history.pushState(null,null,location.href);window.addEventListener('popstate',function(){history.pushState(null,null,location.href);sessionStorage.clear();window.location.href='index.html';});
 var timeout;function resetTimeout(){clearTimeout(timeout);timeout=setTimeout(function(){sessionStorage.clear();alert('Sessão expirada.');window.location.href='index.html';},30*60*1000);}
 document.addEventListener('mousemove',resetTimeout);document.addEventListener('keypress',resetTimeout);document.addEventListener('click',resetTimeout);resetTimeout();
 
