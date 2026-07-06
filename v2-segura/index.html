@@ -3,412 +3,1444 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AMOVIN • Acesso</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+<title>AMOVIN • Acesso ao Sistema</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ============================================
+   VARIÁVEIS CSS - IDENTIDADE VISUAL AMOVIN
+   ============================================ */
 :root {
   --amarelo: #E8B923;
   --amarelo-escuro: #D4A017;
   --grafite: #2C2C2C;
   --cinza: #6B7280;
   --fundo: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #DC2626;
+  --verde: #059669;
+  --sombra-suave: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --sombra-media: 0 8px 40px rgba(0, 0, 0, 0.1);
+  --sombra-forte: 0 20px 60px rgba(0, 0, 0, 0.15);
+  --raio: 16px;
+  --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ============================================
+   RESET & BASE
+   ============================================ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: linear-gradient(145deg, #F8F4ED 0%, #F1E9DD 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #F8F4ED 0%, #F1E9DD 50%, #EDE5D9 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
-  flex-direction: column;
-  gap: 16px;
+  padding: 20px;
+  color: var(--grafite);
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-.login-card {
-  background: #FFFFFF;
+/* ============================================
+   LAYOUT PRINCIPAL
+   ============================================ */
+.login-container {
+  display: flex;
   width: 100%;
-  max-width: 380px;
-  border-radius: 20px;
-  padding: 48px 42px 42px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08),
-              0 0 0 1px rgba(0, 0, 0, 0.03);
-  border: 1px solid #F0E9DF;
-  text-align: center;
+  max-width: 1400px;
+  min-height: 600px;
+  background: var(--branco);
+  border-radius: 24px;
+  box-shadow: var(--sombra-forte);
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease-out;
 }
 
-/* Logo e Identidade */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   PAINEL LATERAL INSTITUCIONAL (DESKTOP)
+   ============================================ */
+.institutional-panel {
+  flex: 1;
+  background: linear-gradient(135deg, var(--grafite) 0%, #1a1a1a 100%);
+  color: var(--branco);
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.institutional-panel::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(232, 185, 35, 0.1) 0%, transparent 70%);
+  animation: pulse 8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.institutional-content {
+  position: relative;
+  z-index: 2;
+}
+
+.institutional-logo {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 40px;
+  filter: drop-shadow(0 8px 20px rgba(232, 185, 35, 0.3));
+}
+
+.institutional-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.institutional-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.institutional-quote {
+  font-size: 18px;
+  font-style: italic;
+  color: var(--amarelo);
+  margin-bottom: 50px;
+  padding-left: 20px;
+  border-left: 3px solid var(--amarelo);
+}
+
+.features-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  transition: var(--transicao);
+}
+
+.feature-item:hover {
+  color: var(--amarelo);
+  transform: translateX(5px);
+}
+
+.feature-icon {
+  width: 24px;
+  height: 24px;
+  background: rgba(232, 185, 35, 0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.institutional-footer {
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================
+   CARD DE LOGIN
+   ============================================ */
+.login-card {
+  flex: 1;
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
 .logo {
-  width: 120px;
-  height: auto;
-  margin-bottom: 8px;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  filter: drop-shadow(0 4px 12px rgba(232, 185, 35, 0.2));
 }
 
 .logo-fallback {
-  font-size: 88px;
-  margin-bottom: 2px;
-  line-height: 1;
-  filter: drop-shadow(0 4px 14px rgba(232, 185, 35, 0.18));
+  font-size: 64px;
   display: none;
+  filter: drop-shadow(0 4px 12px rgba(232, 185, 35, 0.2));
 }
 
-.brand {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 23px;
+.brand-name {
+  font-size: 28px;
   font-weight: 700;
   color: var(--grafite);
+  margin-bottom: 8px;
   letter-spacing: -0.5px;
-  margin-bottom: 1px;
 }
 
-.tagline {
-  font-size: 10.5px;
-  color: #8A8F98;
-  letter-spacing: 2.2px;
-  margin-bottom: 34px;
-}
-
-/* Tabs */
-.tabs {
-  display: flex;
-  background: #F8F4ED;
-  border-radius: 12px;
-  padding: 5px;
-  margin-bottom: 28px;
-  gap: 4px;
-}
-
-.tab {
-  flex: 1;
-  padding: 10px 0;
-  border: none;
-  background: transparent;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #6B7280;
-  border-radius: 9px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tab.active {
-  background: #E8B923;
-  color: #2C2C2C;
-  box-shadow: 0 2px 8px rgba(232, 185, 35, 0.25);
-  font-weight: 700;
-}
-
-/* Formulário */
-.form-group {
-  margin-bottom: 17px;
-  text-align: left;
-}
-
-.form-group label {
-  display: block;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 6px;
-  letter-spacing: 0.5px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 14px 17px;
-  border: 1.5px solid #EDE5D9;
-  border-radius: 13px;
-  font-size: 15px;
-  transition: all 0.2s ease;
-  background: #fff;
-}
-
-.form-group input:focus {
-  border-color: #E8B923;
-  box-shadow: 0 0 0 4px rgba(232, 185, 35, 0.1);
-  outline: none;
-}
-
-.btn {
-  width: 100%;
-  padding: 15px;
-  background: #E8B923;
-  color: #2C2C2C;
-  border: none;
-  border-radius: 13px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-  box-shadow: 0 4px 14px rgba(232, 185, 35, 0.25);
-}
-
-.btn:hover {
-  background: #D4A017;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(232, 185, 35, 0.3);
-}
-
-.erro {
-  background: #FFF5F5;
-  color: #B91C1C;
-  padding: 11px 13px;
-  border-radius: 9px;
-  font-size: 12.5px;
-  margin-bottom: 16px;
-  display: none;
-  border-left: 3px solid #B91C1C;
-  text-align: left;
-}
-
-.erro.show { display: block; }
-
-/* Rodapé */
-.rodape {
-  background: #FFFFFF;
-  width: 100%;
-  max-width: 380px;
-  border-radius: 14px;
-  padding: 12px 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  border: 1px solid #F0E9DF;
-}
-
-.rodape-grid {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.rodape-logo {
-  flex-shrink: 0;
-}
-
-.rodape-logo .logo-vigorre {
-  width: 50px;
-  height: auto;
-}
-
-.rodape-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.rodape-info .copyright {
-  font-size: 8px;
-  color: #8A8F98;
-  letter-spacing: 0.2px;
-  margin-bottom: 3px;
-}
-
-.rodape-info .tm {
-  font-size: 6px;
-  vertical-align: super;
-}
-
-.rodape-info .contato {
-  font-size: 9px;
-  color: #8A8F98;
-  margin-bottom: 2px;
-}
-
-.rodape-info a {
-  color: #C65A11;
-  text-decoration: none;
+.brand-subtitle {
+  font-size: 13px;
+  color: var(--cinza);
+  letter-spacing: 1px;
+  text-transform: uppercase;
   font-weight: 500;
 }
 
-.rodape-info .divider {
-  color: #D1D5DB;
-  margin: 0 6px;
+/* ============================================
+   FORMULÁRIO
+   ============================================ */
+.login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-.rodape-info .email {
-  font-size: 8px;
-  color: #aaa;
+.form-group {
+  margin-bottom: 24px;
 }
 
-.logo-vigorre-fallback {
-  font-size: 12px;
-  font-weight: 700;
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--grafite);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px 14px 48px;
+  border: 2px solid #E5E7EB;
+  border-radius: var(--raio);
+  font-size: 15px;
+  transition: var(--transicao);
+  background: var(--branco);
+  color: var(--grafite);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--amarelo);
+  box-shadow: 0 0 0 4px rgba(232, 185, 35, 0.1);
+}
+
+.form-input::placeholder {
+  color: #9CA3AF;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cinza);
+  font-size: 18px;
+  transition: var(--transicao);
+}
+
+.form-input:focus ~ .input-icon {
+  color: var(--amarelo);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--cinza);
+  cursor: pointer;
+  font-size: 18px;
+  transition: var(--transicao);
+  padding: 4px;
+}
+
+.password-toggle:hover {
+  color: var(--amarelo);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--amarelo);
+}
+
+.forgot-link {
+  color: var(--amarelo-escuro);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transicao);
+}
+
+.forgot-link:hover {
+  color: var(--amarelo);
+  text-decoration: underline;
+}
+
+/* ============================================
+   BOTÃO PRINCIPAL
+   ============================================ */
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background: var(--amarelo);
+  color: var(--grafite);
+  border: none;
+  border-radius: var(--raio);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transicao);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(232, 185, 35, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover:not(:disabled)::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--amarelo-escuro);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(232, 185, 35, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background: #D1D5DB;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-primary.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(44, 44, 44, 0.2);
+  border-top-color: var(--grafite);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
   display: none;
 }
 
-/* LGPD */
-.lgpd-banner {
-  background: #FFFFFF;
-  width: 100%;
-  max-width: 380px;
-  border-radius: 14px;
-  padding: 12px 18px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  border: 1px solid #F0E9DF;
-  font-size: 10px;
-  color: #6B7280;
+.btn-primary.loading .spinner {
+  display: block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn-hint {
   text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--cinza);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-hint.show {
+  color: var(--vermelho);
+  font-weight: 600;
+}
+
+/* ============================================
+   MENSAGEM DE ERRO
+   ============================================ */
+.error-message {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-left: 4px solid var(--vermelho);
+  color: #991B1B;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+.error-message.show {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   RODAPÉ
+   ============================================ */
+.footer {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #E5E7EB;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.footer-logo {
+  width: 60px;
+  height: auto;
+  opacity: 0.6;
+  transition: var(--transicao);
+}
+
+.footer-logo:hover {
+  opacity: 1;
+}
+
+.footer-info {
+  font-size: 11px;
+  color: var(--cinza);
+  line-height: 1.8;
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-links a {
+  color: var(--amarelo-escuro);
+  text-decoration: none;
+  transition: var(--transicao);
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  color: var(--amarelo);
+  text-decoration: underline;
+}
+
+.footer-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--verde);
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--verde);
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ============================================
+   MODAL LGPD
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.lgpd-modal {
+  background: var(--branco);
+  border-radius: 20px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--sombra-forte);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--grafite);
+  margin-bottom: 8px;
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: var(--cinza);
+}
+
+.modal-body {
+  padding: 32px;
+}
+
+.lgpd-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--grafite);
+  margin-bottom: 24px;
+}
+
+.lgpd-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px 0 10px;
+  color: var(--grafite);
+}
+
+.lgpd-content ul {
+  margin-left: 20px;
+  margin-bottom: 16px;
+}
+
+.lgpd-content li {
+  margin-bottom: 8px;
+  color: var(--cinza);
+}
+
+.lgpd-links {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.lgpd-links a {
+  color: var(--amarelo-escuro);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: var(--transicao);
+}
+
+.lgpd-links a:hover {
+  color: var(--amarelo);
+  text-decoration: underline;
+}
+
+.checkbox-agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  background: #F9FAFB;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.checkbox-agreement input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--amarelo);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkbox-agreement label {
+  font-size: 13px;
+  color: var(--grafite);
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.modal-footer {
+  padding: 24px 32px 32px;
+  display: flex;
+  justify-content: flex-end;
   gap: 12px;
 }
 
-.lgpd-banner button {
-  background: #E8B923;
-  color: #2C2C2C;
-  border: none;
-  padding: 7px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 10px;
-  white-space: nowrap;
-  transition: all 0.2s ease;
+.btn-secondary {
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--cinza);
+  border: 2px solid #E5E7EB;
+  border-radius: var(--raio);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
-.lgpd-banner button:hover {
-  background: #D4A017;
+.btn-secondary.enabled {
+  background: var(--amarelo);
+  color: var(--grafite);
+  border-color: var(--amarelo);
+  cursor: pointer;
+  opacity: 1;
+  transition: var(--transicao);
+}
+
+.btn-secondary.enabled:hover {
+  background: var(--amarelo-escuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(232, 185, 35, 0.3);
+}
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+@media (max-width: 1024px) {
+  .institutional-panel {
+    display: none;
+  }
+  
+  .login-card {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    min-height: auto;
+  }
+  
+  .institutional-panel {
+    display: none !important;
+  }
+  
+  .login-card {
+    padding: 30px 20px;
+  }
+  
+  .brand-name {
+    font-size: 24px;
+  }
+  
+  .features-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-body {
+    padding: 24px;
+  }
+  
+  .modal-header {
+    padding: 24px;
+  }
+  
+  .modal-footer {
+    padding: 20px 24px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+  
+  .login-container {
+    border-radius: 0;
+    min-height: 100vh;
+  }
+  
+  .login-card {
+    padding: 24px 16px;
+  }
+  
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .brand-name {
+    font-size: 20px;
+  }
+  
+  .form-input {
+    padding: 12px 14px 12px 40px;
+    font-size: 14px;
+  }
+  
+  .btn-primary {
+    padding: 14px;
+    font-size: 14px;
+  }
+}
+
+/* ============================================
+   ACESSIBILIDADE
+   ============================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--amarelo);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   UTILITÁRIOS
+   ============================================ */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-20 {
+  margin-top: 20px;
 }
 </style>
 </head>
 <body>
 
-<div class="login-card">
-  
-  <!-- Logo AMOVIN -->
-  <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-  <div class="logo-fallback">🌻</div>
-  
-  <div class="brand">Amovin ERP Social</div>
-  <div class="tagline">SISTEMA DE GESTÃO</div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" data-tab="admin">Administrador</button>
-    <button class="tab" data-tab="recepcao">Recepção</button>
-    <button class="tab" data-tab="consulta">Consulta</button>
-  </div>
-
-  <div class="erro" id="erroMsg"></div>
-
-  <!-- Formulário -->
-  <form id="loginForm">
-    <div class="form-group">
-      <label>Login</label>
-      <input type="text" id="nome" required placeholder="Seu login">
+<!-- ============================================
+     MODAL LGPD (OBRIGATÓRIO)
+     ============================================ -->
+<div class="modal-overlay" id="lgpdModal" role="dialog" aria-labelledby="lgpdTitle" aria-modal="true">
+  <div class="lgpd-modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="lgpdTitle">Política de Privacidade e LGPD</h2>
+      <p class="modal-subtitle">AMOVIN ERP Social - Proteção de Dados</p>
     </div>
     
-    <div class="form-group" id="grupoSenha">
-      <label>Senha</label>
-      <input type="password" id="senha" placeholder="••••••••">
-    </div>
-
-    <button type="submit" class="btn">Entrar no Sistema</button>
-  </form>
-
-</div>
-
-<!-- LGPD -->
-<div class="lgpd-banner" id="lgpdBanner">
-  <span>🍪 Cookies essenciais. Ao continuar, você concorda com a <strong>LGPD</strong>.</span>
-  <button onclick="document.getElementById('lgpdBanner').style.display='none';localStorage.setItem('lgpd_aceito','true');">ENTENDI</button>
-</div>
-
-<!-- Rodapé Vigorre -->
-<div class="rodape">
-  <div class="rodape-grid">
-    <div class="rodape-logo">
-      <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-      <span class="logo-vigorre-fallback">Vigorre</span>
-    </div>
-    <div class="rodape-info">
-      <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
-      <div class="contato">
-        <a href="https://www.vigorre.com.br" target="_blank">www.vigorre.com.br</a>
-        <span class="divider">|</span>
-        <a href="https://wa.me/5534991850735" target="_blank">(34) 99185-0735</a>
+    <div class="modal-body">
+      <div class="lgpd-content">
+        <p>A <strong>AMOVIN</strong> está comprometida com a proteção da sua privacidade e com o tratamento seguro dos seus dados pessoais, em conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018)</strong>.</p>
+        
+        <h4>📋 Tratamento dos Dados</h4>
+        <ul>
+          <li>Coletamos apenas dados necessários para o funcionamento do sistema</li>
+          <li>Seus dados são utilizados exclusivamente para gestão institucional</li>
+          <li>Não compartilhamos informações com terceiros sem autorização</li>
+        </ul>
+        
+        <h4>🔒 Segurança</h4>
+        <ul>
+          <li>Criptografia de dados em trânsito e em repouso</li>
+          <li>Controle de acesso baseado em perfis e permissões</li>
+          <li>Auditoria completa de todas as operações</li>
+          <li>Backups automáticos e redundância de dados</li>
+        </ul>
+        
+        <h4>🍪 Cookies Essenciais</h4>
+        <p>Utilizamos cookies essenciais para manter sua sessão ativa e garantir a segurança do acesso. Não utilizamos cookies de rastreamento ou publicidade.</p>
+        
+        <h4>👤 Seus Direitos</h4>
+        <ul>
+          <li>Acessar seus dados pessoais a qualquer momento</li>
+          <li>Solicitar correção de dados incompletos ou incorretos</li>
+          <li>Solicitar exclusão de dados (quando permitido por lei)</li>
+          <li>Revogar consentimento a qualquer momento</li>
+        </ul>
       </div>
-      <div class="email">contato@vigorre.com.br</div>
+      
+      <div class="lgpd-links">
+        <a href="#" onclick="alert('Política de Privacidade completa'); return false;">📄 Política de Privacidade</a>
+        <a href="#" onclick="alert('Termos de Uso completos'); return false;">📋 Termos de Uso</a>
+      </div>
+      
+      <div class="checkbox-agreement">
+        <input type="checkbox" id="lgpdCheckbox" aria-label="Li e concordo com a Política de Privacidade e LGPD">
+        <label for="lgpdCheckbox">
+          Li e concordo com a <strong>Política de Privacidade</strong> e com os termos da <strong>LGPD</strong>. 
+          Compreendo que meus dados serão tratados conforme descrito e que tenho direitos garantidos pela legislação vigente.
+        </label>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" id="btnContinuar" disabled onclick="aceitarLGPD()">
+        Continuar
+      </button>
     </div>
   </div>
 </div>
 
-<script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+<!-- ============================================
+     CONTAINER PRINCIPAL DE LOGIN
+     ============================================ -->
+<div class="login-container">
+  
+  <!-- PAINEL LATERAL INSTITUCIONAL (DESKTOP) -->
+  <aside class="institutional-panel" aria-label="Informações institucionais">
+    <div class="institutional-content">
+      <div>
+        <img src="images/amovin-logo.png" alt="Logo AMOVIN" class="institutional-logo" onerror="this.style.display='none'">
+        
+        <h1 class="institutional-title">AMOVIN ERP Social</h1>
+        <p class="institutional-subtitle">Sistema Integrado de Gestão Institucional</p>
+        
+        <blockquote class="institutional-quote">
+          "Transformando gestão em excelência, beneficiário em protagonista."
+        </blockquote>
+        
+        <ul class="features-list">
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Gestão de Beneficiários</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Gestão Financeira</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Patrimônio</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Projetos</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Documentos</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Prestação de Contas</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>QR Code Inteligente</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Business Intelligence</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="institutional-footer">
+        <p>© 2026 AMOVIN - Todos os direitos reservados</p>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- CARD DE LOGIN -->
+  <main class="login-card">
+    
+    <!-- Logo e Identidade -->
+    <div class="logo-container">
+      <img src="images/amovin-logo.png" alt="AMOVIN ERP Social" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="logo-fallback">🌻</div>
+      
+      <h1 class="brand-name">AMOVIN ERP Social</h1>
+      <p class="brand-subtitle">Sistema Integrado de Gestão</p>
+    </div>
+    
+    <!-- Mensagem de Erro -->
+    <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
+    
+    <!-- Formulário de Login -->
+    <form class="login-form" id="loginForm" novalidate>
+      
+      <div class="form-group">
+        <label for="username" class="form-label">Login / Usuário</label>
+        <div class="input-wrapper">
+          <span class="input-icon" aria-hidden="true">👤</span>
+          <input 
+            type="text" 
+            id="username" 
+            class="form-input" 
+            placeholder="Digite seu login"
+            autocomplete="username"
+            required
+            aria-required="true"
+          >
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password" class="form-label">Senha</label>
+        <div class="input-wrapper">
+          <span class="input-icon" aria-hidden="true">🔒</span>
+          <input 
+            type="password" 
+            id="password" 
+            class="form-input" 
+            placeholder="Digite sua senha"
+            autocomplete="current-password"
+            required
+            aria-required="true"
+          >
+          <button type="button" class="password-toggle" id="togglePassword" aria-label="Mostrar ou ocultar senha">
+            👁️
+          </button>
+        </div>
+      </div>
+      
+      <div class="form-options">
+        <label class="checkbox-wrapper">
+          <input type="checkbox" id="rememberMe" aria-label="Lembrar meus dados">
+          <span>Lembrar-me</span>
+        </label>
+        <a href="#" class="forgot-link" onclick="alert('Funcionalidade de recuperação de senha será implementada em breve.'); return false;">
+          Esqueci minha senha
+        </a>
+      </div>
+      
+      <button type="submit" class="btn-primary" id="btnEntrar" disabled>
+        <span class="btn-text">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Entrar no Sistema</span>
+        </span>
+      </button>
+      
+      <div class="btn-hint" id="btnHint">
+        <span aria-hidden="true">⚠️</span>
+        <span>É necessário aceitar a Política de Privacidade para continuar.</span>
+      </div>
+      
+    </form>
+    
+    <!-- Rodapé -->
+    <footer class="footer">
+      <div class="footer-content">
+        <img 
+          src="images/logo-vigorre.png" 
+          alt="Vigorre Designer" 
+          class="footer-logo"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        >
+        <span class="logo-vigorre-fallback" style="display: none;">Vigorre</span>
+        
+        <div class="footer-info">
+          <div>© 2026 VIGORRE DESIGNER™ - Todos os direitos reservados</div>
+          <div class="footer-links">
+            <a href="https://www.vigorre.com.br" target="_blank" rel="noopener">www.vigorre.com.br</a>
+            <span style="color: #D1D5DB;">|</span>
+            <a href="https://wa.me/5534991850735" target="_blank" rel="noopener">(34) 99185-0735</a>
+            <span style="color: #D1D5DB;">|</span>
+            <a href="mailto:contato@vigorre.com.br">contato@vigorre.com.br</a>
+          </div>
+          <div class="footer-links">
+            <a href="#" onclick="alert('Política de Privacidade'); return false;">Política de Privacidade</a>
+            <a href="#" onclick="alert('Termos de Uso'); return false;">Termos de Uso</a>
+            <a href="#" onclick="alert('LGPD'); return false;">LGPD</a>
+          </div>
+        </div>
+        
+        <div class="footer-status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Ambiente: Produção | Servidor: Online</span>
+        </div>
+      </div>
+    </footer>
+    
+  </main>
+  
+</div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
-    authDomain: "amovin-oficios-teste.firebaseapp.com",
-    projectId: "amovin-oficios-teste",
-    storageBucket: "amovin-oficios-teste.firebasestorage.app",
-    messagingSenderId: "901387183295",
-    appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+(function() {
+  'use strict';
+  
+  // ============================================
+  // CONFIGURAÇÕES
+  // ============================================
+  const CONFIG = {
+    LGPD_VERSION: '1.0.0',
+    LGPD_STORAGE_KEY: 'lgpd_aceito',
+    SERVER_URL: 'https://amovin-oficios-teste.firebaseapp.com',
+    ADMIN_USER: 'admin',
+    ADMIN_PASS: 'amovin2026'
   };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  let tabAtiva = 'admin';
-
-  if (localStorage.getItem('lgpd_aceito') === 'true') {
-    document.getElementById('lgpdBanner').style.display = 'none';
+  
+  // ============================================
+  // ELEMENTOS DO DOM
+  // ============================================
+  const elements = {
+    modal: document.getElementById('lgpdModal'),
+    checkbox: document.getElementById('lgpdCheckbox'),
+    btnContinuar: document.getElementById('btnContinuar'),
+    loginForm: document.getElementById('loginForm'),
+    username: document.getElementById('username'),
+    password: document.getElementById('password'),
+    togglePassword: document.getElementById('togglePassword'),
+    btnEntrar: document.getElementById('btnEntrar'),
+    errorMessage: document.getElementById('errorMessage'),
+    btnHint: document.getElementById('btnHint'),
+    rememberMe: document.getElementById('rememberMe')
+  };
+  
+  // ============================================
+  // FUNÇÕES DE SEGURANÇA
+  // ============================================
+  function sanitizeInput(input) {
+    return input
+      .replace(/[<>]/g, '') // Remove tags HTML
+      .replace(/javascript:/gi, '') // Remove protocolos perigosos
+      .replace(/on\w+=/gi, '') // Remove event handlers
+      .trim() // Remove espaços extras
+      .substring(0, 100); // Limita tamanho
   }
-
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      tabAtiva = tab.dataset.tab;
-      document.getElementById('erroMsg').classList.remove('show');
-    });
-  });
-
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
+  
+  function validateCredentials(username, password) {
+    const errors = [];
+    
+    if (!username || username.trim().length === 0) {
+      errors.push('Por favor, informe seu login.');
+    }
+    
+    if (!password || password.length < 1) {
+      errors.push('Por favor, informe sua senha.');
+    }
+    
+    if (username && username.length > 100) {
+      errors.push('Login muito longo. Máximo 100 caracteres.');
+    }
+    
+    if (password && password.length > 50) {
+      errors.push('Senha muito longa. Máximo 50 caracteres.');
+    }
+    
+    return errors;
+  }
+  
+  // ============================================
+  // FUNÇÕES DE LGPD
+  // ============================================
+  function getLGPDData() {
+    try {
+      const data = localStorage.getItem(CONFIG.LGPD_STORAGE_KEY);
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      console.error('Erro ao ler dados da LGPD:', e);
+      return null;
+    }
+  }
+  
+  function saveLGPDData() {
+    try {
+      const data = {
+        aceito: true,
+        data: new Date().toISOString(),
+        versao: CONFIG.LGPD_VERSION,
+        idioma: navigator.language || 'pt-BR'
+      };
+      localStorage.setItem(CONFIG.LGPD_STORAGE_KEY, JSON.stringify(data));
+      return data;
+    } catch (e) {
+      console.error('Erro ao salvar dados da LGPD:', e);
+      return null;
+    }
+  }
+  
+  function checkLGPDStatus() {
+    const lgpdData = getLGPDData();
+    
+    // Se não existe ou versão é diferente, mostra modal
+    if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
+      showLGPDModal();
+      return false;
+    }
+    
+    // Se já aceitou, libera login
+    enableLogin();
+    return true;
+  }
+  
+  function showLGPDModal() {
+    elements.modal.classList.remove('hidden');
+    elements.checkbox.checked = false;
+    elements.btnContinuar.disabled = true;
+    elements.btnContinuar.classList.remove('enabled');
+    
+    // Bloqueia scroll do body
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function hideLGPDModal() {
+    elements.modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  
+  function aceitarLGPD() {
+    if (!elements.checkbox.checked) {
+      return;
+    }
+    
+    const data = saveLGPDData();
+    if (data) {
+      hideLGPDModal();
+      enableLogin();
+      showNotification('Política de Privacidade aceita com sucesso!', 'success');
+    } else {
+      showNotification('Erro ao salvar aceite. Tente novamente.', 'error');
+    }
+  }
+  
+  function enableLogin() {
+    elements.btnEntrar.disabled = false;
+    elements.btnHint.classList.remove('show');
+  }
+  
+  function disableLogin() {
+    elements.btnEntrar.disabled = true;
+    elements.btnHint.classList.add('show');
+  }
+  
+  // ============================================
+  // FUNÇÕES DE LOGIN
+  // ============================================
+  async function handleLogin(e) {
     e.preventDefault();
-    const nome = document.getElementById('nome').value.trim();
-    const senha = document.getElementById('senha').value;
-    const erro = document.getElementById('erroMsg');
-
-    if (!nome) {
-      erro.textContent = 'Por favor, informe seu login.';
-      erro.classList.add('show');
+    
+    // Verifica LGPD
+    const lgpdData = getLGPDData();
+    if (!lgpdData || lgpdData.versao !== CONFIG.LGPD_VERSION) {
+      showError('É necessário aceitar a Política de Privacidade para continuar.');
+      showLGPDModal();
       return;
     }
-
-    if (tabAtiva === 'admin' && nome.toLowerCase() === 'admin' && senha === 'amovin2026') {
-      sessionStorage.setItem('amovin_logado', 'true');
-      sessionStorage.setItem('amovin_perfil', 'admin');
-      sessionStorage.setItem('amovin_nome', 'Administrador');
-      window.location.href = 'dashboard.html';
+    
+    // Sanitiza inputs
+    const username = sanitizeInput(elements.username.value);
+    const password = elements.password.value; // Senha não é sanitizada (pode conter caracteres especiais)
+    
+    // Valida campos
+    const errors = validateCredentials(username, password);
+    if (errors.length > 0) {
+      showError(errors.join(' '));
       return;
     }
-
-    if (tabAtiva === 'recepcao' && !senha) {
-      sessionStorage.setItem('amovin_logado', 'true');
-      sessionStorage.setItem('amovin_perfil', 'recepcao');
-      sessionStorage.setItem('amovin_nome', nome);
-      window.location.href = 'dashboard.html';
-      return;
+    
+    // Mostra loading
+    setLoading(true);
+    hideError();
+    
+    try {
+      // Simula delay de autenticação
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Lógica de autenticação (exemplo simplificado)
+      if (username.toLowerCase() === CONFIG.ADMIN_USER && password === CONFIG.ADMIN_PASS) {
+        // Admin
+        sessionStorage.setItem('amovin_logado', 'true');
+        sessionStorage.setItem('amovin_perfil', 'admin');
+        sessionStorage.setItem('amovin_nome', 'Administrador');
+        
+        if (elements.rememberMe.checked) {
+          localStorage.setItem('amovin_lembrar', username);
+        } else {
+          localStorage.removeItem('amovin_lembrar');
+        }
+        
+        showNotification('Login realizado com sucesso! Redirecionando...', 'success');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+        
+      } else {
+        // Recepção ou consulta (sem senha ou senha qualquer)
+        sessionStorage.setItem('amovin_logado', 'true');
+        sessionStorage.setItem('amovin_perfil', 'recepcao');
+        sessionStorage.setItem('amovin_nome', username);
+        
+        if (elements.rememberMe.checked) {
+          localStorage.setItem('amovin_lembrar', username);
+        }
+        
+        showNotification('Bem-vindo(a)! Redirecionando...', 'success');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      }
+      
+    } catch (error) {
+      console.error('Erro no login:', error);
+      showError('Erro ao processar login. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
-
-    erro.textContent = 'Credenciais inválidas. Tente novamente.';
-    erro.classList.add('show');
+  }
+  
+  // ============================================
+  // FUNÇÕES DE UI
+  // ============================================
+  function showError(message) {
+    elements.errorMessage.textContent = message;
+    elements.errorMessage.classList.add('show');
+  }
+  
+  function hideError() {
+    elements.errorMessage.classList.remove('show');
+  }
+  
+  function setLoading(isLoading) {
+    if (isLoading) {
+      elements.btnEntrar.classList.add('loading');
+      elements.btnEntrar.disabled = true;
+    } else {
+      elements.btnEntrar.classList.remove('loading');
+      if (!getLGPDData() || getLGPDData().versao !== CONFIG.LGPD_VERSION) {
+        elements.btnEntrar.disabled = true;
+      }
+    }
+  }
+  
+  function showNotification(message, type = 'info') {
+    // Cria notificação temporária
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      background: ${type === 'success' ? '#059669' : type === 'error' ? '#DC2626' : '#E8B923'};
+      color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      z-index: 20000;
+      animation: slideInRight 0.3s ease;
+      font-weight: 600;
+      max-width: 400px;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
+  }
+  
+  // ============================================
+  // EVENT LISTENERS
+  // ============================================
+  
+  // Checkbox LGPD
+  elements.checkbox.addEventListener('change', function() {
+    if (this.checked) {
+      elements.btnContinuar.disabled = false;
+      elements.btnContinuar.classList.add('enabled');
+    } else {
+      elements.btnContinuar.disabled = true;
+      elements.btnContinuar.classList.remove('enabled');
+    }
   });
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) window.location.href = 'dashboard.html';
+  
+  // Toggle senha
+  elements.togglePassword.addEventListener('click', function() {
+    const type = elements.password.type === 'password' ? 'text' : 'password';
+    elements.password.type = type;
+    this.textContent = type === 'password' ? '👁️' : '🙈';
   });
+  
+  // Formulário
+  elements.loginForm.addEventListener('submit', handleLogin);
+  
+  // Enter no modal (não faz nada - impede fechamento)
+  elements.modal.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      // Não fecha o modal
+    }
+  });
+  
+  // Clique fora do modal (não faz nada)
+  elements.modal.addEventListener('click', function(e) {
+    if (e.target === elements.modal) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Não fecha o modal
+    }
+  });
+  
+  // ============================================
+  // INICIALIZAÇÃO
+  // ============================================
+  function init() {
+    // Verifica status da LGPD
+    const lgpdStatus = checkLGPDStatus();
+    
+    // Carrega lembrete de usuário
+    const lembrar = localStorage.getItem('amovin_lembrar');
+    if (lembrar) {
+      elements.username.value = lembrar;
+      elements.rememberMe.checked = true;
+    }
+    
+    // Adiciona animações CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    console.log('✅ AMOVIN ERP - Sistema inicializado com sucesso');
+    console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
+  }
+  
+  // Aguarda DOM pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  
+})();
 </script>
+
 </body>
 </html>
