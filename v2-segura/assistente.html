@@ -7,9 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -60,9 +66,46 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <aside class="sidebar">
   <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
   <nav class="sidebar-nav">
-    <div class="nav-categoria">Principal</div><a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
-    <div class="nav-categoria">Comunicação</div><a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a><a href="assistente.html" class="nav-item ativo"><span class="icone">🤖</span> Assistente IA</a>
-    <div class="nav-categoria">Sistema</div><a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a><a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="em-breve.html" class="nav-item"><span class="icone">🔍</span> Editais</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📄</span> Ofícios IA</a>
+    <a href="em-breve.html" class="nav-item"><span class="icone">📋</span> Projetos IA</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Gestão de Pessoas</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item ativo"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
   </nav>
 </aside>
 
@@ -77,6 +120,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
       <button class="comando" onclick="perguntar('Sugerir estratégias de captação de recursos para ONG')">💰 Captação</button>
       <button class="comando" onclick="perguntar('Modelo de termo de parceria para profissionais voluntários')">📝 Termo de Parceria</button>
       <button class="comando" onclick="perguntar('Como fazer prestação de contas para editais')">📊 Prestação de Contas</button>
+      <button class="comando" onclick="perguntar('Sugerir indicadores de impacto social para projeto esportivo')">🎯 Indicadores</button>
     </div>
     <div class="card">
       <h3>💬 Chat com IA</h3>
@@ -95,10 +139,44 @@ window.enviarMensagem = function() {
     var t = document.getElementById('inputMsg').value.trim(); if (!t) return;
     adicionarMensagem(t, 'usuario'); document.getElementById('inputMsg').value = '';
     var k = localStorage.getItem('amovin_gemini_key') || '';
-    if (!k) { adicionarMensagem('Chave Gemini não configurada. Acesse config-chave.html.', 'ia'); return; }
-    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key='+k, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text:'Você é o assistente virtual da AMOVIN. Responda: '+t}]}]}) })
-    .then(function(r){ return r.json(); }).then(function(d){ adicionarMensagem(d.candidates[0].content.parts[0].text, 'ia'); }).catch(function(){ adicionarMensagem('Erro ao processar.', 'ia'); });
+    if (!k) { adicionarMensagem('Chave Gemini não configurada. Acesse Configurações.', 'ia'); return; }
+    try {
+        fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key='+k, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text:'Você é o assistente virtual da AMOVIN (Associação e Movimento pela Inclusão). Responda de forma profissional e educada: '+t}]}]}) })
+        .then(function(r){ return r.json(); }).then(function(d){ 
+            if (d.candidates && d.candidates[0] && d.candidates[0].content) {
+                adicionarMensagem(d.candidates[0].content.parts[0].text, 'ia'); 
+            } else {
+                adicionarMensagem('Desculpe, não consegui processar sua pergunta.', 'ia');
+            }
+        }).catch(function(){ adicionarMensagem('Erro ao processar. Verifique sua conexão.', 'ia'); });
+    } catch(e) { adicionarMensagem('Erro ao conectar com a IA.', 'ia'); }
 };
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','editais','oficios','projetos','financeiro','orcamentos','prestacao-contas','pessoas','agenda-telefonica','agenda','documentos','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+history.pushState(null,null,location.href); window.addEventListener('popstate',function(){ history.pushState(null,null,location.href); sessionStorage.clear(); window.location.href = 'index.html'; });
+var timeout; function resetTimeout(){ clearTimeout(timeout); timeout = setTimeout(function(){ sessionStorage.clear(); alert('Sessão expirada.'); window.location.href = 'index.html'; },30*60*1000); }
+document.addEventListener('mousemove',resetTimeout); document.addEventListener('keypress',resetTimeout); document.addEventListener('click',resetTimeout); resetTimeout();
 </script>
 </body>
 </html>
