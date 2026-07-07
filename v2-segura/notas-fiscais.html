@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Notas Fiscais</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
+.sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
+.sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
+.sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
+.nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
+.nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
+
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+
+.busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
+.busca-bar select { padding: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; background: white; }
+.btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
+
+.nota-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.nota-info { flex: 1; }
+.nota-info h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
+.nota-info p { font-size: 11px; color: var(--cinza); }
+.badge-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+.badge-pendente { background: #FFF3E0; color: #E65100; }
+.badge-aprovada { background: #E8F5E9; color: #2E7D32; }
+.badge-reprovada { background: #FFEBEE; color: #C62828; }
+.badge-cancelada { background: #F5F5F5; color: #888; }
+.btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
+.btn-editar { background: #F5A623; color: white; }
+.btn-visualizar { background: var(--azul); color: white; }
+.btn-aprovar { background: var(--verde); color: white; }
+.btn-reprovar { background: var(--vermelho); color: white; }
+.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
+.modal-header h3 { font-size: 18px; }
+.modal-body { padding: 22px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-full { grid-column: 1 / -1; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
+.form-group textarea { resize: vertical; min-height: 60px; }
+.btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
+.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
+
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+
+@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>
+    <a href="sala-espera.html" class="nav-item"><span class="icone">📋</span> Sala de Espera</a>
+    <a href="pre-cadastro.html" class="nav-item"><span class="icone">📝</span> Pré-Cadastro</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="qrcodes.html" class="nav-item"><span class="icone">📱</span> QR Codes</a>
+    <a href="notas-fiscais.html" class="nav-item ativo"><span class="icone">📄</span> Notas Fiscais</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
+
+<main class="main-content">
+  <div class="topo-bar">
+    <h1>📄 Notas Fiscais</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiPendentes">0</div><div class="kpi-label">⏳ Pendentes</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiAprovadas">0</div><div class="kpi-label">✅ Aprovadas</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiValorTotal">R$ 0</div><div class="kpi-label">Valor Total</div></div>
+  </div>
+
+  <div class="busca-bar">
+    <input type="text" id="buscaNota" placeholder="Buscar por número, chave, emitente..." oninput="filtrar()">
+    <select id="filtroStatus" onchange="filtrar()">
+      <option value="todos">Todos os status</option>
+      <option value="pendente">⏳ Pendentes</option>
+      <option value="aprovada">✅ Aprovadas</option>
+      <option value="reprovada">❌ Reprovadas</option>
+      <option value="cancelada">⛔ Canceladas</option>
+    </select>
+    <button class="btn-novo" onclick="abrirForm()">+ Nova Nota Fiscal</button>
+  </div>
+
+  <div id="listaNotas"><div class="sem-dados">Nenhuma nota fiscal cadastrada.</div></div>
+
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="modalForm" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tituloModal">📄 Nova Nota Fiscal</h3>
+      <button class="btn-fechar" onclick="fecharForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="notaId">
+      
+      <div class="form-full">
+        <div class="form-group">
+          <label>Tipo de Upload</label>
+          <select id="tipoUpload" onchange="toggleUpload()">
+            <option value="manual">📝 Preencher Manualmente</option>
+            <option value="xml">📄 Upload XML (NF-e)</option>
+            <option value="imagem">🖼️ Upload Imagem (OCR)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Área de upload -->
+      <div id="areaUpload" style="display:none;" class="form-full">
+        <div class="form-group">
+          <label>Arquivo</label>
+          <input type="file" id="arquivoNota" accept=".xml,.pdf,.jpg,.jpeg,.png" onchange="processarArquivo(event)">
+          <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">Formatos: XML, PDF, JPG, PNG</small>
+        </div>
+        <div id="previewDados" style="display:none;" class="form-full"></div>
+      </div>
+
+      <!-- Dados da Nota -->
+      <div class="section-title">📋 Dados da Nota Fiscal</div>
+
+      <div class="form-full">
+        <div class="form-group">
+          <label>Chave de Acesso *</label>
+          <input type="text" id="chaveAcesso" placeholder="0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Número *</label>
+        <input type="text" id="numeroNota" placeholder="000000">
+      </div>
+
+      <div class="form-group">
+        <label>Série</label>
+        <input type="text" id="serieNota" placeholder="1">
+      </div>
+
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="tipoNota">
+          <option value="entrada">📥 Entrada</option>
+          <option value="saida">📤 Saída</option>
+        </select>
+      </div>
+
+      <div class="section-title">🏢 Emitente</div>
+
+      <div class="form-full">
+        <div class="form-group">
+          <label>Nome do Emitente *</label>
+          <input type="text" id="emitenteNome" placeholder="Nome da empresa">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>CNPJ do Emitente *</label>
+        <input type="text" id="emitenteCnpj" placeholder="00.000.000/0000-00">
+      </div>
+
+      <div class="form-full">
+        <div class="form-group">
+          <label>Endereço do Emitente</label>
+          <input type="text" id="emitenteEndereco" placeholder="Rua, número, bairro">
+        </div>
+      </div>
+
+      <div class="section-title">👤 Destinatário</div>
+
+      <div class="form-full">
+        <div class="form-group">
+          <label>Nome do Destinatário *</label>
+          <input type="text" id="destinatarioNome" placeholder="AMOVIN - Associação...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>CNPJ do Destinatário *</label>
+        <input type="text" id="destinatarioCnpj" placeholder="XX.XXX.XXX/XXXX-XX">
+      </div>
+
+      <div class="form-full">
+        <div class="form-group">
+          <label>Endereço do Destinatário</label>
+          <input type="text" id="destinatarioEndereco" placeholder="Rua, número, bairro">
+        </div>
+      </div>
+
+      <div class="section-title">💰 Valores</div>
+
+      <div class="form-group">
+        <label>Valor Total (R$) *</label>
+        <input type="number" id="valorTotal" step="0.01" placeholder="0,00">
+      </div>
+
+      <div class="form-group">
+        <label>Data de Emissão *</label>
+        <input type="date" id="dataEmissao">
+      </div>
+
+      <div class="form-group">
+        <label>Data de Recebimento</label>
+        <input type="date" id="dataRecebimento">
+      </div>
+
+      <div class="form-full">
+        <div class="form-group">
+          <label>Observações</label>
+          <textarea id="obsNota" rows="2" placeholder="Observações adicionais..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn-salvar" onclick="salvarNota()">💾 Salvar Nota Fiscal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// BANCO DE DADOS LOCAL
+// ============================================================
+var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
+var editandoId = null;
+
+// Dados iniciais
+if (notas.length === 0) {
+    notas = [
+        {
+            id: 1,
+            chaveAcesso: '12345678901234567890123456789012345678901234',
+            numero: '123456',
+            serie: '1',
+            tipo: 'entrada',
+            emitenteNome: 'Empresa ABC Ltda',
+            emitenteCnpj: '12.345.678/0001-90',
+            destinatarioNome: 'AMOVIN - Associação e Movimento pela Inclusão',
+            destinatarioCnpj: 'XX.XXX.XXX/XXXX-XX',
+            valorTotal: 1500.00,
+            dataEmissao: '2026-07-01',
+            dataRecebimento: '2026-07-05',
+            status: 'pendente',
+            observacoes: 'Compra de materiais esportivos',
+            usuarioCriacao: 'Admin',
+            dataCriacao: new Date().toISOString()
+        }
+    ];
+    salvar();
+}
+
+function salvar() {
+    localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas));
+}
+
+function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
+
+// ============================================================
+// RENDERIZAÇÃO
+// ============================================================
+function getStatusBadge(status) {
+    var map = {
+        'pendente': 'badge-pendente',
+        'aprovada': 'badge-aprovada',
+        'reprovada': 'badge-reprovada',
+        'cancelada': 'badge-cancelada'
+    };
+    return map[status] || 'badge-pendente';
+}
+
+function getStatusLabel(status) {
+    var map = {
+        'pendente': '⏳ Pendente',
+        'aprovada': '✅ Aprovada',
+        'reprovada': '❌ Reprovada',
+        'cancelada': '⛔ Cancelada'
+    };
+    return map[status] || status;
+}
+
+function filtrar() {
+    var busca = document.getElementById('buscaNota').value.toLowerCase();
+    var statusFiltro = document.getElementById('filtroStatus').value;
+    
+    var lista = notas.filter(function(n) {
+        var matchBusca = 
+            (n.numero || '').toLowerCase().indexOf(busca) >= 0 ||
+            (n.chaveAcesso || '').toLowerCase().indexOf(busca) >= 0 ||
+            (n.emitenteNome || '').toLowerCase().indexOf(busca) >= 0 ||
+            (n.destinatarioNome || '').toLowerCase().indexOf(busca) >= 0;
+        
+        var matchStatus = statusFiltro === 'todos' || n.status === statusFiltro;
+        
+        return matchBusca && matchStatus;
+    });
+
+    lista.sort(function(a, b) {
+        return new Date(b.dataCriacao) - new Date(a.dataCriacao);
+    });
+
+    var container = document.getElementById('listaNotas');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhuma nota fiscal encontrada.</div>';
+    } else {
+        container.innerHTML = lista.map(function(n) {
+            var statusLabel = getStatusLabel(n.status);
+            var statusBadge = getStatusBadge(n.status);
+            var dataEmissao = n.dataEmissao ? new Date(n.dataEmissao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+            
+            return '<div class="nota-card">' +
+                '<div class="nota-info">' +
+                '<h4>NF-e ' + n.numero + ' - ' + n.emitenteNome + ' <span class="badge-status ' + statusBadge + '">' + statusLabel + '</span></h4>' +
+                '<p>🔑 Chave: ' + (n.chaveAcesso || '-') + '</p>' +
+                '<p>📅 Emissão: ' + dataEmissao + ' | 💰 ' + fm(n.valorTotal) + '</p>' +
+                '</div>' +
+                '<div class="contato-acoes">' +
+                '<button class="btn-acao btn-visualizar" onclick="visualizarNota(' + n.id + ')">👁️</button>' +
+                (n.status === 'pendente' ? '<button class="btn-acao btn-aprovar" onclick="aprovarNota(' + n.id + ')">✅</button>' : '') +
+                (n.status === 'pendente' ? '<button class="btn-acao btn-reprovar" onclick="reprovarNota(' + n.id + ')">❌</button>' : '') +
+                '<button class="btn-acao btn-editar" onclick="abrirForm(' + n.id + ')">✏️</button>' +
+                '</div></div>';
+        }).join('');
+    }
+
+    atualizarKPIs();
+}
+
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = notas.length;
+    document.getElementById('kpiPendentes').textContent = notas.filter(function(n) { return n.status === 'pendente'; }).length;
+    document.getElementById('kpiAprovadas').textContent = notas.filter(function(n) { return n.status === 'aprovada'; }).length;
+    var totalValor = notas.reduce(function(s, n) { return s + (n.valorTotal || 0); }, 0);
+    document.getElementById('kpiValorTotal').textContent = fm(totalValor);
+}
+
+// ============================================================
+// FORMULÁRIO
+// ============================================================
+window.toggleUpload = function() {
+    var tipo = document.getElementById('tipoUpload').value;
+    document.getElementById('areaUpload').style.display = (tipo === 'manual') ? 'none' : 'block';
+};
+
+window.processarArquivo = function(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+    
+    var preview = document.getElementById('previewDados');
+    preview.style.display = 'block';
+    preview.innerHTML = '<div style="background:#E8F5E9;padding:12px;border-radius:8px;font-size:12px;color:#2E7D32;">📄 Arquivo carregado: ' + file.name + '<br><span style="font-size:10px;color:#6B7280;">Processamento automático em desenvolvimento...</span></div>';
+};
+
+window.abrirForm = function(id) {
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'flex';
+    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Nota Fiscal' : '📄 Nova Nota Fiscal';
+
+    if (id) {
+        var n = notas.find(function(x) { return x.id === id; });
+        if (!n) return;
+        document.getElementById('notaId').value = n.id;
+        document.getElementById('chaveAcesso').value = n.chaveAcesso || '';
+        document.getElementById('numeroNota').value = n.numero || '';
+        document.getElementById('serieNota').value = n.serie || '';
+        document.getElementById('tipoNota').value = n.tipo || 'entrada';
+        document.getElementById('emitenteNome').value = n.emitenteNome || '';
+        document.getElementById('emitenteCnpj').value = n.emitenteCnpj || '';
+        document.getElementById('emitenteEndereco').value = n.emitenteEndereco || '';
+        document.getElementById('destinatarioNome').value = n.destinatarioNome || '';
+        document.getElementById('destinatarioCnpj').value = n.destinatarioCnpj || '';
+        document.getElementById('destinatarioEndereco').value = n.destinatarioEndereco || '';
+        document.getElementById('valorTotal').value = n.valorTotal || '';
+        document.getElementById('dataEmissao').value = n.dataEmissao || '';
+        document.getElementById('dataRecebimento').value = n.dataRecebimento || '';
+        document.getElementById('obsNota').value = n.observacoes || '';
+        document.getElementById('tipoUpload').value = 'manual';
+        document.getElementById('areaUpload').style.display = 'none';
+    } else {
+        document.getElementById('notaId').value = '';
+        document.getElementById('chaveAcesso').value = '';
+        document.getElementById('numeroNota').value = '';
+        document.getElementById('serieNota').value = '';
+        document.getElementById('tipoNota').value = 'entrada';
+        document.getElementById('emitenteNome').value = '';
+        document.getElementById('emitenteCnpj').value = '';
+        document.getElementById('emitenteEndereco').value = '';
+        document.getElementById('destinatarioNome').value = 'AMOVIN - Associação e Movimento pela Inclusão';
+        document.getElementById('destinatarioCnpj').value = '';
+        document.getElementById('destinatarioEndereco').value = '';
+        document.getElementById('valorTotal').value = '';
+        document.getElementById('dataEmissao').value = new Date().toISOString().split('T')[0];
+        document.getElementById('dataRecebimento').value = new Date().toISOString().split('T')[0];
+        document.getElementById('obsNota').value = '';
+        document.getElementById('tipoUpload').value = 'manual';
+        document.getElementById('areaUpload').style.display = 'none';
+        document.getElementById('previewDados').style.display = 'none';
+    }
+};
+
+window.fecharForm = function() {
+    document.getElementById('modalForm').style.display = 'none';
+};
+
+window.salvarNota = function() {
+    var chave = document.getElementById('chaveAcesso').value.trim();
+    var numero = document.getElementById('numeroNota').value.trim();
+    var emitente = document.getElementById('emitenteNome').value.trim();
+    var destinatario = document.getElementById('destinatarioNome').value.trim();
+    var valor = parseFloat(document.getElementById('valorTotal').value) || 0;
+    var dataEmissao = document.getElementById('dataEmissao').value;
+
+    if (!numero) { alert('⚠️ Número da nota é obrigatório!'); return; }
+    if (!emitente) { alert('⚠️ Nome do emitente é obrigatório!'); return; }
+    if (!destinatario) { alert('⚠️ Nome do destinatário é obrigatório!'); return; }
+    if (valor <= 0) { alert('⚠️ Valor total é obrigatório!'); return; }
+    if (!dataEmissao) { alert('⚠️ Data de emissão é obrigatória!'); return; }
+
+    var dados = {
+        chaveAcesso: chave,
+        numero: numero,
+        serie: document.getElementById('serieNota').value.trim(),
+        tipo: document.getElementById('tipoNota').value,
+        emitenteNome: emitente,
+        emitenteCnpj: document.getElementById('emitenteCnpj').value.trim(),
+        emitenteEndereco: document.getElementById('emitenteEndereco').value.trim(),
+        destinatarioNome: destinatario,
+        destinatarioCnpj: document.getElementById('destinatarioCnpj').value.trim(),
+        destinatarioEndereco: document.getElementById('destinatarioEndereco').value.trim(),
+        valorTotal: valor,
+        dataEmissao: dataEmissao,
+        dataRecebimento: document.getElementById('dataRecebimento').value || dataEmissao,
+        observacoes: document.getElementById('obsNota').value.trim(),
+        usuarioCriacao: sessionStorage.getItem('amovin_nome') || 'Admin'
+    };
+
+    if (editandoId) {
+        var idx = notas.findIndex(function(x) { return x.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) {
+                notas[idx][k] = dados[k];
+            }
+            notas[idx].dataAtualizacao = new Date().toISOString();
+        }
+    } else {
+        dados.id = Date.now();
+        dados.status = 'pendente';
+        dados.dataCriacao = new Date().toISOString();
+        notas.push(dados);
+    }
+
+    salvar();
+    fecharForm();
+    filtrar();
+    alert('✅ Nota fiscal salva com sucesso!');
+};
+
+// ============================================================
+// AÇÕES
+// ============================================================
+window.visualizarNota = function(id) {
+    var n = notas.find(function(x) { return x.id === id; });
+    if (!n) return;
+
+    var dataEmissao = n.dataEmissao ? new Date(n.dataEmissao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+    var dataRecebimento = n.dataRecebimento ? new Date(n.dataRecebimento + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+
+    alert(
+        '📄 NOTA FISCAL\n' +
+        '═'.repeat(40) + '\n\n' +
+        'Número: ' + n.numero + '\n' +
+        'Série: ' + (n.serie || '-') + '\n' +
+        'Chave: ' + (n.chaveAcesso || '-') + '\n' +
+        'Tipo: ' + (n.tipo === 'entrada' ? '📥 Entrada' : '📤 Saída') + '\n\n' +
+        '🏢 EMITENTE\n' +
+        'Nome: ' + n.emitenteNome + '\n' +
+        'CNPJ: ' + (n.emitenteCnpj || '-') + '\n\n' +
+        '👤 DESTINATÁRIO\n' +
+        'Nome: ' + n.destinatarioNome + '\n' +
+        'CNPJ: ' + (n.destinatarioCnpj || '-') + '\n\n' +
+        '💰 VALORES\n' +
+        'Valor Total: ' + fm(n.valorTotal) + '\n' +
+        'Data Emissão: ' + dataEmissao + '\n' +
+        'Data Recebimento: ' + dataRecebimento + '\n\n' +
+        'Status: ' + getStatusLabel(n.status) + '\n' +
+        'Observações: ' + (n.observacoes || '-')
+    );
+};
+
+window.aprovarNota = function(id) {
+    if (!confirm('✅ Aprovar esta nota fiscal?')) return;
+    var n = notas.find(function(x) { return x.id === id; });
+    if (n) {
+        n.status = 'aprovada';
+        n.dataAprovacao = new Date().toISOString();
+        n.aprovadoPor = sessionStorage.getItem('amovin_nome') || 'Admin';
+        salvar();
+        filtrar();
+        alert('✅ Nota fiscal aprovada com sucesso!');
+    }
+};
+
+window.reprovarNota = function(id) {
+    var motivo = prompt('Motivo da reprovação:');
+    if (motivo === null) return;
+    var n = notas.find(function(x) { return x.id === id; });
+    if (n) {
+        n.status = 'reprovada';
+        n.motivoReprovacao = motivo;
+        salvar();
+        filtrar();
+        alert('❌ Nota fiscal reprovada.');
+    }
+};
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+filtrar();
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    pagina = pagina.split('?')[0].split('#')[0];
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) {
+    window.location.href = 'index.html';
+}
+
+// Previne voltar para login
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function() {
+    if (window.location.pathname.includes('index.html')) {
+        history.pushState(null, null, location.href);
+        window.location.href = 'dashboard.html';
+    }
+});
+
+// Sessão
+var timeout;
+function resetTimeout() {
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+        sessionStorage.clear();
+        alert('⏰ Sessão expirada.');
+        window.location.href = 'index.html';
+    }, 30 * 60 * 1000);
+}
+document.addEventListener('mousemove', resetTimeout);
+document.addEventListener('keypress', resetTimeout);
+document.addEventListener('click', resetTimeout);
+resetTimeout();
+</script>
+</body>
+</html>
