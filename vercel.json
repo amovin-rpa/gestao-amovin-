@@ -9,23 +9,5 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/pre-cadastro",
-      "destination": "/pre-cadastro.html"
-    },
-    {
-      "source": "/sala-espera",
-      "destination": "/sala-espera.html"
-    },
-    {
-      "source": "/notas-fiscais",
-      "destination": "/notas-fiscais.html"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
   ]
 }
