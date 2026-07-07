@@ -174,7 +174,6 @@ function carregarMenu(paginaAtiva) {
     document.querySelectorAll('.nav-item').forEach(function(item) {
         var href = item.getAttribute('href') || '';
         var pagina = href.replace('.html', '');
-        // Remove parâmetros e âncoras
         pagina = pagina.split('?')[0].split('#')[0];
         if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
             item.style.display = 'none';
