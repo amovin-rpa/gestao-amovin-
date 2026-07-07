@@ -20,27 +20,18 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ==================== SIDEBAR (vem do menu.js) ==================== */
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
 .sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
 .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
 .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.4px; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
 .nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
 .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
 .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
-.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
-.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
-.user-info .nome { font-weight: 600; font-size: 13.5px; }
-.user-info .cargo { font-size: 11px; color: #6B7280; }
-.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-sair:hover { background: #F0E9DF; }
 
-/* ==================== MAIN CONTENT ==================== */
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
@@ -70,22 +61,23 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-cinza { background: #E5E0D8; color: var(--grafite); }
 .btn-cinza:hover { background: #D5D0C8; }
 
-.perfil-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #F8F4ED; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--laranja); }
+.perfil-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #F8F4ED; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--laranja); flex-wrap: wrap; gap: 8px; }
 .perfil-item .perfil-nome { font-weight: 600; color: var(--grafite); }
 .perfil-item .perfil-modulos { font-size: 11px; color: var(--cinza); }
-.perfil-item .perfil-acoes { display: flex; gap: 6px; }
+.perfil-item .perfil-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
 .perfil-item .badge-admin { background: #E3F2FD; color: #1565C0; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal { background: white; border-radius: 16px; width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; }
 .modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
 .modal-header h3 { font-size: 18px; }
 .modal-body { padding: 22px; }
 .modal-body .form-group { margin-bottom: 14px; }
 .modal-body .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .modal-body .form-group input, .modal-body .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
-.modal-body .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
-.modal-body .checkbox-grid label { font-size: 12px; font-weight: 400; text-transform: none; color: var(--grafite); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.modal-body .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; max-height: 300px; overflow-y: auto; padding: 4px; }
+.modal-body .checkbox-grid label { font-size: 12px; font-weight: 400; text-transform: none; color: var(--grafite); display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 6px; border-radius: 4px; }
+.modal-body .checkbox-grid label:hover { background: #F8F4ED; }
 .modal-body .checkbox-grid input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
 .btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
 
@@ -102,8 +94,59 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 </head>
 <body>
 
-<!-- ==================== MENU LATERAL ==================== -->
-<div id="menu-container"></div>
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+    <div class="sidebar-logo-fallback">🌻</div>
+    <div class="brand">Amovin ERP Social</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>
+    <a href="sala-espera.html" class="nav-item"><span class="icone">📋</span> Sala de Espera</a>
+    <a href="pre-cadastro.html" class="nav-item"><span class="icone">📝</span> Pré-Cadastro</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="qrcodes.html" class="nav-item"><span class="icone">📱</span> QR Codes</a>
+    <a href="notas-fiscais.html" class="nav-item"><span class="icone">📄</span> Notas Fiscais</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item ativo"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
 
 <main class="main-content">
   <div class="topo-bar">
@@ -117,6 +160,14 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
       <h3>👥 Perfis e Permissões <span class="badge">Admin</span></h3>
       <div id="listaPerfis"></div>
       <button class="btn btn-verde" onclick="abrirFormPerfil()" style="width:100%;margin-top:10px;">+ Novo Perfil</button>
+    </div>
+
+    <!-- Módulos Disponíveis -->
+    <div class="card">
+      <h3>📦 Módulos Disponíveis <span class="badge">Sistema</span></h3>
+      <p style="font-size:12px;color:var(--cinza);margin-bottom:12px;">Marque os módulos que estarão disponíveis para cada perfil.</p>
+      <div id="listaModulosSistema"></div>
+      <button class="btn btn-salvar" onclick="salvarModulosSistema()" style="width:100%;margin-top:10px;">💾 Salvar Módulos</button>
     </div>
 
     <!-- Configurações da Instituição -->
@@ -218,28 +269,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
       <div class="form-group"><label>Nome do Perfil *</label><input type="text" id="nomePerfil" placeholder="Ex: Administrador, Recepção, Voluntário"></div>
       <div class="form-group"><label>Módulos Permitidos</label>
         <div class="checkbox-grid" id="modulosPermissoes">
-          <label><input type="checkbox" value="dashboard" checked> 📊 Dashboard</label>
-          <label><input type="checkbox" value="bi"> 📈 BI Executivo</label>
-          <label><input type="checkbox" value="capta"> 🚀 Amovin Capta+</label>
-          <label><input type="checkbox" value="financeiro"> 💰 Financeiro</label>
-          <label><input type="checkbox" value="orcamentos"> 📊 Orçamentos</label>
-          <label><input type="checkbox" value="prestacao-contas"> 📋 Prest. Contas</label>
-          <label><input type="checkbox" value="pessoas"> 👥 Beneficiários</label>
-          <label><input type="checkbox" value="profissionais"> 👨‍⚕️ Profissionais</label>
-          <label><input type="checkbox" value="voluntarios"> 💪 Voluntários</label>
-          <label><input type="checkbox" value="agenda-telefonica"> ☎️ CRM Social</label>
-          <label><input type="checkbox" value="agenda"> 📅 Agenda</label>
-          <label><input type="checkbox" value="documentos"> 📝 Documentos</label>
-          <label><input type="checkbox" value="qrcodes"> 📱 QR Codes</label>
-          <label><input type="checkbox" value="estoque"> 📦 Estoque</label>
-          <label><input type="checkbox" value="patrimonio"> 🏢 Patrimônio</label>
-          <label><input type="checkbox" value="biblioteca"> 📚 Biblioteca</label>
-          <label><input type="checkbox" value="certificados"> 🎓 Certificados</label>
-          <label><input type="checkbox" value="chat"> 💬 Chat</label>
-          <label><input type="checkbox" value="assistente"> 🤖 Assistente IA</label>
-          <label><input type="checkbox" value="relatorios"> 📈 Relatórios</label>
-          <label><input type="checkbox" value="configuracoes"> ⚙️ Configurações</label>
-          <label><input type="checkbox" value="backup"> 💾 Backup</label>
+          <!-- Os módulos serão carregados dinamicamente -->
         </div>
       </div>
       <button class="btn btn-salvar" onclick="salvarPerfil()">💾 Salvar Perfil</button>
@@ -247,17 +277,47 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </div>
 
-<script src="menu.js"></script>
 <script>
 // ============================================================
-// PERFIS E PERMISSÕES
+// MÓDULOS DO SISTEMA
+// ============================================================
+var MODULOS_SISTEMA = [
+    { id: 'dashboard', nome: '📊 Dashboard', categoria: 'Principal' },
+    { id: 'bi', nome: '📈 BI Executivo', categoria: 'Principal' },
+    { id: 'capta', nome: '🚀 Amovin Capta+', categoria: 'Captação' },
+    { id: 'sala-espera', nome: '📋 Sala de Espera', categoria: 'Captação' },
+    { id: 'pre-cadastro', nome: '📝 Pré-Cadastro', categoria: 'Captação' },
+    { id: 'financeiro', nome: '💰 Financeiro', categoria: 'Financeiro' },
+    { id: 'orcamentos', nome: '📊 Orçamentos', categoria: 'Financeiro' },
+    { id: 'prestacao-contas', nome: '📋 Prest. Contas', categoria: 'Financeiro' },
+    { id: 'pessoas', nome: '👥 Beneficiários', categoria: 'Pessoas' },
+    { id: 'profissionais', nome: '👨‍⚕️ Profissionais', categoria: 'Pessoas' },
+    { id: 'voluntarios', nome: '💪 Voluntários', categoria: 'Pessoas' },
+    { id: 'agenda-telefonica', nome: '☎️ CRM Social', categoria: 'Pessoas' },
+    { id: 'agenda', nome: '📅 Agenda', categoria: 'Atendimento' },
+    { id: 'documentos', nome: '📝 Documentos', categoria: 'Documentos' },
+    { id: 'qrcodes', nome: '📱 QR Codes', categoria: 'Documentos' },
+    { id: 'notas-fiscais', nome: '📄 Notas Fiscais', categoria: 'Documentos' },
+    { id: 'estoque', nome: '📦 Estoque', categoria: 'Documentos' },
+    { id: 'patrimonio', nome: '🏢 Patrimônio', categoria: 'Documentos' },
+    { id: 'biblioteca', nome: '📚 Biblioteca', categoria: 'Educação' },
+    { id: 'certificados', nome: '🎓 Certificados', categoria: 'Educação' },
+    { id: 'chat', nome: '💬 Chat', categoria: 'Comunicação' },
+    { id: 'assistente', nome: '🤖 Assistente IA', categoria: 'Comunicação' },
+    { id: 'relatorios', nome: '📈 Relatórios', categoria: 'Relatórios' },
+    { id: 'configuracoes', nome: '⚙️ Configurações', categoria: 'Sistema' },
+    { id: 'backup', nome: '💾 Backup', categoria: 'Sistema' }
+];
+
+// ============================================================
+// PERFIS
 // ============================================================
 var perfis = JSON.parse(localStorage.getItem('amovin_perfis') || '[]');
 var editandoPerfilId = null;
 
 if (perfis.length === 0) {
     perfis = [
-        { id: 'admin', nome: 'Administrador Master', modulos: ['dashboard','bi','capta','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'] },
+        { id: 'admin', nome: 'Administrador Master', modulos: MODULOS_SISTEMA.map(function(m) { return m.id; }) },
         { id: 'recepcao', nome: 'Recepção', modulos: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'] },
         { id: 'consulta', nome: 'Consulta', modulos: ['dashboard','agenda','agenda-telefonica','assistente'] },
         { id: 'financeiro', nome: 'Financeiro', modulos: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'] },
@@ -270,6 +330,9 @@ function salvarPerfis() {
     localStorage.setItem('amovin_perfis', JSON.stringify(perfis));
 }
 
+// ============================================================
+// RENDERIZAR PERFIS
+// ============================================================
 function renderizarPerfis() {
     var container = document.getElementById('listaPerfis');
     if (perfis.length === 0) {
@@ -278,8 +341,9 @@ function renderizarPerfis() {
     }
     container.innerHTML = perfis.map(function(p) {
         var badge = p.id === 'admin' ? '<span class="badge-admin">Admin</span>' : '';
+        var qtdModulos = (p.modulos || []).length;
         return '<div class="perfil-item">' +
-            '<div><span class="perfil-nome">' + p.nome + '</span> ' + badge + '<br><span class="perfil-modulos">' + (p.modulos || []).length + ' módulos</span></div>' +
+            '<div><span class="perfil-nome">' + p.nome + '</span> ' + badge + '<br><span class="perfil-modulos">' + qtdModulos + ' módulos</span></div>' +
             '<div class="perfil-acoes">' +
             '<button class="btn btn-azul" style="padding:4px 10px;font-size:10px;" onclick="editarPerfil(\'' + p.id + '\')">✏️</button>' +
             (p.id !== 'admin' ? '<button class="btn btn-vermelho" style="padding:4px 10px;font-size:10px;" onclick="excluirPerfil(\'' + p.id + '\')">🗑️</button>' : '') +
@@ -287,12 +351,64 @@ function renderizarPerfis() {
     }).join('');
 }
 
+// ============================================================
+// RENDERIZAR MÓDULOS DO SISTEMA
+// ============================================================
+function renderizarModulosSistema() {
+    var container = document.getElementById('listaModulosSistema');
+    var modulosAtivos = JSON.parse(localStorage.getItem('amovin_modulos_ativos') || '[]');
+    
+    // Se não houver configuração, ativa todos
+    if (modulosAtivos.length === 0) {
+        modulosAtivos = MODULOS_SISTEMA.map(function(m) { return m.id; });
+        localStorage.setItem('amovin_modulos_ativos', JSON.stringify(modulosAtivos));
+    }
+    
+    var html = '<div class="checkbox-grid" style="max-height:300px;overflow-y:auto;">';
+    MODULOS_SISTEMA.forEach(function(m) {
+        var checked = modulosAtivos.indexOf(m.id) >= 0 ? 'checked' : '';
+        html += '<label><input type="checkbox" value="' + m.id + '" ' + checked + '> ' + m.nome + ' <span style="font-size:9px;color:var(--cinza);">(' + m.categoria + ')</span></label>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// ============================================================
+// SALVAR MÓDULOS DO SISTEMA
+// ============================================================
+window.salvarModulosSistema = function() {
+    var modulos = [];
+    document.querySelectorAll('#listaModulosSistema input[type="checkbox"]:checked').forEach(function(cb) {
+        modulos.push(cb.value);
+    });
+    localStorage.setItem('amovin_modulos_ativos', JSON.stringify(modulos));
+    alert('✅ Módulos salvos com sucesso!');
+};
+
+// ============================================================
+// FORMULÁRIO PERFIL
+// ============================================================
 window.abrirFormPerfil = function(id) {
     editandoPerfilId = id || null;
     document.getElementById('modalPerfil').style.display = 'flex';
     document.getElementById('tituloPerfil').textContent = id ? '✏️ Editar Perfil' : '📝 Novo Perfil';
 
-    document.querySelectorAll('#modulosPermissoes input[type="checkbox"]').forEach(function(cb) { cb.checked = false; });
+    // Carregar módulos disponíveis
+    var modulosAtivos = JSON.parse(localStorage.getItem('amovin_modulos_ativos') || '[]');
+    if (modulosAtivos.length === 0) {
+        modulosAtivos = MODULOS_SISTEMA.map(function(m) { return m.id; });
+    }
+    
+    var html = '';
+    MODULOS_SISTEMA.forEach(function(m) {
+        // Verifica se o módulo está ativo no sistema
+        if (modulosAtivos.indexOf(m.id) === -1) {
+            html += '<label style="opacity:0.5;"><input type="checkbox" value="' + m.id + '" disabled> ' + m.nome + ' <span style="font-size:9px;color:var(--cinza);">(desativado)</span></label>';
+            return;
+        }
+        html += '<label><input type="checkbox" value="' + m.id + '" id="mod_'+m.id+'"> ' + m.nome + ' <span style="font-size:9px;color:var(--cinza);">(' + m.categoria + ')</span></label>';
+    });
+    document.getElementById('modulosPermissoes').innerHTML = html;
 
     if (id) {
         var p = perfis.find(function(x) { return x.id === id; });
@@ -301,7 +417,7 @@ window.abrirFormPerfil = function(id) {
         document.getElementById('nomePerfil').value = p.nome;
         if (p.modulos) {
             p.modulos.forEach(function(m) {
-                var cb = document.querySelector('#modulosPermissoes input[value="' + m + '"]');
+                var cb = document.getElementById('mod_' + m);
                 if (cb) cb.checked = true;
             });
         }
@@ -576,18 +692,40 @@ function carregarAparencia() {
 }
 
 // ============================================================
-// VERIFICAÇÃO DE SESSÃO
-// ============================================================
-if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
-
-// ============================================================
 // INICIALIZAÇÃO
 // ============================================================
 renderizarPerfis();
+renderizarModulosSistema();
 carregarInstituicao();
 carregarGemini();
 carregarSeguranca();
 carregarAparencia();
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    pagina = pagina.split('?')[0].split('#')[0];
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) {
+    window.location.href = 'index.html';
+}
 </script>
 </body>
 </html>
