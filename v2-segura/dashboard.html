@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social</title>
+<title>Amovin ERP Social • Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -17,414 +17,209 @@
   --branco: #FFFFFF;
   --vermelho: #E53935;
 }
-
 * { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #F8F4ED;
-  display: flex;
-  min-height: 100vh;
-}
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
+.sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
+.sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
+.sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
+.nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
+.nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
 
-/* ==================== SIDEBAR (vem do menu.js) ==================== */
-.sidebar {
-  width: 270px;
-  background: #FFFFFF;
-  color: #1A1A1A;
-  position: fixed;
-  left: 0; top: 0; bottom: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #F0E9DF;
-  box-shadow: 0 0 20px rgba(0,0,0,0.03);
-}
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.sidebar-header {
-  padding: 28px 24px 24px;
-  text-align: center;
-  border-bottom: 1px solid #F0E9DF;
-}
-
-.sidebar-logo-img {
-  width: 80px;
-  height: auto;
-  margin-bottom: 8px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.sidebar-logo-fallback {
-  font-size: 48px;
-  margin-bottom: 8px;
-  display: none;
-}
-
-.sidebar-header .brand {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #1A1A1A;
-  letter-spacing: -0.4px;
-}
-
-.sidebar-nav {
-  flex: 1;
-  padding: 16px 0;
-  overflow-y: auto;
-}
-
-.nav-categoria {
-  padding: 16px 24px 6px;
-  font-size: 10px;
-  font-weight: 700;
-  color: #9CA3AF;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 11px 24px;
-  color: #4B5563;
-  text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border-left: 3px solid transparent;
-}
-
-.nav-item:hover {
-  background: #FFF8E7;
-  color: #C65A11;
-  border-left-color: #F5C518;
-}
-
-.nav-item.ativo {
-  background: #FFF3E0;
-  color: #C65A11;
-  border-left-color: #C65A11;
-  font-weight: 600;
-}
-
-.nav-item .icone {
-  font-size: 17px;
-  width: 24px;
-  text-align: center;
-}
-
-.sidebar-footer {
-  padding: 20px 24px;
-  border-top: 1px solid #F0E9DF;
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
+/* ============================================================
+   STATUS CARDS
+   ============================================================ */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 24px;
 }
-
-.user-avatar {
-  width: 38px;
-  height: 38px;
-  background: #F5C518;
-  color: #1A1A1A;
+.status-card {
+  background: #FFFFFF;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid #F0E9DF;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.3s;
+}
+.status-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.status-icon {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.user-info .nome { font-weight: 600; font-size: 13.5px; }
-.user-info .cargo { font-size: 11px; color: #6B7280; }
-
-.btn-sair {
-  width: 100%;
-  padding: 9px;
-  background: #F8F4ED;
-  color: #1A1A1A;
-  border: none;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-sair:hover { background: #F0E9DF; }
-
-/* ==================== MAIN CONTENT ==================== */
-.main-content {
-  flex: 1;
-  margin-left: 270px;
-  padding: 32px 40px;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-}
-
-.saudacao h1 {
-  font-size: 26px;
-  font-weight: 700;
-  color: #1A1A1A;
-  letter-spacing: -0.6px;
-}
-
-.saudacao p {
-  font-size: 14px;
-  color: #6B7280;
-  margin-top: 4px;
-}
-
-.data-display {
-  background: #FFFFFF;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 13.5px;
-  color: #1A1A1A;
-  border: 1px solid #F0E9DF;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 18px;
-  margin-bottom: 28px;
-}
-
-.stat-card {
-  background: #FFFFFF;
-  padding: 20px 22px;
-  border-radius: 18px;
-  border: 1px solid #F0E9DF;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.06);
-}
-
-.stat-icon { font-size: 24px; margin-bottom: 10px; }
-.stat-valor { font-size: 28px; font-weight: 800; color: #1A1A1A; letter-spacing: -0.8px; }
-.stat-label { font-size: 11px; color: #6B7280; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  flex: 1;
-}
-
-.card {
-  background: #FFFFFF;
-  padding: 24px 26px;
-  border-radius: 18px;
-  border: 1px solid #F0E9DF;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-}
-
-.card h3 {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1A1A1A;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #F5F0E8;
-}
-
-.lista-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 11px 0;
-  border-bottom: 1px solid #F5F0E8;
-  font-size: 13px;
-}
-
-.lista-item:last-child { border-bottom: none; }
-
-.lista-item .hora {
-  font-weight: 700;
-  color: #C65A11;
-  min-width: 52px;
-  font-size: 13px;
-}
-
-.lista-item .info strong { display: block; font-weight: 600; color: #1A1A1A; font-size: 13px; }
-.lista-item .info small { color: #6B7280; font-size: 11px; }
-.lista-item .badge-status { font-size: 9px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-.badge-critico { background: #FFEBEE; color: #C62828; }
-.badge-alerta { background: #FFF3E0; color: #E65100; }
-.badge-normal { background: #E8F5E9; color: #2E7D32; }
-
-.sem-dados {
-  text-align: center;
-  padding: 28px 0;
-  color: #9CA3AF;
-  font-size: 13px;
-}
-
-.rodape {
-  background: #FFFFFF;
-  border-radius: 14px;
-  padding: 12px 18px;
-  border: 1px solid #F0E9DF;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-  margin-top: 30px;
-}
-
-.rodape-grid {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.rodape-logo {
+  font-size: 20px;
   flex-shrink: 0;
 }
+.status-icon.online { background: #E8F5E9; color: #2E7D32; }
+.status-icon.offline { background: #FFEBEE; color: #C62828; }
+.status-icon.warning { background: #FFF3E0; color: #E65100; }
+.status-info { flex: 1; }
+.status-info .nome { font-size: 11px; font-weight: 600; color: var(--cinza); text-transform: uppercase; letter-spacing: 0.5px; }
+.status-info .valor { font-size: 15px; font-weight: 700; color: var(--grafite); }
+.status-info .detalhe { font-size: 10px; color: var(--cinza); }
+.status-badge { font-size: 9px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
+.status-badge.online { background: #E8F5E9; color: #2E7D32; }
+.status-badge.offline { background: #FFEBEE; color: #C62828; }
+.status-badge.warning { background: #FFF3E0; color: #E65100; }
 
-.rodape-logo .logo-vigorre {
-  width: 50px;
-  height: auto;
+.progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: #F0E9DF;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 6px;
 }
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+  background: linear-gradient(90deg, #57C220, #C65A11);
+}
+.progress-bar.warning { background: linear-gradient(90deg, #F5C518, #E65100); }
+.progress-bar.danger { background: linear-gradient(90deg, #E53935, #C62828); }
 
-.rodape-info {
-  flex: 1;
-  min-width: 0;
-}
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 24px; }
+.kpi-card { background: #FFFFFF; padding: 20px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 28px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 12px; color: var(--cinza); }
 
-.rodape-info .copyright {
-  font-size: 8px;
-  color: #8A8F98;
-  letter-spacing: 0.2px;
-  margin-bottom: 3px;
-}
+.grid-dois { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
+.card h3 .ver-tudo { font-size: 11px; font-weight: 600; color: var(--cinza); cursor: pointer; }
 
-.rodape-info .tm {
-  font-size: 6px;
-  vertical-align: super;
-}
+.atividade-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F0E9DF; }
+.atividade-item .icone { font-size: 18px; }
+.atividade-item .texto { flex: 1; font-size: 13px; color: var(--grafite); }
+.atividade-item .texto .detalhe { font-size: 11px; color: var(--cinza); }
+.atividade-item .hora { font-size: 10px; color: var(--cinza); }
 
-.rodape-info .contato {
-  font-size: 9px;
-  color: #8A8F98;
-  margin-bottom: 2px;
-}
+.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
-.rodape-info a {
-  color: #C65A11;
-  text-decoration: none;
-  font-weight: 500;
-}
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-.rodape-info .divider {
-  color: #D1D5DB;
-  margin: 0 6px;
-}
-
-.rodape-info .email {
-  font-size: 8px;
-  color: #aaa;
-}
-
-.logo-vigorre-fallback {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--grafite);
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .sidebar { width: 100%; position: relative; min-height: auto; }
-  .main-content { margin-left: 0; padding: 20px; }
-  .info-grid { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .top-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
-}
+@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-dois { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- ==================== MENU LATERAL ==================== -->
-<div id="menu-container"></div>
+<!-- O MENU SERÁ CARREGADO PELO menu.js -->
 
-<!-- MAIN CONTENT -->
 <main class="main-content">
-  <div class="top-bar">
-    <div class="saudacao">
-      <h1 id="saudacaoTexto">Bem-vindo(a) de volta</h1>
-      <p>Painel de Gestão • Amovin ERP Social</p>
-    </div>
-    <div class="data-display" id="dataHoje"></div>
+  <div class="topo-bar">
+    <h1>📊 Dashboard</h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card" onclick="window.location.href='pessoas.html'">
-      <div class="stat-icon">👥</div>
-      <div class="stat-valor" id="statBenef">0</div>
-      <div class="stat-label">Beneficiários</div>
+  <!-- ============================================================
+       STATUS DOS SERVIÇOS
+       ============================================================ -->
+  <div class="status-grid" id="statusServicos">
+    <div class="status-card">
+      <div class="status-icon online" id="firebaseIcon">🔥</div>
+      <div class="status-info">
+        <div class="nome">Firebase</div>
+        <div class="valor" id="firebaseStatus">Carregando...</div>
+        <div class="detalhe">Leitura: <span id="firebaseLeitura">--</span></div>
+        <span class="status-badge online" id="firebaseBadge">⏳</span>
+      </div>
     </div>
-    <div class="stat-card" onclick="window.location.href='profissionais.html'">
-      <div class="stat-icon">👨‍⚕️</div>
-      <div class="stat-valor" id="statProfissionais">0</div>
-      <div class="stat-label">Profissionais</div>
+
+    <div class="status-card">
+      <div class="status-icon online" id="supabaseIcon">⚡</div>
+      <div class="status-info">
+        <div class="nome">Supabase</div>
+        <div class="valor" id="supabaseStatus">Carregando...</div>
+        <div class="detalhe">Registros: <span id="supabaseRegistros">--</span></div>
+        <span class="status-badge online" id="supabaseBadge">⏳</span>
+      </div>
     </div>
-    <div class="stat-card" onclick="window.location.href='voluntarios.html'">
-      <div class="stat-icon">💪</div>
-      <div class="stat-valor" id="statVoluntarios">0</div>
-      <div class="stat-label">Voluntários</div>
+
+    <div class="status-card">
+      <div class="status-icon online" id="geminiIcon">🤖</div>
+      <div class="status-info">
+        <div class="nome">Gemini IA</div>
+        <div class="valor" id="geminiStatus">Carregando...</div>
+        <div class="detalhe">Chave: <span id="geminiChave">--</span></div>
+        <span class="status-badge online" id="geminiBadge">⏳</span>
+      </div>
     </div>
-    <div class="stat-card" onclick="window.location.href='qrcodes.html'">
-      <div class="stat-icon">📱</div>
-      <div class="stat-valor" id="statQR">0</div>
-      <div class="stat-label">QR Codes</div>
-    </div>
-    <div class="stat-card" onclick="window.location.href='agenda.html'">
-      <div class="stat-icon">📅</div>
-      <div class="stat-valor" id="statAgenda">0</div>
-      <div class="stat-label">Agendamentos Hoje</div>
-    </div>
-    <div class="stat-card" onclick="window.location.href='estoque.html'">
-      <div class="stat-icon">📦</div>
-      <div class="stat-valor" id="statEstoque">0</div>
-      <div class="stat-label">Itens em Estoque</div>
+
+    <div class="status-card">
+      <div class="status-icon online" id="storageIcon">💾</div>
+      <div class="status-info">
+        <div class="nome">Armazenamento</div>
+        <div class="valor" id="armazenamentoStatus">Carregando...</div>
+        <div class="detalhe">
+          <span id="espacoUsado">0%</span> · <span id="espacoTotal">--</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="barraEspaco" style="width: 0%;"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="info-grid">
-    <div class="card">
-      <h3>📅 Agendamentos de Hoje</h3>
-      <div id="listaAgenda"><div class="sem-dados">Nenhum agendamento para hoje.</div></div>
+  <!-- ============================================================
+       KPIs
+       ============================================================ -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-valor" id="kpiTotalPessoas">0</div>
+      <div class="kpi-label">👥 Total de Pessoas</div>
     </div>
-    <div class="card">
-      <h3>⚠️ Estoque Crítico</h3>
-      <div id="listaEstoque"><div class="sem-dados">Estoque em níveis normais.</div></div>
+    <div class="kpi-card">
+      <div class="kpi-valor" id="kpiAgendamentosHoje">0</div>
+      <div class="kpi-label">📅 Agendamentos Hoje</div>
     </div>
-    <div class="card">
-      <h3>📝 Últimos Documentos</h3>
-      <div id="listaDocs"><div class="sem-dados">Nenhum documento recente.</div></div>
+    <div class="kpi-card">
+      <div class="kpi-valor" id="kpiNotasPendentes">0</div>
+      <div class="kpi-label">📄 Notas Pendentes</div>
     </div>
+    <div class="kpi-card">
+      <div class="kpi-valor" id="kpiPreCadastros">0</div>
+      <div class="kpi-label">📋 Pré-Cadastros</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       GRID DE ATIVIDADES
+       ============================================================ -->
+  <div class="grid-dois">
     <div class="card">
-      <h3>📱 QR Codes Recentes</h3>
-      <div id="listaQR"><div class="sem-dados">Nenhum QR Code gerado.</div></div>
+      <h3>🔄 Atividades Recentes <span class="ver-tudo">Ver tudo →</span></h3>
+      <div id="listaAtividades"><div class="sem-dados">Nenhuma atividade recente.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>📋 Próximos Eventos <span class="ver-tudo">Ver tudo →</span></h3>
+      <div id="listaEventos"><div class="sem-dados">Nenhum evento agendado.</div></div>
     </div>
   </div>
 
@@ -435,158 +230,267 @@ body {
         <span class="logo-vigorre-fallback">Vigorre</span>
       </div>
       <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
-        <div class="contato">
-          <a href="https://www.vigorre.com.br" target="_blank">www.vigorre.com.br</a>
-          <span class="divider">|</span>
-          <a href="https://wa.me/5534991850735" target="_blank">(34) 99185-0735</a>
-        </div>
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
         <div class="email">contato@vigorre.com.br</div>
       </div>
     </div>
   </div>
 </main>
 
+<!-- ============================================================
+   SCRIPTS
+   ============================================================ -->
 <script src="menu.js"></script>
+
 <script>
 // ============================================================
-// CARREGAR DADOS DO USUÁRIO
+// STATUS DOS SERVIÇOS
 // ============================================================
-var nomeUsuario = sessionStorage.getItem('amovin_nome') || 'Administrador';
-var cargoUsuario = sessionStorage.getItem('amovin_perfil') || 'Admin';
-var primeiraLetra = nomeUsuario.charAt(0).toUpperCase();
 
-setTimeout(function() {
-    var avatar = document.getElementById('userAvatarMenu');
-    var nomeEl = document.getElementById('userNomeMenu');
-    var cargoEl = document.getElementById('userCargoMenu');
-    if (avatar) avatar.textContent = primeiraLetra;
-    if (nomeEl) nomeEl.textContent = nomeUsuario;
-    if (cargoEl) cargoEl.textContent = cargoUsuario;
-}, 100);
+async function verificarStatusServicos() {
+    // --- Firebase ---
+    try {
+        const firebaseEl = document.getElementById('firebaseStatus');
+        const firebaseBadge = document.getElementById('firebaseBadge');
+        const firebaseLeitura = document.getElementById('firebaseLeitura');
+        const firebaseIcon = document.getElementById('firebaseIcon');
+        
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+            const db = firebase.firestore();
+            const snapshot = await db.collection('pessoas').limit(1).get();
+            const count = snapshot.size;
+            
+            firebaseEl.textContent = 'Conectado';
+            firebaseBadge.textContent = '✅ Online';
+            firebaseBadge.className = 'status-badge online';
+            firebaseLeitura.textContent = count + ' docs';
+            firebaseIcon.className = 'status-icon online';
+        } else {
+            firebaseEl.textContent = 'Firebase não carregado';
+            firebaseBadge.textContent = '⚠️ Não carregado';
+            firebaseBadge.className = 'status-badge warning';
+            firebaseIcon.className = 'status-icon warning';
+        }
+    } catch (e) {
+        document.getElementById('firebaseStatus').textContent = 'Erro!';
+        document.getElementById('firebaseBadge').textContent = '❌ Offline';
+        document.getElementById('firebaseBadge').className = 'status-badge offline';
+        document.getElementById('firebaseIcon').className = 'status-icon offline';
+    }
 
-var hora = new Date().getHours();
-var saudacao = 'Bem-vindo(a) de volta';
-if (hora < 6) saudacao = '🌙 Boa madrugada';
-else if (hora < 12) saudacao = '🌅 Bom dia';
-else if (hora < 18) saudacao = '☀️ Boa tarde';
-else saudacao = '🌙 Boa noite';
-document.getElementById('saudacaoTexto').textContent = saudacao;
+    // --- Supabase ---
+    try {
+        const supabaseEl = document.getElementById('supabaseStatus');
+        const supabaseBadge = document.getElementById('supabaseBadge');
+        const supabaseRegistros = document.getElementById('supabaseRegistros');
+        const supabaseIcon = document.getElementById('supabaseIcon');
+        
+        if (typeof supabase !== 'undefined') {
+            const { data, error } = await supabase
+                .from('pre_cadastros')
+                .select('id', { count: 'exact', head: true });
+            
+            if (!error) {
+                supabaseEl.textContent = 'Conectado';
+                supabaseBadge.textContent = '✅ Online';
+                supabaseBadge.className = 'status-badge online';
+                supabaseRegistros.textContent = data?.length || '0';
+                supabaseIcon.className = 'status-icon online';
+            } else {
+                throw error;
+            }
+        } else {
+            supabaseEl.textContent = 'Supabase não carregado';
+            supabaseBadge.textContent = '⚠️ Não carregado';
+            supabaseBadge.className = 'status-badge warning';
+            supabaseIcon.className = 'status-icon warning';
+        }
+    } catch (e) {
+        document.getElementById('supabaseStatus').textContent = 'Erro!';
+        document.getElementById('supabaseBadge').textContent = '❌ Offline';
+        document.getElementById('supabaseBadge').className = 'status-badge offline';
+        document.getElementById('supabaseIcon').className = 'status-icon offline';
+    }
 
-var hoje = new Date();
-document.getElementById('dataHoje').textContent = hoje.toLocaleDateString('pt-BR', { 
-  weekday: 'long', 
-  day: 'numeric', 
-  month: 'long', 
-  year: 'numeric' 
-});
+    // --- Gemini ---
+    try {
+        const geminiEl = document.getElementById('geminiStatus');
+        const geminiBadge = document.getElementById('geminiBadge');
+        const geminiChave = document.getElementById('geminiChave');
+        const geminiIcon = document.getElementById('geminiIcon');
+        
+        const key = localStorage.getItem('amovin_gemini_key');
+        if (key && key.length > 10) {
+            const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: 'teste' }] }] })
+            });
+            
+            if (response.ok) {
+                geminiEl.textContent = 'Conectado';
+                geminiBadge.textContent = '✅ Online';
+                geminiBadge.className = 'status-badge online';
+                geminiChave.textContent = 'Ativa ✅';
+                geminiIcon.className = 'status-icon online';
+            } else {
+                geminiEl.textContent = 'Chave inválida';
+                geminiBadge.textContent = '⚠️ Atenção';
+                geminiBadge.className = 'status-badge warning';
+                geminiChave.textContent = 'Verificar';
+                geminiIcon.className = 'status-icon warning';
+            }
+        } else {
+            geminiEl.textContent = 'Não configurado';
+            geminiBadge.textContent = '⚠️ Sem chave';
+            geminiBadge.className = 'status-badge warning';
+            geminiChave.textContent = 'Configurar';
+            geminiIcon.className = 'status-icon warning';
+        }
+    } catch (e) {
+        document.getElementById('geminiStatus').textContent = 'Erro!';
+        document.getElementById('geminiBadge').textContent = '❌ Offline';
+        document.getElementById('geminiBadge').className = 'status-badge offline';
+        document.getElementById('geminiIcon').className = 'status-icon offline';
+    }
 
-var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
-var ativos = beneficiarios.filter(function(p) { return p.status === 'Ativo' || !p.status; });
-document.getElementById('statBenef').textContent = ativos.length;
-
-var profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
-var profAtivos = profissionais.filter(function(p) { return p.status === 'Ativo' || !p.status; });
-document.getElementById('statProfissionais').textContent = profAtivos.length;
-
-var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
-var volAtivos = voluntarios.filter(function(p) { return p.status === 'Ativo' || !p.status; });
-document.getElementById('statVoluntarios').textContent = volAtivos.length;
-
-var qrCodes = JSON.parse(localStorage.getItem('amovin_qrcodes') || '[]');
-document.getElementById('statQR').textContent = qrCodes.length;
-
-var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
-var hojeStr = hoje.toISOString().split('T')[0];
-var hojeLista = agendamentos.filter(function(a) { return a.data === hojeStr && a.status !== 'cancelado'; });
-hojeLista.sort(function(a, b) { return (a.hora || '').localeCompare(b.hora || ''); });
-document.getElementById('statAgenda').textContent = hojeLista.length;
-
-var containerAgenda = document.getElementById('listaAgenda');
-if (hojeLista.length > 0) {
-  var htmlAgenda = '';
-  hojeLista.forEach(function(a) {
-    var nome = a.nome || 'Beneficiário';
-    var prof = a.profissional || '';
-    var hora = a.hora || '--:--';
-    htmlAgenda += '<div class="lista-item"><span class="hora">' + hora + '</span><div class="info"><strong>' + nome + '</strong><small>' + prof + '</small></div></div>';
-  });
-  containerAgenda.innerHTML = htmlAgenda;
+    // --- Armazenamento ---
+    try {
+        const espacoEl = document.getElementById('armazenamentoStatus');
+        const espacoUsado = document.getElementById('espacoUsado');
+        const espacoTotal = document.getElementById('espacoTotal');
+        const barra = document.getElementById('barraEspaco');
+        const storageIcon = document.getElementById('storageIcon');
+        
+        let totalBytes = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('amovin_')) {
+                totalBytes += localStorage.getItem(key).length * 2;
+            }
+        }
+        
+        const limite = 5 * 1024 * 1024;
+        const percentual = Math.min((totalBytes / limite) * 100, 100);
+        
+        espacoUsado.textContent = percentual.toFixed(1) + '%';
+        espacoTotal.textContent = '5 MB';
+        barra.style.width = percentual + '%';
+        
+        if (percentual > 80) {
+            barra.className = 'progress-bar danger';
+            espacoEl.textContent = 'Crítico!';
+            storageIcon.className = 'status-icon warning';
+        } else if (percentual > 60) {
+            barra.className = 'progress-bar warning';
+            espacoEl.textContent = 'Atenção';
+            storageIcon.className = 'status-icon warning';
+        } else {
+            barra.className = 'progress-bar';
+            espacoEl.textContent = 'OK';
+            storageIcon.className = 'status-icon online';
+        }
+    } catch (e) {
+        document.getElementById('armazenamentoStatus').textContent = 'Erro!';
+    }
 }
 
-var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
-var criticos = estoque.filter(function(i) { return i.qtdAtual <= i.qtdMinima; });
-document.getElementById('statEstoque').textContent = estoque.length;
+// Executa a verificação
+verificarStatusServicos();
+setInterval(verificarStatusServicos, 60000); // A cada 60 segundos
 
-var containerEstoque = document.getElementById('listaEstoque');
-if (criticos.length > 0) {
-  var htmlEstoque = '';
-  criticos.sort(function(a, b) { return (a.qtdAtual / a.qtdMinima) - (b.qtdAtual / b.qtdMinima); });
-  criticos.slice(0, 5).forEach(function(i) {
-    var badge = i.qtdAtual <= 0 ? 'badge-critico' : 'badge-alerta';
-    var label = i.qtdAtual <= 0 ? 'ESGOTADO' : 'BAIXO';
-    htmlEstoque += '<div class="lista-item"><span class="hora">' + i.qtdAtual + '/' + i.qtdMinima + '</span><div class="info"><strong>' + i.nome + '</strong><small>' + i.categoria + ' | <span class="badge-status ' + badge + '">' + label + '</span></small></div></div>';
-  });
-  containerEstoque.innerHTML = htmlEstoque;
+// ============================================================
+// KPIs E ATIVIDADES
+// ============================================================
+
+function carregarKPIs() {
+    // Pessoas
+    const pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+    document.getElementById('kpiTotalPessoas').textContent = pessoas.length;
+
+    // Agenda hoje
+    const agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
+    const hoje = new Date().toISOString().split('T')[0];
+    const hojeCount = agendamentos.filter(a => a.data === hoje).length;
+    document.getElementById('kpiAgendamentosHoje').textContent = hojeCount;
+
+    // Notas pendentes
+    const notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
+    const pendentes = notas.filter(n => n.status === 'pendente').length;
+    document.getElementById('kpiNotasPendentes').textContent = pendentes;
+
+    // Pré-cadastros
+    const preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
+    document.getElementById('kpiPreCadastros').textContent = preCadastros.length;
 }
 
-var documentos = JSON.parse(localStorage.getItem('amovin_documentos') || '[]');
-var containerDocs = document.getElementById('listaDocs');
-if (documentos.length > 0) {
-  var docsRecentes = documentos.slice().sort(function(a, b) { 
-    return new Date(b.dataDoc || b.criadoEm || 0) - new Date(a.dataDoc || a.criadoEm || 0); 
-  }).slice(0, 5);
-  var htmlDocs = '';
-  docsRecentes.forEach(function(d) {
-    var data = d.dataDoc ? new Date(d.dataDoc + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
-    htmlDocs += '<div class="lista-item"><span class="hora">' + data + '</span><div class="info"><strong>' + (d.nome || 'Documento') + '</strong><small>' + (d.categoria || '') + '</small></div></div>';
-  });
-  containerDocs.innerHTML = htmlDocs;
+// Atividades Recentes
+function carregarAtividades() {
+    const logs = JSON.parse(localStorage.getItem('amovin_logs') || '[]');
+    const container = document.getElementById('listaAtividades');
+    if (logs.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhuma atividade recente.</div>';
+        return;
+    }
+    container.innerHTML = logs.slice(0, 5).map(log => {
+        const data = new Date(log.data);
+        const hora = data.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        return '<div class="atividade-item">' +
+            '<span class="icone">' + (log.icone || '📌') + '</span>' +
+            '<div class="texto">' + log.texto + ' <span class="detalhe">' + (log.detalhe || '') + '</span></div>' +
+            '<span class="hora">' + hora + '</span>' +
+            '</div>';
+    }).join('');
 }
 
-var containerQR = document.getElementById('listaQR');
-if (qrCodes.length > 0) {
-  var qrRecentes = qrCodes.slice().sort(function(a, b) { 
-    return new Date(b.dataCriacao || 0) - new Date(a.dataCriacao || 0); 
-  }).slice(0, 5);
-  var htmlQR = '';
-  qrRecentes.forEach(function(q) {
-    var data = q.dataCriacao ? new Date(q.dataCriacao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
-    var status = q.status === 'Ativo' ? '✅' : '⚠️';
-    htmlQR += '<div class="lista-item"><span class="hora">' + status + '</span><div class="info"><strong>' + q.titulo + '</strong><small>' + q.categoria + ' | ' + data + '</small></div></div>';
-  });
-  containerQR.innerHTML = htmlQR;
+// Eventos
+function carregarEventos() {
+    const agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
+    const hoje = new Date().toISOString().split('T')[0];
+    const proximos = agendamentos.filter(a => a.data >= hoje).sort((a,b) => a.data.localeCompare(b.data));
+    const container = document.getElementById('listaEventos');
+    if (proximos.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum evento agendado.</div>';
+        return;
+    }
+    container.innerHTML = proximos.slice(0, 5).map(a => {
+        const data = new Date(a.data + 'T00:00:00');
+        const dataStr = data.toLocaleDateString('pt-BR');
+        return '<div class="atividade-item">' +
+            '<span class="icone">📅</span>' +
+            '<div class="texto">' + (a.descricao || 'Agendamento') + ' <span class="detalhe">' + dataStr + ' às ' + (a.hora || '--:--') + '</span></div>' +
+            '<span class="hora">' + (a.status || '⏳') + '</span>' +
+            '</div>';
+    }).join('');
 }
 
-function fazerLogout() {
-  sessionStorage.clear();
-  window.location.href = 'index.html';
-}
+// Inicializa KPIs e atividades
+carregarKPIs();
+carregarAtividades();
+carregarEventos();
 
+// ============================================================
+// SESSÃO
+// ============================================================
 if (!sessionStorage.getItem('amovin_logado')) {
-  window.location.href = 'index.html';
+    window.location.href = 'index.html';
 }
-
-history.pushState(null, null, location.href);
-window.addEventListener('popstate', function() {
-  history.pushState(null, null, location.href);
-  sessionStorage.clear();
-  window.location.href = 'index.html';
-});
 
 var timeout;
 function resetTimeout() {
-  clearTimeout(timeout);
-  timeout = setTimeout(function() {
-    sessionStorage.clear();
-    alert('⏰ Sessão expirada.');
-    window.location.href = 'index.html';
-  }, 30 * 60 * 1000);
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+        sessionStorage.clear();
+        alert('⏰ Sessão expirada.');
+        window.location.href = 'index.html';
+    }, 30 * 60 * 1000);
 }
 document.addEventListener('mousemove', resetTimeout);
 document.addEventListener('keypress', resetTimeout);
 document.addEventListener('click', resetTimeout);
 resetTimeout();
 </script>
+
 </body>
 </html>
