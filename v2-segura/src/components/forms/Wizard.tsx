@@ -34,7 +34,6 @@ export const Wizard = ({ steps, onComplete, initialData = {} }: WizardProps) => 
     setFormData(newData);
 
     if (isLastStep) {
-      // Envia todos os dados
       setIsSubmitting(true);
       onComplete(newData);
       setIsSubmitting(false);
@@ -122,7 +121,6 @@ export const Wizard = ({ steps, onComplete, initialData = {} }: WizardProps) => 
           <Button
             variant="primary"
             onClick={() => {
-              // Força o submit do formulário atual
               const form = document.querySelector('form');
               if (form) {
                 form.dispatchEvent(new Event('submit', { bubbles: true }));
@@ -136,7 +134,6 @@ export const Wizard = ({ steps, onComplete, initialData = {} }: WizardProps) => 
           <Button
             variant="primary"
             onClick={() => {
-              // Força o submit do formulário atual
               const form = document.querySelector('form');
               if (form) {
                 form.dispatchEvent(new Event('submit', { bubbles: true }));
