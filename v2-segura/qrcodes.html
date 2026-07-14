@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social • QR Codes Dinâmicos</title>
+<title>Amovin ERP Social • QR Codes</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -20,561 +20,290 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ==================== SIDEBAR (vem do menu.js) ==================== */
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
 .sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
 .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
 .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.4px; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
 .nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
 .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
 .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
-.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
-.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
-.user-info .nome { font-weight: 600; font-size: 13.5px; }
-.user-info .cargo { font-size: 11px; color: #6B7280; }
-.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-sair:hover { background: #F0E9DF; }
 
-/* ==================== MAIN CONTENT ==================== */
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
-.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 18px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
 .kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
 .kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
 
-.busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
-.btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
-
-.grid-principal { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-qr { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
 
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
-.form-group textarea { resize: vertical; min-height: 50px; }
-.form-group .campo-obrigatorio { color: var(--vermelho); }
-.form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
 
-.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; }
+.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
 .btn-salvar { background: var(--laranja); color: white; }
-.btn-salvar:hover { background: #A04A0E; }
-.btn-azul { background: var(--azul); color: white; }
-.btn-azul:hover { background: #1565C0; }
+.btn-editar { background: var(--amarelo); color: #1A1A1A; }
+.btn-excluir { background: var(--vermelho); color: white; }
 .btn-verde { background: var(--verde); color: white; }
-.btn-verde:hover { background: #388E3C; }
-.btn-vermelho { background: var(--vermelho); color: white; }
-.btn-vermelho:hover { background: #C62828; }
-.btn-amarelo { background: var(--amarelo); color: #1A1A1A; }
-.btn-amarelo:hover { background: #E5B800; }
 
-.qr-card { background: #F8F4ED; padding: 16px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--laranja); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.qr-card .qr-info h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
-.qr-card .qr-info p { font-size: 11px; color: var(--cinza); margin: 2px 0; }
-.qr-card .qr-info .qr-id { font-family: monospace; font-size: 12px; color: var(--azul); }
-.qr-card .qr-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
-.qr-card .qr-status { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 9px; font-weight: 600; }
+.qr-item { padding: 12px 16px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.qr-item .nome { font-weight: 600; color: var(--grafite); font-size: 13px; }
+.qr-item .tipo { font-size: 10px; padding: 2px 10px; border-radius: 12px; font-weight: 600; background: #E3F2FD; color: #1565C0; }
+.qr-item .status { font-size: 10px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
 .status-ativo { background: #E8F5E9; color: #2E7D32; }
-.status-inativo { background: #FFF3E0; color: #E65100; }
-
-.qr-preview { text-align: center; padding: 20px; background: #FFFFFF; border-radius: 10px; border: 1px dashed #E5E0D8; margin-top: 10px; }
-.qr-preview img { max-width: 200px; height: auto; }
-.qr-preview .qr-link { font-size: 12px; color: var(--azul); word-break: break-all; margin-top: 8px; }
-.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
-
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal { background: white; border-radius: 16px; width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; }
-.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
-.modal-header h3 { font-size: 18px; }
-.modal-body { padding: 22px; }
-.modal-body .form-group { margin-bottom: 14px; }
-.modal-body .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.modal-body .form-group input, .modal-body .form-group select, .modal-body .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
-.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
-.modal-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-.modal-actions .btn { flex: 1; text-align: center; }
+.status-inativo { background: #FFEBEE; color: #C62828; }
+.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-principal { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } }
+@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-qr { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- ==================== MENU LATERAL ==================== -->
-<div id="menu-container"></div>
+<aside class="sidebar">
+  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>
+    <a href="sala-espera.html" class="nav-item"><span class="icone">📋</span> Sala de Espera</a>
+    <a href="pre-cadastro.html" class="nav-item"><span class="icone">📝</span> Pré-Cadastro</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="qrcodes.html" class="nav-item ativo"><span class="icone">📱</span> QR Codes</a>
+    <a href="notas-fiscais.html" class="nav-item"><span class="icone">📄</span> Notas Fiscais</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
 
 <main class="main-content">
-  <div class="topo-bar">
-    <h1>📱 QR Codes Dinâmicos</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
+  <div class="topo-bar"><h1>📱 QR Codes</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
   <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total de QR Codes</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📱 QR Codes</div></div>
     <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiInativos">0</div><div class="kpi-label">⚠️ Inativos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiEscaneados">0</div><div class="kpi-label">📊 Escaneamentos</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiEscaneados">0</div><div class="kpi-label">📊 Escaneados</div></div>
   </div>
 
-  <div class="grid-principal">
-    <!-- GERAR QR CODE -->
+  <div class="grid-qr">
     <div class="card">
-      <h3 id="tituloForm">📱 Gerar QR Code</h3>
+      <h3>📝 Novo QR Code</h3>
       <input type="hidden" id="qrId">
-      
-      <div class="form-group">
-        <label>Título <span class="campo-obrigatorio">*</span></label>
-        <input type="text" id="tituloQR" placeholder="Ex: Folder Institucional, Evento 2026, Manual do Voluntário">
-      </div>
-
-      <div class="form-group">
-        <label>Destino (URL) <span class="campo-obrigatorio">*</span></label>
-        <input type="url" id="destinoQR" placeholder="https://amovin.org.br/documento.pdf">
-        <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">O QR Code apontará para este link. Você pode alterar depois.</small>
-      </div>
-
-      <div class="form-group">
-        <label>Categoria</label>
-        <select id="categoriaQR">
-          <option value="Documentos">📄 Documentos</option>
-          <option value="Eventos">📅 Eventos</option>
-          <option value="Institucional">🏢 Institucional</option>
-          <option value="Doações">❤️ Doações</option>
-          <option value="Redes Sociais">📱 Redes Sociais</option>
-          <option value="Projetos">📋 Projetos</option>
-          <option value="Outros">📌 Outros</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Status</label>
-        <select id="statusQR">
-          <option value="Ativo">✅ Ativo</option>
-          <option value="Inativo">⚠️ Inativo</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Observações</label>
-        <textarea id="obsQR" rows="2" placeholder="Informações adicionais sobre este QR Code..."></textarea>
-      </div>
-
-      <button class="btn btn-salvar" onclick="salvarQR()" style="width:100%;padding:14px;font-size:14px;">💾 Gerar QR Code</button>
+      <div class="form-group"><label>Nome *</label><input type="text" id="nomeQr" placeholder="Ex: Acesso Rápido"></div>
+      <div class="form-group"><label>URL / Link *</label><input type="text" id="urlQr" placeholder="https://amovin.org.br"></div>
+      <div class="form-group"><label>Descrição</label><textarea id="descricaoQr" rows="2" placeholder="Descrição do QR Code..."></textarea></div>
+      <div class="form-row"><div class="form-group"><label>Tipo</label><select id="tipoQr"><option>Link</option><option>Documento</option><option>Contato</option><option>Evento</option><option>Outros</option></select></div><div class="form-group"><label>Status</label><select id="statusQr"><option value="ativo">✅ Ativo</option><option value="inativo">❌ Inativo</option></select></div></div>
+      <button class="btn btn-salvar" onclick="salvarQr()" style="width:100%;padding:12px;font-size:14px;">💾 Salvar QR Code</button>
     </div>
-
-    <!-- VISUALIZAÇÃO -->
-    <div>
-      <div class="card" id="cardPreview" style="display:none;">
-        <h3>🖼️ Pré-visualização</h3>
-        <div class="qr-preview" id="qrPreviewContainer">
-          <img id="qrPreviewImg" src="" alt="QR Code">
-          <div class="qr-link" id="qrPreviewLink"></div>
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-            <button class="btn btn-azul" onclick="baixarQR()">📥 Baixar PNG</button>
-            <button class="btn btn-verde" onclick="imprimirQR()">🖨️ Imprimir</button>
-            <button class="btn btn-amarelo" onclick="copiarLink()">📋 Copiar Link</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>📋 QR Codes Gerados</h3>
-        <div class="busca-bar">
-          <input type="text" id="buscaQR" placeholder="Buscar por título, categoria..." oninput="filtrarQR()">
-          <select id="filtroCategoriaQR" onchange="filtrarQR()">
-            <option value="todos">Todas categorias</option>
-            <option value="Documentos">📄 Documentos</option>
-            <option value="Eventos">📅 Eventos</option>
-            <option value="Institucional">🏢 Institucional</option>
-            <option value="Doações">❤️ Doações</option>
-            <option value="Redes Sociais">📱 Redes Sociais</option>
-            <option value="Projetos">📋 Projetos</option>
-            <option value="Outros">📌 Outros</option>
-          </select>
-          <select id="filtroStatusQR" onchange="filtrarQR()">
-            <option value="todos">Todos status</option>
-            <option value="Ativo">✅ Ativo</option>
-            <option value="Inativo">⚠️ Inativo</option>
-          </select>
-        </div>
-        <div id="listaQR"><div class="sem-dados">Nenhum QR Code gerado.</div></div>
-      </div>
+    <div class="card">
+      <h3>📋 QR Codes</h3>
+      <div id="listaQrs"><div class="sem-dados">Nenhum QR Code.</div></div>
     </div>
   </div>
 
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo">
-        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="logo-vigorre-fallback">Vigorre</span>
-      </div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
+  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
-<!-- MODAL EDITAR DESTINO -->
-<div class="modal-overlay" id="modalEditar" style="display:none;">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>✏️ Editar Destino</h3>
-      <button class="btn-fechar" onclick="fecharModalEditar()">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="editQRId">
-      <div class="form-group">
-        <label>Novo Destino (URL) <span class="campo-obrigatorio">*</span></label>
-        <input type="url" id="editDestinoQR" placeholder="https://amovin.org.br/novo-documento.pdf">
-        <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">O QR Code impresso continua o mesmo. O link de destino será atualizado.</small>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-salvar" onclick="salvarEdicaoDestino()">💾 Salvar</button>
-        <button class="btn btn-vermelho" onclick="fecharModalEditar()">❌ Cancelar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="menu.js"></script>
 <script>
-// ============================================================
-// BANCO DE DADOS LOCAL
-// ============================================================
 var qrCodes = JSON.parse(localStorage.getItem('amovin_qrcodes') || '[]');
 var editandoId = null;
-var qrVisualizandoId = null;
 
-// Dados iniciais
 if (qrCodes.length === 0) {
     qrCodes = [
-        { id: '8f7c3d12-a4b6-4d89-bf65-91c2e7a5f123', titulo: 'Folder Institucional', destino: 'https://amovin.org.br', categoria: 'Institucional', status: 'Ativo', obs: 'Principal da instituição', escaneamentos: 45, dataCriacao: '2026-07-01' },
-        { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', titulo: 'Doação PIX', destino: 'https://amovin.org.br/doar', categoria: 'Doações', status: 'Ativo', obs: 'QR Code para doações', escaneamentos: 127, dataCriacao: '2026-07-02' }
+        { id: 1, nome: 'Site AMOVIN', url: 'https://amovin.org.br', descricao: 'Acesso ao site oficial', tipo: 'Link', status: 'ativo', escaneados: 15 },
+        { id: 2, nome: 'WhatsApp AMOVIN', url: 'https://wa.me/5534999999999', descricao: 'Contato pelo WhatsApp', tipo: 'Contato', status: 'ativo', escaneados: 8 }
     ];
     salvar();
 }
-
-function salvar() {
-    localStorage.setItem('amovin_qrcodes', JSON.stringify(qrCodes));
-}
-
-// ============================================================
-// FUNÇÕES AUXILIARES
-// ============================================================
-function gerarUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0;
-        var v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-
-function formatarDataBR(dataISO) {
-    if (!dataISO) return '-';
-    var partes = dataISO.split('-');
-    return partes[2] + '/' + partes[1] + '/' + partes[0];
-}
-
-function getStatusBadge(status) {
-    if (status === 'Ativo') return '<span class="qr-status status-ativo">✅ Ativo</span>';
-    return '<span class="qr-status status-inativo">⚠️ Inativo</span>';
-}
-
-// ============================================================
-// GERAR QR CODE (usando API externa gratuita)
-// ============================================================
-function gerarQRCodeImagem(dados) {
-    var url = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(dados);
-    return url;
-}
-
-// ============================================================
-// RENDERIZAÇÃO
-// ============================================================
-function filtrarQR() {
-    var lista = qrCodes.slice();
-
-    var busca = document.getElementById('buscaQR').value.toLowerCase();
-    if (busca) {
-        lista = lista.filter(function(q) {
-            return (q.titulo || '').toLowerCase().indexOf(busca) >= 0 ||
-                   (q.categoria || '').toLowerCase().indexOf(busca) >= 0 ||
-                   (q.obs || '').toLowerCase().indexOf(busca) >= 0;
-        });
-    }
-
-    var cat = document.getElementById('filtroCategoriaQR').value;
-    if (cat !== 'todos') {
-        lista = lista.filter(function(q) { return q.categoria === cat; });
-    }
-
-    var st = document.getElementById('filtroStatusQR').value;
-    if (st !== 'todos') {
-        lista = lista.filter(function(q) { return q.status === st; });
-    }
-
-    lista.sort(function(a, b) {
-        return new Date(b.dataCriacao) - new Date(a.dataCriacao);
-    });
-
-    var container = document.getElementById('listaQR');
-    if (lista.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhum QR Code encontrado.</div>';
-    } else {
-        container.innerHTML = lista.map(function(q) {
-            var url = window.location.origin + '/qr/' + q.id;
-            var badge = getStatusBadge(q.status);
-
-            return '<div class="qr-card">' +
-                '<div class="qr-info">' +
-                '<h4>' + q.titulo + ' ' + badge + '</h4>' +
-                '<p>📂 ' + q.categoria + ' | 📊 ' + (q.escaneamentos || 0) + ' escaneamentos</p>' +
-                '<p class="qr-id">🔗 ' + url + '</p>' +
-                '<p style="font-size:10px;color:#9CA3AF;">📅 ' + formatarDataBR(q.dataCriacao) + (q.obs ? ' | 📝 ' + q.obs : '') + '</p>' +
-                '</div>' +
-                '<div class="qr-acoes">' +
-                '<button class="btn btn-azul" style="padding:4px 10px;font-size:10px;" onclick="visualizarQR(\'' + q.id + '\')">👁️</button>' +
-                '<button class="btn btn-amarelo" style="padding:4px 10px;font-size:10px;" onclick="abrirModalEditar(\'' + q.id + '\')">✏️</button>' +
-                '<button class="btn btn-vermelho" style="padding:4px 10px;font-size:10px;" onclick="excluirQR(\'' + q.id + '\')">🗑️</button>' +
-                '</div></div>';
-        }).join('');
-    }
-
-    atualizarKPIs();
-}
+function salvar() { localStorage.setItem('amovin_qrcodes', JSON.stringify(qrCodes)); }
 
 function atualizarKPIs() {
-    document.getElementById('kpiTotal').textContent = qrCodes.length;
-    document.getElementById('kpiAtivos').textContent = qrCodes.filter(function(q) { return q.status === 'Ativo'; }).length;
-    document.getElementById('kpiInativos').textContent = qrCodes.filter(function(q) { return q.status === 'Inativo'; }).length;
-    var totalEsc = 0;
-    qrCodes.forEach(function(q) { totalEsc += (q.escaneamentos || 0); });
-    document.getElementById('kpiEscaneados').textContent = totalEsc;
+    var total = qrCodes.length;
+    var ativos = qrCodes.filter(function(q) { return q.status === 'ativo'; }).length;
+    var escaneados = qrCodes.reduce(function(s, q) { return s + (q.escaneados || 0); }, 0);
+
+    document.getElementById('kpiTotal').textContent = total;
+    document.getElementById('kpiAtivos').textContent = ativos;
+    document.getElementById('kpiEscaneados').textContent = escaneados;
 }
 
-// ============================================================
-// VISUALIZAR QR CODE
-// ============================================================
-window.visualizarQR = function(id) {
-    var q = qrCodes.find(function(x) { return x.id === id; });
-    if (!q) return;
-
-    qrVisualizandoId = id;
-    var url = window.location.origin + '/qr/' + q.id;
-    var imgUrl = gerarQRCodeImagem(url);
-
-    document.getElementById('cardPreview').style.display = 'block';
-    document.getElementById('qrPreviewImg').src = imgUrl;
-    document.getElementById('qrPreviewLink').textContent = url;
-
-    // Scroll para o preview
-    document.getElementById('cardPreview').scrollIntoView({ behavior: 'smooth' });
-};
-
-window.baixarQR = function() {
-    var img = document.getElementById('qrPreviewImg');
-    var link = document.createElement('a');
-    link.download = 'qrcode-' + qrVisualizandoId + '.png';
-    link.href = img.src;
-    link.click();
-};
-
-window.imprimirQR = function() {
-    var img = document.getElementById('qrPreviewImg');
-    var w = window.open('', '_blank');
-    w.document.write('<html><head><title>QR Code</title><style>body{text-align:center;padding:40px;font-family:Arial,sans-serif;}img{max-width:300px;}.url{font-size:14px;color:#666;margin-top:10px;}</style></head><body>');
-    w.document.write('<img src="' + img.src + '">');
-    w.document.write('<div class="url">' + document.getElementById('qrPreviewLink').textContent + '</div>');
-    w.document.write('<script>window.onload=function(){window.print()}<\/script>');
-    w.document.write('</body></html>');
-    w.document.close();
-};
-
-window.copiarLink = function() {
-    var link = document.getElementById('qrPreviewLink').textContent;
-    navigator.clipboard.writeText(link).then(function() {
-        alert('✅ Link copiado!');
-    }).catch(function() {
-        // Fallback
-        var input = document.createElement('input');
-        input.value = link;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        alert('✅ Link copiado!');
-    });
-};
-
-// ============================================================
-// FORMULÁRIO
-// ============================================================
-window.salvarQR = function() {
-    console.log('🔵 Gerando QR Code...');
-
-    var titulo = document.getElementById('tituloQR').value.trim();
-    if (!titulo) {
-        alert('⚠️ Título é obrigatório!');
+function renderizarQrs() {
+    var lista = qrCodes.slice().sort(function(a, b) { return a.nome.localeCompare(b.nome); });
+    var container = document.getElementById('listaQrs');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum QR Code.</div>';
         return;
     }
+    container.innerHTML = lista.map(function(q) {
+        var statusClass = q.status === 'ativo' ? 'status-ativo' : 'status-inativo';
+        var statusLabel = q.status === 'ativo' ? '✅ Ativo' : '❌ Inativo';
+        return '<div class="qr-item">' +
+            '<div><span class="nome">' + q.nome + '</span> <span class="tipo">' + q.tipo + '</span><br>' +
+            (q.descricao ? '<span style="font-size:12px;color:var(--cinza);">' + q.descricao + '</span><br>' : '') +
+            '<span style="font-size:11px;color:var(--cinza);">' + q.url + '</span></div>' +
+            '<div><span style="font-size:12px;color:var(--cinza);">📊 ' + (q.escaneados || 0) + '</span>' +
+            '<span class="status ' + statusClass + '">' + statusLabel + '</span>' +
+            '<button class="btn btn-verde" onclick="escanearQr(' + q.id + ')" style="padding:4px 8px;font-size:10px;">📷</button>' +
+            '<button class="btn btn-editar" onclick="editarQr(' + q.id + ')" style="padding:4px 8px;font-size:10px;">✏️</button>' +
+            '<button class="btn btn-excluir" onclick="excluirQr(' + q.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
+    }).join('');
+}
 
-    var destino = document.getElementById('destinoQR').value.trim();
-    if (!destino) {
-        alert('⚠️ Destino (URL) é obrigatório!');
-        return;
-    }
+window.salvarQr = function() {
+    var nome = document.getElementById('nomeQr').value.trim();
+    var url = document.getElementById('urlQr').value.trim();
 
-    // Validar URL
-    if (!destino.startsWith('http://') && !destino.startsWith('https://')) {
-        destino = 'https://' + destino;
-    }
-
-    var categoria = document.getElementById('categoriaQR').value;
-    var status = document.getElementById('statusQR').value;
-    var obs = document.getElementById('obsQR').value.trim();
+    if (!nome) { alert('Preencha o nome!'); return; }
+    if (!url) { alert('Preencha a URL!'); return; }
 
     var dados = {
-        titulo: titulo,
-        destino: destino,
-        categoria: categoria,
-        status: status,
-        obs: obs
+        nome: nome,
+        url: url,
+        descricao: document.getElementById('descricaoQr').value.trim(),
+        tipo: document.getElementById('tipoQr').value,
+        status: document.getElementById('statusQr').value,
+        escaneados: editandoId ? null : 0
     };
 
     if (editandoId) {
         var idx = qrCodes.findIndex(function(q) { return q.id === editandoId; });
         if (idx >= 0) {
-            for (var k in dados) {
-                qrCodes[idx][k] = dados[k];
-            }
-            qrCodes[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
+            dados.escaneados = qrCodes[idx].escaneados || 0;
+            for (var k in dados) qrCodes[idx][k] = dados[k];
         }
         editandoId = null;
-        document.getElementById('tituloForm').textContent = '📱 Gerar QR Code';
     } else {
-        dados.id = gerarUUID();
-        dados.escaneamentos = 0;
-        dados.dataCriacao = new Date().toISOString().split('T')[0];
+        dados.id = Date.now();
+        dados.escaneados = 0;
         qrCodes.push(dados);
     }
 
     salvar();
     limparForm();
-    filtrarQR();
+    atualizarKPIs();
+    renderizarQrs();
+    alert('✅ QR Code salvo com sucesso!');
+};
 
-    // Mostrar o QR gerado
-    visualizarQR(dados.id);
-    alert('✅ QR Code gerado com sucesso!');
+window.editarQr = function(id) {
+    var q = qrCodes.find(function(x) { return x.id === id; });
+    if (!q) return;
+    editandoId = id;
+    document.getElementById('qrId').value = id;
+    document.getElementById('nomeQr').value = q.nome;
+    document.getElementById('urlQr').value = q.url;
+    document.getElementById('descricaoQr').value = q.descricao || '';
+    document.getElementById('tipoQr').value = q.tipo || 'Link';
+    document.getElementById('statusQr').value = q.status;
+    document.querySelector('.card h3').textContent = '✏️ Editando: ' + q.nome;
+};
+
+window.excluirQr = function(id) {
+    if (!confirm('Excluir este QR Code?')) return;
+    qrCodes = qrCodes.filter(function(q) { return q.id !== id; });
+    salvar();
+    atualizarKPIs();
+    renderizarQrs();
+};
+
+window.escanearQr = function(id) {
+    var q = qrCodes.find(function(x) { return x.id === id; });
+    if (q) {
+        q.escaneados = (q.escaneados || 0) + 1;
+        salvar();
+        atualizarKPIs();
+        renderizarQrs();
+        window.open(q.url, '_blank');
+    }
 };
 
 function limparForm() {
     editandoId = null;
-    document.getElementById('tituloForm').textContent = '📱 Gerar QR Code';
     document.getElementById('qrId').value = '';
-    document.getElementById('tituloQR').value = '';
-    document.getElementById('destinoQR').value = '';
-    document.getElementById('categoriaQR').value = 'Documentos';
-    document.getElementById('statusQR').value = 'Ativo';
-    document.getElementById('obsQR').value = '';
+    document.getElementById('nomeQr').value = '';
+    document.getElementById('urlQr').value = '';
+    document.getElementById('descricaoQr').value = '';
+    document.getElementById('tipoQr').value = 'Link';
+    document.getElementById('statusQr').value = 'ativo';
+    document.querySelector('.card h3').textContent = '📝 Novo QR Code';
 }
 
 // ============================================================
-// MODAL EDITAR DESTINO
+// CONTROLE DE PERFIL
 // ============================================================
-window.abrirModalEditar = function(id) {
-    var q = qrCodes.find(function(x) { return x.id === id; });
-    if (!q) return;
-
-    document.getElementById('editQRId').value = q.id;
-    document.getElementById('editDestinoQR').value = q.destino;
-    document.getElementById('modalEditar').style.display = 'flex';
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
 };
 
-window.fecharModalEditar = function() {
-    document.getElementById('modalEditar').style.display = 'none';
-};
-
-window.salvarEdicaoDestino = function() {
-    var id = document.getElementById('editQRId').value;
-    var novoDestino = document.getElementById('editDestinoQR').value.trim();
-
-    if (!novoDestino) {
-        alert('⚠️ O destino é obrigatório!');
-        return;
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    pagina = pagina.split('?')[0].split('#')[0];
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        item.style.display = 'none';
     }
+});
 
-    if (!novoDestino.startsWith('http://') && !novoDestino.startsWith('https://')) {
-        novoDestino = 'https://' + novoDestino;
-    }
+if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
 
-    var q = qrCodes.find(function(x) { return x.id === id; });
-    if (q) {
-        q.destino = novoDestino;
-        q.dataAtualizacao = new Date().toISOString().split('T')[0];
-        salvar();
-        filtrarQR();
-        fecharModalEditar();
-
-        // Atualizar preview se estiver visualizando
-        if (qrVisualizandoId === id) {
-            visualizarQR(id);
-        }
-        alert('✅ Destino atualizado com sucesso! O QR Code impresso continua o mesmo.');
-    }
-};
-
-// ============================================================
-// EXCLUIR
-// ============================================================
-window.excluirQR = function(id) {
-    var q = qrCodes.find(function(x) { return x.id === id; });
-    if (!q) return;
-
-    if (!confirm('⚠️ Tem certeza que deseja excluir o QR Code "' + q.titulo + '"?')) return;
-
-    qrCodes = qrCodes.filter(function(x) { return x.id !== id; });
-    salvar();
-    filtrarQR();
-
-    if (qrVisualizandoId === id) {
-        document.getElementById('cardPreview').style.display = 'none';
-        qrVisualizandoId = null;
-    }
-
-    alert('🗑️ QR Code excluído!');
-};
-
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
-filtrarQR();
-
-// ============================================================
-// VERIFICAÇÃO DE SESSÃO
-// ============================================================
-if (!sessionStorage.getItem('amovin_logado')) {
-    window.location.href = 'index.html';
-}
+atualizarKPIs();
+renderizarQrs();
 </script>
 </body>
 </html>
