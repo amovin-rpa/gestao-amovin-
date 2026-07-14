@@ -34,7 +34,7 @@ function renderizarMenu(paginaAtiva) {
     var ativo = mapaAtivo[paginaAtiva] || 'dashboard';
 
     var html = '';
-    html += '<aside class="sidebar">';
+    html += '<aside class="sidebar" id="sidebar-principal">';
     html += '  <div class="sidebar-header">';
     html += '    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">';
     html += '    <div class="sidebar-logo-fallback">🌻</div>';
@@ -137,6 +137,14 @@ function renderizarMenu(paginaAtiva) {
 // FUNÇÃO PARA CARREGAR O MENU
 // ============================================================
 function carregarMenu(paginaAtiva) {
+    // Remove menus antigos se existirem
+    var oldMenus = document.querySelectorAll('#menu-container, .sidebar');
+    oldMenus.forEach(function(el) {
+        if (el.id !== 'sidebar-principal') {
+            el.remove();
+        }
+    });
+
     var container = document.getElementById('menu-container');
     if (!container) {
         container = document.createElement('div');
@@ -159,7 +167,7 @@ function carregarMenu(paginaAtiva) {
     if (cargoEl) cargoEl.textContent = cargo;
 
     // ============================================================
-    // CONTROLE DE PERFIL (Admin vê tudo, outros só o liberado)
+    // CONTROLE DE PERFIL
     // ============================================================
     var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
     var modulosPermitidos = {
@@ -209,15 +217,14 @@ function resetTimeout() {
     }, 30 * 60 * 1000);
 }
 
-document.addEventListener('mousemove', resetTimeout);
-document.addEventListener('keypress', resetTimeout);
-document.addEventListener('click', resetTimeout);
-
 // ============================================================
 // INICIALIZAÇÃO
 // ============================================================
+// Detecta a página atual
 var paginaAtual = window.location.pathname.split('/').pop().replace('.html', '');
 if (!paginaAtual || paginaAtual === '') paginaAtual = 'dashboard';
+
+// Carrega o menu
 carregarMenu(paginaAtual);
 resetTimeout();
 
@@ -229,3 +236,15 @@ window.addEventListener('popstate', function() {
         window.location.href = 'dashboard.html';
     }
 });
+
+// ============================================================
+// OBSERVADOR PARA MANTER O MENU FIXO
+// ============================================================
+// Monitora mudanças no DOM para garantir que o menu não seja removido
+var observer = new MutationObserver(function() {
+    var sidebar = document.querySelector('.sidebar');
+    if (!sidebar) {
+        carregarMenu(paginaAtual);
+    }
+});
+observer.observe(document.body, { childList: true, subtree: true });
