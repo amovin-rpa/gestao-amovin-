@@ -7,186 +7,325 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ==================== SIDEBAR (vem do menu.js) ==================== */
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
 .sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
 .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
 .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.4px; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
 .nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
 .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
 .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
-.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
-.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
-.user-info .nome { font-weight: 600; font-size: 13.5px; }
-.user-info .cargo { font-size: 11px; color: #6B7280; }
-.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-sair:hover { background: #F0E9DF; }
 
-/* ==================== MAIN CONTENT ==================== */
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 22px; }
-.kpi-card { background: #FFFFFF; padding: 20px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
-.kpi-card .kpi-valor { font-size: 26px; font-weight: 800; }
-.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); margin-top: 4px; }
-.kpi-ok { color: var(--verde); }
-.kpi-alerta { color: #E65100; }
-.kpi-erro { color: #E53935; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 18px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
 
-.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-prestacao { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
 
-.checklist-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 10px; display: flex; align-items: center; gap: 12px; font-size: 13px; }
-.checklist-item.ok { background: #E8F5E9; }
-.checklist-item.pendente { background: #FFF3E0; }
-.check-icon { font-size: 20px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
 .btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
+.btn-salvar { background: var(--laranja); color: white; }
+.btn-editar { background: var(--amarelo); color: #1A1A1A; }
+.btn-excluir { background: var(--vermelho); color: white; }
 .btn-verde { background: var(--verde); color: white; }
-.btn-azul { background: var(--azul); color: white; }
-.btn-imprimir { background: var(--grafite); color: white; }
 
-.relatorio-preview { background: #F8F4ED; padding: 20px; border-radius: 10px; font-size: 12px; line-height: 1.8; white-space: pre-wrap; max-height: 400px; overflow-y: auto; border: 1px solid #F0E9DF; font-family: 'Courier New', monospace; }
+.prestacao-item { padding: 12px 16px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.prestacao-item .descricao { font-weight: 600; color: var(--grafite); font-size: 13px; }
+.prestacao-item .valor { font-weight: 700; color: var(--verde); }
+.prestacao-item .status { font-size: 10px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
+.status-enviada { background: #E3F2FD; color: #1565C0; }
+.status-aprovada { background: #E8F5E9; color: #2E7D32; }
+.status-pendente { background: #FFF3E0; color: #E65100; }
+.status-reprovada { background: #FFEBEE; color: #C62828; }
+.prestacao-item .data { font-size: 11px; color: var(--cinza); }
+
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; }
-.rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; }
-.rodape-info .copyright { font-size: 8px; color: #8A8F98; }
-.rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; }
-.rodape-info a { color: #C65A11; text-decoration: none; }
-.rodape-info .email { font-size: 8px; color: #aaa; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .cards-grid { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-prestacao { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- ==================== MENU LATERAL ==================== -->
-<div id="menu-container"></div>
+<aside class="sidebar">
+  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>
+    <a href="sala-espera.html" class="nav-item"><span class="icone">📋</span> Sala de Espera</a>
+    <a href="pre-cadastro.html" class="nav-item"><span class="icone">📝</span> Pré-Cadastro</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item ativo"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="qrcodes.html" class="nav-item"><span class="icone">📱</span> QR Codes</a>
+    <a href="notas-fiscais.html" class="nav-item"><span class="icone">📄</span> Notas Fiscais</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
 
 <main class="main-content">
-  <div class="topo-bar">
-    <h1>📋 Prestação de Contas</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
+  <div class="topo-bar"><h1>📋 Prestação de Contas</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
   <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-valor kpi-ok" id="kpiOk">0</div><div class="kpi-label">✅ Itens OK</div></div>
-    <div class="kpi-card"><div class="kpi-valor kpi-alerta" id="kpiPendente">0</div><div class="kpi-label">⚠️ Pendências</div></div>
-    <div class="kpi-card"><div class="kpi-valor kpi-erro" id="kpiErro">0</div><div class="kpi-label">❌ Erros</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiStatus">--</div><div class="kpi-label">Status Geral</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📋 Total</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiPendentes">0</div><div class="kpi-label">⏳ Pendentes</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiAprovadas">0</div><div class="kpi-label">✅ Aprovadas</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiValorTotal">R$ 0</div><div class="kpi-label">💰 Valor Total</div></div>
   </div>
 
-  <div class="cards-grid">
+  <div class="grid-prestacao">
     <div class="card">
-      <h3>✅ Checklist de Auditoria</h3>
-      <div id="checklistAuditoria"></div>
+      <h3>📝 Nova Prestação</h3>
+      <input type="hidden" id="prestacaoId">
+      <div class="form-group"><label>Projeto/Convênio *</label><input type="text" id="nomePrestacao" placeholder="Ex: Projeto Inclusão Digital"></div>
+      <div class="form-group"><label>Tipo</label><select id="tipoPrestacao"><option>Convênio</option><option>Patrocínio</option><option>Emenda</option><option>Doação</option></select></div>
+      <div class="form-row"><div class="form-group"><label>Valor (R$) *</label><input type="number" id="valorPrestacao" step="0.01" placeholder="0,00"></div><div class="form-group"><label>Data</label><input type="date" id="dataPrestacao"></div></div>
+      <div class="form-group"><label>Status</label><select id="statusPrestacao"><option value="pendente">⏳ Pendente</option><option value="enviada">📤 Enviada</option><option value="aprovada">✅ Aprovada</option><option value="reprovada">❌ Reprovada</option></select></div>
+      <div class="form-group"><label>Observações</label><input type="text" id="obsPrestacao" placeholder="Informações adicionais..."></div>
+      <button class="btn btn-salvar" onclick="salvarPrestacao()" style="width:100%;padding:12px;font-size:14px;">💾 Salvar</button>
     </div>
     <div class="card">
-      <h3>📋 Projetos</h3>
-      <div class="form-group" style="margin-bottom:15px;"><label style="font-size:11px;font-weight:600;color:var(--cinza);text-transform:uppercase;">Selecione o Projeto</label><select id="projetoAuditar" onchange="auditarProjeto()" style="width:100%;padding:10px;border:1px solid #E5E0D8;border-radius:8px;font-family:'Inter',sans-serif;"><option value="">Escolha...</option><option>Inclusão Digital</option><option>Esporte para Todos</option><option>Reforço Escolar</option><option>Capacitação Profissional</option></select></div>
-      <div id="resultadoAuditoria"><div class="sem-dados">Selecione um projeto para auditar.</div></div>
+      <h3>📋 Prestações</h3>
+      <div id="listaPrestacoes"><div class="sem-dados">Nenhuma prestação.</div></div>
     </div>
   </div>
 
-  <div class="card" style="margin-top:20px;">
-    <h3>📄 Relatório de Prestação de Contas</h3>
-    <div class="relatorio-preview" id="relatorioTexto">Selecione um projeto e clique em "Gerar Relatório".</div>
-    <button class="btn btn-azul" onclick="gerarRelatorio()">📄 Gerar Relatório</button>
-    <button class="btn btn-imprimir" onclick="imprimirRelatorio()">🖨️ Imprimir</button>
-  </div>
-
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span>. Todos os direitos reservados.</div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
+  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
-<script src="menu.js"></script>
 <script>
-var checklistBase = [
-    { item: 'Projeto cadastrado no sistema', chave: 'projeto' },
-    { item: 'Orçamento registrado (mín. 1)', chave: 'orcamento' },
-    { item: 'Compra efetivada', chave: 'compra' },
-    { item: 'Nota fiscal vinculada', chave: 'notaFiscal' },
-    { item: 'Pagamento registrado', chave: 'pagamento' },
-    { item: 'Bem patrimonial cadastrado', chave: 'patrimonio' },
-    { item: 'Relatório de atividades enviado', chave: 'relatorioAtividades' },
-    { item: 'Lista de beneficiários atualizada', chave: 'beneficiarios' },
-    { item: 'Prestação de contas anterior aprovada', chave: 'aprovacaoAnterior' }
-];
+var prestacoes = JSON.parse(localStorage.getItem('amovin_prestacao_contas') || '[]');
+var editandoId = null;
 
-window.auditarProjeto = function() {
-    var projeto = document.getElementById('projetoAuditar').value;
-    if (!projeto) return;
-    var resultados = {};
-    checklistBase.forEach(function(c) { resultados[c.chave] = Math.random() > 0.3; });
-    var ok = 0, pendente = 0, html = '';
-    checklistBase.forEach(function(c) {
-        if (resultados[c.chave]) { html += '<div class="checklist-item ok"><span class="check-icon">✅</span> ' + c.item + '</div>'; ok++; }
-        else { html += '<div class="checklist-item pendente"><span class="check-icon">⚠️</span> ' + c.item + ' <small>(pendente)</small></div>'; pendente++; }
-    });
-    document.getElementById('resultadoAuditoria').innerHTML = html;
-    document.getElementById('kpiOk').textContent = ok;
-    document.getElementById('kpiPendente').textContent = pendente;
-    document.getElementById('kpiStatus').textContent = pendente === 0 ? '✅ APROVADO' : '⚠️ COM PENDÊNCIAS';
-    document.getElementById('kpiStatus').style.color = pendente === 0 ? '#57C220' : '#E65100';
+if (prestacoes.length === 0) {
+    prestacoes = [
+        { id: 1, nome: 'Convênio - Prefeitura', tipo: 'Convênio', valor: 350000, data: new Date().toISOString().split('T')[0], status: 'aprovada', obs: '' },
+        { id: 2, nome: 'Emenda - Dep. Federal X', tipo: 'Emenda', valor: 200000, data: new Date().toISOString().split('T')[0], status: 'pendente', obs: 'Aguardando documentação' }
+    ];
+    salvar();
+}
+function salvar() { localStorage.setItem('amovin_prestacao_contas', JSON.stringify(prestacoes)); }
+
+function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
+
+function getStatusLabel(status) {
+    var map = { 'pendente': '⏳ Pendente', 'enviada': '📤 Enviada', 'aprovada': '✅ Aprovada', 'reprovada': '❌ Reprovada' };
+    return map[status] || status;
+}
+function getStatusClass(status) {
+    var map = { 'pendente': 'status-pendente', 'enviada': 'status-enviada', 'aprovada': 'status-aprovada', 'reprovada': 'status-reprovada' };
+    return map[status] || 'status-pendente';
+}
+
+function atualizarKPIs() {
+    var total = prestacoes.length;
+    var pendentes = prestacoes.filter(function(p) { return p.status === 'pendente'; }).length;
+    var aprovadas = prestacoes.filter(function(p) { return p.status === 'aprovada'; }).length;
+    var valorTotal = prestacoes.reduce(function(s, p) { return s + p.valor; }, 0);
+
+    document.getElementById('kpiTotal').textContent = total;
+    document.getElementById('kpiPendentes').textContent = pendentes;
+    document.getElementById('kpiAprovadas').textContent = aprovadas;
+    document.getElementById('kpiValorTotal').textContent = fm(valorTotal);
+}
+
+function renderizarPrestacoes() {
+    var lista = prestacoes.slice().sort(function(a, b) { return new Date(b.data) - new Date(a.data); });
+    var container = document.getElementById('listaPrestacoes');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhuma prestação.</div>';
+        return;
+    }
+    container.innerHTML = lista.map(function(p) {
+        var data = new Date(p.data + 'T00:00:00').toLocaleDateString('pt-BR');
+        var statusLabel = getStatusLabel(p.status);
+        var statusClass = getStatusClass(p.status);
+        return '<div class="prestacao-item">' +
+            '<div><span class="descricao">' + p.nome + '</span> <span class="status ' + statusClass + '">' + statusLabel + '</span><br><span style="font-size:11px;color:var(--cinza);">' + p.tipo + ' | ' + data + '</span></div>' +
+            '<div><span class="valor">' + fm(p.valor) + '</span> ' +
+            (p.status === 'pendente' ? '<button class="btn btn-verde" onclick="aprovarPrestacao(' + p.id + ')" style="padding:4px 8px;font-size:10px;">✅</button>' : '') +
+            '<button class="btn btn-editar" onclick="editarPrestacao(' + p.id + ')" style="padding:4px 8px;font-size:10px;">✏️</button>' +
+            '<button class="btn btn-excluir" onclick="excluirPrestacao(' + p.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
+    }).join('');
+}
+
+window.salvarPrestacao = function() {
+    var nome = document.getElementById('nomePrestacao').value.trim();
+    var valor = parseFloat(document.getElementById('valorPrestacao').value) || 0;
+    var data = document.getElementById('dataPrestacao').value;
+
+    if (!nome) { alert('Preencha o nome!'); return; }
+    if (valor <= 0) { alert('Valor deve ser maior que zero!'); return; }
+    if (!data) { alert('Selecione a data!'); return; }
+
+    var dados = {
+        nome: nome,
+        tipo: document.getElementById('tipoPrestacao').value,
+        valor: valor,
+        data: data,
+        status: document.getElementById('statusPrestacao').value,
+        obs: document.getElementById('obsPrestacao').value.trim()
+    };
+
+    if (editandoId) {
+        var idx = prestacoes.findIndex(function(p) { return p.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) prestacoes[idx][k] = dados[k];
+        }
+        editandoId = null;
+    } else {
+        dados.id = Date.now();
+        prestacoes.push(dados);
+    }
+
+    salvar();
+    limparForm();
+    atualizarKPIs();
+    renderizarPrestacoes();
+    alert('✅ Prestação salva com sucesso!');
 };
 
-window.gerarRelatorio = function() {
-    var projeto = document.getElementById('projetoAuditar').value || 'Todos os projetos';
-    var hoje = new Date().toLocaleDateString('pt-BR', {day:'numeric',month:'long',year:'numeric'});
-    var relatorio = 'RELATÓRIO DE PRESTAÇÃO DE CONTAS\n' +
-        '==================================================\n' +
-        'AMOVIN - Associação e Movimento pela Inclusão\n' +
-        'CNPJ: 55.880.046/0001-34 | Rio Paranaíba/MG\n\n' +
-        'PROJETO: ' + projeto + '\nDATA: ' + hoje + '\n\n' +
-        '1. RECURSOS RECEBIDOS: R$ 150.000,00\n' +
-        '2. DESPESAS REALIZADAS: R$ 150.000,00\n' +
-        '3. SALDO: R$ 0,00 (100% executado)\n\n' +
-        'CONCLUSÃO: Projeto executado conforme planejado.\n' +
-        'RECOMENDAÇÃO: APROVAÇÃO DA PRESTAÇÃO DE CONTAS.\n\n' +
-        'Responsável: ' + (sessionStorage.getItem('amovin_nome') || 'Administrador') + '\nData: ' + hoje;
-    document.getElementById('relatorioTexto').textContent = relatorio;
+window.editarPrestacao = function(id) {
+    var p = prestacoes.find(function(x) { return x.id === id; });
+    if (!p) return;
+    editandoId = id;
+    document.getElementById('prestacaoId').value = id;
+    document.getElementById('nomePrestacao').value = p.nome;
+    document.getElementById('tipoPrestacao').value = p.tipo;
+    document.getElementById('valorPrestacao').value = p.valor;
+    document.getElementById('dataPrestacao').value = p.data;
+    document.getElementById('statusPrestacao').value = p.status;
+    document.getElementById('obsPrestacao').value = p.obs || '';
+    document.querySelector('.card h3').textContent = '✏️ Editando: ' + p.nome;
 };
 
-window.imprimirRelatorio = function() {
-    var w = window.open('','_blank');
-    w.document.write('<html><head><title>Prestação de Contas</title><style>body{font-family:"Courier New",monospace;padding:25px;font-size:13px;line-height:1.6;max-width:700px;margin:0 auto}</style></head><body><pre>' + document.getElementById('relatorioTexto').textContent + '</pre><script>window.onload=function(){window.print()}<\/script></body></html>');
-    w.document.close();
+window.excluirPrestacao = function(id) {
+    if (!confirm('Excluir esta prestação?')) return;
+    prestacoes = prestacoes.filter(function(p) { return p.id !== id; });
+    salvar();
+    atualizarKPIs();
+    renderizarPrestacoes();
 };
+
+window.aprovarPrestacao = function(id) {
+    var p = prestacoes.find(function(x) { return x.id === id; });
+    if (p) {
+        p.status = 'aprovada';
+        salvar();
+        atualizarKPIs();
+        renderizarPrestacoes();
+        alert('✅ Prestação aprovada com sucesso!');
+    }
+};
+
+function limparForm() {
+    editandoId = null;
+    document.getElementById('prestacaoId').value = '';
+    document.getElementById('nomePrestacao').value = '';
+    document.getElementById('tipoPrestacao').value = 'Convênio';
+    document.getElementById('valorPrestacao').value = '';
+    document.getElementById('dataPrestacao').value = new Date().toISOString().split('T')[0];
+    document.getElementById('statusPrestacao').value = 'pendente';
+    document.getElementById('obsPrestacao').value = '';
+    document.querySelector('.card h3').textContent = '📝 Nova Prestação';
+}
+
+document.getElementById('dataPrestacao').value = new Date().toISOString().split('T')[0];
 
 // ============================================================
-// VERIFICAÇÃO DE SESSÃO
+// CONTROLE DE PERFIL
 // ============================================================
-if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    pagina = pagina.split('?')[0].split('#')[0];
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+
+atualizarKPIs();
+renderizarPrestacoes();
 </script>
 </body>
 </html>
