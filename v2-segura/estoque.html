@@ -20,71 +20,62 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ==================== SIDEBAR (vem do menu.js) ==================== */
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
 .sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
 .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
 .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.4px; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
 .nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
 .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
 .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
-.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
-.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
-.user-info .nome { font-weight: 600; font-size: 13.5px; }
-.user-info .cargo { font-size: 11px; color: #6B7280; }
-.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-sair:hover { background: #F0E9DF; }
 
-/* ==================== MAIN CONTENT ==================== */
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
 .kpi-card { background: #FFFFFF; padding: 18px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
-.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--grafite); }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; }
 .kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
-.kpi-card.alerta { border-top: 3px solid var(--vermelho); }
-.kpi-card.alerta .kpi-valor { color: var(--vermelho); }
-
-.alerta-card { padding: 12px 18px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid; font-size: 13px; display: flex; align-items: center; gap: 10px; background: #FFFFFF; flex-wrap: wrap; }
-.alerta-vermelho { border-color: var(--vermelho); }
-.alerta-laranja { border-color: #E65100; }
+.kpi-card .kpi-valor.critico { color: var(--vermelho); }
+.kpi-card .kpi-valor.alerta { color: #E65100; }
+.kpi-card .kpi-valor.ok { color: var(--verde); }
+.kpi-card .kpi-valor.azul { color: var(--azul); }
 
 .grid-estoque { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 20px; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; }
+.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
 
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
 .btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
 .btn-salvar { background: var(--laranja); color: white; }
 .btn-editar { background: var(--amarelo); color: #1A1A1A; }
 .btn-excluir { background: var(--vermelho); color: white; }
 
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th { background: #F8F4ED; padding: 10px; text-align: left; font-size: 10px; font-weight: 700; color: var(--cinza); text-transform: uppercase; }
-td { padding: 10px; border-bottom: 1px solid #F0E9DF; }
-tr:hover { background: #FFF8E7; }
-.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-.badge-ok { background: #E8F5E9; color: #2E7D32; }
-.badge-baixo { background: #FFF3E0; color: #E65100; }
-.badge-critico { background: #FFEBEE; color: #C62828; }
+.estoque-item { padding: 12px 16px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.estoque-item .nome { font-weight: 600; color: var(--grafite); font-size: 13px; }
+.estoque-item .qtd { font-weight: 700; }
+.estoque-item .qtd.critico { color: var(--vermelho); }
+.estoque-item .qtd.alerta { color: #E65100; }
+.estoque-item .qtd.ok { color: var(--verde); }
+.estoque-item .categoria { font-size: 10px; background: #F8F4ED; padding: 2px 10px; border-radius: 12px; color: var(--cinza); }
+.estoque-item .status { font-size: 10px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
+.status-ok { background: #E8F5E9; color: #2E7D32; }
+.status-alerta { background: #FFF3E0; color: #E65100; }
+.status-critico { background: #FFEBEE; color: #C62828; }
+
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
-.busca-bar { margin-bottom: 15px; }
-.busca-bar input { width: 100%; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
-.mov-item { padding: 10px; border-bottom: 1px solid #F0E9DF; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
@@ -95,101 +86,232 @@ tr:hover { background: #FFF8E7; }
 </head>
 <body>
 
-<!-- ==================== MENU LATERAL ==================== -->
-<div id="menu-container"></div>
+<aside class="sidebar">
+  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>
+    <a href="sala-espera.html" class="nav-item"><span class="icone">📋</span> Sala de Espera</a>
+    <a href="pre-cadastro.html" class="nav-item"><span class="icone">📝</span> Pré-Cadastro</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="qrcodes.html" class="nav-item"><span class="icone">📱</span> QR Codes</a>
+    <a href="notas-fiscais.html" class="nav-item"><span class="icone">📄</span> Notas Fiscais</a>
+    <a href="estoque.html" class="nav-item ativo"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>📦 Estoque e Necessidades</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar"><h1>📦 Estoque</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
-  <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotalItens">0</div><div class="kpi-label">Total de Itens</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiValorTotal">R$ 0</div><div class="kpi-label">Valor Total</div></div>
-    <div class="kpi-card alerta"><div class="kpi-valor" id="kpiCriticos">0</div><div class="kpi-label">Itens Críticos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiMovimentacoes">0</div><div class="kpi-label">Movimentações</div></div>
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor azul" id="kpiTotal">0</div><div class="kpi-label">📦 Itens</div></div>
+    <div class="kpi-card"><div class="kpi-valor ok" id="kpiOk">0</div><div class="kpi-label">✅ Estoque OK</div></div>
+    <div class="kpi-card"><div class="kpi-valor alerta" id="kpiAlerta">0</div><div class="kpi-label">⚠️ Em Alerta</div></div>
+    <div class="kpi-card"><div class="kpi-valor critico" id="kpiCritico">0</div><div class="kpi-label">🔴 Crítico</div></div>
   </div>
-
-  <div id="alertasEstoque" style="margin-bottom:20px;"></div>
 
   <div class="grid-estoque">
-    <div class="card"><h3 id="tituloForm">Novo Item</h3><input type="hidden" id="itemId">
-      <div class="form-group"><label>Nome do Item *</label><input type="text" id="nomeItem"></div>
-      <div class="form-row"><div class="form-group"><label>Categoria</label><select id="categoriaItem"><option>Alimento</option><option>Higiene</option><option>Material Esportivo</option><option>Material Terapêutico</option><option>Material Escolar</option><option>Mobiliário</option><option>Eletrônico</option><option>Vestuário</option><option>Outros</option></select></div><div class="form-group"><label>Unidade</label><select id="unidadeItem"><option>Unidade</option><option>Kg</option><option>Litro</option><option>Pacote</option><option>Caixa</option><option>Par</option></select></div></div>
-      <div class="form-row"><div class="form-group"><label>Qtd Atual *</label><input type="number" id="qtdAtual" value="0" min="0"></div><div class="form-group"><label>Qtd Mínima *</label><input type="number" id="qtdMinima" value="5" min="0"></div></div>
-      <div class="form-row"><div class="form-group"><label>Valor Unitário (R$)</label><input type="number" id="valorUnitario" step="0.01"></div><div class="form-group"><label>Localização</label><input type="text" id="localizacaoItem" value="Almoxarifado"></div></div>
+    <div class="card">
+      <h3>📝 Novo Item</h3>
+      <input type="hidden" id="itemId">
+      <div class="form-group"><label>Nome do Item *</label><input type="text" id="nomeItem" placeholder="Ex: Cesta Básica"></div>
+      <div class="form-row"><div class="form-group"><label>Categoria</label><select id="categoriaItem"><option>Alimento</option><option>Higiene</option><option>Material Esportivo</option><option>Material Escolar</option><option>Equipamento</option><option>Mobiliário</option><option>Outros</option></select></div><div class="form-group"><label>Unidade</label><select id="unidadeItem"><option>Unidade</option><option>Kg</option><option>Litro</option><option>Pacote</option><option>Caixa</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>Quantidade *</label><input type="number" id="qtdItem" value="0" min="0"></div><div class="form-group"><label>Qtd Mínima *</label><input type="number" id="qtdMinima" value="5" min="0"></div></div>
+      <div class="form-group"><label>Localização</label><input type="text" id="localItem" value="Almoxarifado"></div>
       <div class="form-group"><label>Observações</label><input type="text" id="obsItem"></div>
-      <button class="btn btn-salvar" onclick="salvarItem()">💾 Salvar</button>
+      <button class="btn btn-salvar" onclick="salvarItem()" style="width:100%;padding:12px;font-size:14px;">💾 Salvar Item</button>
     </div>
-    <div>
-      <div class="busca-bar"><input type="text" id="buscaItem" placeholder="Buscar item..." oninput="filtrarItens()"></div>
-      <div class="card"><h3>Itens em Estoque</h3><div style="overflow-x:auto;"><table><thead><tr><th>Item</th><th>Cat</th><th>Qtd</th><th>Mín</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tabelaEstoque"></tbody></table></div></div>
+    <div class="card">
+      <h3>📋 Itens em Estoque</h3>
+      <div id="listaItens"><div class="sem-dados">Nenhum item.</div></div>
     </div>
   </div>
-
-  <div class="card"><h3>Histórico de Movimentações</h3><div id="movimentacoes" style="max-height:300px;overflow-y:auto;"></div></div>
 
   <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
-<script src="menu.js"></script>
 <script>
 var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
 var editandoId = null;
+
 if (estoque.length === 0) {
     estoque = [
-        {id:1,nome:'Cesta Básica',categoria:'Alimento',unidade:'Unidade',qtdAtual:15,qtdMinima:20,valorUnitario:80,localizacao:'Almoxarifado',movimentacoes:[]},
-        {id:2,nome:'Cadeira de Rodas',categoria:'Material Terapêutico',unidade:'Unidade',qtdAtual:3,qtdMinima:2,valorUnitario:500,localizacao:'Sala Equipamentos',movimentacoes:[]},
-        {id:3,nome:'Kit Escolar',categoria:'Material Escolar',unidade:'Unidade',qtdAtual:45,qtdMinima:10,valorUnitario:30,localizacao:'Almoxarifado',movimentacoes:[]}
+        { id: 1, nome: 'Cesta Básica', categoria: 'Alimento', unidade: 'Unidade', qtd: 15, qtdMinima: 20, local: 'Almoxarifado', obs: '' },
+        { id: 2, nome: 'Cadeira de Rodas', categoria: 'Equipamento', unidade: 'Unidade', qtd: 3, qtdMinima: 2, local: 'Sala Equipamentos', obs: '' },
+        { id: 3, nome: 'Kit Escolar', categoria: 'Material Escolar', unidade: 'Pacote', qtd: 45, qtdMinima: 10, local: 'Almoxarifado', obs: '' }
     ];
     salvar();
 }
 function salvar() { localStorage.setItem('amovin_estoque', JSON.stringify(estoque)); }
-function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.',','); }
-function getStatus(i) { if (i.qtdAtual <= 0) return { t:'Esgotado', c:'badge-critico' }; if (i.qtdAtual <= i.qtdMinima) return { t:'Baixo', c:'badge-baixo' }; return { t:'OK', c:'badge-ok' }; }
 
-function atualizarAlertas() {
-    var c = estoque.filter(function(i){ return i.qtdAtual <= i.qtdMinima; });
-    var el = document.getElementById('alertasEstoque');
-    if (c.length === 0) { el.innerHTML = '<div class="alerta-card" style="background:#E8F5E9;border-color:#2E7D32;color:#2E7D32;">✅ Todos os itens com estoque adequado.</div>'; return; }
-    el.innerHTML = c.map(function(i){ return '<div class="alerta-card '+(i.qtdAtual<=0?'alerta-vermelho':'alerta-laranja')+'">⚠️ <strong>'+i.nome+'</strong> - Qtd: '+i.qtdAtual+' | Mín: '+i.qtdMinima+' | '+(i.qtdAtual<=0?'ESGOTADO!':'Repor em breve')+'</div>'; }).join('');
+function getStatus(item) {
+    if (item.qtd <= 0) return { label: '🔴 Esgotado', cls: 'status-critico', qtdCls: 'critico' };
+    if (item.qtd <= item.qtdMinima) return { label: '⚠️ Baixo', cls: 'status-alerta', qtdCls: 'alerta' };
+    return { label: '✅ OK', cls: 'status-ok', qtdCls: 'ok' };
 }
 
 function atualizarKPIs() {
-    document.getElementById('kpiTotalItens').textContent = estoque.length;
-    document.getElementById('kpiValorTotal').textContent = fm(estoque.reduce(function(s,i){ return s + (i.qtdAtual*(i.valorUnitario||0)); },0));
-    document.getElementById('kpiCriticos').textContent = estoque.filter(function(i){ return i.qtdAtual <= i.qtdMinima; }).length;
-    document.getElementById('kpiMovimentacoes').textContent = estoque.reduce(function(s,i){ return s + (i.movimentacoes||[]).length; },0);
+    var total = estoque.length;
+    var alerta = estoque.filter(function(i) { return i.qtd <= i.qtdMinima && i.qtd > 0; }).length;
+    var critico = estoque.filter(function(i) { return i.qtd === 0; }).length;
+    var ok = total - alerta - critico;
+
+    document.getElementById('kpiTotal').textContent = total;
+    document.getElementById('kpiOk').textContent = ok;
+    document.getElementById('kpiAlerta').textContent = alerta;
+    document.getElementById('kpiCritico').textContent = critico;
 }
 
-function filtrarItens() {
-    var b = document.getElementById('buscaItem').value.toLowerCase(), l = estoque.slice();
-    if (b) l = l.filter(function(i){ return i.nome.toLowerCase().indexOf(b) >= 0 || i.categoria.toLowerCase().indexOf(b) >= 0; });
-    l.sort(function(a,b){ return a.qtdAtual - a.qtdMinima - (b.qtdAtual - b.qtdMinima); });
-    document.getElementById('tabelaEstoque').innerHTML = l.map(function(i){ var s = getStatus(i); return '<tr><td><strong>'+i.nome+'</strong><br><small>'+i.categoria+' | '+i.unidade+'</small></td><td>'+i.categoria+'</td><td>'+i.qtdAtual+'</td><td>'+i.qtdMinima+'</td><td><span class="badge '+s.c+'">'+s.t+'</span></td><td><button class="btn btn-editar" onclick="editarItem('+i.id+')">✏️</button> <button class="btn btn-excluir" onclick="excluirItem('+i.id+')">🗑️</button></td></tr>'; }).join('') || '<tr><td colspan="6" class="sem-dados">Nenhum item.</td></tr>';
-}
-
-function renderizarMovimentacoes() {
-    var t = []; estoque.forEach(function(i){ (i.movimentacoes||[]).forEach(function(m){ t.push(Object.assign({},m,{item:i.nome})); }); });
-    t.sort(function(a,b){ return new Date(b.data) - new Date(a.data); });
-    document.getElementById('movimentacoes').innerHTML = t.length === 0 ? '<div class="sem-dados">Nenhuma movimentação.</div>' : t.slice(0,30).map(function(m){ return '<div class="mov-item"><span>📦 <strong>'+m.item+'</strong> - '+m.tipo+': '+(m.qtd||'')+' '+(m.beneficiario?'→ '+m.beneficiario:'')+' '+(m.docNumero?'| '+m.docNumero:'')+'</span><span style="color:var(--cinza);font-size:10px;">'+(m.data?new Date(m.data).toLocaleString('pt-BR'):'')+' | '+m.usuario+'</span></div>'; }).join('');
+function renderizarItens() {
+    var lista = estoque.slice().sort(function(a, b) { return a.nome.localeCompare(b.nome); });
+    var container = document.getElementById('listaItens');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum item.</div>';
+        return;
+    }
+    container.innerHTML = lista.map(function(i) {
+        var status = getStatus(i);
+        return '<div class="estoque-item">' +
+            '<div><span class="nome">' + i.nome + '</span> <span class="categoria">' + i.categoria + '</span><br><span style="font-size:11px;color:var(--cinza);">📍 ' + i.local + ' | ' + i.unidade + '</span></div>' +
+            '<div><span class="qtd ' + status.qtdCls + '">' + i.qtd + '</span> <span class="status ' + status.cls + '">' + status.label + '</span>' +
+            '<button class="btn btn-editar" onclick="editarItem(' + i.id + ')" style="padding:4px 8px;font-size:10px;">✏️</button>' +
+            '<button class="btn btn-excluir" onclick="excluirItem(' + i.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
+    }).join('');
 }
 
 window.salvarItem = function() {
-    var n = document.getElementById('nomeItem').value.trim(); if (!n) { alert('Nome obrigatório!'); return; }
-    var d = { nome:n, categoria:document.getElementById('categoriaItem').value, unidade:document.getElementById('unidadeItem').value, qtdAtual:parseInt(document.getElementById('qtdAtual').value)||0, qtdMinima:parseInt(document.getElementById('qtdMinima').value)||0, valorUnitario:parseFloat(document.getElementById('valorUnitario').value)||0, localizacao:document.getElementById('localizacaoItem').value, obs:document.getElementById('obsItem').value };
-    if (editandoId) { var idx = estoque.findIndex(function(i){ return i.id===editandoId; }); if (idx>=0) estoque[idx] = Object.assign({},estoque[idx],d); }
-    else { estoque.push(Object.assign({id:Date.now()},d,{movimentacoes:[]})); }
-    editandoId = null; salvar(); limparForm(); filtrarItens(); atualizarKPIs(); atualizarAlertas(); renderizarMovimentacoes();
+    var nome = document.getElementById('nomeItem').value.trim();
+    var qtd = parseInt(document.getElementById('qtdItem').value) || 0;
+    var qtdMinima = parseInt(document.getElementById('qtdMinima').value) || 0;
+
+    if (!nome) { alert('Preencha o nome!'); return; }
+
+    var dados = {
+        nome: nome,
+        categoria: document.getElementById('categoriaItem').value,
+        unidade: document.getElementById('unidadeItem').value,
+        qtd: qtd,
+        qtdMinima: qtdMinima,
+        local: document.getElementById('localItem').value.trim() || 'Almoxarifado',
+        obs: document.getElementById('obsItem').value.trim()
+    };
+
+    if (editandoId) {
+        var idx = estoque.findIndex(function(i) { return i.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) estoque[idx][k] = dados[k];
+        }
+        editandoId = null;
+    } else {
+        dados.id = Date.now();
+        estoque.push(dados);
+    }
+
+    salvar();
+    limparForm();
+    atualizarKPIs();
+    renderizarItens();
+    alert('✅ Item salvo com sucesso!');
 };
-window.editarItem = function(id) { var i = estoque.find(function(x){ return x.id===id; }); if (!i) return; editandoId = id; document.getElementById('tituloForm').textContent = 'Editar Item'; document.getElementById('itemId').value = i.id; document.getElementById('nomeItem').value = i.nome; document.getElementById('categoriaItem').value = i.categoria; document.getElementById('unidadeItem').value = i.unidade; document.getElementById('qtdAtual').value = i.qtdAtual; document.getElementById('qtdMinima').value = i.qtdMinima; document.getElementById('valorUnitario').value = i.valorUnitario; document.getElementById('localizacaoItem').value = i.localizacao||''; document.getElementById('obsItem').value = i.obs||''; };
-window.excluirItem = function(id) { if (!confirm('Excluir?')) return; estoque = estoque.filter(function(i){ return i.id!==id; }); salvar(); filtrarItens(); atualizarKPIs(); atualizarAlertas(); };
-function limparForm() { editandoId = null; document.getElementById('tituloForm').textContent = 'Novo Item'; document.getElementById('itemId').value = ''; document.getElementById('nomeItem').value = ''; document.getElementById('qtdAtual').value = '0'; document.getElementById('qtdMinima').value = '5'; document.getElementById('valorUnitario').value = ''; document.getElementById('obsItem').value = ''; }
+
+window.editarItem = function(id) {
+    var i = estoque.find(function(x) { return x.id === id; });
+    if (!i) return;
+    editandoId = id;
+    document.getElementById('itemId').value = id;
+    document.getElementById('nomeItem').value = i.nome;
+    document.getElementById('categoriaItem').value = i.categoria;
+    document.getElementById('unidadeItem').value = i.unidade;
+    document.getElementById('qtdItem').value = i.qtd;
+    document.getElementById('qtdMinima').value = i.qtdMinima;
+    document.getElementById('localItem').value = i.local || 'Almoxarifado';
+    document.getElementById('obsItem').value = i.obs || '';
+    document.querySelector('.card h3').textContent = '✏️ Editando: ' + i.nome;
+};
+
+window.excluirItem = function(id) {
+    if (!confirm('Excluir este item?')) return;
+    estoque = estoque.filter(function(i) { return i.id !== id; });
+    salvar();
+    atualizarKPIs();
+    renderizarItens();
+};
+
+function limparForm() {
+    editandoId = null;
+    document.getElementById('itemId').value = '';
+    document.getElementById('nomeItem').value = '';
+    document.getElementById('categoriaItem').value = 'Alimento';
+    document.getElementById('unidadeItem').value = 'Unidade';
+    document.getElementById('qtdItem').value = '0';
+    document.getElementById('qtdMinima').value = '5';
+    document.getElementById('localItem').value = 'Almoxarifado';
+    document.getElementById('obsItem').value = '';
+    document.querySelector('.card h3').textContent = '📝 Novo Item';
+}
 
 // ============================================================
-// VERIFICAÇÃO DE SESSÃO
+// CONTROLE DE PERFIL
 // ============================================================
-if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+};
 
-filtrarItens(); atualizarKPIs(); atualizarAlertas(); renderizarMovimentacoes();
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    pagina = pagina.split('?')[0].split('#')[0];
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+
+atualizarKPIs();
+renderizarItens();
 </script>
 </body>
 </html>
