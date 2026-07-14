@@ -16,26 +16,23 @@ export interface PreCadastro {
   endereco: string;
   cidade: string;
   estado: string;
-  responsavel?: string; // Apenas para beneficiários
-  especialidade?: string; // Apenas para profissionais
-  area?: string; // Apenas para voluntários
-  disponibilidade?: string; // Apenas para voluntários
+  responsavel?: string;
+  especialidade?: string;
+  area?: string;
+  disponibilidade?: string;
   observacoes: string;
   
-  // Campos de assinatura
   assinaturaNome: string;
   assinaturaCPF: string;
   assinaturaData: string;
   
-  // Status
   status: 'pendente' | 'aprovado' | 'reprovado' | 'duplicado';
   dataCadastro: string;
   dataAprovacao?: string;
   aprovadoPor?: string;
   motivoReprovacao?: string;
   
-  // Integração
-  firebaseId?: string; // ID do documento criado no Firebase
+  firebaseId?: string;
   duplicado?: boolean;
   observacaoDuplicado?: string;
 }
