@@ -256,7 +256,9 @@ async function verificarStatusServicos() {
         const firebaseLeitura = document.getElementById('firebaseLeitura');
         const firebaseIcon = document.getElementById('firebaseIcon');
         
+        // Verifica se o Firebase está disponível
         if (typeof firebase !== 'undefined' && firebase.firestore) {
+            // Tenta ler do Firebase
             const db = firebase.firestore();
             const snapshot = await db.collection('pessoas').limit(1).get();
             const count = snapshot.size;
@@ -398,7 +400,7 @@ async function verificarStatusServicos() {
 
 // Executa a verificação
 verificarStatusServicos();
-setInterval(verificarStatusServicos, 60000); // A cada 60 segundos
+setInterval(verificarStatusServicos, 60000);
 
 // ============================================================
 // KPIs E ATIVIDADES
