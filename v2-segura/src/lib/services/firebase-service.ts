@@ -215,3 +215,17 @@ export async function buscarPessoaPorId(id: string): Promise<FirebasePessoa | nu
     return null;
   }
 }
+
+/**
+ * Conta o total de pessoas no Firebase
+ */
+export async function contarPessoas(): Promise<number> {
+  try {
+    const pessoasRef = collection(db, 'pessoas');
+    const querySnapshot = await getDocs(pessoasRef);
+    return querySnapshot.size;
+  } catch (error) {
+    console.error('Erro ao contar pessoas:', error);
+    return 0;
+  }
+}
