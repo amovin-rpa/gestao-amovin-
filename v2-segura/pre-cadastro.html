@@ -1,14 +1,449 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/pre-cadastro">
-  <title>Redirecionando...</title>
-  <script>
-    window.location.href = '/pre-cadastro';
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Pré-Cadastro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; min-height: 100vh; }
+
+/* Layout principal sem sidebar */
+.layout { max-width: 800px; margin: 0 auto; padding: 20px; }
+.header { text-align: center; padding: 30px 0 20px; }
+.header h1 { font-size: 28px; font-weight: 700; color: var(--grafite); }
+.header p { font-size: 14px; color: var(--cinza); margin-top: 8px; }
+.logo { max-width: 100px; margin-bottom: 15px; }
+
+.card { background: #FFFFFF; padding: 30px; border-radius: 16px; border: 1px solid #F0E9DF; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+.card h2 { font-size: 18px; font-weight: 700; color: var(--grafite); margin-bottom: 6px; }
+.card .sub { font-size: 13px; color: var(--cinza); margin-bottom: 20px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; transition: border 0.2s; }
+.form-group input:focus, .form-group select:focus { border-color: var(--laranja); outline: none; box-shadow: 0 0 0 3px rgba(198,90,17,0.1); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group .campo-obrigatorio { color: var(--vermelho); }
+.form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
+
+.btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; font-family: 'Inter', sans-serif; }
+.btn-primary { background: var(--laranja); color: white; width: 100%; }
+.btn-primary:hover { background: #A04A0E; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.rodape { text-align: center; margin-top: 30px; padding: 20px; font-size: 11px; color: var(--cinza); border-top: 1px solid #F0E9DF; }
+.rodape a { color: var(--laranja); text-decoration: none; }
+
+.progress-bar { width: 100%; height: 4px; background: #F0E9DF; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+.progress-bar .fill { height: 100%; background: var(--laranja); transition: width 0.5s ease; border-radius: 4px; }
+
+.step-indicators { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+.step-dot { width: 10px; height: 10px; border-radius: 50%; background: #E5E0D8; transition: all 0.3s; }
+.step-dot.active { background: var(--laranja); transform: scale(1.2); }
+.step-dot.done { background: var(--verde); }
+
+.hidden { display: none; }
+
+.result-box { text-align: center; padding: 30px; }
+.result-box .icon { font-size: 60px; margin-bottom: 15px; }
+.result-box h2 { font-size: 22px; margin-bottom: 10px; }
+.result-box p { color: var(--cinza); font-size: 14px; line-height: 1.6; }
+.result-box .success { color: var(--verde); }
+.result-box .error { color: var(--vermelho); }
+
+.checkbox-group { display: flex; align-items: flex-start; gap: 10px; padding: 15px; background: #F8F4ED; border-radius: 8px; margin-bottom: 16px; }
+.checkbox-group input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--laranja); cursor: pointer; }
+.checkbox-group label { font-size: 13px; color: var(--grafite); cursor: pointer; }
+
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .card { padding: 20px; } }
+</style>
 </head>
 <body>
-  <p>Redirecionando para o pré-cadastro...</p>
+
+<div class="layout">
+  <!-- CABEÇALHO -->
+  <div class="header">
+    <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';">
+    <h1>📝 Pré-Cadastro AMOVIN</h1>
+    <p>Preencha seus dados para iniciar o processo de cadastro na AMOVIN.</p>
+  </div>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div class="progress-bar">
+    <div class="fill" id="progressFill" style="width: 33%;"></div>
+  </div>
+
+  <!-- INDICADORES DE PASSOS -->
+  <div class="step-indicators">
+    <span class="step-dot active" id="dot1"></span>
+    <span class="step-dot" id="dot2"></span>
+    <span class="step-dot" id="dot3"></span>
+  </div>
+
+  <!-- PASSO 1: DADOS PESSOAIS -->
+  <div id="step1" class="card">
+    <h2>👤 Dados Pessoais</h2>
+    <p class="sub">Preencha suas informações básicas</p>
+
+    <form id="formStep1" onsubmit="return false;">
+      <div class="form-group">
+        <label>Tipo de Cadastro <span class="campo-obrigatorio">*</span></label>
+        <select id="tipoCadastro" required>
+          <option value="beneficiario">👥 Beneficiário</option>
+          <option value="profissional">👨‍⚕️ Profissional</option>
+          <option value="voluntario">💪 Voluntário</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
+        <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>CPF <span class="campo-obrigatorio">*</span></label>
+          <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+        </div>
+        <div class="form-group">
+          <label>RG</label>
+          <input type="text" id="rg" placeholder="00.000.000-0">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data de Nascimento</label>
+          <input type="date" id="dataNascimento">
+        </div>
+        <div class="form-group">
+          <label>Sexo</label>
+          <select id="sexo">
+            <option value="">Selecione...</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="text" id="telefone" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="text" id="whatsapp" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="email@exemplo.com">
+      </div>
+
+      <div class="form-group">
+        <label>Endereço</label>
+        <input type="text" id="endereco" placeholder="Rua, número, bairro">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cidade</label>
+          <input type="text" id="cidade" placeholder="Cidade">
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="estado">
+            <option value="">Selecione...</option>
+            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="campoResponsavel" class="form-group">
+        <label>Responsável <span class="campo-obrigatorio">*</span></label>
+        <input type="text" id="responsavel" placeholder="Ex: Mãe do beneficiário João Silva">
+        <small style="color:var(--cinza);font-size:10px;">Preencher quando o cadastro for beneficiário</small>
+      </div>
+
+      <div class="form-group">
+        <label>Observações</label>
+        <input type="text" id="observacoes" placeholder="Informações adicionais...">
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="irParaPasso2()">➡️ Próximo Passo</button>
+    </form>
+  </div>
+
+  <!-- PASSO 2: LGPD E ASSINATURA -->
+  <div id="step2" class="card hidden">
+    <h2>🔒 LGPD e Assinatura</h2>
+    <p class="sub">Leia e aceite os termos antes de finalizar</p>
+
+    <div style="background:#F8F4ED;padding:15px;border-radius:8px;max-height:200px;overflow-y:auto;font-size:13px;color:var(--cinza);line-height:1.6;margin-bottom:16px;">
+      <p><strong>Política de Privacidade - LGPD</strong></p>
+      <p>A AMOVIN respeita sua privacidade e está comprometida com a proteção dos seus dados pessoais, em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei 13.709/2018).</p>
+      <br>
+      <p><strong>Quais dados coletamos?</strong></p>
+      <p>Nome, CPF, RG, data de nascimento, telefone, e-mail, endereço e informações relevantes para o atendimento social.</p>
+      <br>
+      <p><strong>Para que usamos seus dados?</strong></p>
+      <p>• Cadastro e atendimento nos projetos sociais da AMOVIN</p>
+      <p>• Comunicação sobre atividades e eventos</p>
+      <p>• Cumprimento de obrigações legais e prestação de contas</p>
+      <br>
+      <p><strong>Seus direitos:</strong></p>
+      <p>Você pode solicitar a qualquer momento: acesso, correção ou exclusão dos seus dados, revogação do consentimento.</p>
+      <br>
+      <p><strong>Contato para dúvidas:</strong> lgpd@amovin.org.br | (34) 99999-9999</p>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="aceiteLGPD">
+      <label for="aceiteLGPD">Li e concordo com a Política de Privacidade e com o tratamento dos meus dados conforme a LGPD.</label>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Assinatura - Nome <span class="campo-obrigatorio">*</span></label>
+        <input type="text" id="assinaturaNome" placeholder="Digite seu nome completo">
+      </div>
+      <div class="form-group">
+        <label>Assinatura - CPF <span class="campo-obrigatorio">*</span></label>
+        <input type="text" id="assinaturaCPF" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:10px;">
+      <button type="button" class="btn btn-primary" style="flex:1;" onclick="irParaPasso1()">← Voltar</button>
+      <button type="button" class="btn btn-primary" style="flex:1;" onclick="finalizarCadastro()">📤 Finalizar Cadastro</button>
+    </div>
+  </div>
+
+  <!-- PASSO 3: RESULTADO -->
+  <div id="step3" class="card hidden">
+    <div class="result-box" id="resultadoBox">
+      <div class="icon" id="resultadoIcon">⏳</div>
+      <h2 id="resultadoTitulo">Enviando...</h2>
+      <p id="resultadoMensagem">Aguarde enquanto processamos seu cadastro.</p>
+      <button type="button" class="btn btn-primary" id="btnVoltarHome" style="margin-top:15px;display:none;" onclick="window.location.href='/'">🏠 Voltar para a Página Inicial</button>
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="rodape">
+    © 2026 AMOVIN - Associação e Movimento pela Inclusão<br>
+    Protegido pela LGPD - Lei Geral de Proteção de Dados
+  </div>
+</div>
+
+<script>
+// ============================================================
+// MÁSCARAS
+// ============================================================
+function mascaraCPF(input) {
+  var v = input.value.replace(/\D/g, '');
+  if (v.length > 3) v = v.slice(0,3) + '.' + v.slice(3);
+  if (v.length > 7) v = v.slice(0,7) + '.' + v.slice(7);
+  if (v.length > 11) v = v.slice(0,11) + '-' + v.slice(11);
+  input.value = v;
+}
+
+function mascaraTelefone(input) {
+  var v = input.value.replace(/\D/g, '');
+  if (v.length > 2) v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+  if (v.length > 8) v = v.slice(0,9) + '-' + v.slice(9);
+  input.value = v;
+}
+
+// ============================================================
+// NAVEGAÇÃO DOS PASSOS
+// ============================================================
+var dados = {};
+
+function atualizarProgresso(step) {
+  var progressos = [33, 66, 100];
+  document.getElementById('progressFill').style.width = progressos[step-1] + '%';
+  
+  for (var i = 1; i <= 3; i++) {
+    var dot = document.getElementById('dot' + i);
+    dot.className = 'step-dot';
+    if (i < step) dot.classList.add('done');
+    if (i === step) dot.classList.add('active');
+  }
+}
+
+function mostrarPasso(step) {
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step3').classList.add('hidden');
+  
+  if (step === 1) document.getElementById('step1').classList.remove('hidden');
+  else if (step === 2) document.getElementById('step2').classList.remove('hidden');
+  else if (step === 3) document.getElementById('step3').classList.remove('hidden');
+  
+  atualizarProgresso(step);
+}
+
+function irParaPasso1() {
+  mostrarPasso(1);
+}
+
+function irParaPasso2() {
+  // Coleta dados do passo 1
+  dados.tipo = document.getElementById('tipoCadastro').value;
+  dados.nome = document.getElementById('nome').value.trim();
+  dados.cpf = document.getElementById('cpf').value.trim();
+  dados.rg = document.getElementById('rg').value.trim();
+  dados.dataNascimento = document.getElementById('dataNascimento').value;
+  dados.sexo = document.getElementById('sexo').value;
+  dados.telefone = document.getElementById('telefone').value.trim();
+  dados.whatsapp = document.getElementById('whatsapp').value.trim() || dados.telefone;
+  dados.email = document.getElementById('email').value.trim();
+  dados.endereco = document.getElementById('endereco').value.trim();
+  dados.cidade = document.getElementById('cidade').value.trim();
+  dados.estado = document.getElementById('estado').value;
+  dados.responsavel = document.getElementById('responsavel').value.trim();
+  dados.observacoes = document.getElementById('observacoes').value.trim();
+
+  // Validações
+  var erros = [];
+  if (!dados.nome) erros.push('Nome é obrigatório');
+  if (!dados.cpf) erros.push('CPF é obrigatório');
+  if (dados.tipo === 'beneficiario' && !dados.responsavel) {
+    erros.push('Responsável é obrigatório para beneficiários');
+  }
+
+  if (erros.length > 0) {
+    alert('⚠️ ' + erros.join('\n'));
+    return;
+  }
+
+  // Preenche os dados de assinatura
+  document.getElementById('assinaturaNome').value = dados.nome;
+  document.getElementById('assinaturaCPF').value = dados.cpf;
+
+  mostrarPasso(2);
+}
+
+// ============================================================
+// FINALIZAR CADASTRO
+// ============================================================
+function finalizarCadastro() {
+  var aceite = document.getElementById('aceiteLGPD').checked;
+  var assinaturaNome = document.getElementById('assinaturaNome').value.trim();
+  var assinaturaCPF = document.getElementById('assinaturaCPF').value.trim();
+
+  if (!aceite) {
+    alert('⚠️ Você precisa aceitar os termos da LGPD para continuar.');
+    return;
+  }
+  if (!assinaturaNome) {
+    alert('⚠️ Digite seu nome para assinar.');
+    return;
+  }
+  if (!assinaturaCPF) {
+    alert('⚠️ Digite seu CPF para assinar.');
+    return;
+  }
+
+  // Completa os dados
+  dados.assinaturaNome = assinaturaNome;
+  dados.assinaturaCPF = assinaturaCPF;
+  dados.aceiteLGPD = aceite;
+
+  // Mostra tela de carregamento
+  mostrarPasso(3);
+  document.getElementById('resultadoIcon').textContent = '⏳';
+  document.getElementById('resultadoTitulo').textContent = 'Enviando...';
+  document.getElementById('resultadoMensagem').textContent = 'Aguarde enquanto processamos seu cadastro.';
+  document.getElementById('btnVoltarHome').style.display = 'none';
+
+  // Salva no localStorage (simulação)
+  setTimeout(function() {
+    try {
+      // Busca cadastros existentes
+      var lista = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
+      
+      // Verifica duplicidade
+      var duplicado = lista.some(function(item) {
+        return item.cpf === dados.cpf && item.nome === dados.nome;
+      });
+
+      if (duplicado) {
+        document.getElementById('resultadoIcon').textContent = '⚠️';
+        document.getElementById('resultadoTitulo').textContent = 'Cadastro Duplicado';
+        document.getElementById('resultadoMensagem').textContent = 'Já existe um cadastro com este CPF e nome. Entre em contato com a AMOVIN.';
+        document.getElementById('btnVoltarHome').style.display = 'block';
+        return;
+      }
+
+      // Adiciona novo cadastro
+      var novo = {
+        id: Date.now(),
+        ...dados,
+        dataCadastro: new Date().toISOString(),
+        status: 'pendente'
+      };
+      lista.push(novo);
+      localStorage.setItem('amovin_pre_cadastros', JSON.stringify(lista));
+
+      // Sucesso!
+      document.getElementById('resultadoIcon').textContent = '🎉';
+      document.getElementById('resultadoTitulo').className = 'success';
+      document.getElementById('resultadoTitulo').textContent = 'Cadastro Enviado!';
+      document.getElementById('resultadoMensagem').textContent = '✅ Seu cadastro foi enviado com sucesso! Aguarde a aprovação da equipe AMOVIN.';
+      document.getElementById('btnVoltarHome').style.display = 'block';
+
+    } catch (e) {
+      document.getElementById('resultadoIcon').textContent = '😕';
+      document.getElementById('resultadoTitulo').className = 'error';
+      document.getElementById('resultadoTitulo').textContent = 'Ops! Algo deu errado';
+      document.getElementById('resultadoMensagem').textContent = 'Erro ao salvar o cadastro. Tente novamente.';
+      document.getElementById('btnVoltarHome').style.display = 'block';
+    }
+  }, 1500);
+}
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+mostrarPasso(1);
+
+// Mostrar/esconder campo responsável
+document.getElementById('tipoCadastro').addEventListener('change', function() {
+  var campo = document.getElementById('campoResponsavel');
+  if (this.value === 'beneficiario') {
+    campo.style.display = 'block';
+  } else {
+    campo.style.display = 'none';
+    document.getElementById('responsavel').value = '';
+  }
+});
+</script>
+
 </body>
 </html>
