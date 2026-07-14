@@ -1,35 +1,43 @@
 // ============================================================
-// MENU LATERAL PADRÃO - AMOVIN ERP SOCIAL
+// MENU LATERAL PADRÃO - AMOVIN ERP SOCIAL (VERSÃO FIXA)
 // ============================================================
 
+// ============================================================
+// LISTA COMPLETA DE MÓDULOS DO SISTEMA
+// ============================================================
+var MODULOS_SISTEMA = [
+    { id: 'dashboard', nome: '📊 Dashboard', categoria: 'Principal' },
+    { id: 'bi', nome: '📈 BI Executivo', categoria: 'Principal' },
+    { id: 'capta', nome: '🚀 Amovin Capta+', categoria: 'Captação' },
+    { id: 'sala-espera', nome: '📋 Sala de Espera', categoria: 'Captação' },
+    { id: 'pre-cadastro', nome: '📝 Pré-Cadastro', categoria: 'Captação' },
+    { id: 'financeiro', nome: '💰 Financeiro', categoria: 'Financeiro' },
+    { id: 'orcamentos', nome: '📊 Orçamentos', categoria: 'Financeiro' },
+    { id: 'prestacao-contas', nome: '📋 Prest. Contas', categoria: 'Financeiro' },
+    { id: 'pessoas', nome: '👥 Beneficiários', categoria: 'Pessoas' },
+    { id: 'profissionais', nome: '👨‍⚕️ Profissionais', categoria: 'Pessoas' },
+    { id: 'voluntarios', nome: '💪 Voluntários', categoria: 'Pessoas' },
+    { id: 'agenda-telefonica', nome: '☎️ CRM Social', categoria: 'Pessoas' },
+    { id: 'agenda', nome: '📅 Agenda', categoria: 'Atendimento' },
+    { id: 'documentos', nome: '📝 Documentos', categoria: 'Documentos' },
+    { id: 'qrcodes', nome: '📱 QR Codes', categoria: 'Documentos' },
+    { id: 'notas-fiscais', nome: '📄 Notas Fiscais', categoria: 'Documentos' },
+    { id: 'estoque', nome: '📦 Estoque', categoria: 'Documentos' },
+    { id: 'patrimonio', nome: '🏢 Patrimônio', categoria: 'Documentos' },
+    { id: 'biblioteca', nome: '📚 Biblioteca', categoria: 'Educação' },
+    { id: 'certificados', nome: '🎓 Certificados', categoria: 'Educação' },
+    { id: 'chat', nome: '💬 Chat', categoria: 'Comunicação' },
+    { id: 'assistente', nome: '🤖 Assistente IA', categoria: 'Comunicação' },
+    { id: 'relatorios', nome: '📈 Relatórios', categoria: 'Relatórios' },
+    { id: 'configuracoes', nome: '⚙️ Configurações', categoria: 'Sistema' },
+    { id: 'backup', nome: '💾 Backup', categoria: 'Sistema' }
+];
+
 function renderizarMenu(paginaAtiva) {
-    var mapaAtivo = {
-        'dashboard': 'dashboard',
-        'bi': 'bi',
-        'capta': 'capta',
-        'sala-espera': 'sala-espera',
-        'pre-cadastro': 'pre-cadastro',
-        'pessoas': 'pessoas',
-        'profissionais': 'profissionais',
-        'voluntarios': 'voluntarios',
-        'agenda-telefonica': 'agenda-telefonica',
-        'agenda': 'agenda',
-        'financeiro': 'financeiro',
-        'orcamentos': 'orcamentos',
-        'prestacao-contas': 'prestacao-contas',
-        'estoque': 'estoque',
-        'patrimonio': 'patrimonio',
-        'documentos': 'documentos',
-        'qrcodes': 'qrcodes',
-        'notas-fiscais': 'notas-fiscais',
-        'biblioteca': 'biblioteca',
-        'certificados': 'certificados',
-        'chat': 'chat',
-        'assistente': 'assistente',
-        'relatorios': 'relatorios',
-        'configuracoes': 'configuracoes',
-        'backup': 'backup'
-    };
+    var mapaAtivo = {};
+    MODULOS_SISTEMA.forEach(function(m) {
+        mapaAtivo[m.id] = m.id;
+    });
 
     var ativo = mapaAtivo[paginaAtiva] || 'dashboard';
 
@@ -42,80 +50,26 @@ function renderizarMenu(paginaAtiva) {
     html += '  </div>';
     html += '  <nav class="sidebar-nav">';
     
-    // ============================================================
-    // PRINCIPAL
-    // ============================================================
-    html += '    <div class="nav-categoria">Principal</div>';
-    html += '    <a href="dashboard.html" class="nav-item ' + (ativo === 'dashboard' ? 'ativo' : '') + '"><span class="icone">📊</span> Dashboard</a>';
-    html += '    <a href="bi.html" class="nav-item ' + (ativo === 'bi' ? 'ativo' : '') + '"><span class="icone">📈</span> BI Executivo</a>';
-    
-    // ============================================================
-    // CAPTAÇÃO
-    // ============================================================
-    html += '    <div class="nav-categoria">Captação</div>';
-    html += '    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>';
-    html += '    <a href="sala-espera.html" class="nav-item ' + (ativo === 'sala-espera' ? 'ativo' : '') + '"><span class="icone">📋</span> Sala de Espera</a>';
-    html += '    <a href="pre-cadastro.html" class="nav-item ' + (ativo === 'pre-cadastro' ? 'ativo' : '') + '"><span class="icone">📝</span> Pré-Cadastro</a>';
-    
-    // ============================================================
-    // FINANCEIRO
-    // ============================================================
-    html += '    <div class="nav-categoria">Financeiro</div>';
-    html += '    <a href="financeiro.html" class="nav-item ' + (ativo === 'financeiro' ? 'ativo' : '') + '"><span class="icone">💰</span> Financeiro</a>';
-    html += '    <a href="orcamentos.html" class="nav-item ' + (ativo === 'orcamentos' ? 'ativo' : '') + '"><span class="icone">📊</span> Orçamentos</a>';
-    html += '    <a href="prestacao-contas.html" class="nav-item ' + (ativo === 'prestacao-contas' ? 'ativo' : '') + '"><span class="icone">📋</span> Prest. Contas</a>';
-    
-    // ============================================================
-    // PESSOAS
-    // ============================================================
-    html += '    <div class="nav-categoria">Pessoas</div>';
-    html += '    <a href="pessoas.html" class="nav-item ' + (ativo === 'pessoas' ? 'ativo' : '') + '"><span class="icone">👥</span> Beneficiários</a>';
-    html += '    <a href="profissionais.html" class="nav-item ' + (ativo === 'profissionais' ? 'ativo' : '') + '"><span class="icone">👨‍⚕️</span> Profissionais</a>';
-    html += '    <a href="voluntarios.html" class="nav-item ' + (ativo === 'voluntarios' ? 'ativo' : '') + '"><span class="icone">💪</span> Voluntários</a>';
-    html += '    <a href="agenda-telefonica.html" class="nav-item ' + (ativo === 'agenda-telefonica' ? 'ativo' : '') + '"><span class="icone">☎️</span> CRM Social</a>';
-    
-    // ============================================================
-    // ATENDIMENTO
-    // ============================================================
-    html += '    <div class="nav-categoria">Atendimento</div>';
-    html += '    <a href="agenda.html" class="nav-item ' + (ativo === 'agenda' ? 'ativo' : '') + '"><span class="icone">📅</span> Agenda</a>';
-    
-    // ============================================================
-    // DOCUMENTOS
-    // ============================================================
-    html += '    <div class="nav-categoria">Documentos</div>';
-    html += '    <a href="documentos.html" class="nav-item ' + (ativo === 'documentos' ? 'ativo' : '') + '"><span class="icone">📝</span> Documentos</a>';
-    html += '    <a href="qrcodes.html" class="nav-item ' + (ativo === 'qrcodes' ? 'ativo' : '') + '"><span class="icone">📱</span> QR Codes</a>';
-    html += '    <a href="notas-fiscais.html" class="nav-item ' + (ativo === 'notas-fiscais' ? 'ativo' : '') + '"><span class="icone">📄</span> Notas Fiscais</a>';
-    html += '    <a href="estoque.html" class="nav-item ' + (ativo === 'estoque' ? 'ativo' : '') + '"><span class="icone">📦</span> Estoque</a>';
-    html += '    <a href="patrimonio.html" class="nav-item ' + (ativo === 'patrimonio' ? 'ativo' : '') + '"><span class="icone">🏢</span> Patrimônio</a>';
-    
-    // ============================================================
-    // EDUCAÇÃO
-    // ============================================================
-    html += '    <div class="nav-categoria">Educação</div>';
-    html += '    <a href="biblioteca.html" class="nav-item ' + (ativo === 'biblioteca' ? 'ativo' : '') + '"><span class="icone">📚</span> Biblioteca</a>';
-    html += '    <a href="certificados.html" class="nav-item ' + (ativo === 'certificados' ? 'ativo' : '') + '"><span class="icone">🎓</span> Certificados</a>';
-    
-    // ============================================================
-    // COMUNICAÇÃO
-    // ============================================================
-    html += '    <div class="nav-categoria">Comunicação</div>';
-    html += '    <a href="chat.html" class="nav-item ' + (ativo === 'chat' ? 'ativo' : '') + '"><span class="icone">💬</span> Chat</a>';
-    html += '    <a href="assistente.html" class="nav-item ' + (ativo === 'assistente' ? 'ativo' : '') + '"><span class="icone">🤖</span> Assistente IA</a>';
-    
-    // ============================================================
-    // RELATÓRIOS
-    // ============================================================
-    html += '    <div class="nav-categoria">Relatórios</div>';
-    html += '    <a href="relatorios.html" class="nav-item ' + (ativo === 'relatorios' ? 'ativo' : '') + '"><span class="icone">📈</span> Relatórios</a>';
-    
-    // ============================================================
-    // SISTEMA
-    // ============================================================
-    html += '    <div class="nav-categoria">Sistema</div>';
-    html += '    <a href="configuracoes.html" class="nav-item ' + (ativo === 'configuracoes' ? 'ativo' : '') + '"><span class="icone">⚙️</span> Configurações</a>';
-    html += '    <a href="backup.html" class="nav-item ' + (ativo === 'backup' ? 'ativo' : '') + '"><span class="icone">💾</span> Backup</a>';
+    // Agrupa por categoria
+    var categorias = {};
+    MODULOS_SISTEMA.forEach(function(m) {
+        if (!categorias[m.categoria]) categorias[m.categoria] = [];
+        categorias[m.categoria].push(m);
+    });
+
+    for (var cat in categorias) {
+        html += '    <div class="nav-categoria">' + cat + '</div>';
+        categorias[cat].forEach(function(m) {
+            var isAtivo = (ativo === m.id) ? 'ativo' : '';
+            var icone = m.icone || '📌';
+            // Para o Capta+, usa link externo
+            if (m.id === 'capta') {
+                html += '    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item ' + isAtivo + '"><span class="icone">' + icone + '</span> ' + m.nome + '</a>';
+            } else {
+                html += '    <a href="' + m.id + '.html" class="nav-item ' + isAtivo + '"><span class="icone">' + icone + '</span> ' + m.nome + '</a>';
+            }
+        });
+    }
     
     html += '  </nav>';
     html += '  <div class="sidebar-footer">';
@@ -137,12 +91,10 @@ function renderizarMenu(paginaAtiva) {
 // FUNÇÃO PARA CARREGAR O MENU
 // ============================================================
 function carregarMenu(paginaAtiva) {
-    // Remove menus antigos se existirem
-    var oldMenus = document.querySelectorAll('#menu-container, .sidebar');
+    // Remove menus antigos se existirem (evita duplicação)
+    var oldMenus = document.querySelectorAll('#menu-container, .sidebar:not(#sidebar-principal)');
     oldMenus.forEach(function(el) {
-        if (el.id !== 'sidebar-principal') {
-            el.remove();
-        }
+        el.remove();
     });
 
     var container = document.getElementById('menu-container');
@@ -167,23 +119,55 @@ function carregarMenu(paginaAtiva) {
     if (cargoEl) cargoEl.textContent = cargo;
 
     // ============================================================
-    // CONTROLE DE PERFIL
+    // CONTROLE DE PERFIL - Carrega do localStorage
     // ============================================================
     var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-    var modulosPermitidos = {
-        admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    
+    // Tenta carregar os módulos permitidos do localStorage
+    var perfisSalvos = JSON.parse(localStorage.getItem('amovin_perfis') || '[]');
+    var perfilEncontrado = perfisSalvos.find(function(p) { return p.id === perfil; });
+    
+    var modulosPermitidos = {};
+    
+    // Perfis padrão (fallback)
+    var perfisPadrao = {
+        admin: MODULOS_SISTEMA.map(function(m) { return m.id; }),
         recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
         consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
         financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
         voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
     };
 
+    // Se encontrou o perfil no localStorage, usa ele
+    if (perfilEncontrado) {
+        modulosPermitidos[perfil] = perfilEncontrado.modulos || [];
+    }
+    
+    // Adiciona os perfis padrão como fallback
+    for (var p in perfisPadrao) {
+        if (!modulosPermitidos[p]) {
+            modulosPermitidos[p] = perfisPadrao[p];
+        }
+    }
+
     var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+
     document.querySelectorAll('.nav-item').forEach(function(item) {
         var href = item.getAttribute('href') || '';
         var pagina = href.replace('.html', '');
         pagina = pagina.split('?')[0].split('#')[0];
-        if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        
+        // Verifica se a página está na lista de permitidos
+        var permitido = permitidos.some(function(id) {
+            return id === pagina || (pagina === '' && id === 'dashboard');
+        });
+        
+        // Se for link externo (Capta+), sempre mostra
+        if (href.includes('amovin-capta') || href.includes('http')) {
+            return;
+        }
+        
+        if (pagina && !permitido && pagina !== '') {
             item.style.display = 'none';
         }
     });
@@ -242,9 +226,25 @@ window.addEventListener('popstate', function() {
 // ============================================================
 // Monitora mudanças no DOM para garantir que o menu não seja removido
 var observer = new MutationObserver(function() {
-    var sidebar = document.querySelector('.sidebar');
+    var sidebar = document.getElementById('sidebar-principal');
     if (!sidebar) {
         carregarMenu(paginaAtual);
     }
 });
 observer.observe(document.body, { childList: true, subtree: true });
+
+// ============================================================
+// RECARREGA O MENU QUANDO A PÁGINA MUDA (SPA)
+// ============================================================
+// Detecta mudanças de URL em SPAs
+var lastUrl = location.href;
+setInterval(function() {
+    if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        var novaPagina = location.pathname.split('/').pop().replace('.html', '');
+        if (novaPagina && novaPagina !== paginaAtual) {
+            paginaAtual = novaPagina;
+            carregarMenu(paginaAtual);
+        }
+    }
+}, 1000);
