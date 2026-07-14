@@ -22,11 +22,11 @@ export const Button = ({
   className = '',
 }: ButtonProps) => {
   const variants = {
-    primary: 'bg-amovin-laranja hover:bg-[#A04A0E] text-white',
+    primary: 'bg-[#C65A11] hover:bg-[#A04A0E] text-white',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
-    success: 'bg-amovin-verde hover:bg-[#388E3C] text-white',
+    success: 'bg-[#57C220] hover:bg-[#388E3C] text-white',
     danger: 'bg-red-600 hover:bg-red-700 text-white',
-    outline: 'border-2 border-amovin-laranja text-amovin-laranja hover:bg-amovin-laranja hover:text-white',
+    outline: 'border-2 border-[#C65A11] text-[#C65A11] hover:bg-[#C65A11] hover:text-white',
   };
 
   const sizes = {
@@ -45,7 +45,7 @@ export const Button = ({
         ${sizes[size]}
         rounded-lg font-semibold transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
-        focus:outline-none focus:ring-2 focus:ring-amovin-laranja focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-[#C65A11] focus:ring-offset-2
         ${className}
       `}
     >
