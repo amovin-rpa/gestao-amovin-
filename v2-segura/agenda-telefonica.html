@@ -310,4 +310,28 @@ window.toggleFav = function(id) { var x = contatos.find(function(c){return c.id=
 // ============================================================
 // CONTROLE DE PERFIL
 // ============================================================
-var perfil = sessionStorage.getItem('amovin_per
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+};
+
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    pagina = pagina.split('?')[0].split('#')[0];
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+
+renderizarMenu(); filtrar();
+</script>
+</body>
+</html>
