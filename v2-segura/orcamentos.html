@@ -7,290 +7,344 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --laranja: #C65A11; --amarelo: #F5C518; --verde: #57C220;
-  --azul: #1E88E5; --grafite: #1A1A1A; --cinza: #6B7280;
-  --cinza-claro: #F8F4ED; --branco: #FFFFFF;
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ==================== SIDEBAR (vem do menu.js) ==================== */
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
+.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
 .sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
 .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
 .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.4px; }
+.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
 .nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
 .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
 .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
 .nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
-.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
-.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
-.user-info .nome { font-weight: 600; font-size: 13.5px; }
-.user-info .cargo { font-size: 11px; color: #6B7280; }
-.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-sair:hover { background: #F0E9DF; }
 
-/* ==================== MAIN CONTENT ==================== */
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 18px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+
+.grid-orcamentos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
+
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
-.form-group textarea { resize: vertical; min-height: 50px; }
-.linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.linha-tripla { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.section-title { font-size: 13px; font-weight: 700; color: var(--laranja); border-bottom: 1px solid #F0E9DF; padding-bottom: 6px; margin: 16px 0 12px; grid-column: 1 / -1; }
-.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; }
-.btn-salvar { background: var(--laranja); color: white; width: 100%; padding: 14px; font-size: 14px; }
-.btn-comparar { background: var(--azul); color: white; }
-.btn-vencedor { background: var(--verde); color: white; }
-.btn-editar { background: var(--amarelo); color: #1A1A1A; }
-.btn-excluir { background: #E53935; color: white; }
+.form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-.orcamento-card { background: #F8F4ED; padding: 14px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid var(--laranja); }
-.orcamento-card.vencedor { border-left-color: var(--verde); background: #E8F5E9; }
-.orcamento-card h4 { font-size: 14px; color: var(--grafite); }
-.orcamento-card p { font-size: 12px; color: var(--cinza); }
-.comparativo { background: #E3F2FD; padding: 15px; border-radius: 10px; margin-top: 15px; }
-.comparativo h4 { color: var(--azul); }
+.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
+.btn-salvar { background: var(--laranja); color: white; }
+.btn-editar { background: var(--amarelo); color: #1A1A1A; }
+.btn-excluir { background: var(--vermelho); color: white; }
+.btn-verde { background: var(--verde); color: white; }
+.btn-azul { background: var(--azul); color: white; }
+
+.orcamento-item { padding: 12px 16px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.orcamento-item .descricao { font-weight: 600; color: var(--grafite); font-size: 13px; }
+.orcamento-item .valor { font-weight: 700; }
+.orcamento-item .valor.vencedor { color: var(--verde); }
+.orcamento-item .valor.normal { color: var(--cinza); }
+.orcamento-item .fornecedor { font-size: 12px; color: var(--cinza); }
+.orcamento-item .status { font-size: 10px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
+.status-pendente { background: #FFF3E0; color: #E65100; }
+.status-aprovado { background: #E8F5E9; color: #2E7D32; }
+.status-reprovado { background: #FFEBEE; color: #C62828; }
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
-.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-.badge-vencedor { background: #E8F5E9; color: #2E7D32; }
-.badge-pendente { background: #FFF3E0; color: #E65100; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; } .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .cards-grid { grid-template-columns: 1fr; } .linha-dupla, .linha-tripla { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-orcamentos { grid-template-columns: 1fr; } .form-row-3 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- ==================== MENU LATERAL ==================== -->
-<div id="menu-container"></div>
+<aside class="sidebar">
+  <div class="sidebar-header"><img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="sidebar-logo-fallback">🌻</div><div class="brand">Amovin ERP Social</div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-categoria">Principal</div>
+    <a href="dashboard.html" class="nav-item"><span class="icone">📊</span> Dashboard</a>
+    <a href="bi.html" class="nav-item"><span class="icone">📈</span> BI Executivo</a>
+
+    <div class="nav-categoria">Captação</div>
+    <a href="https://amovin-capta.vercel.app/login" target="_blank" class="nav-item"><span class="icone">🚀</span> Amovin Capta+</a>
+    <a href="sala-espera.html" class="nav-item"><span class="icone">📋</span> Sala de Espera</a>
+    <a href="pre-cadastro.html" class="nav-item"><span class="icone">📝</span> Pré-Cadastro</a>
+
+    <div class="nav-categoria">Financeiro</div>
+    <a href="financeiro.html" class="nav-item"><span class="icone">💰</span> Financeiro</a>
+    <a href="orcamentos.html" class="nav-item ativo"><span class="icone">📊</span> Orçamentos</a>
+    <a href="prestacao-contas.html" class="nav-item"><span class="icone">📋</span> Prest. Contas</a>
+
+    <div class="nav-categoria">Pessoas</div>
+    <a href="pessoas.html" class="nav-item"><span class="icone">👥</span> Beneficiários</a>
+    <a href="profissionais.html" class="nav-item"><span class="icone">👨‍⚕️</span> Profissionais</a>
+    <a href="voluntarios.html" class="nav-item"><span class="icone">💪</span> Voluntários</a>
+    <a href="agenda-telefonica.html" class="nav-item"><span class="icone">☎️</span> CRM Social</a>
+
+    <div class="nav-categoria">Atendimento</div>
+    <a href="agenda.html" class="nav-item"><span class="icone">📅</span> Agenda</a>
+
+    <div class="nav-categoria">Documentos</div>
+    <a href="documentos.html" class="nav-item"><span class="icone">📝</span> Documentos</a>
+    <a href="qrcodes.html" class="nav-item"><span class="icone">📱</span> QR Codes</a>
+    <a href="notas-fiscais.html" class="nav-item"><span class="icone">📄</span> Notas Fiscais</a>
+    <a href="estoque.html" class="nav-item"><span class="icone">📦</span> Estoque</a>
+    <a href="patrimonio.html" class="nav-item"><span class="icone">🏢</span> Patrimônio</a>
+
+    <div class="nav-categoria">Educação</div>
+    <a href="biblioteca.html" class="nav-item"><span class="icone">📚</span> Biblioteca</a>
+    <a href="certificados.html" class="nav-item"><span class="icone">🎓</span> Certificados</a>
+
+    <div class="nav-categoria">Comunicação</div>
+    <a href="chat.html" class="nav-item"><span class="icone">💬</span> Chat</a>
+    <a href="assistente.html" class="nav-item"><span class="icone">🤖</span> Assistente IA</a>
+
+    <div class="nav-categoria">Relatórios</div>
+    <a href="relatorios.html" class="nav-item"><span class="icone">📈</span> Relatórios</a>
+
+    <div class="nav-categoria">Sistema</div>
+    <a href="configuracoes.html" class="nav-item"><span class="icone">⚙️</span> Configurações</a>
+    <a href="backup.html" class="nav-item"><span class="icone">💾</span> Backup</a>
+  </nav>
+</aside>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>📊 Orçamentos e Compras</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar"><h1>📊 Orçamentos</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
-  <div class="cards-grid">
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📋 Total</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiPendentes">0</div><div class="kpi-label">⏳ Pendentes</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiAprovados">0</div><div class="kpi-label">✅ Aprovados</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiValorTotal">R$ 0</div><div class="kpi-label">💰 Valor Total</div></div>
+  </div>
+
+  <div class="grid-orcamentos">
     <div class="card">
-      <h3>📝 Novo Orçamento <span style="font-size:12px;color:var(--cinza);" id="contadorOrc">0/3</span></h3>
+      <h3>📝 Novo Orçamento</h3>
       <input type="hidden" id="orcamentoId">
-      
-      <div class="section-title">👤 Dados do Solicitante</div>
-      <div class="form-group"><label>Solicitante (Automático)</label><input type="text" id="nomeSolicitanteLogado" readonly style="background:#F8F4ED;font-weight:600;color:var(--laranja);"></div>
-      <div class="form-group"><label>Nome da Solicitação *</label><input type="text" id="nomeSolicitacao" placeholder="Ex: Compra de Materiais Esportivos"></div>
-      
-      <div class="section-title">🎯 Finalidade</div>
-      <div class="form-group"><label>Destino do Material *</label><select id="finalidadeOrc" onchange="toggleFinalidade()">
-        <option value="">Selecione...</option>
-        <option value="sede">🏢 Sede Administrativo</option>
-        <option value="terapias">🩺 Terapias / Consultas</option>
-        <option value="projetos">📋 Projetos</option>
-        <option value="outros">📝 Outros</option>
-      </select></div>
-      
-      <div id="campoProjeto" style="display:none;">
-        <div class="form-group"><label>Selecione o Projeto *</label><select id="projetoOrc">
-          <option value="">Selecione um projeto...</option>
-          <option>Inclusão Digital</option>
-          <option>Esporte para Todos</option>
-          <option>Reforço Escolar</option>
-          <option>Capacitação Profissional</option>
-        </select></div>
-      </div>
-      
-      <div id="campoOutros" style="display:none;">
-        <div class="form-group"><label>Descreva a Finalidade *</label><input type="text" id="outrosOrc" placeholder="Descreva obrigatoriamente..."></div>
-      </div>
-
-      <div class="section-title">📦 Especificação do Material</div>
-      <div class="form-group"><label>Nome do Item *</label><input type="text" id="itemOrc" placeholder="Ex: Bola de Vôlei Oficial Penalty"></div>
-      <div class="form-group"><label>Descrição Detalhada</label><textarea id="descricaoItemOrc" rows="2" placeholder="Marca, modelo, tamanho, cor, material..."></textarea></div>
-      <div class="linha-dupla">
-        <div class="form-group"><label>Quantidade *</label><input type="number" id="qtdOrc" value="1" min="1"></div>
-        <div class="form-group"><label>Unidade</label><select id="unidadeOrc"><option>Unidade</option><option>Par</option><option>Kg</option><option>Metro</option><option>Litro</option><option>Caixa</option><option>Pacote</option></select></div>
-      </div>
-
-      <div class="section-title">💰 Condições Comerciais</div>
-      <div class="linha-dupla">
-        <div class="form-group"><label>Valor Unitário (R$) *</label><input type="number" id="valorUnitarioOrc" step="0.01" placeholder="0,00"></div>
-        <div class="form-group"><label>Valor Total (R$)</label><input type="number" id="valorTotalOrc" step="0.01" readonly style="background:#F8F4ED;"></div>
-      </div>
-      <div class="linha-tripla">
-        <div class="form-group"><label>Prazo de Entrega (dias)</label><input type="number" id="prazoOrc" placeholder="Ex: 15"></div>
-        <div class="form-group"><label>Forma de Pagamento</label><select id="pagamentoOrc"><option>PIX</option><option>Boleto</option><option>Cartão</option><option>Faturamento 30 dias</option><option>Faturamento 60 dias</option></select></div>
-        <div class="form-group"><label>Validade da Proposta (dias)</label><input type="number" id="validadeOrc" placeholder="Ex: 30"></div>
-      </div>
-      <div class="form-group"><label>Empresa Fornecedora *</label><input type="text" id="empresaOrc" placeholder="Nome da empresa que está cotando"></div>
-      <div class="linha-dupla">
-        <div class="form-group"><label>CNPJ do Fornecedor</label><input type="text" id="cnpjOrc" placeholder="00.000.000/0000-00"></div>
-        <div class="form-group"><label>Data do Orçamento *</label><input type="date" id="dataOrc"></div>
-      </div>
-      <div class="form-group"><label>Observações</label><textarea id="obsOrc" rows="2" placeholder="Informações adicionais..."></textarea></div>
-      <button class="btn btn-salvar" onclick="salvarOrcamento()">💾 Salvar Orçamento</button>
+      <div class="form-group"><label>Descrição *</label><input type="text" id="descricaoOrcamento" placeholder="Ex: Material Esportivo"></div>
+      <div class="form-group"><label>Fornecedor *</label><input type="text" id="fornecedorOrcamento" placeholder="Nome da empresa"></div>
+      <div class="form-row"><div class="form-group"><label>Valor (R$) *</label><input type="number" id="valorOrcamento" step="0.01" placeholder="0,00"></div><div class="form-group"><label>Data</label><input type="date" id="dataOrcamento"></div></div>
+      <div class="form-group"><label>Categoria</label><select id="categoriaOrcamento"><option>Material</option><option>Serviço</option><option>Equipamento</option><option>Evento</option><option>Outros</option></select></div>
+      <div class="form-group"><label>Observações</label><input type="text" id="obsOrcamento" placeholder="Informações adicionais..."></div>
+      <button class="btn btn-salvar" onclick="salvarOrcamento()" style="width:100%;padding:12px;font-size:14px;">💾 Salvar Orçamento</button>
     </div>
-
     <div class="card">
-      <h3>📋 Orçamentos Cadastrados</h3>
-      <div id="listaOrcamentos"><div class="sem-dados">Nenhum orçamento cadastrado.</div></div>
-      <div class="comparativo" id="comparativo" style="display:none;">
-        <h4>📊 Comparativo</h4>
-        <div id="resultadoComparativo"></div>
-        <button class="btn btn-vencedor" onclick="definirVencedor()">🏆 Definir Vencedor</button>
-      </div>
+      <h3>📋 Orçamentos</h3>
+      <div id="listaOrcamentos"><div class="sem-dados">Nenhum orçamento.</div></div>
     </div>
   </div>
 
   <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
-<script src="menu.js"></script>
 <script>
 var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
-var editandoId = null, solicitacaoAtual = '';
+var editandoId = null;
 
 if (orcamentos.length === 0) {
-    orcamentos.push({id:1,solicitacao:'Material Esportivo',empresa:'Loja A',cnpj:'12.345.678/0001-90',data:'2026-06-20',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:150,valorTotal:1500,prazo:15,pagamento:'PIX',validade:30,descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'',vencedor:false,finalidade:'projetos',projeto:'Esporte para Todos',outros:'',solicitante:'Admin'});
-    orcamentos.push({id:2,solicitacao:'Material Esportivo',empresa:'Fornecedor B',cnpj:'98.765.432/0001-10',data:'2026-06-21',item:'Bola de Vôlei Penalty',qtd:10,valorUnitario:120,valorTotal:1200,prazo:10,pagamento:'Boleto',validade:30,descricaoItem:'Microfibra, tamanho 5',unidade:'Unidade',obs:'Frete grátis',vencedor:true,finalidade:'projetos',projeto:'Esporte para Todos',outros:'',solicitante:'Admin'});
+    orcamentos = [
+        { id: 1, descricao: 'Material Esportivo - Bola de Vôlei', fornecedor: 'Loja Esportiva A', valor: 1500, data: new Date().toISOString().split('T')[0], categoria: 'Material', status: 'pendente', obs: '10 unidades' },
+        { id: 2, descricao: 'Manutenção de Equipamentos', fornecedor: 'Serviços Técnicos B', valor: 800, data: new Date().toISOString().split('T')[0], categoria: 'Serviço', status: 'aprovado', obs: 'Orçamento aprovado' }
+    ];
     salvar();
 }
 function salvar() { localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos)); }
-function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.',','); }
 
-// Preencher nome do usuário logado
-document.getElementById('nomeSolicitanteLogado').value = sessionStorage.getItem('amovin_nome') || 'Administrador';
+function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
 
-// Calcular valor total automaticamente
-document.getElementById('valorUnitarioOrc').addEventListener('input', calcTotal);
-document.getElementById('qtdOrc').addEventListener('input', calcTotal);
-function calcTotal() { var u = parseFloat(document.getElementById('valorUnitarioOrc').value)||0, q = parseInt(document.getElementById('qtdOrc').value)||0; document.getElementById('valorTotalOrc').value = (u*q).toFixed(2); }
+function getStatusLabel(status) {
+    var map = { 'pendente': '⏳ Pendente', 'aprovado': '✅ Aprovado', 'reprovado': '❌ Reprovado' };
+    return map[status] || status;
+}
+function getStatusClass(status) {
+    var map = { 'pendente': 'status-pendente', 'aprovado': 'status-aprovado', 'reprovado': 'status-reprovado' };
+    return map[status] || 'status-pendente';
+}
 
-// Toggle finalidade
-window.toggleFinalidade = function() {
-    var f = document.getElementById('finalidadeOrc').value;
-    document.getElementById('campoProjeto').style.display = (f === 'projetos') ? 'block' : 'none';
-    document.getElementById('campoOutros').style.display = (f === 'outros') ? 'block' : 'none';
-};
+function atualizarKPIs() {
+    var total = orcamentos.length;
+    var pendentes = orcamentos.filter(function(o) { return o.status === 'pendente'; }).length;
+    var aprovados = orcamentos.filter(function(o) { return o.status === 'aprovado'; }).length;
+    var valorTotal = orcamentos.reduce(function(s, o) { return s + o.valor; }, 0);
 
-function atualizarContador() { document.getElementById('contadorOrc').textContent = orcamentos.filter(function(o){return o.solicitacao===solicitacaoAtual;}).length + '/3'; }
+    document.getElementById('kpiTotal').textContent = total;
+    document.getElementById('kpiPendentes').textContent = pendentes;
+    document.getElementById('kpiAprovados').textContent = aprovados;
+    document.getElementById('kpiValorTotal').textContent = fm(valorTotal);
+}
 
-function renderizar() {
-    var grupos = {}; orcamentos.forEach(function(o){if(!grupos[o.solicitacao])grupos[o.solicitacao]=[];grupos[o.solicitacao].push(o);});
-    var html = '';
-    Object.keys(grupos).forEach(function(sol){
-        var orcs = grupos[sol], vencedor = orcs.find(function(o){return o.vencedor;});
-        html += '<div style="margin-bottom:18px;"><h4 style="margin-bottom:8px;">📋 '+sol+' ('+orcs.length+') '+(vencedor?'<span class="badge badge-vencedor">Vencedor: '+vencedor.empresa+'</span>':'<span class="badge badge-pendente">Pendente</span>')+'</h4>';
-        orcs.forEach(function(o){
-            html += '<div class="orcamento-card'+(o.vencedor?' vencedor':'')+'"><h4>'+o.empresa+(o.vencedor?' 🏆':'')+'</h4>';
-            html += '<p>📦 '+o.item+' | Qtd: '+o.qtd+' | Unit: '+fm(o.valorUnitario)+' | Total: <strong>'+fm(o.valorTotal)+'</strong></p>';
-            html += '<p>⏱️ Prazo: '+(o.prazo||'-')+' dias | 💳 '+(o.pagamento||'-')+' | 📅 Validade: '+(o.validade||'-')+' dias</p>';
-            if(o.finalidade) html += '<p>🎯 '+(o.finalidade==='sede'?'Sede Administrativo':o.finalidade==='terapias'?'Terapias/Consultas':o.finalidade==='projetos'?'Projeto: '+o.projeto:'Outros: '+o.outros)+'</p>';
-            if(o.obs) html += '<p>📝 '+o.obs+'</p>';
-            html += '<button class="btn btn-editar" onclick="editarOrc('+o.id+')">✏️</button> <button class="btn btn-excluir" onclick="excluirOrc('+o.id+')">🗑️</button></div>';
-        });
-        html += '<button class="btn btn-comparar" onclick="comparar(\''+sol+'\')">📊 Comparar</button></div>';
-    });
-    document.getElementById('listaOrcamentos').innerHTML = html || '<div class="sem-dados">Nenhum orçamento.</div>';
+function renderizarOrcamentos() {
+    var lista = orcamentos.slice().sort(function(a, b) { return new Date(b.data) - new Date(a.data); });
+    var container = document.getElementById('listaOrcamentos');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum orçamento.</div>';
+        return;
+    }
+    container.innerHTML = lista.map(function(o) {
+        var data = new Date(o.data + 'T00:00:00').toLocaleDateString('pt-BR');
+        var statusLabel = getStatusLabel(o.status);
+        var statusClass = getStatusClass(o.status);
+        var valorClass = o.status === 'aprovado' ? 'vencedor' : 'normal';
+        return '<div class="orcamento-item">' +
+            '<div><span class="descricao">' + o.descricao + '</span><br><span class="fornecedor">🏢 ' + o.fornecedor + ' | ' + o.categoria + ' | ' + data + '</span></div>' +
+            '<div><span class="valor ' + valorClass + '">' + fm(o.valor) + '</span> <span class="status ' + statusClass + '">' + statusLabel + '</span>' +
+            (o.status === 'pendente' ? '<button class="btn btn-verde" onclick="aprovarOrcamento(' + o.id + ')" style="padding:4px 8px;font-size:10px;">✅</button>' : '') +
+            (o.status === 'pendente' ? '<button class="btn btn-excluir" onclick="reprovarOrcamento(' + o.id + ')" style="padding:4px 8px;font-size:10px;">❌</button>' : '') +
+            '<button class="btn btn-editar" onclick="editarOrcamento(' + o.id + ')" style="padding:4px 8px;font-size:10px;">✏️</button>' +
+            '<button class="btn btn-excluir" onclick="excluirOrcamento(' + o.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
+    }).join('');
 }
 
 window.salvarOrcamento = function() {
-    var sol = document.getElementById('nomeSolicitacao').value.trim(), emp = document.getElementById('empresaOrc').value.trim(), item = document.getElementById('itemOrc').value.trim(), qtd = parseInt(document.getElementById('qtdOrc').value)||0, vu = parseFloat(document.getElementById('valorUnitarioOrc').value)||0, vt = parseFloat(document.getElementById('valorTotalOrc').value)||0, finalidade = document.getElementById('finalidadeOrc').value;
-    if (!sol || !emp || !item || !qtd || !vu) { alert('Preencha os campos obrigatórios!'); return; }
-    if (!finalidade) { alert('Selecione a finalidade!'); return; }
-    if (finalidade === 'projetos' && !document.getElementById('projetoOrc').value) { alert('Selecione o projeto!'); return; }
-    if (finalidade === 'outros' && !document.getElementById('outrosOrc').value.trim()) { alert('Descreva a finalidade!'); return; }
-    var count = orcamentos.filter(function(o){return o.solicitacao===sol&&o.id!==editandoId;}).length;
-    if (!editandoId && count >= 3) { alert('Máximo de 3 orçamentos por solicitação!'); return; }
+    var descricao = document.getElementById('descricaoOrcamento').value.trim();
+    var fornecedor = document.getElementById('fornecedorOrcamento').value.trim();
+    var valor = parseFloat(document.getElementById('valorOrcamento').value) || 0;
+    var data = document.getElementById('dataOrcamento').value;
+
+    if (!descricao) { alert('Preencha a descrição!'); return; }
+    if (!fornecedor) { alert('Preencha o fornecedor!'); return; }
+    if (valor <= 0) { alert('Valor deve ser maior que zero!'); return; }
+    if (!data) { alert('Selecione a data!'); return; }
+
     var dados = {
-        solicitacao:sol, empresa:emp, cnpj:document.getElementById('cnpjOrc').value, data:document.getElementById('dataOrc').value,
-        item:item, descricaoItem:document.getElementById('descricaoItemOrc').value, qtd:qtd, unidade:document.getElementById('unidadeOrc').value,
-        valorUnitario:vu, valorTotal:vt, prazo:document.getElementById('prazoOrc').value, pagamento:document.getElementById('pagamentoOrc').value,
-        validade:document.getElementById('validadeOrc').value, obs:document.getElementById('obsOrc').value, vencedor:false,
-        finalidade:finalidade, projeto:document.getElementById('projetoOrc').value, outros:document.getElementById('outrosOrc').value,
-        solicitante:document.getElementById('nomeSolicitanteLogado').value
+        descricao: descricao,
+        fornecedor: fornecedor,
+        valor: valor,
+        data: data,
+        categoria: document.getElementById('categoriaOrcamento').value,
+        status: 'pendente',
+        obs: document.getElementById('obsOrcamento').value.trim()
     };
-    if (editandoId) { var idx = orcamentos.findIndex(function(o){return o.id===editandoId;}); if(idx>=0) orcamentos[idx] = Object.assign({},orcamentos[idx],dados); }
-    else { orcamentos.push(Object.assign({id:Date.now()},dados)); }
-    salvar(); limparForm(); renderizar(); atualizarContador();
+
+    if (editandoId) {
+        var idx = orcamentos.findIndex(function(o) { return o.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) orcamentos[idx][k] = dados[k];
+        }
+        editandoId = null;
+    } else {
+        dados.id = Date.now();
+        orcamentos.push(dados);
+    }
+
+    salvar();
+    limparForm();
+    atualizarKPIs();
+    renderizarOrcamentos();
+    alert('✅ Orçamento salvo com sucesso!');
 };
 
-window.editarOrc = function(id) {
-    var o = orcamentos.find(function(o){return o.id===id;}); if(!o)return;
-    editandoId = id; document.getElementById('orcamentoId').value = id;
-    document.getElementById('nomeSolicitacao').value = o.solicitacao; document.getElementById('empresaOrc').value = o.empresa;
-    document.getElementById('cnpjOrc').value = o.cnpj||''; document.getElementById('dataOrc').value = o.data||'';
-    document.getElementById('itemOrc').value = o.item||''; document.getElementById('descricaoItemOrc').value = o.descricaoItem||'';
-    document.getElementById('qtdOrc').value = o.qtd||1; document.getElementById('unidadeOrc').value = o.unidade||'Unidade';
-    document.getElementById('valorUnitarioOrc').value = o.valorUnitario||''; document.getElementById('valorTotalOrc').value = o.valorTotal||'';
-    document.getElementById('prazoOrc').value = o.prazo||''; document.getElementById('pagamentoOrc').value = o.pagamento||'PIX';
-    document.getElementById('validadeOrc').value = o.validade||'';
-    document.getElementById('finalidadeOrc').value = o.finalidade||''; toggleFinalidade();
-    if (o.finalidade==='projetos') document.getElementById('projetoOrc').value = o.projeto||'';
-    if (o.finalidade==='outros') document.getElementById('outrosOrc').value = o.outros||'';
-    document.getElementById('obsOrc').value = o.obs||'';
-    solicitacaoAtual = o.solicitacao; atualizarContador();
+window.editarOrcamento = function(id) {
+    var o = orcamentos.find(function(x) { return x.id === id; });
+    if (!o) return;
+    editandoId = id;
+    document.getElementById('orcamentoId').value = id;
+    document.getElementById('descricaoOrcamento').value = o.descricao;
+    document.getElementById('fornecedorOrcamento').value = o.fornecedor;
+    document.getElementById('valorOrcamento').value = o.valor;
+    document.getElementById('dataOrcamento').value = o.data;
+    document.getElementById('categoriaOrcamento').value = o.categoria;
+    document.getElementById('obsOrcamento').value = o.obs || '';
+    document.querySelector('.card h3').textContent = '✏️ Editando: ' + o.descricao;
 };
 
-window.excluirOrc = function(id) { if(!confirm('Excluir?'))return; orcamentos = orcamentos.filter(function(o){return o.id!==id;}); salvar(); renderizar(); atualizarContador(); };
+window.excluirOrcamento = function(id) {
+    if (!confirm('Excluir este orçamento?')) return;
+    orcamentos = orcamentos.filter(function(o) { return o.id !== id; });
+    salvar();
+    atualizarKPIs();
+    renderizarOrcamentos();
+};
+
+window.aprovarOrcamento = function(id) {
+    var o = orcamentos.find(function(x) { return x.id === id; });
+    if (o) {
+        o.status = 'aprovado';
+        salvar();
+        atualizarKPIs();
+        renderizarOrcamentos();
+        alert('✅ Orçamento aprovado!');
+    }
+};
+
+window.reprovarOrcamento = function(id) {
+    if (!confirm('Reprovar este orçamento?')) return;
+    var o = orcamentos.find(function(x) { return x.id === id; });
+    if (o) {
+        o.status = 'reprovado';
+        salvar();
+        atualizarKPIs();
+        renderizarOrcamentos();
+        alert('❌ Orçamento reprovado.');
+    }
+};
 
 function limparForm() {
-    editandoId = null; document.getElementById('orcamentoId').value = '';
-    document.getElementById('nomeSolicitacao').value = ''; document.getElementById('empresaOrc').value = '';
-    document.getElementById('cnpjOrc').value = ''; document.getElementById('dataOrc').value = '';
-    document.getElementById('itemOrc').value = ''; document.getElementById('descricaoItemOrc').value = '';
-    document.getElementById('qtdOrc').value = '1'; document.getElementById('unidadeOrc').value = 'Unidade';
-    document.getElementById('valorUnitarioOrc').value = ''; document.getElementById('valorTotalOrc').value = '';
-    document.getElementById('prazoOrc').value = ''; document.getElementById('pagamentoOrc').value = 'PIX';
-    document.getElementById('validadeOrc').value = ''; document.getElementById('finalidadeOrc').value = '';
-    document.getElementById('projetoOrc').value = ''; document.getElementById('outrosOrc').value = '';
-    document.getElementById('obsOrc').value = ''; toggleFinalidade();
-    solicitacaoAtual = ''; atualizarContador();
+    editandoId = null;
+    document.getElementById('orcamentoId').value = '';
+    document.getElementById('descricaoOrcamento').value = '';
+    document.getElementById('fornecedorOrcamento').value = '';
+    document.getElementById('valorOrcamento').value = '';
+    document.getElementById('dataOrcamento').value = new Date().toISOString().split('T')[0];
+    document.getElementById('categoriaOrcamento').value = 'Material';
+    document.getElementById('obsOrcamento').value = '';
+    document.querySelector('.card h3').textContent = '📝 Novo Orçamento';
 }
 
-window.comparar = function(sol) {
-    var orcs = orcamentos.filter(function(o){return o.solicitacao===sol;}).sort(function(a,b){return a.valorTotal - b.valorTotal;});
-    if (orcs.length < 2) { alert('Precisa de pelo menos 2 orçamentos!'); return; }
-    var menor = orcs[0], maior = orcs[orcs.length-1], economia = maior.valorTotal - menor.valorTotal;
-    var html = '<p><strong>Menor Preço:</strong> '+menor.empresa+' - '+fm(menor.valorTotal)+'</p>';
-    html += '<p><strong>Maior Preço:</strong> '+maior.empresa+' - '+fm(maior.valorTotal)+'</p>';
-    html += '<p><strong>Economia:</strong> '+fm(economia)+' ('+((economia/maior.valorTotal)*100).toFixed(1)+'%)</p>';
-    html += '<ol>'+orcs.map(function(o){return '<li>'+o.empresa+' - '+fm(o.valorTotal)+(o.prazo?' | Prazo: '+o.prazo+' dias':'')+'</li>';}).join('')+'</ol>';
-    html += '<p style="color:#2E7D32;font-weight:600;">🏆 Melhor Preço: <strong>'+menor.empresa+'</strong></p>';
-    document.getElementById('resultadoComparativo').innerHTML = html;
-    document.getElementById('comparativo').style.display = 'block'; solicitacaoAtual = sol;
-};
-
-window.definirVencedor = function() {
-    if(!solicitacaoAtual)return;
-    var orcs = orcamentos.filter(function(o){return o.solicitacao===solicitacaoAtual;}).sort(function(a,b){return a.valorTotal - b.valorTotal;});
-    if(orcs.length===0)return;
-    orcamentos.forEach(function(o){if(o.solicitacao===solicitacaoAtual)o.vencedor=false;});
-    orcs[0].vencedor = true;
-    salvar(); renderizar(); document.getElementById('comparativo').style.display = 'none';
-};
-
-document.getElementById('dataOrc').value = new Date().toISOString().split('T')[0];
+document.getElementById('dataOrcamento').value = new Date().toISOString().split('T')[0];
 
 // ============================================================
-// VERIFICAÇÃO DE SESSÃO
+// CONTROLE DE PERFIL
 // ============================================================
-if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+};
 
-renderizar(); atualizarContador();
+var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+document.querySelectorAll('.nav-item').forEach(function(item) {
+    var href = item.getAttribute('href') || '';
+    var pagina = href.replace('.html', '');
+    pagina = pagina.split('?')[0].split('#')[0];
+    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+        item.style.display = 'none';
+    }
+});
+
+if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+
+atualizarKPIs();
+renderizarOrcamentos();
 </script>
 </body>
 </html>
