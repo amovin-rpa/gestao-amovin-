@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Inteligência Documental (IDP)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- Tesseract.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.5/tesseract.min.js"></script>
+<style>
+:root {
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+
+/* ============================================================
+   A SIDEBAR VEM DO menu.js - NÃO COLOCAR AQUI
+   ============================================================ */
+
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.topo-bar h1 span { font-size: 14px; font-weight: 400; color: var(--cinza); margin-left: 12px; }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+
+.grid-idp { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
+
+.dropzone { border: 3px dashed #E5E0D8; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; }
+.dropzone:hover { border-color: var(--laranja); background: #FFF8E7; }
+.dropzone.dragover { border-color: var(--laranja); background: #FFF3E0; }
+.dropzone .icone { font-size: 48px; }
+.dropzone p { color: var(--cinza); font-size: 14px; margin-top: 8px; }
+
+.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+.btn-salvar { background: var(--laranja); color: white; }
+.btn-salvar:hover { background: #A04A0E; }
+.btn-verde { background: var(--verde); color: white; }
+.btn-verde:hover { background: #388E3C; }
+.btn-vermelho { background: var(--vermelho); color: white; }
+.btn-vermelho:hover { background: #C62828; }
+.btn-azul { background: var(--azul); color: white; }
+.btn-azul:hover { background: #1565C0; }
+.btn-cinza { background: #E5E0D8; color: var(--grafite); }
+.btn-sm { padding: 4px 10px; font-size: 10px; }
+
+.extracted-data { background: #F8F4ED; padding: 16px; border-radius: 8px; margin-top: 12px; font-size: 13px; line-height: 1.8; }
+.extracted-data strong { color: var(--grafite); }
+
+.status { margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none; }
+.status.success { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; display: block; }
+.status.error { background: #FFEBEE; color: #C62828; border: 1px solid #EF9A9A; display: block; }
+.status.info { background: #E3F2FD; color: #1565C0; border: 1px solid #90CAF9; display: block; }
+
+.doc-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #F8F4ED; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--laranja); flex-wrap: wrap; gap: 8px; }
+.doc-item .info { flex: 1; min-width: 0; }
+.doc-item .info .nome { font-weight: 600; color: var(--grafite); font-size: 13px; }
+.doc-item .info .detalhe { font-size: 11px; color: var(--cinza); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+.badge-processado { background: #E8F5E9; color: #2E7D32; }
+.badge-pendente { background: #FFF3E0; color: #E65100; }
+.lista-docs { max-height: 400px; overflow-y: auto; }
+.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
+.loading { display: none; text-align: center; padding: 20px; }
+.loading .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #F0E9DF; border-top-color: var(--laranja); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+
+@media (max-width: 900px) { .main-content { margin-left: 0; } .grid-idp { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+<div id="menu-container"></div>
+
+<main class="main-content">
+  <div class="topo-bar">
+    <h1>📄 Inteligência Documental (IDP) <span>Leitura e extração automática</span></h1>
+    <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📄 Documentos</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiProcessados">0</div><div class="kpi-label">✅ Processados</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiPendentes">0</div><div class="kpi-label">⏳ Pendentes</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiExtraidos">0</div><div class="kpi-label">📊 Dados Extraídos</div></div>
+  </div>
+
+  <div class="grid-idp">
+    <!-- COLUNA 1: UPLOAD -->
+    <div class="card">
+      <h3>📤 Importar Documento</h3>
+      <div class="dropzone" id="dropzone">
+        <div class="icone">📄</div>
+        <p><strong>Clique aqui</strong> ou arraste um arquivo</p>
+        <p style="font-size:11px;color:#9CA3AF;margin-top:4px;">PDF, XML, JPG, PNG, TIFF</p>
+        <input type="file" id="fileInput" accept=".pdf,.xml,.jpg,.jpeg,.png,.tiff,.tif" style="display:none;">
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top:8px;color:var(--cinza);">Lendo documento...</p>
+      </div>
+
+      <div id="statusMsg" class="status"></div>
+
+      <div id="dadosExtraidos" style="display:none;">
+        <h4 style="margin:16px 0 8px;font-size:14px;">📋 Dados Extraídos</h4>
+        <div class="extracted-data" id="conteudoExtraido"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+          <button class="btn btn-salvar" onclick="salvarDocumento()">💾 Salvar</button>
+          <button class="btn btn-cinza" onclick="limparFormulario()">🔄 Descartar</button>
+        </div>
+        <div id="statusSalvar" class="status"></div>
+      </div>
+    </div>
+
+    <!-- COLUNA 2: DOCUMENTOS SALVOS -->
+    <div class="card">
+      <h3>📂 Documentos Salvos <span style="font-weight:400;font-size:12px;color:var(--cinza);" id="totalDocs">(0)</span></h3>
+      <div class="lista-docs" id="listaDocumentos">
+        <div class="sem-dados">📭 Nenhum documento salvo</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn btn-azul" onclick="exportarDados()">📤 Exportar JSON</button>
+        <button class="btn btn-vermelho" onclick="limparTodos()">🗑️ Limpar Todos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="menu.js"></script>
+<script>
+// ============================================================
+// BANCO DE DADOS LOCAL (IndexedDB)
+// ============================================================
+
+var DB_NAME = 'amovin_idp_db';
+var DB_VERSION = 1;
+var STORE_NAME = 'documentos';
+var db = null;
+var ultimoId = parseInt(localStorage.getItem('amovin_idp_ultimo_id') || '0');
+
+function abrirBanco() {
+    return new Promise(function(resolve, reject) {
+        var request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = function(event) {
+            var db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                var store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                store.createIndex('data', 'data', { unique: false });
+                store.createIndex('nome', 'nome', { unique: false });
+            }
+        };
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            resolve(db);
+        };
+        request.onerror = function(event) {
+            reject(event.target.error);
+        };
+    });
+}
+
+function salvarDocumentoDB(dados) {
+    return new Promise(function(resolve, reject) {
+        if (!db) { reject('Banco não inicializado'); return; }
+        var transaction = db.transaction([STORE_NAME], 'readwrite');
+        var store = transaction.objectStore(STORE_NAME);
+        var request = store.add(dados);
+        request.onsuccess = function() { resolve(dados); };
+        request.onerror = function() { reject(request.error); };
+    });
+}
+
+function listarDocumentosDB() {
+    return new Promise(function(resolve, reject) {
+        if (!db) { reject('Banco não inicializado'); return; }
+        var transaction = db.transaction([STORE_NAME], 'readonly');
+        var store = transaction.objectStore(STORE_NAME);
+        var request = store.getAll();
+        request.onsuccess = function() { resolve(request.result); };
+        request.onerror = function() { reject(request.error); };
+    });
+}
+
+function excluirDocumentoDB(id) {
+    return new Promise(function(resolve, reject) {
+        if (!db) { reject('Banco não inicializado'); return; }
+        var transaction = db.transaction([STORE_NAME], 'readwrite');
+        var store = transaction.objectStore(STORE_NAME);
+        var request = store.delete(id);
+        request.onsuccess = function() { resolve(); };
+        request.onerror = function() { reject(request.error); };
+    });
+}
+
+function limparTodosDB() {
+    return new Promise(function(resolve, reject) {
+        if (!db) { reject('Banco não inicializado'); return; }
+        var transaction = db.transaction([STORE_NAME], 'readwrite');
+        var store = transaction.objectStore(STORE_NAME);
+        var request = store.clear();
+        request.onsuccess = function() { resolve(); };
+        request.onerror = function() { reject(request.error); };
+    });
+}
+
+// ============================================================
+// GERENCIADOR DE DOCUMENTOS
+// ============================================================
+
+function gerarIdDocumento() {
+    ultimoId++;
+    localStorage.setItem('amovin_idp_ultimo_id', String(ultimoId));
+    return 'amovdoc-' + String(ultimoId).padStart(6, '0');
+}
+
+function criarDocumento(dados) {
+    var now = new Date().toISOString();
+    return {
+        id: dados.id || gerarIdDocumento(),
+        nome: dados.nome || 'Documento sem nome',
+        tipo: dados.tipo || 'PDF',
+        data: dados.data || now,
+        tamanho: dados.tamanho || '0 KB',
+        status: dados.status || 'pendente',
+        dados: dados.dados || {},
+        texto: dados.texto || '',
+        arquivo: dados.arquivo || null,
+        dataCriacao: now,
+        ultimaModificacao: now,
+    };
+}
+
+// ============================================================
+// LEITURA DE PDF
+// ============================================================
+
+function lerPDF(file) {
+    return new Promise(function(resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var typedarray = new Uint8Array(e.target.result);
+            pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                var textoCompleto = '';
+                var numPaginas = pdf.numPages;
+                var promessas = [];
+                for (var i = 1; i <= numPaginas; i++) {
+                    promessas.push(pdf.getPage(i).then(function(pagina) {
+                        return pagina.getTextContent().then(function(textContent) {
+                            var texto = '';
+                            textContent.items.forEach(function(item) {
+                                texto += item.str + ' ';
+                            });
+                            return texto;
+                        });
+                    }));
+                }
+                Promise.all(promessas).then(function(resultados) {
+                    textoCompleto = resultados.join('\n');
+                    resolve({ texto: textoCompleto, paginas: numPaginas });
+                }).catch(reject);
+            }).catch(reject);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+// ============================================================
+// EXTRAÇÃO DE DADOS
+// ============================================================
+
+function extrairDados(texto) {
+    var dados = {
+        emitente: '',
+        cnpj: '',
+        cpf: '',
+        valor: '',
+        data: '',
+        numero: '',
+        descricao: '',
+        itens: [],
+    };
+    
+    var cnpjMatch = texto.match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}/g);
+    if (cnpjMatch && cnpjMatch.length > 0) { dados.cnpj = cnpjMatch[0]; }
+    
+    var cpfMatch = texto.match(/\d{3}\.\d{3}\.\d{3}-\d{2}/g);
+    if (cpfMatch && cpfMatch.length > 0) { dados.cpf = cpfMatch[0]; }
+    
+    var valorMatch = texto.match(/R\$\s*([\d,.]+)/gi);
+    if (valorMatch && valorMatch.length > 0) {
+        var v = valorMatch[0].replace(/[R$\s,.]/g, '');
+        dados.valor = v;
+    }
+    
+    var dataMatch = texto.match(/\d{2}\/\d{2}\/\d{4}/g);
+    if (dataMatch && dataMatch.length > 0) { dados.data = dataMatch[0]; }
+    
+    var numMatch = texto.match(/N[º°]\s*(\d+)/gi);
+    if (numMatch && numMatch.length > 0) { dados.numero = numMatch[0]; }
+    
+    var linhas = texto.split('\n').filter(function(l) { return l.trim().length > 10; });
+    if (linhas.length > 0) { dados.emitente = linhas[0].trim().substring(0, 100); }
+    
+    var descMatch = texto.match(/(?:DESCRIÇÃO|ITEM|PRODUTO|SERVIÇO)[:\s]*([^\n]+)/gi);
+    if (descMatch && descMatch.length > 0) {
+        dados.descricao = descMatch[0].replace(/^[^:]+:\s*/, '').trim();
+    }
+    
+    return dados;
+}
+
+// ============================================================
+// INTERFACE DE USUÁRIO
+// ============================================================
+
+var arquivoAtual = null;
+var dadosAtuais = null;
+
+function mostrarStatus(mensagem, tipo, elemento) {
+    var el = elemento || document.getElementById('statusMsg');
+    el.textContent = mensagem;
+    el.className = 'status ' + tipo;
+    setTimeout(function() { el.className = 'status'; }, 8000);
+}
+
+function mostrarDadosExtraidos(dados) {
+    var div = document.getElementById('dadosExtraidos');
+    var conteudo = document.getElementById('conteudoExtraido');
+    div.style.display = 'block';
+    
+    var html = '';
+    html += '<p><strong>📄 Emitente:</strong> ' + (dados.emitente || 'Não identificado') + '</p>';
+    html += '<p><strong>📋 CNPJ:</strong> ' + (dados.cnpj || 'Não identificado') + '</p>';
+    html += '<p><strong>📋 CPF:</strong> ' + (dados.cpf || 'Não identificado') + '</p>';
+    html += '<p><strong>💰 Valor:</strong> ' + (dados.valor ? 'R$ ' + dados.valor : 'Não identificado') + '</p>';
+    html += '<p><strong>📅 Data:</strong> ' + (dados.data || 'Não identificado') + '</p>';
+    html += '<p><strong>🔢 Número:</strong> ' + (dados.numero || 'Não identificado') + '</p>';
+    html += '<p><strong>📝 Descrição:</strong> ' + (dados.descricao || 'Não identificado') + '</p>';
+    conteudo.innerHTML = html;
+    dadosAtuais = dados;
+}
+
+function limparFormulario() {
+    document.getElementById('dadosExtraidos').style.display = 'none';
+    document.getElementById('conteudoExtraido').innerHTML = '';
+    document.getElementById('fileInput').value = '';
+    dadosAtuais = null;
+    arquivoAtual = null;
+    document.getElementById('statusMsg').className = 'status';
+    document.getElementById('statusSalvar').className = 'status';
+}
+
+async function processarArquivo(file) {
+    var loading = document.getElementById('loading');
+    loading.style.display = 'block';
+    
+    try {
+        var extensao = file.name.split('.').pop().toLowerCase();
+        var texto = '';
+        
+        if (extensao === 'pdf') {
+            var resultado = await lerPDF(file);
+            texto = resultado.texto;
+        } else if (extensao === 'txt') {
+            texto = await file.text();
+        } else {
+            try {
+                var img = await new Promise(function(resolve) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) { resolve(e.target.result); };
+                    reader.readAsDataURL(file);
+                });
+                var result = await Tesseract.recognize(img, 'por');
+                texto = result.data.text;
+            } catch (e) {
+                texto = 'Não foi possível ler o arquivo. Tente um PDF.';
+            }
+        }
+        
+        var dados = extrairDados(texto);
+        dados.texto = texto.substring(0, 5000);
+        dados.nome = file.name;
+        dados.tamanho = (file.size / 1024).toFixed(1) + ' KB';
+        dados.tipo = extensao.toUpperCase();
+        
+        mostrarDadosExtraidos(dados);
+        mostrarStatus('✅ Documento lido com sucesso!', 'success');
+        arquivoAtual = file;
+        
+    } catch (erro) {
+        console.error(erro);
+        mostrarStatus('❌ Erro ao ler o documento: ' + erro.message, 'error');
+    }
+    
+    loading.style.display = 'none';
+}
+
+async function salvarDocumento() {
+    if (!dadosAtuais) {
+        mostrarStatus('❌ Nenhum dado para salvar!', 'error', document.getElementById('statusSalvar'));
+        return;
+    }
+    
+    try {
+        var doc = criarDocumento({
+            nome: dadosAtuais.nome || 'Documento',
+            tipo: dadosAtuais.tipo || 'PDF',
+            dados: dadosAtuais,
+            texto: dadosAtuais.texto || '',
+            status: 'processado',
+            arquivo: arquivoAtual ? await arquivoParaBase64(arquivoAtual) : null,
+        });
+        
+        await salvarDocumentoDB(doc);
+        mostrarStatus('✅ Documento salvo! ID: ' + doc.id, 'success', document.getElementById('statusSalvar'));
+        limparFormulario();
+        atualizarLista();
+        
+    } catch (erro) {
+        console.error(erro);
+        mostrarStatus('❌ Erro ao salvar: ' + erro.message, 'error', document.getElementById('statusSalvar'));
+    }
+}
+
+function arquivoParaBase64(file) {
+    return new Promise(function(resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function(e) { resolve(e.target.result); };
+        reader.onerror = function(e) { reject(e.target.error); };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ============================================================
+// LISTAGEM DE DOCUMENTOS
+// ============================================================
+
+async function atualizarLista() {
+    try {
+        var docs = await listarDocumentosDB();
+        var container = document.getElementById('listaDocumentos');
+        document.getElementById('totalDocs').textContent = '(' + docs.length + ')';
+        
+        // Atualizar KPIs
+        document.getElementById('kpiTotal').textContent = docs.length;
+        document.getElementById('kpiProcessados').textContent = docs.filter(function(d) { return d.status === 'processado'; }).length;
+        document.getElementById('kpiPendentes').textContent = docs.filter(function(d) { return d.status === 'pendente'; }).length;
+        document.getElementById('kpiExtraidos').textContent = docs.filter(function(d) { return d.dados && d.dados.emitente; }).length;
+        
+        if (docs.length === 0) {
+            container.innerHTML = '<div class="sem-dados">📭 Nenhum documento salvo</div>';
+            return;
+        }
+        
+        container.innerHTML = docs.slice().reverse().map(function(doc) {
+            var badgeClass = doc.status === 'processado' ? 'badge-processado' : 'badge-pendente';
+            var badgeText = doc.status === 'processado' ? '✅ Processado' : '⏳ Pendente';
+            var data = new Date(doc.dataCriacao);
+            var dataStr = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+            
+            return '<div class="doc-item">' +
+                '<div class="info">' +
+                '<div class="nome">' + doc.id + '</div>' +
+                '<div class="detalhe">📄 ' + doc.nome + ' | ' + doc.tipo + ' | ' + doc.tamanho + '</div>' +
+                '<div class="detalhe">📅 ' + dataStr + ' | <span class="badge ' + badgeClass + '">' + badgeText + '</span></div>' +
+                (doc.dados && doc.dados.emitente ? '<div class="detalhe">🏢 ' + doc.dados.emitente.substring(0, 50) + '</div>' : '') +
+                '</div>' +
+                '<div class="acoes" style="display:flex;gap:4px;flex-wrap:wrap;">' +
+                '<button class="btn btn-azul btn-sm" onclick="visualizarDoc(\'' + doc.id + '\')">👁️</button>' +
+                '<button class="btn btn-verde btn-sm" onclick="baixarDoc(\'' + doc.id + '\')">📥</button>' +
+                '<button class="btn btn-vermelho btn-sm" onclick="excluirDoc(\'' + doc.id + '\')">🗑️</button>' +
+                '</div>' +
+                '</div>';
+        }).join('');
+        
+    } catch (erro) {
+        console.error('Erro ao listar documentos:', erro);
+    }
+}
+
+// ============================================================
+// AÇÕES DOS DOCUMENTOS
+// ============================================================
+
+window.visualizarDoc = async function(id) {
+    try {
+        var docs = await listarDocumentosDB();
+        var doc = docs.find(function(d) { return d.id === id; });
+        if (!doc) return;
+        var dados = doc.dados || {};
+        var html = '📄 <strong>' + doc.id + '</strong>\n\n';
+        html += '📋 Nome: ' + doc.nome + '\n';
+        html += '📅 Data: ' + new Date(doc.dataCriacao).toLocaleString('pt-BR') + '\n\n';
+        html += '--- DADOS EXTRAÍDOS ---\n\n';
+        html += '🏢 Emitente: ' + (dados.emitente || 'N/A') + '\n';
+        html += '📋 CNPJ: ' + (dados.cnpj || dados.cpf || 'N/A') + '\n';
+        html += '💰 Valor: ' + (dados.valor ? 'R$ ' + dados.valor : 'N/A') + '\n';
+        html += '📅 Data: ' + (dados.data || 'N/A') + '\n';
+        html += '🔢 Número: ' + (dados.numero || 'N/A') + '\n';
+        html += '📝 Descrição: ' + (dados.descricao || 'N/A') + '\n';
+        if (dados.texto) { html += '\n--- TEXTO EXTRAÍDO ---\n\n' + dados.texto.substring(0, 2000); }
+        alert(html);
+    } catch (erro) { alert('Erro ao visualizar: ' + erro.message); }
+};
+
+window.baixarDoc = async function(id) {
+    try {
+        var docs = await listarDocumentosDB();
+        var doc = docs.find(function(d) { return d.id === id; });
+        if (!doc) return;
+        if (doc.arquivo) {
+            var link = document.createElement('a');
+            link.href = doc.arquivo;
+            link.download = doc.nome;
+            link.click();
+        } else {
+            var json = JSON.stringify(doc, null, 2);
+            var blob = new Blob([json], { type: 'application/json' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = doc.id + '.json';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+    } catch (erro) { alert('Erro ao baixar: ' + erro.message); }
+};
+
+window.excluirDoc = async function(id) {
+    if (!confirm('Excluir o documento ' + id + '?')) return;
+    try {
+        await excluirDocumentoDB(id);
+        atualizarLista();
+    } catch (erro) { alert('Erro ao excluir: ' + erro.message); }
+};
+
+window.limparTodos = async function() {
+    if (!confirm('⚠️ Isso excluirá TODOS os documentos. Continuar?')) return;
+    try {
+        await limparTodosDB();
+        atualizarLista();
+        mostrarStatus('🗑️ Todos os documentos foram excluídos.', 'info');
+    } catch (erro) { alert('Erro ao limpar: ' + erro.message); }
+};
+
+window.exportarDados = async function() {
+    try {
+        var docs = await listarDocumentosDB();
+        if (docs.length === 0) { alert('Nenhum documento para exportar.'); return; }
+        var json = JSON.stringify(docs, null, 2);
+        var blob = new Blob([json], { type: 'application/json' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'amovin-idp-backup-' + new Date().toISOString().split('T')[0] + '.json';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    } catch (erro) { alert('Erro ao exportar: ' + erro.message); }
+};
+
+// ============================================================
+// EVENTOS DE UPLOAD
+// ============================================================
+
+document.getElementById('dropzone').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    if (e.target.files.length > 0) { processarArquivo(e.target.files[0]); }
+});
+
+var dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('dragover');
+});
+dropzone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+});
+dropzone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) {
+        processarArquivo(e.dataTransfer.files[0]);
+    }
+});
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+
+async function init() {
+    try {
+        await abrirBanco();
+        await atualizarLista();
+        console.log('✅ IDP integrado ao sistema AMOVIN!');
+    } catch (erro) {
+        console.error('❌ Erro ao inicializar:', erro);
+    }
+}
+
+init();
+
+// ============================================================
+// CONTROLE DE PERFIL
+// ============================================================
+var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+var modulosPermitidos = {
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup','idp'],
+    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
+    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
+    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios','idp'],
+    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+};
+
+if (!sessionStorage.getItem('amovin_logado')) {
+    window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>
