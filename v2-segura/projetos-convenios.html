@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Projetos e Convênios</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.topo-bar h1 span { font-size: 14px; font-weight: 400; color: var(--cinza); margin-left: 12px; }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .label { font-size: 11px; color: var(--cinza); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
+.card h3 { font-size: 15px; font-weight: 700; color: var(--grafite); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #F8F4ED; display: flex; justify-content: space-between; align-items: center; }
+.card h3 .badge { font-size: 10px; font-weight: 600; padding: 2px 12px; border-radius: 20px; background: #E8F5E9; color: #2E7D32; }
+.card h3 .badge.vermelho { background: #FFEBEE; color: #C62828; }
+
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
+.form-group input:focus, .form-group select:focus { border-color: var(--laranja); outline: none; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+.btn-salvar { background: var(--laranja); color: white; }
+.btn-salvar:hover { background: #A04A0E; }
+.btn-verde { background: var(--verde); color: white; }
+.btn-verde:hover { background: #388E3C; }
+.btn-vermelho { background: var(--vermelho); color: white; }
+.btn-vermelho:hover { background: #C62828; }
+.btn-azul { background: var(--azul); color: white; }
+.btn-azul:hover { background: #1565C0; }
+.btn-sm { padding: 4px 10px; font-size: 10px; }
+
+.projeto-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #F8F4ED; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--laranja); flex-wrap: wrap; gap: 8px; }
+.projeto-item .info { flex: 1; min-width: 0; }
+.projeto-item .info .nome { font-weight: 600; color: var(--grafite); font-size: 13px; }
+.projeto-item .info .detalhe { font-size: 11px; color: var(--cinza); }
+.status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+.status-ativo { background: #E8F5E9; color: #2E7D32; }
+.status-pendente { background: #FFF3E0; color: #E65100; }
+.status-concluido { background: #E3F2FD; color: #1565C0; }
+.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
+
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+
+@media (max-width: 768px) { .main-content { margin-left: 0; } .grid-2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+
+<main class="main-content">
+  <div class="topo-bar">
+    <h1>📋 Projetos e Convênios <span>Gestão completa de projetos sociais</span></h1>
+    <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Voltar</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="valor" id="kpiTotal">0</div><div class="label">📋 Projetos</div></div>
+    <div class="kpi-card"><div class="valor" id="kpiAtivos">0</div><div class="label">✅ Ativos</div></div>
+    <div class="kpi-card"><div class="valor" id="kpiValor">R$ 0</div><div class="label">💰 Valor Captado</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>📝 Novo Projeto</h3>
+      <input type="hidden" id="projetoId">
+      <div class="form-group">
+        <label>Nome do Projeto *</label>
+        <input type="text" id="nomeProjeto" placeholder="Ex: Inclusão Digital 2026">
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="categoriaProjeto">
+          <option value="Inclusão Digital">Inclusão Digital</option>
+          <option value="Esporte para Todos">Esporte para Todos</option>
+          <option value="Reforço Escolar">Reforço Escolar</option>
+          <option value="Capacitação Profissional">Capacitação Profissional</option>
+          <option value="Saúde">Saúde</option>
+          <option value="Cultural">Cultural</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Valor (R$)</label>
+          <input type="number" id="valorProjeto" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="statusProjeto">
+            <option value="ativo">✅ Ativo</option>
+            <option value="pendente">⏳ Pendente</option>
+            <option value="concluido">📌 Concluído</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="descricaoProjeto" rows="2" placeholder="Breve descrição do projeto..."></textarea>
+      </div>
+      <button class="btn btn-salvar" onclick="salvarProjeto()" style="width:100%;">💾 Salvar Projeto</button>
+      <div id="statusMsg" style="margin-top:10px;font-size:12px;color:var(--cinza);"></div>
+    </div>
+
+    <div class="card">
+      <h3>📋 Projetos <span class="badge" id="totalProjetosBadge">0</span></h3>
+      <div id="listaProjetos">
+        <div class="sem-dados">Nenhum projeto cadastrado.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | Padrão SAP S/4HANA</div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="menu.js"></script>
+<script>
+var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
+var editandoId = null;
+
+if (projetos.length === 0) {
+    projetos = [
+        { id: 1, nome: 'Inclusão Digital 2026', categoria: 'Inclusão Digital', valor: 50000, status: 'ativo', descricao: 'Capacitação em informática para jovens' },
+        { id: 2, nome: 'Esporte para Todos', categoria: 'Esporte para Todos', valor: 35000, status: 'ativo', descricao: 'Atividades esportivas para crianças' },
+    ];
+    salvar();
+}
+
+function salvar() {
+    localStorage.setItem('amovin_projetos', JSON.stringify(projetos));
+}
+
+function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
+
+function getStatusLabel(status) {
+    var map = { 'ativo': '✅ Ativo', 'pendente': '⏳ Pendente', 'concluido': '📌 Concluído' };
+    return map[status] || status;
+}
+function getStatusClass(status) {
+    var map = { 'ativo': 'status-ativo', 'pendente': 'status-pendente', 'concluido': 'status-concluido' };
+    return map[status] || 'status-pendente';
+}
+
+function atualizarKPIs() {
+    var total = projetos.length;
+    var ativos = projetos.filter(function(p) { return p.status === 'ativo'; }).length;
+    var valorTotal = projetos.reduce(function(s, p) { return s + (p.valor || 0); }, 0);
+
+    document.getElementById('kpiTotal').textContent = total;
+    document.getElementById('kpiAtivos').textContent = ativos;
+    document.getElementById('kpiValor').textContent = fm(valorTotal);
+    document.getElementById('totalProjetosBadge').textContent = total;
+}
+
+function renderizarProjetos() {
+    var lista = projetos.slice().sort(function(a, b) { return (a.nome || '').localeCompare(b.nome || ''); });
+    var container = document.getElementById('listaProjetos');
+
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum projeto cadastrado.</div>';
+        return;
+    }
+
+    container.innerHTML = lista.map(function(p) {
+        var statusLabel = getStatusLabel(p.status);
+        var statusClass = getStatusClass(p.status);
+        return '<div class="projeto-item">' +
+            '<div class="info">' +
+            '<div class="nome">' + p.nome + ' <span class="status-badge ' + statusClass + '">' + statusLabel + '</span></div>' +
+            '<div class="detalhe">📂 ' + p.categoria + ' | 💰 ' + fm(p.valor) + '</div>' +
+            (p.descricao ? '<div class="detalhe">📝 ' + p.descricao + '</div>' : '') +
+            '</div>' +
+            '<div style="display:flex;gap:4px;">' +
+            '<button class="btn btn-azul btn-sm" onclick="editarProjeto(' + p.id + ')">✏️</button>' +
+            '<button class="btn btn-vermelho btn-sm" onclick="excluirProjeto(' + p.id + ')">🗑️</button>' +
+            '</div>' +
+            '</div>';
+    }).join('');
+
+    atualizarKPIs();
+}
+
+window.salvarProjeto = function() {
+    var nome = document.getElementById('nomeProjeto').value.trim();
+    if (!nome) { alert('⚠️ Preencha o nome do projeto!'); return; }
+
+    var dados = {
+        nome: nome,
+        categoria: document.getElementById('categoriaProjeto').value,
+        valor: parseFloat(document.getElementById('valorProjeto').value) || 0,
+        status: document.getElementById('statusProjeto').value,
+        descricao: document.getElementById('descricaoProjeto').value.trim()
+    };
+
+    if (editandoId) {
+        var idx = projetos.findIndex(function(p) { return p.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) projetos[idx][k] = dados[k];
+        }
+        editandoId = null;
+        document.querySelector('.card h3 .badge').textContent = '';
+    } else {
+        dados.id = Date.now();
+        projetos.push(dados);
+    }
+
+    salvar();
+    limparForm();
+    renderizarProjetos();
+    document.getElementById('statusMsg').textContent = '✅ Projeto salvo com sucesso!';
+    document.getElementById('statusMsg').style.color = '#2E7D32';
+    setTimeout(function() { document.getElementById('statusMsg').textContent = ''; }, 3000);
+};
+
+window.editarProjeto = function(id) {
+    var p = projetos.find(function(x) { return x.id === id; });
+    if (!p) return;
+    editandoId = id;
+    document.getElementById('projetoId').value = id;
+    document.getElementById('nomeProjeto').value = p.nome;
+    document.getElementById('categoriaProjeto').value = p.categoria;
+    document.getElementById('valorProjeto').value = p.valor;
+    document.getElementById('statusProjeto').value = p.status;
+    document.getElementById('descricaoProjeto').value = p.descricao || '';
+    document.querySelector('.card h3 .badge').textContent = '✏️ Editando';
+};
+
+window.excluirProjeto = function(id) {
+    if (!confirm('Excluir este projeto?')) return;
+    projetos = projetos.filter(function(p) { return p.id !== id; });
+    salvar();
+    renderizarProjetos();
+};
+
+function limparForm() {
+    editandoId = null;
+    document.getElementById('projetoId').value = '';
+    document.getElementById('nomeProjeto').value = '';
+    document.getElementById('valorProjeto').value = '';
+    document.getElementById('descricaoProjeto').value = '';
+    document.getElementById('categoriaProjeto').value = 'Inclusão Digital';
+    document.getElementById('statusProjeto').value = 'ativo';
+    document.querySelector('.card h3 .badge').textContent = '';
+}
+
+renderizarProjetos();
+
+if (!sessionStorage.getItem('amovin_logado')) window.location.href = 'index.html';
+</script>
+</body>
+</html>
