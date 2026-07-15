@@ -20,13 +20,10 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ============================================================
-   A SIDEBAR FOI REMOVIDA DAQUI - VEM DO menu.js
-   ============================================================ */
-
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.topo-bar h1 span { font-size: 14px; font-weight: 400; color: var(--cinza); margin-left: 12px; }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
 .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
@@ -42,14 +39,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
 .btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
 .btn-salvar { background: var(--laranja); color: white; }
 .btn-editar { background: var(--amarelo); color: #1A1A1A; }
 .btn-excluir { background: var(--vermelho); color: white; }
 .btn-verde { background: var(--verde); color: white; }
-.btn-azul { background: var(--azul); color: white; }
 
 .orcamento-item { padding: 12px 16px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
 .orcamento-item .descricao { font-weight: 600; color: var(--grafite); font-size: 13px; }
@@ -70,15 +65,15 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 900px) { .main-content { margin-left: 0; } .grid-orcamentos { grid-template-columns: 1fr; } .form-row-3 { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .main-content { margin-left: 0; } .grid-orcamentos { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+<div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>📊 Orçamentos</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar"><h1>📊 Orçamentos <span>Gestão de cotações e propostas</span></h1><button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button></div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📋 Total</div></div>
@@ -104,13 +99,22 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     </div>
   </div>
 
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | Padrão SAP S/4HANA</div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
+<script src="menu.js"></script>
 <script>
 var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
 var editandoId = null;
-
 if (orcamentos.length === 0) {
     orcamentos = [
         { id: 1, descricao: 'Material Esportivo - Bola de Vôlei', fornecedor: 'Loja Esportiva A', valor: 1500, data: new Date().toISOString().split('T')[0], categoria: 'Material', status: 'pendente', obs: '10 unidades' },
@@ -119,9 +123,7 @@ if (orcamentos.length === 0) {
     salvar();
 }
 function salvar() { localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos)); }
-
 function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
-
 function getStatusLabel(status) {
     var map = { 'pendente': '⏳ Pendente', 'aprovado': '✅ Aprovado', 'reprovado': '❌ Reprovado' };
     return map[status] || status;
@@ -130,19 +132,16 @@ function getStatusClass(status) {
     var map = { 'pendente': 'status-pendente', 'aprovado': 'status-aprovado', 'reprovado': 'status-reprovado' };
     return map[status] || 'status-pendente';
 }
-
 function atualizarKPIs() {
     var total = orcamentos.length;
     var pendentes = orcamentos.filter(function(o) { return o.status === 'pendente'; }).length;
     var aprovados = orcamentos.filter(function(o) { return o.status === 'aprovado'; }).length;
     var valorTotal = orcamentos.reduce(function(s, o) { return s + o.valor; }, 0);
-
     document.getElementById('kpiTotal').textContent = total;
     document.getElementById('kpiPendentes').textContent = pendentes;
     document.getElementById('kpiAprovados').textContent = aprovados;
     document.getElementById('kpiValorTotal').textContent = fm(valorTotal);
 }
-
 function renderizarOrcamentos() {
     var lista = orcamentos.slice().sort(function(a, b) { return new Date(b.data) - new Date(a.data); });
     var container = document.getElementById('listaOrcamentos');
@@ -164,18 +163,15 @@ function renderizarOrcamentos() {
             '<button class="btn btn-excluir" onclick="excluirOrcamento(' + o.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
     }).join('');
 }
-
 window.salvarOrcamento = function() {
     var descricao = document.getElementById('descricaoOrcamento').value.trim();
     var fornecedor = document.getElementById('fornecedorOrcamento').value.trim();
     var valor = parseFloat(document.getElementById('valorOrcamento').value) || 0;
     var data = document.getElementById('dataOrcamento').value;
-
     if (!descricao) { alert('Preencha a descrição!'); return; }
     if (!fornecedor) { alert('Preencha o fornecedor!'); return; }
     if (valor <= 0) { alert('Valor deve ser maior que zero!'); return; }
     if (!data) { alert('Selecione a data!'); return; }
-
     var dados = {
         descricao: descricao,
         fornecedor: fornecedor,
@@ -185,7 +181,6 @@ window.salvarOrcamento = function() {
         status: 'pendente',
         obs: document.getElementById('obsOrcamento').value.trim()
     };
-
     if (editandoId) {
         var idx = orcamentos.findIndex(function(o) { return o.id === editandoId; });
         if (idx >= 0) {
@@ -196,14 +191,12 @@ window.salvarOrcamento = function() {
         dados.id = Date.now();
         orcamentos.push(dados);
     }
-
     salvar();
     limparForm();
     atualizarKPIs();
     renderizarOrcamentos();
     alert('✅ Orçamento salvo com sucesso!');
 };
-
 window.editarOrcamento = function(id) {
     var o = orcamentos.find(function(x) { return x.id === id; });
     if (!o) return;
@@ -217,7 +210,6 @@ window.editarOrcamento = function(id) {
     document.getElementById('obsOrcamento').value = o.obs || '';
     document.querySelector('.card h3').textContent = '✏️ Editando: ' + o.descricao;
 };
-
 window.excluirOrcamento = function(id) {
     if (!confirm('Excluir este orçamento?')) return;
     orcamentos = orcamentos.filter(function(o) { return o.id !== id; });
@@ -225,7 +217,6 @@ window.excluirOrcamento = function(id) {
     atualizarKPIs();
     renderizarOrcamentos();
 };
-
 window.aprovarOrcamento = function(id) {
     var o = orcamentos.find(function(x) { return x.id === id; });
     if (o) {
@@ -236,7 +227,6 @@ window.aprovarOrcamento = function(id) {
         alert('✅ Orçamento aprovado!');
     }
 };
-
 window.reprovarOrcamento = function(id) {
     if (!confirm('Reprovar este orçamento?')) return;
     var o = orcamentos.find(function(x) { return x.id === id; });
@@ -248,7 +238,6 @@ window.reprovarOrcamento = function(id) {
         alert('❌ Orçamento reprovado.');
     }
 };
-
 function limparForm() {
     editandoId = null;
     document.getElementById('orcamentoId').value = '';
@@ -260,33 +249,8 @@ function limparForm() {
     document.getElementById('obsOrcamento').value = '';
     document.querySelector('.card h3').textContent = '📝 Novo Orçamento';
 }
-
 document.getElementById('dataOrcamento').value = new Date().toISOString().split('T')[0];
-
-// ============================================================
-// CONTROLE DE PERFIL
-// ============================================================
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
-
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
-
 atualizarKPIs();
 renderizarOrcamentos();
 </script>
