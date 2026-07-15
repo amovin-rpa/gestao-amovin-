@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amovin ERP Social • IDP - Leitor de Documentos</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<!-- Tesseract.js para OCR -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.5/tesseract.min.js"></script>
 <style>
 :root {
@@ -20,8 +18,6 @@
   --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
   --vermelho: #E53935;
-  --roxo: #7B1FA2;
-  --teal: #00897B;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -49,10 +45,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .dropzone p { color: var(--cinza); font-size: 14px; margin-top: 8px; }
 
 .form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
 .form-group input:focus, .form-group select:focus { border-color: var(--laranja); outline: none; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
 .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; transition: all 0.2s; }
 .btn-salvar { background: var(--laranja); color: white; }
@@ -63,9 +58,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .btn-vermelho:hover { background: #C62828; }
 .btn-azul { background: var(--azul); color: white; }
 .btn-azul:hover { background: #1565C0; }
-.btn-sm { padding: 4px 10px; font-size: 10px; }
 .btn-outline { background: transparent; color: var(--laranja); border: 2px solid var(--laranja); }
 .btn-outline:hover { background: var(--laranja); color: white; }
+.btn-sm { padding: 4px 10px; font-size: 10px; }
 
 .extracted-data { background: #F8F4ED; padding: 16px; border-radius: 8px; margin-top: 12px; font-size: 13px; line-height: 1.8; }
 .extracted-data strong { color: var(--grafite); }
@@ -104,7 +99,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 <main class="main-content">
   <div class="topo-bar">
-    <h1>📄 IDP - Leitor de Documentos <span>OCR + Extração de dados</span></h1>
+    <h1>📄 IDP - Leitor de Documentos <span>OCR + Extração de dados com validação</span></h1>
     <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Voltar</button>
   </div>
 
@@ -137,7 +132,10 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         <div class="extracted-data" id="conteudoExtraido"></div>
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
           <button class="btn btn-salvar" onclick="salvarDocumento()">💾 Salvar</button>
-          <button class="btn btn-verde" onclick="enviarParaFinanceiro()">💰 Enviar ao Financeiro</button>
+          <button class="btn btn-verde" onclick="enviarParaFinanceiro()">💰 Financeiro</button>
+          <button class="btn btn-azul" onclick="enviarParaEstoque()">📦 Estoque</button>
+          <button class="btn btn-azul" onclick="enviarParaPatrimonio()">🏢 Patrimônio</button>
+          <button class="btn btn-azul" onclick="enviarParaPrestacao()">📋 Prest. Contas</button>
           <button class="btn btn-outline" onclick="limparFormulario()">🔄 Descartar</button>
         </div>
         <div id="statusSalvar" class="status"></div>
@@ -374,8 +372,8 @@ function mostrarDadosExtraidos(dados) {
     html += '<p><strong>📄 Emitente:</strong> ' + (dados.emitente || 'Não identificado') + '</p>';
     html += '<p><strong>📋 CNPJ:</strong> ' + (dados.cnpj || 'Não identificado') + '</p>';
     html += '<p><strong>📋 CPF:</strong> ' + (dados.cpf || 'Não identificado') + '</p>';
-    html += '<p><strong>💰 Valor:</strong> ' + (dados.valor ? 'R$ ' + dados.valor : 'Não identificado') + '</p>';
-    html += '<p><strong>📅 Data:</strong> ' + (dados.data || 'Não identificado') + '</p>';
+    html += '<p><strong>💰 Valor:</strong> ' + (dados.valor ? 'R$ ' + dados.valor : '⚠️ Não identificado') + '</p>';
+    html += '<p><strong>📅 Data:</strong> ' + (dados.data || '⚠️ Não identificado') + '</p>';
     html += '<p><strong>🔢 Número:</strong> ' + (dados.numero || 'Não identificado') + '</p>';
     html += '<p><strong>📝 Descrição:</strong> ' + (dados.descricao || 'Não identificado') + '</p>';
     conteudo.innerHTML = html;
@@ -467,35 +465,6 @@ async function salvarDocumento() {
     }
 }
 
-window.enviarParaFinanceiro = function() {
-    if (!dadosAtuais) {
-        alert('⚠️ Nenhum dado para enviar!');
-        return;
-    }
-    
-    // Busca o financeiro avançado
-    var financeiro = JSON.parse(localStorage.getItem('amovin_financeiro_avancado') || '[]');
-    
-    var novoLancamento = {
-        id: Date.now(),
-        tipo: 'despesa',
-        descricao: dadosAtuais.emitente || 'Documento IDP',
-        categoria: 'Outros',
-        valor: parseFloat(dadosAtuais.valor) || 0,
-        data: dadosAtuais.data ? dadosAtuais.data.split('/').reverse().join('-') : new Date().toISOString().split('T')[0],
-        projeto: '',
-        obs: 'Importado do IDP',
-        status: 'pendente'
-    };
-    
-    financeiro.push(novoLancamento);
-    localStorage.setItem('amovin_financeiro_avancado', JSON.stringify(financeiro));
-    
-    alert('✅ Dados enviados para o Financeiro Avançado!');
-    limparFormulario();
-    atualizarKPIs();
-};
-
 function arquivoParaBase64(file) {
     return new Promise(function(resolve, reject) {
         var reader = new FileReader();
@@ -506,8 +475,240 @@ function arquivoParaBase64(file) {
 }
 
 // ============================================================
-// LISTAGEM DE DOCUMENTOS
+// VALIDAÇÕES E CONTROLE DE DUPLICIDADE
 // ============================================================
+
+function validarDados() {
+    var erros = [];
+    var avisos = [];
+    
+    if (!dadosAtuais) {
+        erros.push('Nenhum dado para enviar');
+    }
+    
+    if (!dadosAtuais.emitente || dadosAtuais.emitente === 'Não identificado') {
+        avisos.push('Emitente não identificado');
+    }
+    
+    var valor = parseFloat(dadosAtuais.valor);
+    if (isNaN(valor) || valor === 0) {
+        erros.push('Valor não identificado ou inválido');
+    }
+    
+    if (!dadosAtuais.data || dadosAtuais.data === 'Não identificado') {
+        avisos.push('Data não identificada');
+    }
+    
+    return { erros: erros, avisos: avisos, valor: valor };
+}
+
+function verificarDuplicidadeFinanceiro(emitente, valor, data) {
+    var financeiro = JSON.parse(localStorage.getItem('amovin_financeiro_avancado') || '[]');
+    return financeiro.some(function(f) {
+        return f.descricao === emitente && 
+               Math.abs(f.valor - valor) < 0.01 &&
+               f.data === data;
+    });
+}
+
+function verificarDuplicidadeEstoque(nome) {
+    var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+    return estoque.some(function(i) {
+        return i.nome === nome;
+    });
+}
+
+function verificarDuplicidadePatrimonio(nome) {
+    var bens = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
+    return bens.some(function(b) {
+        return b.nome === nome;
+    });
+}
+
+function verificarDuplicidadePrestacao(emitente, valor, data) {
+    var prestacoes = JSON.parse(localStorage.getItem('amovin_prestacao_contas') || '[]');
+    return prestacoes.some(function(p) {
+        return p.nome === emitente && 
+               Math.abs(p.valor - valor) < 0.01 &&
+               p.data === data;
+    });
+}
+
+// ============================================================
+// MIGRAÇÃO: IDP → FINANCEIRO (COM VALIDAÇÃO)
+// ============================================================
+
+window.enviarParaFinanceiro = function() {
+    var validacao = validarDados();
+    
+    if (validacao.erros.length > 0) {
+        alert('⚠️ Erros detectados:\n\n' + validacao.erros.join('\n'));
+        return;
+    }
+    
+    if (validacao.avisos.length > 0) {
+        if (!confirm('⚠️ Avisos:\n\n' + validacao.avisos.join('\n') + '\n\nDeseja continuar mesmo assim?')) {
+            return;
+        }
+    }
+    
+    // Verifica duplicidade
+    var dataFormatada = dadosAtuais.data ? dadosAtuais.data.split('/').reverse().join('-') : new Date().toISOString().split('T')[0];
+    
+    if (verificarDuplicidadeFinanceiro(dadosAtuais.emitente, validacao.valor, dataFormatada)) {
+        alert('⚠️ DUPLICIDADE DETECTADA!\n\nEste documento já foi importado anteriormente.\n\nEmitente: ' + dadosAtuais.emitente + '\nValor: R$ ' + validacao.valor.toFixed(2) + '\nData: ' + dataFormatada);
+        return;
+    }
+    
+    // Se passou, salva
+    var financeiro = JSON.parse(localStorage.getItem('amovin_financeiro_avancado') || '[]');
+    
+    var novo = {
+        id: Date.now(),
+        tipo: validacao.valor > 0 ? 'receita' : 'despesa',
+        descricao: dadosAtuais.emitente || 'Documento IDP',
+        categoria: 'Outros',
+        valor: Math.abs(validacao.valor),
+        data: dataFormatada,
+        projeto: '',
+        obs: 'Importado do IDP - ' + new Date().toISOString().split('T')[0] + ' | Documento: ' + dadosAtuais.numero,
+        status: 'pendente'
+    };
+    
+    financeiro.push(novo);
+    localStorage.setItem('amovin_financeiro_avancado', JSON.stringify(financeiro));
+    
+    alert('✅ Dados enviados para o Financeiro Avançado!\n\nID do lançamento: ' + novo.id + '\nDescrição: ' + novo.descricao + '\nValor: R$ ' + novo.valor.toFixed(2));
+    limparFormulario();
+    atualizarKPIs();
+};
+
+// ============================================================
+// MIGRAÇÃO: IDP → ESTOQUE (COM VALIDAÇÃO)
+// ============================================================
+
+window.enviarParaEstoque = function() {
+    if (!dadosAtuais) {
+        alert('⚠️ Nenhum dado para enviar!');
+        return;
+    }
+    
+    var nome = dadosAtuais.descricao || dadosAtuais.emitente || 'Item IDP';
+    
+    if (verificarDuplicidadeEstoque(nome)) {
+        alert('⚠️ DUPLICIDADE DETECTADA!\n\nEste item já existe no Estoque.\n\nNome: ' + nome);
+        return;
+    }
+    
+    var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+    
+    var novo = {
+        id: Date.now(),
+        nome: nome,
+        categoria: 'Material',
+        unidade: 'Unidade',
+        qtd: 1,
+        qtdMinima: 5,
+        local: 'Almoxarifado',
+        obs: 'Importado do IDP - ' + new Date().toISOString().split('T')[0]
+    };
+    
+    estoque.push(novo);
+    localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
+    
+    alert('✅ Item enviado para o Estoque!\n\nID: ' + novo.id + '\nNome: ' + novo.nome);
+    limparFormulario();
+    atualizarKPIs();
+};
+
+// ============================================================
+// MIGRAÇÃO: IDP → PATRIMÔNIO (COM VALIDAÇÃO)
+// ============================================================
+
+window.enviarParaPatrimonio = function() {
+    if (!dadosAtuais) {
+        alert('⚠️ Nenhum dado para enviar!');
+        return;
+    }
+    
+    var nome = dadosAtuais.descricao || dadosAtuais.emitente || 'Bem IDP';
+    
+    if (verificarDuplicidadePatrimonio(nome)) {
+        alert('⚠️ DUPLICIDADE DETECTADA!\n\nEste bem já existe no Patrimônio.\n\nNome: ' + nome);
+        return;
+    }
+    
+    var bens = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
+    var ultimoNumero = parseInt(localStorage.getItem('amovin_patrimonio_num') || '0');
+    ultimoNumero++;
+    localStorage.setItem('amovin_patrimonio_num', String(ultimoNumero));
+    
+    var valor = parseFloat(dadosAtuais.valor) || 0;
+    
+    var novo = {
+        id: Date.now(),
+        nome: nome,
+        numero: 'AMOVIN-' + String(ultimoNumero).padStart(4, '0'),
+        categoria: 'Equipamento',
+        marca: '',
+        modelo: '',
+        valor: valor,
+        status: 'Em Operação',
+        local: 'Sede AMOVIN',
+        obs: 'Importado do IDP - ' + new Date().toISOString().split('T')[0]
+    };
+    
+    bens.push(novo);
+    localStorage.setItem('amovin_bens', JSON.stringify(bens));
+    
+    alert('✅ Bem enviado para o Patrimônio!\n\nID: ' + novo.id + '\nNº Patrimonial: ' + novo.numero + '\nNome: ' + novo.nome);
+    limparFormulario();
+    atualizarKPIs();
+};
+
+// ============================================================
+// MIGRAÇÃO: IDP → PRESTAÇÃO DE CONTAS (COM VALIDAÇÃO)
+// ============================================================
+
+window.enviarParaPrestacao = function() {
+    var validacao = validarDados();
+    
+    if (validacao.erros.length > 0) {
+        alert('⚠️ Erros detectados:\n\n' + validacao.erros.join('\n'));
+        return;
+    }
+    
+    var dataFormatada = dadosAtuais.data ? dadosAtuais.data.split('/').reverse().join('-') : new Date().toISOString().split('T')[0];
+    
+    if (verificarDuplicidadePrestacao(dadosAtuais.emitente, validacao.valor, dataFormatada)) {
+        alert('⚠️ DUPLICIDADE DETECTADA!\n\nEste documento já foi importado para Prestação de Contas.\n\nEmitente: ' + dadosAtuais.emitente + '\nValor: R$ ' + validacao.valor.toFixed(2));
+        return;
+    }
+    
+    var prestacoes = JSON.parse(localStorage.getItem('amovin_prestacao_contas') || '[]');
+    
+    var novo = {
+        id: Date.now(),
+        nome: dadosAtuais.emitente || 'Documento IDP',
+        tipo: 'Convênio',
+        valor: Math.abs(validacao.valor),
+        data: dataFormatada,
+        status: 'pendente',
+        obs: 'Importado do IDP - ' + new Date().toISOString().split('T')[0]
+    };
+    
+    prestacoes.push(novo);
+    localStorage.setItem('amovin_prestacao_contas', JSON.stringify(prestacoes));
+    
+    alert('✅ Dados enviados para a Prestação de Contas!\n\nID: ' + novo.id + '\nEmitente: ' + novo.nome + '\nValor: R$ ' + novo.valor.toFixed(2));
+    limparFormulario();
+    atualizarKPIs();
+};
+
+// ============================================================
+// LISTAGEM DE DOCUMENTOS E KPIs
+// ============================================================
+
 async function atualizarLista() {
     try {
         var docs = await listarDocumentosDB();
@@ -545,9 +746,6 @@ async function atualizarLista() {
     }
 }
 
-// ============================================================
-// KPIs
-// ============================================================
 async function atualizarKPIs() {
     try {
         var docs = await listarDocumentosDB();
@@ -562,6 +760,7 @@ async function atualizarKPIs() {
 // ============================================================
 // AÇÕES DOS DOCUMENTOS
 // ============================================================
+
 window.visualizarDoc = async function(id) {
     try {
         var docs = await listarDocumentosDB();
@@ -675,6 +874,7 @@ async function init() {
         await atualizarLista();
         await atualizarKPIs();
         console.log('✅ IDP integrado ao sistema AMOVIN!');
+        console.log('📋 Validações ativas: DUPLICIDADE, ERROS, AVISOS');
     } catch (erro) {
         console.error('❌ Erro ao inicializar:', erro);
     }
