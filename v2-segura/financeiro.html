@@ -25,8 +25,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
    ============================================================ */
 
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.topo-bar h1 span { font-size: 14px; font-weight: 400; color: var(--cinza); margin-left: 12px; }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
 .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
@@ -71,9 +72,13 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <body>
 
 <!-- O MENU SERÁ CARREGADO PELO menu.js -->
+<div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>💰 Financeiro</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar">
+    <h1>💰 Financeiro <span>Gestão de receitas e despesas</span></h1>
+    <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
+  </div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotalReceitas">R$ 0</div><div class="kpi-label">📈 Total Receitas</div></div>
@@ -99,10 +104,26 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     </div>
   </div>
 
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | Padrão SAP S/4HANA</div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
+<script src="menu.js"></script>
 <script>
+// ============================================================
+// BANCO DE DADOS LOCAL
+// ============================================================
 var lancamentos = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
 var editandoId = null;
 
@@ -176,7 +197,6 @@ window.salvarLancamento = function() {
             for (var k in dados) lancamentos[idx][k] = dados[k];
         }
         editandoId = null;
-        document.getElementById('tituloForm').textContent = 'Novo Lançamento';
     } else {
         dados.id = Date.now();
         lancamentos.push(dados);
@@ -236,16 +256,6 @@ var modulosPermitidos = {
     financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
     voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
 };
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
 
