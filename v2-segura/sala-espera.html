@@ -56,7 +56,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 <main class="main-content">
   <div class="topo-bar">
-    <h1>📋 Sala de Espera <span>Aprove pré-cadastros e migre para beneficiários</span></h1>
+    <h1>📋 Sala de Espera <span>Aprove pré-cadastros e migre para Beneficiários, Profissionais ou Voluntários</span></h1>
     <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
   </div>
 
@@ -108,11 +108,24 @@ if (preCadastros.length === 0) {
         },
         {
             id: 2,
-            nome: 'Maria Oliveira',
+            nome: 'Dr. Carlos Mendes',
             tipo: 'profissional',
             cpf: '987.654.321-00',
             telefone: '(34) 99999-2222',
-            email: 'maria@email.com',
+            email: 'carlos@email.com',
+            cidade: 'Rio Paranaíba',
+            estado: 'MG',
+            responsavel: '',
+            dataCadastro: new Date().toISOString(),
+            status: 'pendente'
+        },
+        {
+            id: 3,
+            nome: 'Fernanda Lima',
+            tipo: 'voluntario',
+            cpf: '111.222.333-44',
+            telefone: '(34) 99999-3333',
+            email: 'fernanda@email.com',
             cidade: 'Rio Paranaíba',
             estado: 'MG',
             responsavel: '',
@@ -142,6 +155,15 @@ function getTipoLabel(tipo) {
     return map[tipo] || tipo;
 }
 
+function getTipoDestino(tipo) {
+    var map = {
+        'beneficiario': 'Beneficiários (Pessoas)',
+        'profissional': 'Profissionais',
+        'voluntario': 'Voluntários'
+    };
+    return map[tipo] || tipo;
+}
+
 function atualizarKPIs() {
     var total = preCadastros.length;
     var pendentes = preCadastros.filter(function(p) { return p.status === 'pendente'; }).length;
@@ -162,9 +184,10 @@ function renderizarLista() {
     }
     
     container.innerHTML = pendentes.map(function(p) {
+        var destino = getTipoDestino(p.tipo);
         return '<div class="pendente-card">' +
             '<div class="pendente-info">' +
-            '<h4>' + p.nome + ' <span style="font-size:11px;color:#6B7280;">' + getTipoLabel(p.tipo) + '</span></h4>' +
+            '<h4>' + p.nome + ' <span style="font-size:11px;color:#6B7280;">' + getTipoLabel(p.tipo) + ' → ' + destino + '</span></h4>' +
             '<p>📞 ' + (p.telefone || 'N/A') + ' | 📧 ' + (p.email || 'N/A') + '</p>' +
             '<p>📍 ' + (p.cidade || '') + (p.estado ? '/' + p.estado : '') + ' | 📅 ' + formatarData(p.dataCadastro) + '</p>' +
             (p.responsavel ? '<p>👤 Responsável: ' + p.responsavel + '</p>' : '') +
@@ -181,14 +204,12 @@ function renderizarLista() {
 }
 
 // ============================================================
-// FUNÇÃO PARA MIGRAR PARA BENEFICIÁRIOS
+// MIGRAÇÃO: Sala de Espera → Beneficiários
 // ============================================================
 
 function migrarParaBeneficiario(preCadastro) {
-    // 1. Buscar beneficiários existentes
     var beneficiarios = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
     
-    // 2. Verificar se já existe (evitar duplicidade)
     var existe = beneficiarios.some(function(b) {
         return b.cpf === preCadastro.cpf && b.nome === preCadastro.nome;
     });
@@ -197,11 +218,10 @@ function migrarParaBeneficiario(preCadastro) {
         return { sucesso: false, mensagem: 'Beneficiário já cadastrado!' };
     }
     
-    // 3. Criar novo beneficiário
-    var novoBeneficiario = {
+    var novo = {
         id: Date.now(),
         nome: preCadastro.nome || '',
-        tipo: preCadastro.tipo || 'beneficiario',
+        tipo: 'beneficiario',
         cpf: preCadastro.cpf || '',
         rg: preCadastro.rg || '',
         dataNasc: preCadastro.dataNascimento || '',
@@ -219,18 +239,77 @@ function migrarParaBeneficiario(preCadastro) {
         origem: 'pre_cadastro'
     };
     
-    // 4. Salvar no localStorage
-    beneficiarios.push(novoBeneficiario);
+    beneficiarios.push(novo);
     localStorage.setItem('amovin_beneficiarios', JSON.stringify(beneficiarios));
-    
-    // 5. Também migrar para o CRM Social
-    migrarParaCRM(preCadastro);
-    
-    return { sucesso: true, mensagem: '✅ Beneficiário criado com sucesso!', id: novoBeneficiario.id };
+    return { sucesso: true, mensagem: '✅ Beneficiário criado!', id: novo.id };
 }
 
 // ============================================================
-// FUNÇÃO PARA MIGRAR PARA CRM SOCIAL
+// MIGRAÇÃO: Sala de Espera → Profissionais
+// ============================================================
+
+function migrarParaProfissional(preCadastro) {
+    var profissionais = JSON.parse(localStorage.getItem('amovin_profissionais') || '[]');
+    
+    var existe = profissionais.some(function(p) {
+        return p.cpf === preCadastro.cpf && p.nome === preCadastro.nome;
+    });
+    
+    if (existe) {
+        return { sucesso: false, mensagem: 'Profissional já cadastrado!' };
+    }
+    
+    var novo = {
+        id: Date.now(),
+        nome: preCadastro.nome || '',
+        profissao: preCadastro.profissao || 'Profissional',
+        cpf: preCadastro.cpf || '',
+        telefone: preCadastro.telefone || '',
+        email: preCadastro.email || '',
+        vinculo: 'Prestador de Serviço',
+        status: 'Ativo',
+        dataCadastro: new Date().toISOString().split('T')[0],
+        origem: 'pre_cadastro'
+    };
+    
+    profissionais.push(novo);
+    localStorage.setItem('amovin_profissionais', JSON.stringify(profissionais));
+    return { sucesso: true, mensagem: '✅ Profissional criado!', id: novo.id };
+}
+
+// ============================================================
+// MIGRAÇÃO: Sala de Espera → Voluntários
+// ============================================================
+
+function migrarParaVoluntario(preCadastro) {
+    var voluntarios = JSON.parse(localStorage.getItem('amovin_voluntarios') || '[]');
+    
+    var existe = voluntarios.some(function(v) {
+        return v.cpf === preCadastro.cpf && v.nome === preCadastro.nome;
+    });
+    
+    if (existe) {
+        return { sucesso: false, mensagem: 'Voluntário já cadastrado!' };
+    }
+    
+    var novo = {
+        id: Date.now(),
+        nome: preCadastro.nome || '',
+        funcao: preCadastro.funcao || 'Voluntário',
+        telefone: preCadastro.telefone || '',
+        email: preCadastro.email || '',
+        status: 'Ativo',
+        dataCadastro: new Date().toISOString().split('T')[0],
+        origem: 'pre_cadastro'
+    };
+    
+    voluntarios.push(novo);
+    localStorage.setItem('amovin_voluntarios', JSON.stringify(voluntarios));
+    return { sucesso: true, mensagem: '✅ Voluntário criado!', id: novo.id };
+}
+
+// ============================================================
+// MIGRAÇÃO: Sala de Espera → CRM Social
 // ============================================================
 
 function migrarParaCRM(preCadastro) {
@@ -243,12 +322,12 @@ function migrarParaCRM(preCadastro) {
     if (existe) return;
     
     var tipoMap = {
-        'beneficiario': '👥 Beneficiário',
-        'profissional': '👨‍⚕️ Profissional',
-        'voluntario': '💪 Voluntário'
+        'beneficiario': 'Beneficiário',
+        'profissional': 'Profissional',
+        'voluntario': 'Voluntário'
     };
     
-    var novoContato = {
+    var novo = {
         id: Date.now(),
         nome: preCadastro.nome || '',
         tipo: preCadastro.tipo || 'crm',
@@ -269,12 +348,46 @@ function migrarParaCRM(preCadastro) {
         dataCadastro: new Date().toISOString().split('T')[0]
     };
     
-    contatos.push(novoContato);
+    contatos.push(novo);
     localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
 }
 
 // ============================================================
-// FUNÇÕES DE APROVAÇÃO
+// FUNÇÃO PRINCIPAL DE APROVAÇÃO (ROTEADOR)
+// ============================================================
+
+function aprovarPreCadastro(preCadastro) {
+    var resultado = null;
+    var destino = '';
+    
+    // Roteia para o destino correto
+    switch (preCadastro.tipo) {
+        case 'beneficiario':
+            resultado = migrarParaBeneficiario(preCadastro);
+            destino = 'Beneficiários';
+            break;
+        case 'profissional':
+            resultado = migrarParaProfissional(preCadastro);
+            destino = 'Profissionais';
+            break;
+        case 'voluntario':
+            resultado = migrarParaVoluntario(preCadastro);
+            destino = 'Voluntários';
+            break;
+        default:
+            return { sucesso: false, mensagem: 'Tipo de cadastro desconhecido!' };
+    }
+    
+    // Se migrou com sucesso, também migra para o CRM
+    if (resultado.sucesso) {
+        migrarParaCRM(preCadastro);
+    }
+    
+    return resultado;
+}
+
+// ============================================================
+// FUNÇÕES DA INTERFACE
 // ============================================================
 
 window.visualizar = function(id) {
@@ -292,12 +405,13 @@ window.visualizar = function(id) {
     msg += '👤 Responsável: ' + (p.responsavel || 'N/A') + '\n';
     msg += '📅 Cadastro: ' + formatarData(p.dataCadastro) + '\n';
     msg += '📌 Status: ' + (p.status || 'pendente') + '\n';
+    msg += '\n🚀 Será migrado para: ' + getTipoDestino(p.tipo);
     
     alert(msg);
 };
 
 window.aprovar = function(id) {
-    if (!confirm('Aprovar este cadastro? Ele será migrado para Beneficiários e CRM.')) return;
+    if (!confirm('Aprovar este cadastro? Ele será migrado para o módulo correspondente e para o CRM.')) return;
     
     var p = preCadastros.find(function(item) { return item.id === id; });
     if (!p) {
@@ -310,11 +424,11 @@ window.aprovar = function(id) {
     p.dataAprovacao = new Date().toISOString();
     salvar();
     
-    // Migra para Beneficiários
-    var resultado = migrarParaBeneficiario(p);
+    // Executa a migração
+    var resultado = aprovarPreCadastro(p);
     
     if (resultado.sucesso) {
-        alert('✅ ' + p.nome + ' foi aprovado e migrado para Beneficiários e CRM!');
+        alert('✅ ' + p.nome + ' foi aprovado e migrado para ' + getTipoDestino(p.tipo) + ' e CRM!');
         renderizarLista();
     } else {
         alert('⚠️ ' + p.nome + ' foi aprovado, mas NÃO foi migrado: ' + resultado.mensagem);
