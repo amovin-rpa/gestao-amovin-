@@ -20,17 +20,10 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; }
-.sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
-.sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
-.sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
-.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
-.nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
-.nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
-.nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
-.nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
+/* ============================================================
+   ⚠️ A SIDEBAR FOI REMOVIDA DAQUI!
+   Ela agora é carregada pelo menu.js
+   ============================================================ */
 
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
@@ -124,12 +117,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } .grid-dois { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .main-content { margin-left: 0; } .grid-dois { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+<!-- ⚠️ O MENU NÃO ESTÁ MAIS AQUI! Ele será carregado pelo menu.js -->
 
 <main class="main-content">
   <div class="topo-bar">
@@ -241,6 +234,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <!-- ============================================================
    SCRIPTS
    ============================================================ -->
+<!-- CARREGA O MENU (UM ÚNICO ARQUIVO PARA TODAS AS PÁGINAS) -->
 <script src="menu.js"></script>
 
 <script>
