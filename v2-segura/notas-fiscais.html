@@ -20,12 +20,10 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ============================================================
-   A SIDEBAR FOI REMOVIDA DAQUI - VEM DO menu.js
-   ============================================================ */
+/* A SIDEBAR FOI REMOVIDA - VEM DO menu.js */
 
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
@@ -71,7 +69,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
@@ -83,13 +81,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 </head>
 <body>
 
-<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+<!-- MENU CARREGADO DINAMICAMENTE -->
+<div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar">
-    <h1>📄 Notas Fiscais</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
+  <div class="topo-bar"><h1>📄 Notas Fiscais</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
@@ -112,16 +108,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
   <div id="listaNotas"><div class="sem-dados">Nenhuma nota fiscal cadastrada.</div></div>
 
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
+  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
 <!-- MODAL FORM -->
@@ -252,7 +239,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </div>
 
+<script src="menu.js"></script>
 <script>
+// ============================================================
+// TODAS AS FUNÇÕES ORIGINAIS MANTIDAS
+// ============================================================
 var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
 var editandoId = null;
 
