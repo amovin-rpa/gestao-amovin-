@@ -1,6 +1,6 @@
 // ============================================================
 // MENU.JS - AMOVIN ERP SOCIAL
-// Versão completa com identidade internacional SAP/ERP
+// Versão completa com todos os módulos - Padrão SAP/Internacional
 // ============================================================
 
 // ============================================================
@@ -10,6 +10,7 @@ var MODULOS_SISTEMA = [
     // ========== PRINCIPAL ==========
     { id: 'dashboard', nome: 'Dashboard', categoria: 'Principal', url: 'dashboard.html', icone: '📊', externo: false },
     { id: 'bi', nome: 'BI Executivo', categoria: 'Principal', url: 'bi.html', icone: '📈', externo: false },
+    { id: 'dashboard-executivo', nome: 'Dashboard Executivo', categoria: 'Principal', url: 'dashboard-executivo.html', icone: '📊', externo: false },
 
     // ========== CAPTAÇÃO ==========
     { id: 'capta', nome: 'Amovin Capta+', categoria: 'Captação', url: 'https://amovin-capta.vercel.app/login', icone: '🚀', externo: true },
@@ -18,9 +19,13 @@ var MODULOS_SISTEMA = [
 
     // ========== FINANCEIRO ==========
     { id: 'financeiro', nome: 'Financeiro', categoria: 'Financeiro', url: 'financeiro.html', icone: '💰', externo: false },
-    { id: 'orcamentos', nome: 'Orçamentos', categoria: 'Financeiro', url: 'orcamentos.html', icone: '📊', externo: false },
-    { id: 'prestacao-contas', nome: 'Prest. Contas', categoria: 'Financeiro', url: 'prestacao-contas.html', icone: '📋', externo: false },
+    { id: 'financeiro-avancado', nome: 'Financeiro Avançado', categoria: 'Financeiro', url: 'financeiro-avancado.html', icone: '📊', externo: false },
+    { id: 'orcamentos', nome: 'Orçamentos', categoria: 'Financeiro', url: 'orcamentos.html', icone: '📋', externo: false },
+    { id: 'prestacao-contas', nome: 'Prest. Contas', categoria: 'Financeiro', url: 'prestacao-contas.html', icone: '📄', externo: false },
     { id: 'idp', nome: 'IDP - Leitor de Docs', categoria: 'Financeiro', url: 'idp.html', icone: '📄', externo: false },
+
+    // ========== PROJETOS ==========
+    { id: 'projetos-convenios', nome: 'Projetos e Convênios', categoria: 'Projetos', url: 'projetos-convenios.html', icone: '📋', externo: false },
 
     // ========== PESSOAS ==========
     { id: 'pessoas', nome: 'Beneficiários', categoria: 'Pessoas', url: 'pessoas.html', icone: '👥', externo: false },
@@ -48,6 +53,7 @@ var MODULOS_SISTEMA = [
 
     // ========== RELATÓRIOS ==========
     { id: 'relatorios', nome: 'Relatórios', categoria: 'Relatórios', url: 'relatorios.html', icone: '📈', externo: false },
+    { id: 'relatorios-avancado', nome: 'Relatórios Avançados', categoria: 'Relatórios', url: 'relatorios-avancado.html', icone: '📊', externo: false },
 
     // ========== SISTEMA ==========
     { id: 'configuracoes', nome: 'Configurações', categoria: 'Sistema', url: 'configuracoes.html', icone: '⚙️', externo: false },
@@ -59,10 +65,10 @@ var MODULOS_SISTEMA = [
 // ============================================================
 var PERFIS_PERMITIDOS = {
     admin: MODULOS_SISTEMA.map(function(m) { return m.id; }),
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios','idp'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+    recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
+    consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
+    financeiro: ['dashboard', 'financeiro', 'financeiro-avancado', 'orcamentos', 'prestacao-contas', 'relatorios', 'relatorios-avancado', 'idp', 'projetos-convenios'],
+    voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
 };
 
 // ============================================================
@@ -285,7 +291,6 @@ function renderizarMenu() {
     if (container) {
         container.innerHTML = html;
     } else {
-        // Fallback: cria container antes do main-content
         var main = document.querySelector('.main-content');
         if (main) {
             var wrapper = document.createElement('div');
