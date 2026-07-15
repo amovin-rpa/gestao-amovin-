@@ -20,13 +20,10 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* ============================================================
-   A SIDEBAR FOI REMOVIDA DAQUI - VEM DO menu.js
-   ============================================================ */
-
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.topo-bar h1 span { font-size: 14px; font-weight: 400; color: var(--cinza); margin-left: 12px; }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
 .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
@@ -73,10 +70,10 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 </head>
 <body>
 
-<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+<div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>📋 Prestação de Contas</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar"><h1>📋 Prestação de Contas <span>Convênios, emendas e prestações</span></h1><button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button></div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📋 Total</div></div>
@@ -102,13 +99,22 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     </div>
   </div>
 
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | Padrão SAP S/4HANA</div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
+<script src="menu.js"></script>
 <script>
 var prestacoes = JSON.parse(localStorage.getItem('amovin_prestacao_contas') || '[]');
 var editandoId = null;
-
 if (prestacoes.length === 0) {
     prestacoes = [
         { id: 1, nome: 'Convênio - Prefeitura', tipo: 'Convênio', valor: 350000, data: new Date().toISOString().split('T')[0], status: 'aprovada', obs: '' },
@@ -117,9 +123,7 @@ if (prestacoes.length === 0) {
     salvar();
 }
 function salvar() { localStorage.setItem('amovin_prestacao_contas', JSON.stringify(prestacoes)); }
-
 function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
-
 function getStatusLabel(status) {
     var map = { 'pendente': '⏳ Pendente', 'enviada': '📤 Enviada', 'aprovada': '✅ Aprovada', 'reprovada': '❌ Reprovada' };
     return map[status] || status;
@@ -128,19 +132,16 @@ function getStatusClass(status) {
     var map = { 'pendente': 'status-pendente', 'enviada': 'status-enviada', 'aprovada': 'status-aprovada', 'reprovada': 'status-reprovada' };
     return map[status] || 'status-pendente';
 }
-
 function atualizarKPIs() {
     var total = prestacoes.length;
     var pendentes = prestacoes.filter(function(p) { return p.status === 'pendente'; }).length;
     var aprovadas = prestacoes.filter(function(p) { return p.status === 'aprovada'; }).length;
     var valorTotal = prestacoes.reduce(function(s, p) { return s + p.valor; }, 0);
-
     document.getElementById('kpiTotal').textContent = total;
     document.getElementById('kpiPendentes').textContent = pendentes;
     document.getElementById('kpiAprovadas').textContent = aprovadas;
     document.getElementById('kpiValorTotal').textContent = fm(valorTotal);
 }
-
 function renderizarPrestacoes() {
     var lista = prestacoes.slice().sort(function(a, b) { return new Date(b.data) - new Date(a.data); });
     var container = document.getElementById('listaPrestacoes');
@@ -160,16 +161,13 @@ function renderizarPrestacoes() {
             '<button class="btn btn-excluir" onclick="excluirPrestacao(' + p.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
     }).join('');
 }
-
 window.salvarPrestacao = function() {
     var nome = document.getElementById('nomePrestacao').value.trim();
     var valor = parseFloat(document.getElementById('valorPrestacao').value) || 0;
     var data = document.getElementById('dataPrestacao').value;
-
     if (!nome) { alert('Preencha o nome!'); return; }
     if (valor <= 0) { alert('Valor deve ser maior que zero!'); return; }
     if (!data) { alert('Selecione a data!'); return; }
-
     var dados = {
         nome: nome,
         tipo: document.getElementById('tipoPrestacao').value,
@@ -178,7 +176,6 @@ window.salvarPrestacao = function() {
         status: document.getElementById('statusPrestacao').value,
         obs: document.getElementById('obsPrestacao').value.trim()
     };
-
     if (editandoId) {
         var idx = prestacoes.findIndex(function(p) { return p.id === editandoId; });
         if (idx >= 0) {
@@ -189,14 +186,12 @@ window.salvarPrestacao = function() {
         dados.id = Date.now();
         prestacoes.push(dados);
     }
-
     salvar();
     limparForm();
     atualizarKPIs();
     renderizarPrestacoes();
     alert('✅ Prestação salva com sucesso!');
 };
-
 window.editarPrestacao = function(id) {
     var p = prestacoes.find(function(x) { return x.id === id; });
     if (!p) return;
@@ -210,7 +205,6 @@ window.editarPrestacao = function(id) {
     document.getElementById('obsPrestacao').value = p.obs || '';
     document.querySelector('.card h3').textContent = '✏️ Editando: ' + p.nome;
 };
-
 window.excluirPrestacao = function(id) {
     if (!confirm('Excluir esta prestação?')) return;
     prestacoes = prestacoes.filter(function(p) { return p.id !== id; });
@@ -218,7 +212,6 @@ window.excluirPrestacao = function(id) {
     atualizarKPIs();
     renderizarPrestacoes();
 };
-
 window.aprovarPrestacao = function(id) {
     var p = prestacoes.find(function(x) { return x.id === id; });
     if (p) {
@@ -229,7 +222,6 @@ window.aprovarPrestacao = function(id) {
         alert('✅ Prestação aprovada com sucesso!');
     }
 };
-
 function limparForm() {
     editandoId = null;
     document.getElementById('prestacaoId').value = '';
@@ -241,33 +233,8 @@ function limparForm() {
     document.getElementById('obsPrestacao').value = '';
     document.querySelector('.card h3').textContent = '📝 Nova Prestação';
 }
-
 document.getElementById('dataPrestacao').value = new Date().toISOString().split('T')[0];
-
-// ============================================================
-// CONTROLE DE PERFIL
-// ============================================================
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
-
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
-
 atualizarKPIs();
 renderizarPrestacoes();
 </script>
