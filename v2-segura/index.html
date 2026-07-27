@@ -287,6 +287,67 @@ body {
 }
 
 /* ============================================
+   SELECT DE PERFIL
+   ============================================ */
+.perfil-select-wrapper {
+  position: relative;
+}
+
+.perfil-select-wrapper::after {
+  content: '▼';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cinza);
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.perfil-select {
+  width: 100%;
+  padding: 14px 40px 14px 46px;
+  border: 1.5px solid #E5E0D8;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  background: var(--branco);
+  color: var(--grafite);
+  appearance: none;
+  transition: var(--transicao);
+  cursor: pointer;
+}
+
+.perfil-select:focus {
+  outline: none;
+  border-color: var(--laranja);
+  box-shadow: 0 0 0 4px rgba(198, 90, 17, 0.08);
+}
+
+.perfil-select option {
+  padding: 8px;
+}
+
+.perfil-select .icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cinza);
+  font-size: 17px;
+  opacity: 0.5;
+}
+
+.perfil-hint {
+  font-size: 10px;
+  color: var(--cinza);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============================================
    OPÇÕES
    ============================================ */
 .form-options {
@@ -423,7 +484,7 @@ body {
 }
 
 /* ============================================
-   RODAPÉ VIGORRE - IGUAL AO DASHBOARD
+   RODAPÉ VIGORRE
    ============================================ */
 .login-footer {
   margin-top: 28px;
@@ -667,6 +728,7 @@ body {
   .logo-text { font-size: 18px; }
   .login-header h2 { font-size: 17px; }
   .form-input { padding: 12px 12px 12px 38px; font-size: 13px; }
+  .perfil-select { padding: 12px 36px 12px 38px; font-size: 12px; }
   .btn-primary { padding: 13px; font-size: 13px; }
   .modal-header, .modal-body, .modal-footer { padding: 16px 18px; }
   .rodape-grid { flex-direction: column; text-align: center; }
@@ -777,6 +839,24 @@ body {
         </div>
       </div>
 
+      <!-- 🔥 NOVO: SELECT DE PERFIL -->
+      <div class="form-group">
+        <label for="perfilSelect" class="form-label">🎯 Perfil de Acesso</label>
+        <div class="perfil-select-wrapper">
+          <span class="input-icon" aria-hidden="true">👤</span>
+          <select id="perfilSelect" class="perfil-select">
+            <option value="admin">🛡️ Administrador (todos os módulos)</option>
+            <option value="recepcao">📋 Recepção</option>
+            <option value="consulta">🩺 Consulta/Profissional</option>
+            <option value="financeiro">💰 Financeiro</option>
+            <option value="voluntario">💪 Voluntário</option>
+          </select>
+        </div>
+        <div class="perfil-hint">
+          💡 Selecione o perfil desejado para o acesso
+        </div>
+      </div>
+
       <div class="form-options">
         <label class="checkbox-wrapper">
           <input type="checkbox" id="rememberMe">
@@ -800,7 +880,7 @@ body {
     </form>
 
     <!-- ============================================
-         RODAPÉ VIGORRE - IGUAL AO DASHBOARD
+         RODAPÉ VIGORRE
          ============================================ -->
     <div class="login-footer">
       <div class="rodape-grid">
@@ -848,6 +928,7 @@ var elements = {
   loginForm: document.getElementById('loginForm'),
   username: document.getElementById('username'),
   password: document.getElementById('password'),
+  perfilSelect: document.getElementById('perfilSelect'),
   togglePassword: document.getElementById('togglePassword'),
   btnEntrar: document.getElementById('btnEntrar'),
   errorMessage: document.getElementById('errorMessage'),
@@ -953,7 +1034,7 @@ function showNotification(msg, type) {
 }
 
 // ============================================
-// LOGIN
+// 🔥 LOGIN CORRIGIDO - COM SELEÇÃO DE PERFIL
 // ============================================
 function handleLogin(e) {
   e.preventDefault();
@@ -967,6 +1048,7 @@ function handleLogin(e) {
   
   var user = elements.username.value.trim();
   var pass = elements.password.value;
+  var perfilSelecionado = elements.perfilSelect.value;
   
   if (!user || !pass) { 
     showError('Preencha todos os campos.'); 
@@ -977,38 +1059,41 @@ function handleLogin(e) {
   hideError();
   
   setTimeout(function() {
+    // 🔥 CRUCIAL: Se for admin, força perfil admin
     if (user.toLowerCase() === CONFIG.ADMIN_USER && pass === CONFIG.ADMIN_PASS) {
+      // Admin sempre tem perfil admin, independente do select
+      var perfilFinal = 'admin';
+      
       sessionStorage.setItem('amovin_logado', 'true');
-      sessionStorage.setItem('amovin_perfil', 'admin');
+      sessionStorage.setItem('amovin_perfil', perfilFinal);
       sessionStorage.setItem('amovin_nome', 'Administrador Master');
+      sessionStorage.setItem('amovin_usuario', user);
       
-      if (elements.rememberMe.checked) {
-        localStorage.setItem('amovin_lembrar', user);
-      } else {
-        localStorage.removeItem('amovin_lembrar');
-      }
-      
-      showNotification('✅ Bem-vindo, Administrador Master!', 'success');
-      setTimeout(function() { 
-        window.location.href = 'dashboard.html'; 
-      }, 800);
+      showNotification('✅ Bem-vindo, Administrador Master! (Perfil: ' + perfilFinal + ')', 'success');
       
     } else {
+      // Para outros usuários, usa o perfil selecionado
+      var perfilFinal = perfilSelecionado || 'recepcao';
+      
       sessionStorage.setItem('amovin_logado', 'true');
-      sessionStorage.setItem('amovin_perfil', 'recepcao');
+      sessionStorage.setItem('amovin_perfil', perfilFinal);
       sessionStorage.setItem('amovin_nome', user);
+      sessionStorage.setItem('amovin_usuario', user);
       
-      if (elements.rememberMe.checked) {
-        localStorage.setItem('amovin_lembrar', user);
-      } else {
-        localStorage.removeItem('amovin_lembrar');
-      }
-      
-      showNotification('✅ Bem-vindo(a)!', 'success');
-      setTimeout(function() { 
-        window.location.href = 'dashboard.html'; 
-      }, 800);
+      showNotification('✅ Bem-vindo(a), ' + user + '! (Perfil: ' + perfilFinal + ')', 'success');
     }
+    
+    if (elements.rememberMe.checked) {
+      localStorage.setItem('amovin_lembrar', user);
+    } else {
+      localStorage.removeItem('amovin_lembrar');
+    }
+    
+    console.log('✅ Login realizado! Perfil:', sessionStorage.getItem('amovin_perfil'));
+    
+    setTimeout(function() { 
+      window.location.href = 'dashboard.html'; 
+    }, 800);
     
     setLoading(false);
   }, 1200);
@@ -1062,6 +1147,12 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('linkTermos').addEventListener('click', function(e) { e.preventDefault(); alert('Termos de Uso completos'); });
 
   console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
+  
+  // 🔥 INFO CREDENCIAIS NO CONSOLE
+  console.log('🔑 Credenciais disponíveis:');
+  console.log('   admin / amovin2026 → Administrador Master (todos módulos)');
+  console.log('   (qualquer outro usuário/senha) → Perfil selecionado');
+  console.log('📌 Perfis disponíveis: admin, recepcao, consulta, financeiro, voluntario');
 });
 </script>
 
