@@ -72,6 +72,9 @@
             margin-bottom: 18px;
             padding-bottom: 12px;
             border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .qrcode-grid {
@@ -86,6 +89,7 @@
             padding: 20px;
             text-align: center;
             transition: all 0.3s;
+            position: relative;
         }
         .qrcode-item:hover {
             transform: translateY(-4px);
@@ -116,6 +120,27 @@
             color: var(--cinza);
             margin-top: 2px;
         }
+        .qrcode-item .qr-validade {
+            font-size: 10px;
+            color: var(--cinza);
+            margin-top: 4px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        .qr-validade.valido {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .qr-validade.expirado {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        .qr-validade.breve {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
         .qrcode-item .qr-acoes {
             margin-top: 12px;
             display: flex;
@@ -174,16 +199,31 @@
             font-size: 13px;
             font-family: 'Inter', sans-serif;
         }
-        .btn-salvar {
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--laranja);
+            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.08);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
             padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .btn-salvar {
             background: var(--laranja);
             color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
         }
         .btn-salvar:hover {
             background: var(--laranja-escuro);
@@ -249,11 +289,33 @@
             display: none;
         }
 
+        .filtro-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .filtro-bar select,
+        .filtro-bar input {
+            padding: 8px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+        .filtro-bar .badge-count {
+            font-size: 12px;
+            color: var(--cinza);
+            margin-left: auto;
+        }
+
         @media (max-width: 900px) {
             .main-content {
                 margin-left: 0;
             }
-            .grid-qr {
+            .form-row {
                 grid-template-columns: 1fr;
             }
         }
@@ -261,7 +323,6 @@
 </head>
 <body>
 
-    <!-- MENU CARREGADO DINAMICAMENTE -->
     <div id="menu-container"></div>
 
     <main class="main-content">
@@ -294,12 +355,43 @@
                 <label>Conteúdo / URL *</label>
                 <input type="text" id="qrConteudo" placeholder="https://amovin.vercel.app/... ou texto livre">
             </div>
-            <button class="btn-salvar btn-gerar-qr" onclick="gerarQRCode()">🔲 Gerar QR Code</button>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Validade (dias)</label>
+                    <select id="qrValidade">
+                        <option value="0">♾️ Sem validade (permanente)</option>
+                        <option value="7">📅 7 dias</option>
+                        <option value="15">📅 15 dias</option>
+                        <option value="30" selected>📅 30 dias</option>
+                        <option value="60">📅 60 dias</option>
+                        <option value="90">📅 90 dias</option>
+                        <option value="180">📅 180 dias</option>
+                        <option value="365">📅 365 dias (1 ano)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex;align-items:flex-end;">
+                    <button class="btn btn-gerar-qr" onclick="gerarQRCode()" style="width:100%;padding:12px;">🔲 Gerar QR Code</button>
+                </div>
+            </div>
         </div>
 
         <!-- Lista de QR Codes -->
         <div class="card">
-            <h3>📋 QR Codes Gerados <span style="font-weight:400;font-size:13px;color:var(--cinza);" id="totalQr">(0)</span></h3>
+            <h3>
+                📋 QR Codes Gerados
+                <span style="font-weight:400;font-size:13px;color:var(--cinza);" id="totalQr">(0)</span>
+            </h3>
+
+            <div class="filtro-bar">
+                <select id="filtroStatus" onchange="renderizarQRs()">
+                    <option value="todos">📋 Todos</option>
+                    <option value="valido">✅ Válidos</option>
+                    <option value="expirado">❌ Expirados</option>
+                    <option value="breve">⏳ Expirando em breve</option>
+                </select>
+                <span class="badge-count" id="contadorFiltro"></span>
+            </div>
+
             <div class="qrcode-grid" id="listaQrCodes">
                 <div class="sem-dados">Nenhum QR Code gerado.</div>
             </div>
@@ -329,15 +421,29 @@
         // ============================================================
         var qrCodes = JSON.parse(localStorage.getItem('amovin_qrcodes') || '[]');
 
-        if (qrCodes.length === 0) {
-            qrCodes = [{
-                id: 1,
-                nome: 'AMOVIN - Site Oficial',
-                tipo: 'outro',
-                conteudo: 'https://amovin.vercel.app',
-                dataCriacao: new Date().toISOString()
-            }];
-            salvar();
+        // ============================================================
+        // FUNÇÃO PARA VERIFICAR VALIDADE
+        // ============================================================
+        function getStatusValidade(qr) {
+            if (!qr.diasValidade || qr.diasValidade === 0) {
+                return { status: 'valido', label: '♾️ Permanente', cls: 'valido' };
+            }
+
+            var criacao = new Date(qr.dataCriacao);
+            var expiracao = new Date(criacao);
+            expiracao.setDate(expiracao.getDate() + qr.diasValidade);
+
+            var agora = new Date();
+            var diff = expiracao - agora;
+            var diasRestantes = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+            if (diasRestantes < 0) {
+                return { status: 'expirado', label: '❌ Expirado', cls: 'expirado' };
+            } else if (diasRestantes <= 3) {
+                return { status: 'breve', label: '⏳ Expira em ' + diasRestantes + ' dias', cls: 'breve' };
+            } else {
+                return { status: 'valido', label: '✅ Válido (' + diasRestantes + ' dias restantes)', cls: 'valido' };
+            }
         }
 
         function salvar() {
@@ -345,12 +451,13 @@
         }
 
         // ============================================================
-        // FUNÇÕES PRINCIPAIS
+        // GERAR QR CODE
         // ============================================================
         function gerarQRCode() {
             var nome = document.getElementById('qrNome').value.trim();
             var conteudo = document.getElementById('qrConteudo').value.trim();
             var tipo = document.getElementById('qrTipo').value;
+            var diasValidade = parseInt(document.getElementById('qrValidade').value);
 
             if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
             if (!conteudo) { alert('⚠️ Conteúdo é obrigatório!'); return; }
@@ -360,6 +467,7 @@
                 nome: nome,
                 tipo: tipo,
                 conteudo: conteudo,
+                diasValidade: diasValidade,
                 dataCriacao: new Date().toISOString()
             };
 
@@ -373,16 +481,29 @@
             alert('✅ QR Code gerado com sucesso!');
         }
 
+        // ============================================================
+        // RENDERIZAR
+        // ============================================================
         function renderizarQRs() {
             var container = document.getElementById('listaQrCodes');
-            document.getElementById('totalQr').textContent = '(' + qrCodes.length + ')';
+            var filtro = document.getElementById('filtroStatus').value;
 
-            if (qrCodes.length === 0) {
-                container.innerHTML = '<div class="sem-dados">Nenhum QR Code gerado.</div>';
+            var listaFiltrada = qrCodes.filter(function(qr) {
+                var status = getStatusValidade(qr);
+                if (filtro === 'todos') return true;
+                return status.status === filtro;
+            });
+
+            document.getElementById('totalQr').textContent = '(' + qrCodes.length + ')';
+            document.getElementById('contadorFiltro').textContent = 'Filtro: ' + listaFiltrada.length + ' de ' + qrCodes
+            .length;
+
+            if (listaFiltrada.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum QR Code encontrado.</div>';
                 return;
             }
 
-            container.innerHTML = qrCodes.map(function(qr, index) {
+            container.innerHTML = listaFiltrada.map(function(qr) {
                 var tipoIcon = {
                     'beneficiario': '👥',
                     'profissional': '👨‍⚕️',
@@ -392,12 +513,14 @@
                     'outro': '🔗'
                 } [qr.tipo] || '🔗';
 
+                var status = getStatusValidade(qr);
                 var qrId = 'qr-' + qr.id;
 
                 return '<div class="qrcode-item">' +
                     '<div class="qr-image" id="' + qrId + '"></div>' +
                     '<div class="qr-nome">' + qr.nome + '</div>' +
-                    '<div class="qr-desc">' + tipoIcon + ' ' + qr.tipo + ' | ' + new Date(qr.dataCriacao).toLocaleDateString('pt-BR') + '</div>' +
+                    '<div class="qr-desc">' + tipoIcon + ' ' + qr.tipo + '</div>' +
+                    '<span class="qr-validade ' + status.cls + '">' + status.label + '</span>' +
                     '<div class="qr-acoes">' +
                     '<button class="btn-qr btn-baixar" onclick="baixarQR(' + qr.id + ')">💾 Baixar</button>' +
                     '<button class="btn-qr btn-imprimir" onclick="imprimirQR(' + qr.id + ')">🖨️ Imprimir</button>' +
@@ -407,7 +530,7 @@
             }).join('');
 
             // Gerar QR Codes após renderizar
-            qrCodes.forEach(function(qr) {
+            listaFiltrada.forEach(function(qr) {
                 var containerId = 'qr-' + qr.id;
                 var containerEl = document.getElementById(containerId);
                 if (containerEl) {
@@ -427,6 +550,9 @@
             });
         }
 
+        // ============================================================
+        // AÇÕES
+        // ============================================================
         function excluirQR(id) {
             if (!confirm('Excluir este QR Code?')) return;
             qrCodes = qrCodes.filter(function(q) { return q.id !== id; });
@@ -457,15 +583,21 @@
             var container = document.getElementById('qr-' + id);
             var canvas = container.querySelector('canvas');
             if (canvas) {
+                var status = getStatusValidade(qr);
                 var win = window.open('', '_blank');
                 win.document.write('<html><head><title>QR Code - ' + qr.nome + '</title>');
                 win.document.write('<style>body{text-align:center;padding:40px;font-family:Arial,sans-serif;}' +
                     'img{max-width:400px;border:2px solid #ccc;border-radius:12px;padding:20px;}' +
                     '.info{margin-top:20px;font-size:14px;color:#333;}' +
-                    '.info strong{color:#C65A11;}</style>');
+                    '.info strong{color:#C65A11;}' +
+                    '.validade{margin-top:10px;font-size:12px;color:#888;}' +
+                    '.status-valido{color:#2E7D32;}' +
+                    '.status-expirado{color:#C62828;}' +
+                    '.status-breve{color:#E65100;}</style>');
                 win.document.write('</head><body>');
                 win.document.write('<img src="' + canvas.toDataURL('image/png') + '">');
                 win.document.write('<div class="info"><strong>' + qr.nome + '</strong><br>' + qr.conteudo + '</div>');
+                win.document.write('<div class="validade ' + status.cls + '">' + status.label + '</div>');
                 win.document.write('<script>window.onload=function(){window.print();}<\/script>');
                 win.document.write('</body></html>');
                 win.document.close();
