@@ -17,7 +17,6 @@
     // ESTRUTURA COMPLETA DO MENU (TODOS OS MÓDULOS)
     // ============================================================
     var MENU_CONFIG = {
-        // PERFIL ADMIN - Acesso total
         admin: {
             categorias: [
                 {
@@ -103,8 +102,6 @@
                 }
             ]
         },
-
-        // PERFIL RECEPÇÃO - Acesso limitado
         recepcao: {
             categorias: [
                 {
@@ -134,8 +131,6 @@
                 }
             ]
         },
-
-        // PERFIL CONSULTA - Acesso para profissionais
         consulta: {
             categorias: [
                 {
@@ -161,8 +156,6 @@
                 }
             ]
         },
-
-        // PERFIL FINANCEIRO - Acesso financeiro
         financeiro: {
             categorias: [
                 {
@@ -190,8 +183,6 @@
                 }
             ]
         },
-
-        // PERFIL VOLUNTÁRIO - Acesso básico
         voluntario: {
             categorias: [
                 {
@@ -224,7 +215,6 @@
         var perfilConfig = MENU_CONFIG[PERFIL_ATUAL] || MENU_CONFIG.admin;
         var html = '';
 
-        // Cabeçalho do menu
         html += '<aside class="sidebar">';
         html += '  <div class="sidebar-header">';
         html += '    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">';
@@ -237,7 +227,6 @@
         html += '  </div>';
         html += '  <nav class="sidebar-nav">';
 
-        // Categorias e itens do menu
         perfilConfig.categorias.forEach(function(categoria) {
             html += '    <div class="nav-categoria">' + categoria.nome + '</div>';
             categoria.itens.forEach(function(item) {
@@ -250,7 +239,6 @@
             });
         });
 
-        // Rodapé do menu com botão de logout
         html += '  </nav>';
         html += '  <div class="sidebar-footer">';
         html += '    <button class="btn-logout" onclick="logout()">🚪 Sair</button>';
@@ -274,21 +262,19 @@
     function carregarMenu() {
         var container = document.getElementById('menu-container');
         if (!container) {
-            console.error('❌ Div #menu-container não encontrada!');
-            return;
+            console.warn('⚠️ Div #menu-container não encontrada! Criando automaticamente...');
+            container = document.createElement('div');
+            container.id = 'menu-container';
+            document.body.insertBefore(container, document.body.firstChild);
         }
 
-        // Gera e insere o HTML do menu
         container.innerHTML = gerarMenuHTML();
+        document.body.classList.add('has-menu');
 
-        // Verifica se é admin para mostrar itens de admin
         var isAdmin = (PERFIL_ATUAL === 'admin');
         if (!isAdmin) {
-            // Oculta itens que não são permitidos para o perfil atual
             document.querySelectorAll('.nav-item').forEach(function(item) {
                 var href = item.getAttribute('href') || '';
-                var modulo = href.replace('.html', '').split('/').pop();
-                // Remove target _blank para não abrir em nova aba
                 if (item.getAttribute('target') === '_blank') {
                     item.removeAttribute('target');
                 }
@@ -297,16 +283,23 @@
     }
 
     // ============================================================
-    // ESTILOS COMPLEMENTARES DO MENU (INJETADOS DINAMICAMENTE)
+    // ESTILOS COMPLEMENTARES DO MENU
     // ============================================================
     function injectMenuStyles() {
+        if (document.getElementById('menu-styles')) return;
+
         var style = document.createElement('style');
+        style.id = 'menu-styles';
         style.textContent = `
-            /* ============================================================
-               ESTILOS DO MENU LATERAL - CARREGADO PELO MENU.JS
-               ============================================================ */
+            body.has-menu {
+                display: flex;
+                min-height: 100vh;
+                margin: 0;
+                padding: 0;
+            }
             .sidebar {
                 width: 270px;
+                min-width: 270px;
                 background: #FFFFFF;
                 color: #1A1A1A;
                 position: fixed;
@@ -320,6 +313,7 @@
                 overflow-y: auto;
                 overflow-x: hidden;
                 transition: transform 0.3s ease;
+                height: 100vh;
             }
             .sidebar-header {
                 padding: 20px 24px 16px;
@@ -356,7 +350,7 @@
                 display: block;
                 font-size: 12px;
                 font-weight: 600;
-                color: var(--grafite, #1A1A1A);
+                color: #1A1A1A;
             }
             .user-info .user-perfil {
                 display: inline-block;
@@ -438,11 +432,19 @@
                 border-color: #E53935;
                 color: #E53935;
             }
-            /* Responsivo - Mobile */
+            .main-content {
+                flex: 1;
+                margin-left: 270px;
+                padding: 24px 30px;
+                min-height: 100vh;
+                transition: margin-left 0.3s ease;
+                width: calc(100% - 270px);
+            }
             @media (max-width: 768px) {
                 .sidebar {
                     transform: translateX(-100%);
                     width: 280px;
+                    min-width: 280px;
                     box-shadow: 4px 0 20px rgba(0,0,0,0.1);
                 }
                 .sidebar.open {
@@ -453,6 +455,19 @@
                 }
                 .main-content {
                     margin-left: 0 !important;
+                    width: 100% !important;
+                    padding: 16px;
+                    padding-top: 60px;
+                }
+                .sidebar-overlay {
+                    display: none;
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(0,0,0,0.3);
+                    z-index: 99;
+                }
+                .sidebar-overlay.active {
+                    display: block;
                 }
             }
             .menu-toggle {
@@ -468,8 +483,11 @@
                 font-size: 20px;
                 cursor: pointer;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+                font-family: 'Inter', sans-serif;
             }
-            /* Scrollbar personalizada */
+            .menu-toggle:hover {
+                background: #F8F4ED;
+            }
             .sidebar-nav::-webkit-scrollbar {
                 width: 4px;
             }
@@ -491,33 +509,44 @@
     // BOTÃO TOGGLE PARA MOBILE
     // ============================================================
     function criarMenuToggle() {
+        if (document.querySelector('.menu-toggle')) return;
+
         var toggle = document.createElement('button');
         toggle.className = 'menu-toggle';
         toggle.innerHTML = '☰';
         toggle.setAttribute('aria-label', 'Abrir menu');
         toggle.onclick = function() {
             var sidebar = document.querySelector('.sidebar');
+            var overlay = document.querySelector('.sidebar-overlay');
             if (sidebar) {
                 sidebar.classList.toggle('open');
+                if (overlay) {
+                    overlay.classList.toggle('active');
+                }
             }
         };
         document.body.prepend(toggle);
+
+        var overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        overlay.onclick = function() {
+            var sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        };
+        document.body.appendChild(overlay);
     }
 
     // ============================================================
     // INICIALIZAÇÃO
     // ============================================================
     function init() {
-        // Injeta os estilos
         injectMenuStyles();
-
-        // Carrega o menu
         carregarMenu();
-
-        // Cria botão toggle para mobile
         criarMenuToggle();
 
-        // Verifica se está logado
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
@@ -526,7 +555,6 @@
         console.log('👤 Usuário:', USUARIO_NOME);
     }
 
-    // Executa quando o DOM estiver pronto
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
