@@ -1,449 +1,759 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social • Pré-Cadastro</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --laranja: #C65A11;
-  --amarelo: #F5C518;
-  --verde: #57C220;
-  --azul: #1E88E5;
-  --grafite: #1A1A1A;
-  --cinza: #6B7280;
-  --cinza-claro: #F8F4ED;
-  --branco: #FFFFFF;
-  --vermelho: #E53935;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amovin ERP • Pré-Cadastro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F8F4ED;
+            display: flex;
+            min-height: 100vh;
+        }
 
-/* Layout principal sem sidebar */
-.layout { max-width: 800px; margin: 0 auto; padding: 20px; }
-.header { text-align: center; padding: 30px 0 20px; }
-.header h1 { font-size: 28px; font-weight: 700; color: var(--grafite); }
-.header p { font-size: 14px; color: var(--cinza); margin-top: 8px; }
-.logo { max-width: 100px; margin-bottom: 15px; }
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+        }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-.card { background: #FFFFFF; padding: 30px; border-radius: 16px; border: 1px solid #F0E9DF; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-.card h2 { font-size: 18px; font-weight: 700; color: var(--grafite); margin-bottom: 6px; }
-.card .sub { font-size: 13px; color: var(--cinza); margin-bottom: 20px; }
+        /* LINK PÚBLICO */
+        .link-publico-box {
+            background: #FFFFFF;
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .link-publico-box .info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .link-publico-box .info .icone {
+            font-size: 24px;
+        }
+        .link-publico-box .info .texto {
+            font-size: 13px;
+            color: var(--cinza);
+        }
+        .link-publico-box .info .texto strong {
+            color: var(--grafite);
+        }
+        .link-publico-box .link-url {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #F8F4ED;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #E5E0D8;
+        }
+        .link-publico-box .link-url input {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            color: var(--azul);
+            font-family: 'Inter', sans-serif;
+            min-width: 300px;
+        }
+        .link-publico-box .link-url input:focus {
+            outline: none;
+        }
+        .btn-copiar {
+            padding: 6px 16px;
+            background: var(--azul);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .btn-copiar:hover {
+            background: #1565C0;
+        }
 
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-.form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; transition: border 0.2s; }
-.form-group input:focus, .form-group select:focus { border-color: var(--laranja); outline: none; box-shadow: 0 0 0 3px rgba(198,90,17,0.1); }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-group .campo-obrigatorio { color: var(--vermelho); }
-.form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
+        .card {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F0E9DF;
+        }
 
-.btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; font-family: 'Inter', sans-serif; }
-.btn-primary { background: var(--laranja); color: white; width: 100%; }
-.btn-primary:hover { background: #A04A0E; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .form-full {
+            grid-column: 1 / -1;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cinza);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .btn-salvar {
+            padding: 12px 28px;
+            background: var(--laranja);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-salvar:hover {
+            background: var(--laranja-escuro);
+        }
+        .btn-verde {
+            background: var(--verde);
+        }
+        .btn-verde:hover {
+            background: #388E3C;
+        }
 
-.rodape { text-align: center; margin-top: 30px; padding: 20px; font-size: 11px; color: var(--cinza); border-top: 1px solid #F0E9DF; }
-.rodape a { color: var(--laranja); text-decoration: none; }
+        .tabela-pre-cadastro {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .tabela-pre-cadastro th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #F8F4ED;
+            font-weight: 600;
+            color: var(--cinza);
+            font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #F0E9DF;
+        }
+        .tabela-pre-cadastro td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #F0E9DF;
+        }
+        .tabela-pre-cadastro tr:hover td {
+            background: #FFF8E7;
+        }
+        .status-badge {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-pendente {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+        .status-aprovado {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .status-reprovado {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        .btn-acao {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .btn-aprovar {
+            background: var(--verde);
+            color: white;
+        }
+        .btn-reprovar {
+            background: var(--vermelho);
+            color: white;
+        }
+        .btn-editar {
+            background: var(--amarelo);
+            color: #1A1A1A;
+        }
+        .btn-excluir {
+            background: #E5E0D8;
+            color: #1A1A1A;
+        }
+        .sem-dados {
+            text-align: center;
+            padding: 40px;
+            color: #9CA3AF;
+        }
 
-.progress-bar { width: 100%; height: 4px; background: #F0E9DF; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
-.progress-bar .fill { height: 100%; background: var(--laranja); transition: width 0.5s ease; border-radius: 4px; }
+        .rodape {
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo {
+            flex-shrink: 0;
+        }
+        .rodape-logo .logo-vigorre {
+            width: 50px;
+        }
+        .rodape-info {
+            flex: 1;
+        }
+        .rodape-info .copyright {
+            font-size: 8px;
+            color: #8A8F98;
+        }
+        .rodape-info .tm {
+            font-size: 6px;
+            vertical-align: super;
+        }
+        .rodape-info .contato {
+            font-size: 9px;
+            color: #8A8F98;
+        }
+        .rodape-info a {
+            color: #C65A11;
+            text-decoration: none;
+        }
+        .rodape-info .email {
+            font-size: 8px;
+            color: #aaa;
+        }
+        .logo-vigorre-fallback {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
 
-.step-indicators { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-.step-dot { width: 10px; height: 10px; border-radius: 50%; background: #E5E0D8; transition: all 0.3s; }
-.step-dot.active { background: var(--laranja); transform: scale(1.2); }
-.step-dot.done { background: var(--verde); }
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .link-publico-box .link-url input {
+                min-width: 150px;
+            }
+        }
 
-.hidden { display: none; }
+        /* 🔥 LINK PÚBLICO - ESTILO DE DESTAQUE */
+        .public-link-banner {
+            background: linear-gradient(135deg, #FFF8E7, #FFF3E0);
+            border: 2px dashed var(--laranja);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .public-link-banner .info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .public-link-banner .info .icone {
+            font-size: 32px;
+        }
+        .public-link-banner .info .texto h4 {
+            font-size: 16px;
+            color: var(--grafite);
+            font-weight: 700;
+        }
+        .public-link-banner .info .texto p {
+            font-size: 12px;
+            color: var(--cinza);
+        }
+        .public-link-banner .link-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .public-link-banner .link-actions input {
+            padding: 10px 14px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            min-width: 280px;
+        }
+        .public-link-banner .link-actions input:focus {
+            outline: none;
+            border-color: var(--laranja);
+        }
+        .btn-copiar-link {
+            padding: 10px 20px;
+            background: var(--laranja);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .btn-copiar-link:hover {
+            background: var(--laranja-escuro);
+        }
+        .btn-abrir-link {
+            padding: 10px 20px;
+            background: var(--azul);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .btn-abrir-link:hover {
+            background: #1565C0;
+        }
 
-.result-box { text-align: center; padding: 30px; }
-.result-box .icon { font-size: 60px; margin-bottom: 15px; }
-.result-box h2 { font-size: 22px; margin-bottom: 10px; }
-.result-box p { color: var(--cinza); font-size: 14px; line-height: 1.6; }
-.result-box .success { color: var(--verde); }
-.result-box .error { color: var(--vermelho); }
-
-.checkbox-group { display: flex; align-items: flex-start; gap: 10px; padding: 15px; background: #F8F4ED; border-radius: 8px; margin-bottom: 16px; }
-.checkbox-group input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--laranja); cursor: pointer; }
-.checkbox-group label { font-size: 13px; color: var(--grafite); cursor: pointer; }
-
-@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .card { padding: 20px; } }
-</style>
+        @media (max-width: 768px) {
+            .public-link-banner .link-actions input {
+                min-width: 180px;
+            }
+            .public-link-banner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .public-link-banner .link-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="layout">
-  <!-- CABEÇALHO -->
-  <div class="header">
-    <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';">
-    <h1>📝 Pré-Cadastro AMOVIN</h1>
-    <p>Preencha seus dados para iniciar o processo de cadastro na AMOVIN.</p>
-  </div>
+    <!-- MENU CARREGADO DINAMICAMENTE -->
+    <div id="menu-container"></div>
 
-  <!-- BARRA DE PROGRESSO -->
-  <div class="progress-bar">
-    <div class="fill" id="progressFill" style="width: 33%;"></div>
-  </div>
-
-  <!-- INDICADORES DE PASSOS -->
-  <div class="step-indicators">
-    <span class="step-dot active" id="dot1"></span>
-    <span class="step-dot" id="dot2"></span>
-    <span class="step-dot" id="dot3"></span>
-  </div>
-
-  <!-- PASSO 1: DADOS PESSOAIS -->
-  <div id="step1" class="card">
-    <h2>👤 Dados Pessoais</h2>
-    <p class="sub">Preencha suas informações básicas</p>
-
-    <form id="formStep1" onsubmit="return false;">
-      <div class="form-group">
-        <label>Tipo de Cadastro <span class="campo-obrigatorio">*</span></label>
-        <select id="tipoCadastro" required>
-          <option value="beneficiario">👥 Beneficiário</option>
-          <option value="profissional">👨‍⚕️ Profissional</option>
-          <option value="voluntario">💪 Voluntário</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
-        <input type="text" id="nome" placeholder="Digite seu nome completo" required>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>CPF <span class="campo-obrigatorio">*</span></label>
-          <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+    <main class="main-content">
+        <div class="topo-bar">
+            <h1>📝 Pré-Cadastro</h1>
+            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
-        <div class="form-group">
-          <label>RG</label>
-          <input type="text" id="rg" placeholder="00.000.000-0">
+
+        <!-- 🔥 BANNER DO LINK PÚBLICO -->
+        <div class="public-link-banner">
+            <div class="info">
+                <span class="icone">🔗</span>
+                <div class="texto">
+                    <h4>Link Público para Pré-Cadastro</h4>
+                    <p>Envie este link para que as pessoas façam o pré-cadastro externamente</p>
+                </div>
+            </div>
+            <div class="link-actions">
+                <input type="text" id="linkPublico" value="https://amovin.vercel.app/pre-cadastro-externo.html" readonly>
+                <button class="btn-copiar-link" onclick="copiarLink()">📋 Copiar</button>
+                <a href="#" class="btn-abrir-link" onclick="abrirLink()" target="_blank">🔗 Abrir</a>
+            </div>
         </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Data de Nascimento</label>
-          <input type="date" id="dataNascimento">
+        <!-- KPIs -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:22px;">
+            <div class="card" style="padding:16px;text-align:center;">
+                <div style="font-size:28px;font-weight:800;color:var(--laranja);" id="kpiTotal">0</div>
+                <div style="font-size:11px;color:var(--cinza);">📋 Total</div>
+            </div>
+            <div class="card" style="padding:16px;text-align:center;">
+                <div style="font-size:28px;font-weight:800;color:#E65100;" id="kpiPendentes">0</div>
+                <div style="font-size:11px;color:var(--cinza);">⏳ Pendentes</div>
+            </div>
+            <div class="card" style="padding:16px;text-align:center;">
+                <div style="font-size:28px;font-weight:800;color:var(--verde);" id="kpiAprovados">0</div>
+                <div style="font-size:11px;color:var(--cinza);">✅ Aprovados</div>
+            </div>
+            <div class="card" style="padding:16px;text-align:center;">
+                <div style="font-size:28px;font-weight:800;color:var(--vermelho);" id="kpiReprovados">0</div>
+                <div style="font-size:11px;color:var(--cinza);">❌ Reprovados</div>
+            </div>
         </div>
-        <div class="form-group">
-          <label>Sexo</label>
-          <select id="sexo">
-            <option value="">Selecione...</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-          </select>
+
+        <!-- FORMULÁRIO E LISTA -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div class="card">
+                <h3>📝 Novo Pré-Cadastro</h3>
+                <input type="hidden" id="preId">
+                <div class="form-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="nome" placeholder="Nome da pessoa">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" placeholder="email@exemplo.com">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="telefone" placeholder="(34) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Nascimento</label>
+                        <input type="date" id="nascimento">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Interesse</label>
+                    <select id="interesse">
+                        <option value="Voluntário">💪 Voluntário</option>
+                        <option value="Beneficiário">👥 Beneficiário</option>
+                        <option value="Profissional">👨‍⚕️ Profissional</option>
+                        <option value="Doador">🤝 Doador</option>
+                        <option value="Parceiro">🏢 Parceiro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Observações</label>
+                    <textarea id="obs" rows="2" placeholder="Informações adicionais..."></textarea>
+                </div>
+                <button class="btn-salvar" onclick="salvarPreCadastro()" style="width:100%;">💾 Salvar</button>
+            </div>
+
+            <div class="card">
+                <h3>📋 Lista de Pré-Cadastros</h3>
+                <div style="overflow-x:auto;">
+                    <table class="tabela-pre-cadastro" id="tabelaPreCadastro">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Interesse</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaPreCadastro">
+                            <tr><td colspan="4" class="sem-dados">Nenhum pré-cadastro.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Telefone</label>
-          <input type="text" id="telefone" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)">
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-          <label>WhatsApp</label>
-          <input type="text" id="whatsapp" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)">
-        </div>
-      </div>
+    </main>
 
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" id="email" placeholder="email@exemplo.com">
-      </div>
+    <script src="menu.js"></script>
+    <script>
+        // ============================================================
+        // DADOS
+        // ============================================================
+        var preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
+        var editandoId = null;
 
-      <div class="form-group">
-        <label>Endereço</label>
-        <input type="text" id="endereco" placeholder="Rua, número, bairro">
-      </div>
+        if (preCadastros.length === 0) {
+            preCadastros = [
+                { id: 1, nome: 'João Silva', email: 'joao@email.com', telefone: '(34) 99999-0001', nascimento: '1990-05-15', interesse: 'Voluntário', obs: '', status: 'pendente', dataCriacao: new Date().toISOString() },
+                { id: 2, nome: 'Maria Santos', email: 'maria@email.com', telefone: '(34) 99999-0002', nascimento: '1985-08-20', interesse: 'Beneficiário', obs: '', status: 'aprovado', dataCriacao: new Date().toISOString() }
+            ];
+            salvar();
+        }
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Cidade</label>
-          <input type="text" id="cidade" placeholder="Cidade">
-        </div>
-        <div class="form-group">
-          <label>Estado</label>
-          <select id="estado">
-            <option value="">Selecione...</option>
-            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
-            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
-            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
-            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
-            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
-            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
-            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
-            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
-            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-          </select>
-        </div>
-      </div>
+        function salvar() {
+            localStorage.setItem('amovin_pre_cadastros', JSON.stringify(preCadastros));
+        }
 
-      <div id="campoResponsavel" class="form-group">
-        <label>Responsável <span class="campo-obrigatorio">*</span></label>
-        <input type="text" id="responsavel" placeholder="Ex: Mãe do beneficiário João Silva">
-        <small style="color:var(--cinza);font-size:10px;">Preencher quando o cadastro for beneficiário</small>
-      </div>
+        // ============================================================
+        // FUNÇÕES DO LINK PÚBLICO
+        // ============================================================
+        function copiarLink() {
+            var input = document.getElementById('linkPublico');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            alert('✅ Link copiado!');
+        }
 
-      <div class="form-group">
-        <label>Observações</label>
-        <input type="text" id="observacoes" placeholder="Informações adicionais...">
-      </div>
+        function abrirLink() {
+            var url = document.getElementById('linkPublico').value;
+            window.open(url, '_blank');
+        }
 
-      <button type="button" class="btn btn-primary" onclick="irParaPasso2()">➡️ Próximo Passo</button>
-    </form>
-  </div>
+        // ============================================================
+        // FUNÇÕES PRINCIPAIS
+        // ============================================================
+        function atualizarKPIs() {
+            var total = preCadastros.length;
+            var pendentes = preCadastros.filter(function(p) { return p.status === 'pendente'; }).length;
+            var aprovados = preCadastros.filter(function(p) { return p.status === 'aprovado'; }).length;
+            var reprovados = preCadastros.filter(function(p) { return p.status === 'reprovado'; }).length;
 
-  <!-- PASSO 2: LGPD E ASSINATURA -->
-  <div id="step2" class="card hidden">
-    <h2>🔒 LGPD e Assinatura</h2>
-    <p class="sub">Leia e aceite os termos antes de finalizar</p>
+            document.getElementById('kpiTotal').textContent = total;
+            document.getElementById('kpiPendentes').textContent = pendentes;
+            document.getElementById('kpiAprovados').textContent = aprovados;
+            document.getElementById('kpiReprovados').textContent = reprovados;
+        }
 
-    <div style="background:#F8F4ED;padding:15px;border-radius:8px;max-height:200px;overflow-y:auto;font-size:13px;color:var(--cinza);line-height:1.6;margin-bottom:16px;">
-      <p><strong>Política de Privacidade - LGPD</strong></p>
-      <p>A AMOVIN respeita sua privacidade e está comprometida com a proteção dos seus dados pessoais, em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei 13.709/2018).</p>
-      <br>
-      <p><strong>Quais dados coletamos?</strong></p>
-      <p>Nome, CPF, RG, data de nascimento, telefone, e-mail, endereço e informações relevantes para o atendimento social.</p>
-      <br>
-      <p><strong>Para que usamos seus dados?</strong></p>
-      <p>• Cadastro e atendimento nos projetos sociais da AMOVIN</p>
-      <p>• Comunicação sobre atividades e eventos</p>
-      <p>• Cumprimento de obrigações legais e prestação de contas</p>
-      <br>
-      <p><strong>Seus direitos:</strong></p>
-      <p>Você pode solicitar a qualquer momento: acesso, correção ou exclusão dos seus dados, revogação do consentimento.</p>
-      <br>
-      <p><strong>Contato para dúvidas:</strong> lgpd@amovin.org.br | (34) 99999-9999</p>
-    </div>
+        function getStatusBadge(status) {
+            var map = {
+                'pendente': 'status-pendente',
+                'aprovado': 'status-aprovado',
+                'reprovado': 'status-reprovado'
+            };
+            return map[status] || 'status-pendente';
+        }
 
-    <div class="checkbox-group">
-      <input type="checkbox" id="aceiteLGPD">
-      <label for="aceiteLGPD">Li e concordo com a Política de Privacidade e com o tratamento dos meus dados conforme a LGPD.</label>
-    </div>
+        function getStatusLabel(status) {
+            var map = {
+                'pendente': '⏳ Pendente',
+                'aprovado': '✅ Aprovado',
+                'reprovado': '❌ Reprovado'
+            };
+            return map[status] || status;
+        }
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Assinatura - Nome <span class="campo-obrigatorio">*</span></label>
-        <input type="text" id="assinaturaNome" placeholder="Digite seu nome completo">
-      </div>
-      <div class="form-group">
-        <label>Assinatura - CPF <span class="campo-obrigatorio">*</span></label>
-        <input type="text" id="assinaturaCPF" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
-      </div>
-    </div>
+        function renderizarLista() {
+            var tbody = document.getElementById('listaPreCadastro');
+            if (preCadastros.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="sem-dados">Nenhum pré-cadastro.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = preCadastros.map(function(p) {
+                var statusBadge = getStatusBadge(p.status);
+                var statusLabel = getStatusLabel(p.status);
+                var data = p.dataCriacao ? new Date(p.dataCriacao).toLocaleDateString('pt-BR') : '-';
+                return '<tr>' +
+                    '<td><strong>' + p.nome + '</strong><br><span style="font-size:11px;color:var(--cinza);">' + p.email + '</span></td>' +
+                    '<td>' + p.interesse + '</td>' +
+                    '<td><span class="status-badge ' + statusBadge + '">' + statusLabel + '</span></td>' +
+                    '<td style="white-space:nowrap;">' +
+                    (p.status === 'pendente' ? '<button class="btn-acao btn-aprovar" onclick="aprovar(' + p.id + ')">✅</button> ' : '') +
+                    (p.status === 'pendente' ? '<button class="btn-acao btn-reprovar" onclick="reprovar(' + p.id + ')">❌</button> ' : '') +
+                    '<button class="btn-acao btn-editar" onclick="editar(' + p.id + ')">✏️</button> ' +
+                    '<button class="btn-acao btn-excluir" onclick="excluir(' + p.id + ')">🗑️</button>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+            atualizarKPIs();
+        }
 
-    <div style="display:flex;gap:12px;margin-top:10px;">
-      <button type="button" class="btn btn-primary" style="flex:1;" onclick="irParaPasso1()">← Voltar</button>
-      <button type="button" class="btn btn-primary" style="flex:1;" onclick="finalizarCadastro()">📤 Finalizar Cadastro</button>
-    </div>
-  </div>
+        window.salvarPreCadastro = function() {
+            var nome = document.getElementById('nome').value.trim();
+            var email = document.getElementById('email').value.trim();
 
-  <!-- PASSO 3: RESULTADO -->
-  <div id="step3" class="card hidden">
-    <div class="result-box" id="resultadoBox">
-      <div class="icon" id="resultadoIcon">⏳</div>
-      <h2 id="resultadoTitulo">Enviando...</h2>
-      <p id="resultadoMensagem">Aguarde enquanto processamos seu cadastro.</p>
-      <button type="button" class="btn btn-primary" id="btnVoltarHome" style="margin-top:15px;display:none;" onclick="window.location.href='/'">🏠 Voltar para a Página Inicial</button>
-    </div>
-  </div>
+            if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
+            if (!email) { alert('⚠️ Email é obrigatório!'); return; }
 
-  <!-- RODAPÉ -->
-  <div class="rodape">
-    © 2026 AMOVIN - Associação e Movimento pela Inclusão<br>
-    Protegido pela LGPD - Lei Geral de Proteção de Dados
-  </div>
-</div>
+            var dados = {
+                nome: nome,
+                email: email,
+                telefone: document.getElementById('telefone').value.trim(),
+                nascimento: document.getElementById('nascimento').value,
+                interesse: document.getElementById('interesse').value,
+                obs: document.getElementById('obs').value.trim()
+            };
 
-<script>
-// ============================================================
-// MÁSCARAS
-// ============================================================
-function mascaraCPF(input) {
-  var v = input.value.replace(/\D/g, '');
-  if (v.length > 3) v = v.slice(0,3) + '.' + v.slice(3);
-  if (v.length > 7) v = v.slice(0,7) + '.' + v.slice(7);
-  if (v.length > 11) v = v.slice(0,11) + '-' + v.slice(11);
-  input.value = v;
-}
+            if (editandoId) {
+                var idx = preCadastros.findIndex(function(p) { return p.id === editandoId; });
+                if (idx >= 0) {
+                    for (var k in dados) preCadastros[idx][k] = dados[k];
+                }
+                editandoId = null;
+            } else {
+                dados.id = Date.now();
+                dados.status = 'pendente';
+                dados.dataCriacao = new Date().toISOString();
+                preCadastros.push(dados);
+            }
 
-function mascaraTelefone(input) {
-  var v = input.value.replace(/\D/g, '');
-  if (v.length > 2) v = '(' + v.slice(0,2) + ') ' + v.slice(2);
-  if (v.length > 8) v = v.slice(0,9) + '-' + v.slice(9);
-  input.value = v;
-}
+            salvar();
+            limparForm();
+            renderizarLista();
+            alert('✅ Pré-cadastro salvo com sucesso!');
+        };
 
-// ============================================================
-// NAVEGAÇÃO DOS PASSOS
-// ============================================================
-var dados = {};
+        window.editar = function(id) {
+            var p = preCadastros.find(function(x) { return x.id === id; });
+            if (!p) return;
+            editandoId = id;
+            document.getElementById('preId').value = id;
+            document.getElementById('nome').value = p.nome;
+            document.getElementById('email').value = p.email;
+            document.getElementById('telefone').value = p.telefone || '';
+            document.getElementById('nascimento').value = p.nascimento || '';
+            document.getElementById('interesse').value = p.interesse;
+            document.getElementById('obs').value = p.obs || '';
+            document.querySelector('.card h3').textContent = '✏️ Editando: ' + p.nome;
+        };
 
-function atualizarProgresso(step) {
-  var progressos = [33, 66, 100];
-  document.getElementById('progressFill').style.width = progressos[step-1] + '%';
-  
-  for (var i = 1; i <= 3; i++) {
-    var dot = document.getElementById('dot' + i);
-    dot.className = 'step-dot';
-    if (i < step) dot.classList.add('done');
-    if (i === step) dot.classList.add('active');
-  }
-}
+        window.excluir = function(id) {
+            if (!confirm('Excluir este pré-cadastro?')) return;
+            preCadastros = preCadastros.filter(function(p) { return p.id !== id; });
+            salvar();
+            renderizarLista();
+        };
 
-function mostrarPasso(step) {
-  document.getElementById('step1').classList.add('hidden');
-  document.getElementById('step2').classList.add('hidden');
-  document.getElementById('step3').classList.add('hidden');
-  
-  if (step === 1) document.getElementById('step1').classList.remove('hidden');
-  else if (step === 2) document.getElementById('step2').classList.remove('hidden');
-  else if (step === 3) document.getElementById('step3').classList.remove('hidden');
-  
-  atualizarProgresso(step);
-}
+        window.aprovar = function(id) {
+            if (!confirm('✅ Aprovar este pré-cadastro?')) return;
+            var p = preCadastros.find(function(x) { return x.id === id; });
+            if (p) {
+                p.status = 'aprovado';
+                salvar();
+                renderizarLista();
+                alert('✅ Pré-cadastro aprovado!');
+            }
+        };
 
-function irParaPasso1() {
-  mostrarPasso(1);
-}
+        window.reprovar = function(id) {
+            var motivo = prompt('Motivo da reprovação:');
+            if (motivo === null) return;
+            var p = preCadastros.find(function(x) { return x.id === id; });
+            if (p) {
+                p.status = 'reprovado';
+                p.motivoReprovacao = motivo;
+                salvar();
+                renderizarLista();
+                alert('❌ Pré-cadastro reprovado.');
+            }
+        };
 
-function irParaPasso2() {
-  // Coleta dados do passo 1
-  dados.tipo = document.getElementById('tipoCadastro').value;
-  dados.nome = document.getElementById('nome').value.trim();
-  dados.cpf = document.getElementById('cpf').value.trim();
-  dados.rg = document.getElementById('rg').value.trim();
-  dados.dataNascimento = document.getElementById('dataNascimento').value;
-  dados.sexo = document.getElementById('sexo').value;
-  dados.telefone = document.getElementById('telefone').value.trim();
-  dados.whatsapp = document.getElementById('whatsapp').value.trim() || dados.telefone;
-  dados.email = document.getElementById('email').value.trim();
-  dados.endereco = document.getElementById('endereco').value.trim();
-  dados.cidade = document.getElementById('cidade').value.trim();
-  dados.estado = document.getElementById('estado').value;
-  dados.responsavel = document.getElementById('responsavel').value.trim();
-  dados.observacoes = document.getElementById('observacoes').value.trim();
+        function limparForm() {
+            editandoId = null;
+            document.getElementById('preId').value = '';
+            document.getElementById('nome').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('telefone').value = '';
+            document.getElementById('nascimento').value = '';
+            document.getElementById('interesse').value = 'Voluntário';
+            document.getElementById('obs').value = '';
+            document.querySelector('.card h3').textContent = '📝 Novo Pré-Cadastro';
+        }
 
-  // Validações
-  var erros = [];
-  if (!dados.nome) erros.push('Nome é obrigatório');
-  if (!dados.cpf) erros.push('CPF é obrigatório');
-  if (dados.tipo === 'beneficiario' && !dados.responsavel) {
-    erros.push('Responsável é obrigatório para beneficiários');
-  }
+        // ============================================================
+        // CONTROLE DE PERFIL
+        // ============================================================
+        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+        var modulosPermitidos = {
+            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas', 'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes', 'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios', 'configuracoes', 'backup'],
+            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
+            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
+            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
+            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
+        };
 
-  if (erros.length > 0) {
-    alert('⚠️ ' + erros.join('\n'));
-    return;
-  }
+        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
 
-  // Preenche os dados de assinatura
-  document.getElementById('assinaturaNome').value = dados.nome;
-  document.getElementById('assinaturaCPF').value = dados.cpf;
+        // Aguarda o menu carregar para aplicar permissões
+        setTimeout(function() {
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                var href = item.getAttribute('href') || '';
+                var pagina = href.replace('.html', '');
+                pagina = pagina.split('?')[0].split('#')[0];
+                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+                    item.style.display = 'none';
+                }
+            });
+        }, 500);
 
-  mostrarPasso(2);
-}
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
 
-// ============================================================
-// FINALIZAR CADASTRO
-// ============================================================
-function finalizarCadastro() {
-  var aceite = document.getElementById('aceiteLGPD').checked;
-  var assinaturaNome = document.getElementById('assinaturaNome').value.trim();
-  var assinaturaCPF = document.getElementById('assinaturaCPF').value.trim();
-
-  if (!aceite) {
-    alert('⚠️ Você precisa aceitar os termos da LGPD para continuar.');
-    return;
-  }
-  if (!assinaturaNome) {
-    alert('⚠️ Digite seu nome para assinar.');
-    return;
-  }
-  if (!assinaturaCPF) {
-    alert('⚠️ Digite seu CPF para assinar.');
-    return;
-  }
-
-  // Completa os dados
-  dados.assinaturaNome = assinaturaNome;
-  dados.assinaturaCPF = assinaturaCPF;
-  dados.aceiteLGPD = aceite;
-
-  // Mostra tela de carregamento
-  mostrarPasso(3);
-  document.getElementById('resultadoIcon').textContent = '⏳';
-  document.getElementById('resultadoTitulo').textContent = 'Enviando...';
-  document.getElementById('resultadoMensagem').textContent = 'Aguarde enquanto processamos seu cadastro.';
-  document.getElementById('btnVoltarHome').style.display = 'none';
-
-  // Salva no localStorage (simulação)
-  setTimeout(function() {
-    try {
-      // Busca cadastros existentes
-      var lista = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
-      
-      // Verifica duplicidade
-      var duplicado = lista.some(function(item) {
-        return item.cpf === dados.cpf && item.nome === dados.nome;
-      });
-
-      if (duplicado) {
-        document.getElementById('resultadoIcon').textContent = '⚠️';
-        document.getElementById('resultadoTitulo').textContent = 'Cadastro Duplicado';
-        document.getElementById('resultadoMensagem').textContent = 'Já existe um cadastro com este CPF e nome. Entre em contato com a AMOVIN.';
-        document.getElementById('btnVoltarHome').style.display = 'block';
-        return;
-      }
-
-      // Adiciona novo cadastro
-      var novo = {
-        id: Date.now(),
-        ...dados,
-        dataCadastro: new Date().toISOString(),
-        status: 'pendente'
-      };
-      lista.push(novo);
-      localStorage.setItem('amovin_pre_cadastros', JSON.stringify(lista));
-
-      // Sucesso!
-      document.getElementById('resultadoIcon').textContent = '🎉';
-      document.getElementById('resultadoTitulo').className = 'success';
-      document.getElementById('resultadoTitulo').textContent = 'Cadastro Enviado!';
-      document.getElementById('resultadoMensagem').textContent = '✅ Seu cadastro foi enviado com sucesso! Aguarde a aprovação da equipe AMOVIN.';
-      document.getElementById('btnVoltarHome').style.display = 'block';
-
-    } catch (e) {
-      document.getElementById('resultadoIcon').textContent = '😕';
-      document.getElementById('resultadoTitulo').className = 'error';
-      document.getElementById('resultadoTitulo').textContent = 'Ops! Algo deu errado';
-      document.getElementById('resultadoMensagem').textContent = 'Erro ao salvar o cadastro. Tente novamente.';
-      document.getElementById('btnVoltarHome').style.display = 'block';
-    }
-  }, 1500);
-}
-
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
-mostrarPasso(1);
-
-// Mostrar/esconder campo responsável
-document.getElementById('tipoCadastro').addEventListener('change', function() {
-  var campo = document.getElementById('campoResponsavel');
-  if (this.value === 'beneficiario') {
-    campo.style.display = 'block';
-  } else {
-    campo.style.display = 'none';
-    document.getElementById('responsavel').value = '';
-  }
-});
-</script>
-
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        renderizarLista();
+    </script>
 </body>
 </html>
