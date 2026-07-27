@@ -1,492 +1,709 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social • Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --laranja: #C65A11;
-  --amarelo: #F5C518;
-  --verde: #57C220;
-  --azul: #1E88E5;
-  --grafite: #1A1A1A;
-  --cinza: #6B7280;
-  --cinza-claro: #F8F4ED;
-  --branco: #FFFFFF;
-  --vermelho: #E53935;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amovin ERP • Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F8F4ED;
+            display: flex;
+            min-height: 100vh;
+        }
 
-/* ============================================================
-   ⚠️ A SIDEBAR FOI REMOVIDA DAQUI!
-   Ela agora é carregada pelo menu.js
-   ============================================================ */
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+        }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .topo-bar h1 span {
+            color: var(--laranja);
+        }
+        .topo-bar .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
-.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
-.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .card {
+            background: #FFFFFF;
+            padding: 20px 24px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+        }
+        .card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card h3 .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: #FFF3E0;
+            color: var(--laranja);
+        }
 
-/* ============================================================
-   STATUS CARDS
-   ============================================================ */
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.status-card {
-  background: #FFFFFF;
-  padding: 16px 20px;
-  border-radius: 14px;
-  border: 1px solid #F0E9DF;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  transition: all 0.3s;
-}
-.status-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-.status-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-.status-icon.online { background: #E8F5E9; color: #2E7D32; }
-.status-icon.offline { background: #FFEBEE; color: #C62828; }
-.status-icon.warning { background: #FFF3E0; color: #E65100; }
-.status-info { flex: 1; }
-.status-info .nome { font-size: 11px; font-weight: 600; color: var(--cinza); text-transform: uppercase; letter-spacing: 0.5px; }
-.status-info .valor { font-size: 15px; font-weight: 700; color: var(--grafite); }
-.status-info .detalhe { font-size: 10px; color: var(--cinza); }
-.status-badge { font-size: 9px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
-.status-badge.online { background: #E8F5E9; color: #2E7D32; }
-.status-badge.offline { background: #FFEBEE; color: #C62828; }
-.status-badge.warning { background: #FFF3E0; color: #E65100; }
+        /* ============================================================
+           KPIs
+           ============================================================ */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+        .kpi-card .kpi-icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .kpi-card .kpi-valor {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--grafite);
+        }
+        .kpi-card .kpi-label {
+            font-size: 12px;
+            color: var(--cinza);
+            margin-top: 2px;
+        }
+        .kpi-card .kpi-valor.verde {
+            color: var(--verde);
+        }
+        .kpi-card .kpi-valor.laranja {
+            color: var(--laranja);
+        }
+        .kpi-card .kpi-valor.vermelho {
+            color: var(--vermelho);
+        }
+        .kpi-card .kpi-valor.azul {
+            color: var(--azul);
+        }
 
-.progress-bar-container {
-  width: 100%;
-  height: 6px;
-  background: #F0E9DF;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-.progress-bar {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 1s ease;
-  background: linear-gradient(90deg, #57C220, #C65A11);
-}
-.progress-bar.warning { background: linear-gradient(90deg, #F5C518, #E65100); }
-.progress-bar.danger { background: linear-gradient(90deg, #E53935, #C62828); }
+        /* ============================================================
+           ALERTAS
+           ============================================================ */
+        .alertas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+        .alerta-item {
+            padding: 14px 18px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 4px solid;
+        }
+        .alerta-item .icone {
+            font-size: 24px;
+        }
+        .alerta-item .texto {
+            flex: 1;
+        }
+        .alerta-item .texto .titulo {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--grafite);
+        }
+        .alerta-item .texto .desc {
+            font-size: 12px;
+            color: var(--cinza);
+        }
+        .alerta-item .btn-link {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--azul);
+            text-decoration: none;
+        }
+        .alerta-item .btn-link:hover {
+            text-decoration: underline;
+        }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 24px; }
-.kpi-card { background: #FFFFFF; padding: 20px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
-.kpi-card .kpi-valor { font-size: 28px; font-weight: 800; color: var(--laranja); }
-.kpi-card .kpi-label { font-size: 12px; color: var(--cinza); }
+        .alerta-urgente {
+            background: #FFEBEE;
+            border-color: var(--vermelho);
+        }
+        .alerta-atencao {
+            background: #FFF3E0;
+            border-color: #E65100;
+        }
+        .alerta-info {
+            background: #E3F2FD;
+            border-color: var(--azul);
+        }
+        .alerta-sucesso {
+            background: #E8F5E9;
+            border-color: var(--verde);
+        }
 
-.grid-dois { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
-.card h3 .ver-tudo { font-size: 11px; font-weight: 600; color: var(--cinza); cursor: pointer; }
+        /* ============================================================
+           PROJETOS
+           ============================================================ */
+        .projeto-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #F0E9DF;
+        }
+        .projeto-item:last-child {
+            border-bottom: none;
+        }
+        .projeto-item .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .projeto-item .header .nome {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--grafite);
+        }
+        .projeto-item .header .valores {
+            font-size: 13px;
+            color: var(--cinza);
+        }
+        .projeto-item .header .valores .realizado {
+            color: var(--laranja);
+            font-weight: 600;
+        }
+        .projeto-item .barra {
+            width: 100%;
+            height: 6px;
+            background: #F0E9DF;
+            border-radius: 4px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+        .projeto-item .barra .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+        .fill-verde {
+            background: var(--verde);
+        }
+        .fill-laranja {
+            background: var(--laranja);
+        }
+        .fill-vermelho {
+            background: var(--vermelho);
+        }
 
-.atividade-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F0E9DF; }
-.atividade-item .icone { font-size: 18px; }
-.atividade-item .texto { flex: 1; font-size: 13px; color: var(--grafite); }
-.atividade-item .texto .detalhe { font-size: 11px; color: var(--cinza); }
-.atividade-item .hora { font-size: 10px; color: var(--cinza); }
+        /* ============================================================
+           NOTAS RECENTES
+           ============================================================ */
+        .nota-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 13px;
+        }
+        .nota-item:last-child {
+            border-bottom: none;
+        }
+        .nota-item .info .num {
+            font-weight: 600;
+            color: var(--grafite);
+        }
+        .nota-item .info .projeto {
+            color: var(--cinza);
+            font-size: 12px;
+        }
+        .nota-item .valor {
+            font-weight: 700;
+            color: var(--laranja);
+        }
 
-.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
 
-.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
-.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+        .rodape {
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo {
+            flex-shrink: 0;
+        }
+        .rodape-logo .logo-vigorre {
+            width: 50px;
+        }
+        .rodape-info {
+            flex: 1;
+        }
+        .rodape-info .copyright {
+            font-size: 8px;
+            color: #8A8F98;
+        }
+        .rodape-info .tm {
+            font-size: 6px;
+            vertical-align: super;
+        }
+        .rodape-info .contato {
+            font-size: 9px;
+            color: #8A8F98;
+        }
+        .rodape-info a {
+            color: #C65A11;
+            text-decoration: none;
+        }
+        .rodape-info .email {
+            font-size: 8px;
+            color: #aaa;
+        }
+        .logo-vigorre-fallback {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
 
-@media (max-width: 768px) { .main-content { margin-left: 0; } .grid-dois { grid-template-columns: 1fr; } }
-</style>
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+            .alertas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- ⚠️ O MENU NÃO ESTÁ MAIS AQUI! Ele será carregado pelo menu.js -->
+    <div id="menu-container"></div>
 
-<main class="main-content">
-  <div class="topo-bar">
-    <h1>📊 Dashboard</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
-
-  <!-- ============================================================
-       STATUS DOS SERVIÇOS
-       ============================================================ -->
-  <div class="status-grid" id="statusServicos">
-    <div class="status-card">
-      <div class="status-icon online" id="firebaseIcon">🔥</div>
-      <div class="status-info">
-        <div class="nome">Firebase</div>
-        <div class="valor" id="firebaseStatus">Carregando...</div>
-        <div class="detalhe">Leitura: <span id="firebaseLeitura">--</span></div>
-        <span class="status-badge online" id="firebaseBadge">⏳</span>
-      </div>
-    </div>
-
-    <div class="status-card">
-      <div class="status-icon online" id="supabaseIcon">⚡</div>
-      <div class="status-info">
-        <div class="nome">Supabase</div>
-        <div class="valor" id="supabaseStatus">Carregando...</div>
-        <div class="detalhe">Registros: <span id="supabaseRegistros">--</span></div>
-        <span class="status-badge online" id="supabaseBadge">⏳</span>
-      </div>
-    </div>
-
-    <div class="status-card">
-      <div class="status-icon online" id="geminiIcon">🤖</div>
-      <div class="status-info">
-        <div class="nome">Gemini IA</div>
-        <div class="valor" id="geminiStatus">Carregando...</div>
-        <div class="detalhe">Chave: <span id="geminiChave">--</span></div>
-        <span class="status-badge online" id="geminiBadge">⏳</span>
-      </div>
-    </div>
-
-    <div class="status-card">
-      <div class="status-icon online" id="storageIcon">💾</div>
-      <div class="status-info">
-        <div class="nome">Armazenamento</div>
-        <div class="valor" id="armazenamentoStatus">Carregando...</div>
-        <div class="detalhe">
-          <span id="espacoUsado">0%</span> · <span id="espacoTotal">--</span>
+    <main class="main-content">
+        <div class="topo-bar">
+            <div>
+                <h1>📊 Dashboard <span>AMOVIN</span></h1>
+                <span class="sub">Visão geral do sistema e indicadores</span>
+            </div>
+            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar" id="barraEspaco" style="width: 0%;"></div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid" id="kpiContainer">
+            <div class="kpi-card">
+                <span class="kpi-icon">📋</span>
+                <div class="kpi-valor laranja" id="kpiProjetos">0</div>
+                <div class="kpi-label">Projetos Ativos</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-icon">💰</span>
+                <div class="kpi-valor azul" id="kpiOrcamento">R$ 0</div>
+                <div class="kpi-label">Orçamento Total</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-icon">💳</span>
+                <div class="kpi-valor" id="kpiGasto" style="color:#E65100;">R$ 0</div>
+                <div class="kpi-label">Total Gasto</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-icon">📊</span>
+                <div class="kpi-valor verde" id="kpiSaldo">R$ 0</div>
+                <div class="kpi-label">Saldo Disponível</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-icon">⏳</span>
+                <div class="kpi-valor vermelho" id="kpiPendentes">0</div>
+                <div class="kpi-label">Notas Pendentes</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-icon">📦</span>
+                <div class="kpi-valor azul" id="kpiEspera">0</div>
+                <div class="kpi-label">Produtos em Espera</div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ============================================================
-       KPIs
-       ============================================================ -->
-  <div class="kpi-row">
-    <div class="kpi-card">
-      <div class="kpi-valor" id="kpiTotalPessoas">0</div>
-      <div class="kpi-label">👥 Total de Pessoas</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-valor" id="kpiAgendamentosHoje">0</div>
-      <div class="kpi-label">📅 Agendamentos Hoje</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-valor" id="kpiNotasPendentes">0</div>
-      <div class="kpi-label">📄 Notas Pendentes</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-valor" id="kpiPreCadastros">0</div>
-      <div class="kpi-label">📋 Pré-Cadastros</div>
-    </div>
-  </div>
+        <!-- ALERTAS -->
+        <div class="alertas-grid" id="alertasContainer">
+            <!-- Gerado via JavaScript -->
+        </div>
 
-  <!-- ============================================================
-       GRID DE ATIVIDADES
-       ============================================================ -->
-  <div class="grid-dois">
-    <div class="card">
-      <h3>🔄 Atividades Recentes <span class="ver-tudo">Ver tudo →</span></h3>
-      <div id="listaAtividades"><div class="sem-dados">Nenhuma atividade recente.</div></div>
-    </div>
+        <!-- GRID 2 COLUNAS -->
+        <div class="grid-2col">
+            <!-- PROJETOS -->
+            <div class="card">
+                <h3>
+                    📋 Projetos em Andamento
+                    <span class="badge" id="totalProjetosBadge">0</span>
+                </h3>
+                <div id="listaProjetos">
+                    <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum projeto ativo.</div>
+                </div>
+            </div>
 
-    <div class="card">
-      <h3>📋 Próximos Eventos <span class="ver-tudo">Ver tudo →</span></h3>
-      <div id="listaEventos"><div class="sem-dados">Nenhum evento agendado.</div></div>
-    </div>
-  </div>
+            <!-- NOTAS RECENTES -->
+            <div class="card">
+                <h3>
+                    📄 Últimas Notas Vinculadas
+                    <span class="badge" id="totalNotasBadge">0</span>
+                </h3>
+                <div id="listaNotas">
+                    <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhuma nota vinculada.</div>
+                </div>
+            </div>
+        </div>
 
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo">
-        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="logo-vigorre-fallback">Vigorre</span>
-      </div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
-</main>
+        <!-- SALA DE ESPERA - RESUMO -->
+        <div class="card">
+            <h3>
+                ⏳ Sala de Espera - Produtos Aguardando
+                <span class="badge" id="totalEsperaBadge">0</span>
+            </h3>
+            <div id="listaEspera">
+                <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum produto aguardando.</div>
+            </div>
+        </div>
 
-<!-- ============================================================
-   SCRIPTS
-   ============================================================ -->
-<!-- CARREGA O MENU (UM ÚNICO ARQUIVO PARA TODAS AS PÁGINAS) -->
-<script src="menu.js"></script>
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-<script>
-// ============================================================
-// STATUS DOS SERVIÇOS
-// ============================================================
+    <script src="menu.js"></script>
+    <script>
+        // ============================================================
+        // CARREGAR DADOS
+        // ============================================================
+        function carregarDados() {
+            var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
+            var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
+            var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
+            var produtosEspera = JSON.parse(localStorage.getItem('amovin_produtos_espera') || '[]');
 
-async function verificarStatusServicos() {
-    // --- Firebase ---
-    try {
-        const firebaseEl = document.getElementById('firebaseStatus');
-        const firebaseBadge = document.getElementById('firebaseBadge');
-        const firebaseLeitura = document.getElementById('firebaseLeitura');
-        const firebaseIcon = document.getElementById('firebaseIcon');
-        
-        // Verifica se o Firebase está disponível
-        if (typeof firebase !== 'undefined' && firebase.firestore) {
-            // Tenta ler do Firebase
-            const db = firebase.firestore();
-            const snapshot = await db.collection('pessoas').limit(1).get();
-            const count = snapshot.size;
-            
-            firebaseEl.textContent = 'Conectado';
-            firebaseBadge.textContent = '✅ Online';
-            firebaseBadge.className = 'status-badge online';
-            firebaseLeitura.textContent = count + ' docs';
-            firebaseIcon.className = 'status-icon online';
-        } else {
-            firebaseEl.textContent = 'Firebase não carregado';
-            firebaseBadge.textContent = '⚠️ Não carregado';
-            firebaseBadge.className = 'status-badge warning';
-            firebaseIcon.className = 'status-icon warning';
-        }
-    } catch (e) {
-        document.getElementById('firebaseStatus').textContent = 'Erro!';
-        document.getElementById('firebaseBadge').textContent = '❌ Offline';
-        document.getElementById('firebaseBadge').className = 'status-badge offline';
-        document.getElementById('firebaseIcon').className = 'status-icon offline';
-    }
-
-    // --- Supabase ---
-    try {
-        const supabaseEl = document.getElementById('supabaseStatus');
-        const supabaseBadge = document.getElementById('supabaseBadge');
-        const supabaseRegistros = document.getElementById('supabaseRegistros');
-        const supabaseIcon = document.getElementById('supabaseIcon');
-        
-        if (typeof supabase !== 'undefined') {
-            const { data, error } = await supabase
-                .from('pre_cadastros')
-                .select('id', { count: 'exact', head: true });
-            
-            if (!error) {
-                supabaseEl.textContent = 'Conectado';
-                supabaseBadge.textContent = '✅ Online';
-                supabaseBadge.className = 'status-badge online';
-                supabaseRegistros.textContent = data?.length || '0';
-                supabaseIcon.className = 'status-icon online';
-            } else {
-                throw error;
-            }
-        } else {
-            supabaseEl.textContent = 'Supabase não carregado';
-            supabaseBadge.textContent = '⚠️ Não carregado';
-            supabaseBadge.className = 'status-badge warning';
-            supabaseIcon.className = 'status-icon warning';
-        }
-    } catch (e) {
-        document.getElementById('supabaseStatus').textContent = 'Erro!';
-        document.getElementById('supabaseBadge').textContent = '❌ Offline';
-        document.getElementById('supabaseBadge').className = 'status-badge offline';
-        document.getElementById('supabaseIcon').className = 'status-icon offline';
-    }
-
-    // --- Gemini ---
-    try {
-        const geminiEl = document.getElementById('geminiStatus');
-        const geminiBadge = document.getElementById('geminiBadge');
-        const geminiChave = document.getElementById('geminiChave');
-        const geminiIcon = document.getElementById('geminiIcon');
-        
-        const key = localStorage.getItem('amovin_gemini_key');
-        if (key && key.length > 10) {
-            const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: 'teste' }] }] })
+            // ============================================================
+            // KPIs
+            // ============================================================
+            var projetosAtivos = projetos.filter(function(p) { return p.status === 'ativo'; });
+            var totalPrevisto = 0,
+                totalRealizado = 0;
+            orcamentos.forEach(function(o) {
+                totalPrevisto += o.previsto || 0;
+                totalRealizado += o.realizado || 0;
             });
-            
-            if (response.ok) {
-                geminiEl.textContent = 'Conectado';
-                geminiBadge.textContent = '✅ Online';
-                geminiBadge.className = 'status-badge online';
-                geminiChave.textContent = 'Ativa ✅';
-                geminiIcon.className = 'status-icon online';
+
+            var notasPendentes = notas.filter(function(n) { return n.status === 'pendente' || n.status === 'pendente_vinculo'; })
+                .length;
+            var emEspera = produtosEspera.filter(function(p) { return p.status === 'aguardando'; }).length;
+
+            document.getElementById('kpiProjetos').textContent = projetosAtivos.length;
+            document.getElementById('kpiOrcamento').textContent = 'R$ ' + totalPrevisto.toFixed(2).replace('.', ',');
+            document.getElementById('kpiGasto').textContent = 'R$ ' + totalRealizado.toFixed(2).replace('.', ',');
+            document.getElementById('kpiSaldo').textContent = 'R$ ' + (totalPrevisto - totalRealizado).toFixed(2).replace('.',
+            ',');
+            document.getElementById('kpiPendentes').textContent = notasPendentes;
+            document.getElementById('kpiEspera').textContent = emEspera;
+
+            // ============================================================
+            // ALERTAS
+            // ============================================================
+            var alertasContainer = document.getElementById('alertasContainer');
+            var alertas = [];
+
+            // Alertas de notas pendentes
+            if (notasPendentes > 0) {
+                alertas.push({
+                    tipo: 'urgente',
+                    icone: '⚠️',
+                    titulo: notasPendentes + ' nota(s) fiscal(is) pendente(s)',
+                    desc: 'Vincule as notas fiscais para atualizar o orçamento.',
+                    link: 'notas-fiscais.html',
+                    linkText: 'Ir para Notas'
+                });
+            }
+
+            // Alertas de produtos em espera
+            if (emEspera > 0) {
+                alertas.push({
+                    tipo: 'atencao',
+                    icone: '📦',
+                    titulo: emEspera + ' produto(s) aguardando direcionamento',
+                    desc: 'Direcione os produtos para Estoque, Patrimônio ou Serviço.',
+                    link: 'sala-espera-produtos.html',
+                    linkText: 'Ir para Sala de Espera'
+                });
+            }
+
+            // Alertas de projetos com orçamento baixo
+            orcamentos.forEach(function(o) {
+                var previsto = o.previsto || 0;
+                var realizado = o.realizado || 0;
+                if (previsto > 0 && realizado > 0) {
+                    var percentual = (realizado / previsto) * 100;
+                    if (percentual > 85) {
+                        var projeto = projetos.find(function(p) { return p.id === o.projeto_id; });
+                        alertas.push({
+                            tipo: 'atencao',
+                            icone: '📊',
+                            titulo: 'Projeto "' + (projeto ? projeto.nome : '---') + '" - ' + percentual.toFixed(
+                                0) + '% do orçamento utilizado',
+                            desc: 'Categoria: ' + o.categoria + ' | Disponível: R$ ' + (previsto - realizado)
+                                .toFixed(2).replace('.', ','),
+                            link: 'projetos-convenios.html',
+                            linkText: 'Ver Projeto'
+                        });
+                    }
+                }
+            });
+
+            // Se não houver alertas, mostra sucesso
+            if (alertas.length === 0) {
+                alertas.push({
+                    tipo: 'sucesso',
+                    icone: '✅',
+                    titulo: 'Tudo em ordem!',
+                    desc: 'Nenhum alerta pendente no momento.',
+                    link: '#',
+                    linkText: ''
+                });
+            }
+
+            // Limita a 5 alertas
+            alertas = alertas.slice(0, 5);
+
+            alertasContainer.innerHTML = alertas.map(function(a) {
+                var classes = {
+                    'urgente': 'alerta-urgente',
+                    'atencao': 'alerta-atencao',
+                    'info': 'alerta-info',
+                    'sucesso': 'alerta-sucesso'
+                };
+                return '<div class="alerta-item ' + (classes[a.tipo] || 'alerta-info') + '">' +
+                    '<span class="icone">' + a.icone + '</span>' +
+                    '<div class="texto">' +
+                    '<div class="titulo">' + a.titulo + '</div>' +
+                    '<div class="desc">' + a.desc + '</div>' +
+                    '</div>' +
+                    (a.link && a.link !== '#' ? '<a href="' + a.link + '" class="btn-link">' + a.linkText +
+                    ' →</a>' : '') +
+                    '</div>';
+            }).join('');
+
+            // ============================================================
+            // PROJETOS
+            // ============================================================
+            var listaProjetos = document.getElementById('listaProjetos');
+            document.getElementById('totalProjetosBadge').textContent = projetosAtivos.length;
+
+            if (projetosAtivos.length === 0) {
+                listaProjetos.innerHTML =
+                '<div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum projeto ativo.</div>';
             } else {
-                geminiEl.textContent = 'Chave inválida';
-                geminiBadge.textContent = '⚠️ Atenção';
-                geminiBadge.className = 'status-badge warning';
-                geminiChave.textContent = 'Verificar';
-                geminiIcon.className = 'status-icon warning';
+                listaProjetos.innerHTML = projetosAtivos.slice(0, 5).map(function(p) {
+                    var orcProjeto = orcamentos.filter(function(o) { return o.projeto_id === p.id; });
+                    var totalPrev = orcProjeto.reduce(function(s, o) { return s + o.previsto; }, 0);
+                    var totalReal = orcProjeto.reduce(function(s, o) { return s + o.realizado; }, 0);
+                    var percentual = totalPrev > 0 ? Math.min((totalReal / totalPrev) * 100, 100) : 0;
+                    var cor = percentual < 70 ? 'fill-verde' : (percentual < 90 ? 'fill-laranja' : 'fill-vermelho');
+
+                    return '<div class="projeto-item">' +
+                        '<div class="header">' +
+                        '<span class="nome">' + p.nome + '</span>' +
+                        '<span class="valores">' +
+                        '<span class="realizado">R$ ' + totalReal.toFixed(2).replace('.', ',') + '</span>' +
+                        ' / R$ ' + totalPrev.toFixed(2).replace('.', ',') +
+                        ' (' + percentual.toFixed(0) + '%)' +
+                        '</span>' +
+                        '</div>' +
+                        '<div class="barra"><div class="fill ' + cor + '" style="width:' + percentual + '%;"></div></div>' +
+                        '</div>';
+                }).join('');
             }
-        } else {
-            geminiEl.textContent = 'Não configurado';
-            geminiBadge.textContent = '⚠️ Sem chave';
-            geminiBadge.className = 'status-badge warning';
-            geminiChave.textContent = 'Configurar';
-            geminiIcon.className = 'status-icon warning';
-        }
-    } catch (e) {
-        document.getElementById('geminiStatus').textContent = 'Erro!';
-        document.getElementById('geminiBadge').textContent = '❌ Offline';
-        document.getElementById('geminiBadge').className = 'status-badge offline';
-        document.getElementById('geminiIcon').className = 'status-icon offline';
-    }
 
-    // --- Armazenamento ---
-    try {
-        const espacoEl = document.getElementById('armazenamentoStatus');
-        const espacoUsado = document.getElementById('espacoUsado');
-        const espacoTotal = document.getElementById('espacoTotal');
-        const barra = document.getElementById('barraEspaco');
-        const storageIcon = document.getElementById('storageIcon');
-        
-        let totalBytes = 0;
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('amovin_')) {
-                totalBytes += localStorage.getItem(key).length * 2;
+            // ============================================================
+            // NOTAS RECENTES
+            // ============================================================
+            var listaNotas = document.getElementById('listaNotas');
+            var notasVinculadas = notas.filter(function(n) { return n.status === 'vinculado' || n.status === 'aprovado'; })
+                .sort(function(a, b) {
+                    return new Date(b.data_criacao) - new Date(a.data_criacao);
+                });
+
+            document.getElementById('totalNotasBadge').textContent = notasVinculadas.length;
+
+            if (notasVinculadas.length === 0) {
+                listaNotas.innerHTML =
+                    '<div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhuma nota vinculada.</div>';
+            } else {
+                listaNotas.innerHTML = notasVinculadas.slice(0, 5).map(function(n) {
+                    var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
+                    var data = n.data_emissao ? new Date(n.data_emissao + 'T00:00:00').toLocaleDateString(
+                    'pt-BR') : '-';
+                    return '<div class="nota-item">' +
+                        '<div class="info">' +
+                        '<span class="num">NF ' + (n.numero || '---') + '</span>' +
+                        '<span class="projeto"> • ' + (projeto ? projeto.nome : 'Projeto não identificado') +
+                        '</span>' +
+                        '</div>' +
+                        '<span class="valor">R$ ' + (n.valor_total || 0).toFixed(2).replace('.', ',') + '</span>' +
+                        '</div>';
+                }).join('');
+            }
+
+            // ============================================================
+            // SALA DE ESPERA
+            // ============================================================
+            var listaEspera = document.getElementById('listaEspera');
+            var emEsperaLista = produtosEspera.filter(function(p) { return p.status === 'aguardando'; });
+            document.getElementById('totalEsperaBadge').textContent = emEsperaLista.length;
+
+            if (emEsperaLista.length === 0) {
+                listaEspera.innerHTML =
+                    '<div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum produto aguardando.</div>';
+            } else {
+                listaEspera.innerHTML = emEsperaLista.slice(0, 5).map(function(p) {
+                    var destinos = { 'estoque': '📦 Estoque', 'patrimonio': '🏢 Patrimônio', 'servico': '🛠️ Serviço' };
+                    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0E9DF;font-size:13px;">' +
+                        '<span><strong>' + p.descricao + '</strong> (' + p.quantidade + 'x) <span style="color:var(--cinza);font-size:12px;">Sugestão: ' +
+                        destinos[p.destino_sugerido] + '</span></span>' +
+                        '<span style="color:var(--laranja);font-weight:600;">R$ ' + p.valor_total.toFixed(2)
+                        .replace('.', ',') + '</span>' +
+                        '</div>';
+                }).join('');
             }
         }
-        
-        const limite = 5 * 1024 * 1024;
-        const percentual = Math.min((totalBytes / limite) * 100, 100);
-        
-        espacoUsado.textContent = percentual.toFixed(1) + '%';
-        espacoTotal.textContent = '5 MB';
-        barra.style.width = percentual + '%';
-        
-        if (percentual > 80) {
-            barra.className = 'progress-bar danger';
-            espacoEl.textContent = 'Crítico!';
-            storageIcon.className = 'status-icon warning';
-        } else if (percentual > 60) {
-            barra.className = 'progress-bar warning';
-            espacoEl.textContent = 'Atenção';
-            storageIcon.className = 'status-icon warning';
-        } else {
-            barra.className = 'progress-bar';
-            espacoEl.textContent = 'OK';
-            storageIcon.className = 'status-icon online';
+
+        // ============================================================
+        // CONTROLE DE PERFIL
+        // ============================================================
+        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+        var modulosPermitidos = {
+            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
+                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
+                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
+                'configuracoes', 'backup'
+            ],
+            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
+            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
+            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
+            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
+        };
+
+        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+        setTimeout(function() {
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                var href = item.getAttribute('href') || '';
+                var pagina = href.replace('.html', '');
+                pagina = pagina.split('?')[0].split('#')[0];
+                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+                    item.style.display = 'none';
+                }
+            });
+        }, 500);
+
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
         }
-    } catch (e) {
-        document.getElementById('armazenamentoStatus').textContent = 'Erro!';
-    }
-}
 
-// Executa a verificação
-verificarStatusServicos();
-setInterval(verificarStatusServicos, 60000);
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        carregarDados();
 
-// ============================================================
-// KPIs E ATIVIDADES
-// ============================================================
-
-function carregarKPIs() {
-    // Pessoas
-    const pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
-    document.getElementById('kpiTotalPessoas').textContent = pessoas.length;
-
-    // Agenda hoje
-    const agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
-    const hoje = new Date().toISOString().split('T')[0];
-    const hojeCount = agendamentos.filter(a => a.data === hoje).length;
-    document.getElementById('kpiAgendamentosHoje').textContent = hojeCount;
-
-    // Notas pendentes
-    const notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
-    const pendentes = notas.filter(n => n.status === 'pendente').length;
-    document.getElementById('kpiNotasPendentes').textContent = pendentes;
-
-    // Pré-cadastros
-    const preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
-    document.getElementById('kpiPreCadastros').textContent = preCadastros.length;
-}
-
-// Atividades Recentes
-function carregarAtividades() {
-    const logs = JSON.parse(localStorage.getItem('amovin_logs') || '[]');
-    const container = document.getElementById('listaAtividades');
-    if (logs.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhuma atividade recente.</div>';
-        return;
-    }
-    container.innerHTML = logs.slice(0, 5).map(log => {
-        const data = new Date(log.data);
-        const hora = data.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-        return '<div class="atividade-item">' +
-            '<span class="icone">' + (log.icone || '📌') + '</span>' +
-            '<div class="texto">' + log.texto + ' <span class="detalhe">' + (log.detalhe || '') + '</span></div>' +
-            '<span class="hora">' + hora + '</span>' +
-            '</div>';
-    }).join('');
-}
-
-// Eventos
-function carregarEventos() {
-    const agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
-    const hoje = new Date().toISOString().split('T')[0];
-    const proximos = agendamentos.filter(a => a.data >= hoje).sort((a,b) => a.data.localeCompare(b.data));
-    const container = document.getElementById('listaEventos');
-    if (proximos.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhum evento agendado.</div>';
-        return;
-    }
-    container.innerHTML = proximos.slice(0, 5).map(a => {
-        const data = new Date(a.data + 'T00:00:00');
-        const dataStr = data.toLocaleDateString('pt-BR');
-        return '<div class="atividade-item">' +
-            '<span class="icone">📅</span>' +
-            '<div class="texto">' + (a.descricao || 'Agendamento') + ' <span class="detalhe">' + dataStr + ' às ' + (a.hora || '--:--') + '</span></div>' +
-            '<span class="hora">' + (a.status || '⏳') + '</span>' +
-            '</div>';
-    }).join('');
-}
-
-// Inicializa KPIs e atividades
-carregarKPIs();
-carregarAtividades();
-carregarEventos();
-
-// ============================================================
-// SESSÃO
-// ============================================================
-if (!sessionStorage.getItem('amovin_logado')) {
-    window.location.href = 'index.html';
-}
-
-var timeout;
-function resetTimeout() {
-    clearTimeout(timeout);
-    timeout = setTimeout(function() {
-        sessionStorage.clear();
-        alert('⏰ Sessão expirada.');
-        window.location.href = 'index.html';
-    }, 30 * 60 * 1000);
-}
-document.addEventListener('mousemove', resetTimeout);
-document.addEventListener('keypress', resetTimeout);
-document.addEventListener('click', resetTimeout);
-resetTimeout();
-</script>
-
+        // Atualizar a cada 30 segundos
+        setInterval(carregarDados, 30000);
+    </script>
 </body>
 </html>
