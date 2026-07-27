@@ -1,549 +1,1667 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social • Notas Fiscais</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --laranja: #C65A11;
-  --amarelo: #F5C518;
-  --verde: #57C220;
-  --azul: #1E88E5;
-  --grafite: #1A1A1A;
-  --cinza: #6B7280;
-  --cinza-claro: #F8F4ED;
-  --branco: #FFFFFF;
-  --vermelho: #E53935;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amovin ERP • Notas Fiscais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- PDF.js para ler PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
+    </script>
+    <!-- Tesseract.js para OCR de imagens -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
+    </script>
+    <style>
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+            --sap-blue: #003366;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F8F4ED;
+            display: flex;
+            min-height: 100vh;
+        }
 
-.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
-.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
-.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+        }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
-.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
-.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
-.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .topo-bar h1 span {
+            color: var(--laranja);
+        }
+        .topo-bar .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-.busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
-.busca-bar select { padding: 10px; border: 1px solid #E5E0D8; border-radius: 8px; font-family: 'Inter', sans-serif; background: white; }
-.btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
+        /* ============================================================
+           ETAPAS - GUIA VISUAL
+           ============================================================ */
+        .etapas {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            background: #FFFFFF;
+            padding: 14px 20px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+        }
+        .etapa {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--cinza);
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #F8F4ED;
+            transition: all 0.3s;
+        }
+        .etapa .num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            background: #E5E0D8;
+            color: var(--cinza);
+        }
+        .etapa.ativo {
+            background: #FFF3E0;
+            color: var(--laranja);
+        }
+        .etapa.ativo .num {
+            background: var(--laranja);
+            color: white;
+        }
+        .etapa.concluido {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .etapa.concluido .num {
+            background: var(--verde);
+            color: white;
+        }
+        .etapa .seta {
+            color: #E5E0D8;
+            font-size: 14px;
+            margin-left: 4px;
+        }
 
-.nota-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.nota-info { flex: 1; }
-.nota-info h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
-.nota-info p { font-size: 11px; color: var(--cinza); }
-.badge-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-.badge-pendente { background: #FFF3E0; color: #E65100; }
-.badge-aprovada { background: #E8F5E9; color: #2E7D32; }
-.badge-reprovada { background: #FFEBEE; color: #C62828; }
-.badge-cancelada { background: #F5F5F5; color: #888; }
-.btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
-.btn-editar { background: #F5A623; color: white; }
-.btn-visualizar { background: var(--azul); color: white; }
-.btn-aprovar { background: var(--verde); color: white; }
-.btn-reprovar { background: var(--vermelho); color: white; }
-.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
+        .card {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card h3 .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background: #FFF3E0;
+            color: var(--laranja);
+        }
+        .card.destacado {
+            border: 2px solid var(--laranja);
+            background: #FFFAF5;
+        }
+        .card.verde {
+            border: 2px solid var(--verde);
+            background: #F5FFF5;
+        }
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal { background: white; border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
-.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
-.modal-header h3 { font-size: 18px; }
-.modal-body { padding: 22px; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-full { grid-column: 1 / -1; }
-.form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
-.form-group textarea { resize: vertical; min-height: 60px; }
-.btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
-.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cinza);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: border 0.2s;
+            background: #FAFAFA;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--laranja);
+            background: var(--branco);
+            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.08);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
 
-.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
-.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--laranja);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--laranja-escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(198, 90, 17, 0.25);
+        }
+        .btn-success {
+            background: var(--verde);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #388E3C;
+        }
+        .btn-danger {
+            background: var(--vermelho);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #C62828;
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--cinza);
+            border: 1px solid #E5E0D8;
+        }
+        .btn-outline:hover {
+            background: #F8F4ED;
+        }
+        .btn-azul {
+            background: var(--azul);
+            color: white;
+        }
+        .btn-azul:hover {
+            background: #1565C0;
+        }
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            justify-content: center;
+        }
 
-@media (max-width: 900px) { .main-content { margin-left: 0; } }
-@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } }
-</style>
+        /* ============================================================
+           DROPZONE - ÁREA DE UPLOAD
+           ============================================================ */
+        .dropzone {
+            border: 3px dashed #E5E0D8;
+            border-radius: 14px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #FAFAFA;
+        }
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: var(--laranja);
+            background: #FFF8E7;
+        }
+        .dropzone .icone {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .dropzone p {
+            font-size: 14px;
+            color: var(--cinza);
+        }
+        .dropzone .formatos {
+            font-size: 11px;
+            color: #B0A99F;
+            margin-top: 6px;
+        }
+        .dropzone .btn-upload {
+            margin-top: 14px;
+            padding: 10px 30px;
+            background: var(--laranja);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .dropzone .btn-upload:hover {
+            background: var(--laranja-escuro);
+        }
+
+        /* ============================================================
+           PREVIEW DA NOTA
+           ============================================================ */
+        .preview-nota {
+            background: #F8F4ED;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            display: none;
+        }
+        .preview-nota.visivel {
+            display: block;
+        }
+        .preview-nota .linha {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #E5E0D8;
+            font-size: 13px;
+        }
+        .preview-nota .linha:last-child {
+            border-bottom: none;
+        }
+        .preview-nota .label {
+            color: var(--cinza);
+            font-weight: 500;
+        }
+        .preview-nota .valor {
+            font-weight: 600;
+            color: var(--grafite);
+        }
+        .preview-nota .valor.destaque {
+            color: var(--laranja);
+            font-size: 16px;
+        }
+
+        /* ============================================================
+           VINCULAÇÃO - DESTINOS
+           ============================================================ */
+        .destinos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .destino-card {
+            padding: 16px;
+            border-radius: 10px;
+            border: 2px solid #E5E0D8;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .destino-card:hover {
+            border-color: var(--cinza);
+        }
+        .destino-card.selecionado {
+            border-color: var(--laranja);
+            background: #FFF8E7;
+            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.1);
+        }
+        .destino-card .icone {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .destino-card .nome {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--grafite);
+        }
+        .destino-card .desc {
+            font-size: 11px;
+            color: var(--cinza);
+        }
+
+        /* ============================================================
+           SALDO E RESUMO
+           ============================================================ */
+        .saldo-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .saldo-item {
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+            background: #F8F4ED;
+        }
+        .saldo-item .valor {
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .saldo-item .label {
+            font-size: 11px;
+            color: var(--cinza);
+        }
+        .saldo-item .valor.verde {
+            color: var(--verde);
+        }
+        .saldo-item .valor.laranja {
+            color: var(--laranja);
+        }
+        .saldo-item .valor.vermelho {
+            color: var(--vermelho);
+        }
+
+        /* ============================================================
+           LISTA DE NOTAS
+           ============================================================ */
+        .nota-item {
+            padding: 14px 18px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .nota-item:hover {
+            background: #FFF8E7;
+        }
+        .nota-item .info {
+            flex: 1;
+        }
+        .nota-item .info .num {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--grafite);
+        }
+        .nota-item .info .detalhe {
+            font-size: 12px;
+            color: var(--cinza);
+        }
+        .nota-item .info .projeto {
+            font-size: 11px;
+            color: var(--laranja);
+            font-weight: 600;
+        }
+        .nota-item .status-badge {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-pendente {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+        .status-vinculado {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .status-aprovado {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+        .status-reprovado {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .nota-item .acoes {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .nota-item .btn {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
+
+        .sem-dados {
+            text-align: center;
+            padding: 40px;
+            color: #9CA3AF;
+        }
+
+        .rodape {
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo {
+            flex-shrink: 0;
+        }
+        .rodape-logo .logo-vigorre {
+            width: 50px;
+        }
+        .rodape-info {
+            flex: 1;
+        }
+        .rodape-info .copyright {
+            font-size: 8px;
+            color: #8A8F98;
+        }
+        .rodape-info .tm {
+            font-size: 6px;
+            vertical-align: super;
+        }
+        .rodape-info .contato {
+            font-size: 9px;
+            color: #8A8F98;
+        }
+        .rodape-info a {
+            color: #C65A11;
+            text-decoration: none;
+        }
+        .rodape-info .email {
+            font-size: 8px;
+            color: #aaa;
+        }
+        .logo-vigorre-fallback {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .destinos-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .saldo-box {
+                grid-template-columns: 1fr;
+            }
+            .etapas {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .etapa {
+                white-space: nowrap;
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .etapa .seta {
+                display: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .destinos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================================
+           ANIMAÇÕES
+           ============================================================ */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .slide-down {
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        .pulse {
+            animation: pulse 0.5s ease 3;
+        }
+
+        /* Notificação toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.4s ease;
+            max-width: 400px;
+        }
+        .toast-success {
+            background: var(--verde);
+        }
+        .toast-error {
+            background: var(--vermelho);
+        }
+        .toast-info {
+            background: var(--azul);
+        }
+        .toast-warning {
+            background: #E65100;
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div id="menu-container"></div>
+    <div id="menu-container"></div>
 
-<main class="main-content">
-  <div class="topo-bar"><h1>📄 Notas Fiscais</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+    <main class="main-content">
 
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiPendentes">0</div><div class="kpi-label">⏳ Pendentes</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiAprovadas">0</div><div class="kpi-label">✅ Aprovadas</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiValorTotal">R$ 0</div><div class="kpi-label">Valor Total</div></div>
-  </div>
-
-  <div class="busca-bar">
-    <input type="text" id="buscaNota" placeholder="Buscar por número, chave, emitente..." oninput="filtrar()">
-    <select id="filtroStatus" onchange="filtrar()">
-      <option value="todos">Todos os status</option>
-      <option value="pendente">⏳ Pendentes</option>
-      <option value="aprovada">✅ Aprovadas</option>
-      <option value="reprovada">❌ Reprovadas</option>
-      <option value="cancelada">⛔ Canceladas</option>
-    </select>
-    <button class="btn-novo" onclick="abrirForm()">+ Nova Nota Fiscal</button>
-  </div>
-
-  <div id="listaNotas"><div class="sem-dados">Nenhuma nota fiscal cadastrada.</div></div>
-
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
-</main>
-
-<!-- MODAL FORM -->
-<div class="modal-overlay" id="modalForm" style="display:none;">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="tituloModal">📄 Nova Nota Fiscal</h3>
-      <button class="btn-fechar" onclick="fecharForm()">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="notaId">
-      
-      <div class="form-full">
-        <div class="form-group">
-          <label>Tipo de Upload</label>
-          <select id="tipoUpload" onchange="toggleUpload()">
-            <option value="manual">📝 Preencher Manualmente</option>
-            <option value="xml">📄 Upload XML (NF-e)</option>
-            <option value="imagem">🖼️ Upload Imagem (OCR)</option>
-          </select>
+        <!-- TOPO -->
+        <div class="topo-bar">
+            <div>
+                <h1>📄 Notas Fiscais <span>+ Vinculação</span></h1>
+                <span class="sub">Leia notas, vincule a projetos e direcione produtos</span>
+            </div>
+            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
-      </div>
 
-      <div id="areaUpload" style="display:none;" class="form-full">
-        <div class="form-group">
-          <label>Arquivo</label>
-          <input type="file" id="arquivoNota" accept=".xml,.pdf,.jpg,.jpeg,.png" onchange="processarArquivo(event)">
-          <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">Formatos: XML, PDF, JPG, PNG</small>
+        <!-- ETAPAS - GUIA VISUAL -->
+        <div class="etapas" id="etapas">
+            <div class="etapa ativo" id="etapa1">
+                <span class="num">1</span>
+                Upload da Nota
+                <span class="seta">→</span>
+            </div>
+            <div class="etapa" id="etapa2">
+                <span class="num">2</span>
+                Vincular
+                <span class="seta">→</span>
+            </div>
+            <div class="etapa" id="etapa3">
+                <span class="num">3</span>
+                Confirmar
+                <span class="seta">→</span>
+            </div>
+            <div class="etapa" id="etapa4">
+                <span class="num">4</span>
+                ✅ Concluído
+            </div>
         </div>
-        <div id="previewDados" style="display:none;" class="form-full"></div>
-      </div>
 
-      <div class="section-title">📋 Dados da Nota Fiscal</div>
+        <!-- ============================================================
+        PASSO 1: UPLOAD
+        ============================================================ -->
+        <div class="card" id="passoUpload">
+            <h3>
+                📤 PASSO 1: Envie a Nota Fiscal
+                <span class="badge">PDF • XML • Imagem</span>
+            </h3>
 
-      <div class="form-full">
-        <div class="form-group">
-          <label>Chave de Acesso *</label>
-          <input type="text" id="chaveAcesso" placeholder="0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000">
+            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                <span class="icone">📄</span>
+                <p><strong>Arraste o arquivo aqui</strong> ou clique para selecionar</p>
+                <span class="formatos">Formatos suportados: PDF, XML, JPG, PNG</span>
+                <input type="file" id="fileInput" accept=".pdf,.xml,.jpg,.jpeg,.png" style="display:none;" onchange="processarArquivo(event)">
+                <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInput').click()">📂 Selecionar Arquivo</button>
+            </div>
+
+            <!-- Preview da nota extraída -->
+            <div class="preview-nota" id="previewNota">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Dados extraídos com sucesso!</span>
+                    <span style="font-size:11px;color:var(--cinza);" id="nomeArquivo"></span>
+                </div>
+                <div class="linha">
+                    <span class="label">📋 Número da Nota</span>
+                    <span class="valor" id="previewNumero">---</span>
+                </div>
+                <div class="linha">
+                    <span class="label">🏢 Emitente</span>
+                    <span class="valor" id="previewEmitente">---</span>
+                </div>
+                <div class="linha">
+                    <span class="label">💰 Valor Total</span>
+                    <span class="valor destaque" id="previewValor">---</span>
+                </div>
+                <div class="linha">
+                    <span class="label">📅 Data Emissão</span>
+                    <span class="valor" id="previewData">---</span>
+                </div>
+                <div class="linha">
+                    <span class="label">📦 Itens</span>
+                    <span class="valor" id="previewItens">---</span>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
+                    <button class="btn btn-outline" onclick="limparPreview()">🔄 Refazer Leitura</button>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>Número *</label>
-        <input type="text" id="numeroNota" placeholder="000000">
-      </div>
+        <!-- ============================================================
+        PASSO 2: VINCULAÇÃO
+        ============================================================ -->
+        <div class="card" id="passoVinculo" style="display:none;">
+            <h3>
+                🔗 PASSO 2: Vincular Nota ao Projeto
+                <span class="badge">Defina o destino</span>
+            </h3>
 
-      <div class="form-group">
-        <label>Série</label>
-        <input type="text" id="serieNota" placeholder="1">
-      </div>
+            <input type="hidden" id="notaIdVinculo">
 
-      <div class="form-group">
-        <label>Tipo</label>
-        <select id="tipoNota">
-          <option value="entrada">📥 Entrada</option>
-          <option value="saida">📤 Saída</option>
-        </select>
-      </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>📋 Projeto *</label>
+                    <select id="projetoVinculo" onchange="atualizarSaldo()">
+                        <option value="">Selecione um projeto...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📂 Categoria do Orçamento *</label>
+                    <select id="categoriaVinculo" onchange="atualizarSaldo()">
+                        <option value="">Selecione...</option>
+                        <option value="Equipamentos">🖥️ Equipamentos</option>
+                        <option value="Materiais">📦 Materiais</option>
+                        <option value="Serviços">🛠️ Serviços</option>
+                        <option value="Capacitação">📚 Capacitação</option>
+                        <option value="Infraestrutura">🏗️ Infraestrutura</option>
+                        <option value="Outros">📌 Outros</option>
+                    </select>
+                </div>
+            </div>
 
-      <div class="section-title">🏢 Emitente</div>
+            <!-- SALDO DO PROJETO -->
+            <div class="saldo-box" id="saldoBox" style="display:none;">
+                <div class="saldo-item">
+                    <div class="label">💰 Previsto</div>
+                    <div class="valor laranja" id="saldoPrevisto">R$ 0,00</div>
+                </div>
+                <div class="saldo-item">
+                    <div class="label">💳 Realizado</div>
+                    <div class="valor" id="saldoRealizado" style="color:#E65100;">R$ 0,00</div>
+                </div>
+                <div class="saldo-item">
+                    <div class="label">📊 Disponível</div>
+                    <div class="valor verde" id="saldoDisponivel">R$ 0,00</div>
+                </div>
+            </div>
 
-      <div class="form-full">
-        <div class="form-group">
-          <label>Nome do Emitente *</label>
-          <input type="text" id="emitenteNome" placeholder="Nome da empresa">
+            <!-- DESTINO DOS PRODUTOS -->
+            <div style="margin:16px 0;">
+                <label style="font-size:11px;font-weight:600;color:var(--cinza);text-transform:uppercase;display:block;margin-bottom:8px;">🏷️ Destino dos Produtos</label>
+                <div class="destinos-grid">
+                    <div class="destino-card" data-destino="estoque" onclick="selecionarDestino(this)">
+                        <span class="icone">📦</span>
+                        <span class="nome">Estoque</span>
+                        <span class="desc">Consumíveis / Materiais</span>
+                    </div>
+                    <div class="destino-card selecionado" data-destino="patrimonio" onclick="selecionarDestino(this)">
+                        <span class="icone">🏢</span>
+                        <span class="nome">Patrimônio</span>
+                        <span class="desc">Bens duráveis / Equipamentos</span>
+                    </div>
+                    <div class="destino-card" data-destino="servico" onclick="selecionarDestino(this)">
+                        <span class="icone">🛠️</span>
+                        <span class="nome">Serviço</span>
+                        <span class="desc">Contratação / Prestação</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OBSERVAÇÕES -->
+            <div class="form-group">
+                <label>📝 Observações da Vinculação</label>
+                <textarea id="obsVinculo" rows="2" placeholder="Ex: Compra para o projeto Inclusão Digital..."></textarea>
+            </div>
+
+            <!-- RESUMO DA NOTA -->
+            <div style="background:#F8F4ED;border-radius:10px;padding:16px;margin:12px 0;">
+                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                    <span><strong>Nota:</strong> <span id="resumoNumero">---</span></span>
+                    <span><strong>Emitente:</strong> <span id="resumoEmitente">---</span></span>
+                    <span><strong>Valor:</strong> <span id="resumoValor" style="color:var(--laranja);font-weight:700;">R$ 0,00</span></span>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="btn btn-success btn-full" onclick="confirmarVinculo()" style="flex:2;">
+                    ✅ Confirmar Vinculação
+                </button>
+                <button class="btn btn-outline" onclick="voltarParaUpload()" style="flex:1;">
+                    ← Voltar
+                </button>
+            </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>CNPJ do Emitente *</label>
-        <input type="text" id="emitenteCnpj" placeholder="00.000.000/0000-00">
-      </div>
+        <!-- ============================================================
+        PASSO 3: CONFIRMAÇÃO
+        ============================================================ -->
+        <div class="card verde" id="passoConfirmacao" style="display:none;">
+            <h3>
+                ✅ PASSO 3: Vinculação Concluída!
+                <span class="badge" style="background:#E8F5E9;color:#2E7D32;">Sucesso</span>
+            </h3>
 
-      <div class="form-full">
-        <div class="form-group">
-          <label>Endereço do Emitente</label>
-          <input type="text" id="emitenteEndereco" placeholder="Rua, número, bairro">
+            <div style="text-align:center;padding:20px 0;">
+                <span style="font-size:64px;">🎉</span>
+                <h2 style="margin:12px 0 4px;color:var(--verde);">Nota vinculada com sucesso!</h2>
+                <p style="color:var(--cinza);">A nota foi vinculada ao projeto e os produtos foram direcionados.</p>
+            </div>
+
+            <div style="background:#F8F4ED;border-radius:10px;padding:16px;margin:12px 0;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;">
+                    <div><strong>📋 Projeto:</strong> <span id="confProjeto">---</span></div>
+                    <div><strong>📂 Categoria:</strong> <span id="confCategoria">---</span></div>
+                    <div><strong>🏷️ Destino:</strong> <span id="confDestino">---</span></div>
+                    <div><strong>💰 Valor vinculado:</strong> <span id="confValor" style="color:var(--laranja);font-weight:700;">R$ 0,00</span></div>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+                <button class="btn btn-primary" onclick="irParaRelatorio()">📊 Ver Relatório do Projeto</button>
+                <button class="btn btn-azul" onclick="novaNota()">📄 Nova Nota</button>
+                <button class="btn btn-outline" onclick="verNotaVinculada()">📋 Ver Nota</button>
+            </div>
         </div>
-      </div>
 
-      <div class="section-title">👤 Destinatário</div>
-
-      <div class="form-full">
-        <div class="form-group">
-          <label>Nome do Destinatário *</label>
-          <input type="text" id="destinatarioNome" placeholder="AMOVIN - Associação...">
+        <!-- ============================================================
+        LISTA DE NOTAS VINCULADAS
+        ============================================================ -->
+        <div class="card">
+            <h3>
+                📋 Notas Fiscais Vinculadas
+                <span style="font-weight:400;font-size:13px;color:var(--cinza);" id="totalNotas">(0)</span>
+            </h3>
+            <div id="listaNotas">
+                <div class="sem-dados">Nenhuma nota fiscal vinculada.</div>
+            </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>CNPJ do Destinatário *</label>
-        <input type="text" id="destinatarioCnpj" placeholder="XX.XXX.XXX/XXXX-XX">
-      </div>
-
-      <div class="form-full">
-        <div class="form-group">
-          <label>Endereço do Destinatário</label>
-          <input type="text" id="destinatarioEndereco" placeholder="Rua, número, bairro">
+        <!-- RODAPÉ -->
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="section-title">💰 Valores</div>
+    </main>
 
-      <div class="form-group">
-        <label>Valor Total (R$) *</label>
-        <input type="number" id="valorTotal" step="0.01" placeholder="0,00">
-      </div>
+    <script src="menu.js"></script>
+    <script>
+        // ============================================================
+        // CONFIGURAÇÃO DO PDF.JS
+        // ============================================================
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-      <div class="form-group">
-        <label>Data de Emissão *</label>
-        <input type="date" id="dataEmissao">
-      </div>
+        // ============================================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================================
+        var dadosNota = null;
+        var destinoSelecionado = 'patrimonio';
 
-      <div class="form-group">
-        <label>Data de Recebimento</label>
-        <input type="date" id="dataRecebimento">
-      </div>
+        // ============================================================
+        // DADOS DO SISTEMA
+        // ============================================================
+        var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
+        var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
+        var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
 
-      <div class="form-full">
-        <div class="form-group">
-          <label>Observações</label>
-          <textarea id="obsNota" rows="2" placeholder="Observações adicionais..."></textarea>
-        </div>
-      </div>
+        // Projetos padrão
+        if (projetos.length === 0) {
+            projetos = [
+                { id: 1, nome: 'Inclusão Digital', orcamento_total: 150000, status: 'ativo' },
+                { id: 2, nome: 'Esporte para Todos', orcamento_total: 80000, status: 'ativo' },
+                { id: 3, nome: 'Reforço Escolar', orcamento_total: 60000, status: 'ativo' },
+                { id: 4, nome: 'Capacitação Profissional', orcamento_total: 100000, status: 'ativo' }
+            ];
+            localStorage.setItem('amovin_projetos', JSON.stringify(projetos));
 
-      <button class="btn-salvar" onclick="salvarNota()">💾 Salvar Nota Fiscal</button>
-    </div>
-  </div>
-</div>
-
-<script src="menu.js"></script>
-<script>
-var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
-var editandoId = null;
-
-if (notas.length === 0) {
-    notas = [{
-        id: 1,
-        chaveAcesso: '12345678901234567890123456789012345678901234',
-        numero: '123456',
-        serie: '1',
-        tipo: 'entrada',
-        emitenteNome: 'Empresa ABC Ltda',
-        emitenteCnpj: '12.345.678/0001-90',
-        destinatarioNome: 'AMOVIN - Associação e Movimento pela Inclusão',
-        destinatarioCnpj: 'XX.XXX.XXX/XXXX-XX',
-        valorTotal: 1500.00,
-        dataEmissao: '2026-07-01',
-        dataRecebimento: '2026-07-05',
-        status: 'pendente',
-        observacoes: 'Compra de materiais esportivos',
-        usuarioCriacao: 'Admin',
-        dataCriacao: new Date().toISOString()
-    }];
-    salvar();
-}
-
-function salvar() {
-    localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas));
-}
-
-function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
-
-function getStatusBadge(status) {
-    var map = { 'pendente': 'badge-pendente', 'aprovada': 'badge-aprovada', 'reprovada': 'badge-reprovada', 'cancelada': 'badge-cancelada' };
-    return map[status] || 'badge-pendente';
-}
-
-function getStatusLabel(status) {
-    var map = { 'pendente': '⏳ Pendente', 'aprovada': '✅ Aprovada', 'reprovada': '❌ Reprovada', 'cancelada': '⛔ Cancelada' };
-    return map[status] || status;
-}
-
-function filtrar() {
-    var busca = document.getElementById('buscaNota').value.toLowerCase();
-    var statusFiltro = document.getElementById('filtroStatus').value;
-    
-    var lista = notas.filter(function(n) {
-        var matchBusca = 
-            (n.numero || '').toLowerCase().indexOf(busca) >= 0 ||
-            (n.chaveAcesso || '').toLowerCase().indexOf(busca) >= 0 ||
-            (n.emitenteNome || '').toLowerCase().indexOf(busca) >= 0 ||
-            (n.destinatarioNome || '').toLowerCase().indexOf(busca) >= 0;
-        
-        var matchStatus = statusFiltro === 'todos' || n.status === statusFiltro;
-        
-        return matchBusca && matchStatus;
-    });
-
-    lista.sort(function(a, b) {
-        return new Date(b.dataCriacao) - new Date(a.dataCriacao);
-    });
-
-    var container = document.getElementById('listaNotas');
-    if (lista.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhuma nota fiscal encontrada.</div>';
-    } else {
-        container.innerHTML = lista.map(function(n) {
-            var statusLabel = getStatusLabel(n.status);
-            var statusBadge = getStatusBadge(n.status);
-            var dataEmissao = n.dataEmissao ? new Date(n.dataEmissao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
-            
-            return '<div class="nota-card">' +
-                '<div class="nota-info">' +
-                '<h4>NF-e ' + n.numero + ' - ' + n.emitenteNome + ' <span class="badge-status ' + statusBadge + '">' + statusLabel + '</span></h4>' +
-                '<p>🔑 Chave: ' + (n.chaveAcesso || '-') + '</p>' +
-                '<p>📅 Emissão: ' + dataEmissao + ' | 💰 ' + fm(n.valorTotal) + '</p>' +
-                '</div>' +
-                '<div class="contato-acoes">' +
-                '<button class="btn-acao btn-visualizar" onclick="visualizarNota(' + n.id + ')">👁️</button>' +
-                (n.status === 'pendente' ? '<button class="btn-acao btn-aprovar" onclick="aprovarNota(' + n.id + ')">✅</button>' : '') +
-                (n.status === 'pendente' ? '<button class="btn-acao btn-reprovar" onclick="reprovarNota(' + n.id + ')">❌</button>' : '') +
-                '<button class="btn-acao btn-editar" onclick="abrirForm(' + n.id + ')">✏️</button>' +
-                '</div></div>';
-        }).join('');
-    }
-
-    atualizarKPIs();
-}
-
-function atualizarKPIs() {
-    document.getElementById('kpiTotal').textContent = notas.length;
-    document.getElementById('kpiPendentes').textContent = notas.filter(function(n) { return n.status === 'pendente'; }).length;
-    document.getElementById('kpiAprovadas').textContent = notas.filter(function(n) { return n.status === 'aprovada'; }).length;
-    var totalValor = notas.reduce(function(s, n) { return s + (n.valorTotal || 0); }, 0);
-    document.getElementById('kpiValorTotal').textContent = fm(totalValor);
-}
-
-window.toggleUpload = function() {
-    var tipo = document.getElementById('tipoUpload').value;
-    document.getElementById('areaUpload').style.display = (tipo === 'manual') ? 'none' : 'block';
-};
-
-window.processarArquivo = function(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-    var preview = document.getElementById('previewDados');
-    preview.style.display = 'block';
-    preview.innerHTML = '<div style="background:#E8F5E9;padding:12px;border-radius:8px;font-size:12px;color:#2E7D32;">📄 Arquivo carregado: ' + file.name + '<br><span style="font-size:10px;color:#6B7280;">Processamento automático em desenvolvimento...</span></div>';
-};
-
-window.abrirForm = function(id) {
-    editandoId = id || null;
-    document.getElementById('modalForm').style.display = 'flex';
-    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Nota Fiscal' : '📄 Nova Nota Fiscal';
-
-    if (id) {
-        var n = notas.find(function(x) { return x.id === id; });
-        if (!n) return;
-        document.getElementById('notaId').value = n.id;
-        document.getElementById('chaveAcesso').value = n.chaveAcesso || '';
-        document.getElementById('numeroNota').value = n.numero || '';
-        document.getElementById('serieNota').value = n.serie || '';
-        document.getElementById('tipoNota').value = n.tipo || 'entrada';
-        document.getElementById('emitenteNome').value = n.emitenteNome || '';
-        document.getElementById('emitenteCnpj').value = n.emitenteCnpj || '';
-        document.getElementById('emitenteEndereco').value = n.emitenteEndereco || '';
-        document.getElementById('destinatarioNome').value = n.destinatarioNome || '';
-        document.getElementById('destinatarioCnpj').value = n.destinatarioCnpj || '';
-        document.getElementById('destinatarioEndereco').value = n.destinatarioEndereco || '';
-        document.getElementById('valorTotal').value = n.valorTotal || '';
-        document.getElementById('dataEmissao').value = n.dataEmissao || '';
-        document.getElementById('dataRecebimento').value = n.dataRecebimento || '';
-        document.getElementById('obsNota').value = n.observacoes || '';
-        document.getElementById('tipoUpload').value = 'manual';
-        document.getElementById('areaUpload').style.display = 'none';
-    } else {
-        document.getElementById('notaId').value = '';
-        document.getElementById('chaveAcesso').value = '';
-        document.getElementById('numeroNota').value = '';
-        document.getElementById('serieNota').value = '';
-        document.getElementById('tipoNota').value = 'entrada';
-        document.getElementById('emitenteNome').value = '';
-        document.getElementById('emitenteCnpj').value = '';
-        document.getElementById('emitenteEndereco').value = '';
-        document.getElementById('destinatarioNome').value = 'AMOVIN - Associação e Movimento pela Inclusão';
-        document.getElementById('destinatarioCnpj').value = '';
-        document.getElementById('destinatarioEndereco').value = '';
-        document.getElementById('valorTotal').value = '';
-        document.getElementById('dataEmissao').value = new Date().toISOString().split('T')[0];
-        document.getElementById('dataRecebimento').value = new Date().toISOString().split('T')[0];
-        document.getElementById('obsNota').value = '';
-        document.getElementById('tipoUpload').value = 'manual';
-        document.getElementById('areaUpload').style.display = 'none';
-        document.getElementById('previewDados').style.display = 'none';
-    }
-};
-
-window.fecharForm = function() {
-    document.getElementById('modalForm').style.display = 'none';
-};
-
-window.salvarNota = function() {
-    var chave = document.getElementById('chaveAcesso').value.trim();
-    var numero = document.getElementById('numeroNota').value.trim();
-    var emitente = document.getElementById('emitenteNome').value.trim();
-    var destinatario = document.getElementById('destinatarioNome').value.trim();
-    var valor = parseFloat(document.getElementById('valorTotal').value) || 0;
-    var dataEmissao = document.getElementById('dataEmissao').value;
-
-    if (!numero) { alert('⚠️ Número da nota é obrigatório!'); return; }
-    if (!emitente) { alert('⚠️ Nome do emitente é obrigatório!'); return; }
-    if (!destinatario) { alert('⚠️ Nome do destinatário é obrigatório!'); return; }
-    if (valor <= 0) { alert('⚠️ Valor total é obrigatório!'); return; }
-    if (!dataEmissao) { alert('⚠️ Data de emissão é obrigatória!'); return; }
-
-    var dados = {
-        chaveAcesso: chave,
-        numero: numero,
-        serie: document.getElementById('serieNota').value.trim(),
-        tipo: document.getElementById('tipoNota').value,
-        emitenteNome: emitente,
-        emitenteCnpj: document.getElementById('emitenteCnpj').value.trim(),
-        emitenteEndereco: document.getElementById('emitenteEndereco').value.trim(),
-        destinatarioNome: destinatario,
-        destinatarioCnpj: document.getElementById('destinatarioCnpj').value.trim(),
-        destinatarioEndereco: document.getElementById('destinatarioEndereco').value.trim(),
-        valorTotal: valor,
-        dataEmissao: dataEmissao,
-        dataRecebimento: document.getElementById('dataRecebimento').value || dataEmissao,
-        observacoes: document.getElementById('obsNota').value.trim(),
-        usuarioCriacao: sessionStorage.getItem('amovin_nome') || 'Admin'
-    };
-
-    if (editandoId) {
-        var idx = notas.findIndex(function(x) { return x.id === editandoId; });
-        if (idx >= 0) {
-            for (var k in dados) {
-                notas[idx][k] = dados[k];
-            }
-            notas[idx].dataAtualizacao = new Date().toISOString();
+            // Orçamentos padrão
+            orcamentos = [
+                { projeto_id: 1, categoria: 'Equipamentos', previsto: 60000, realizado: 0 },
+                { projeto_id: 1, categoria: 'Materiais', previsto: 40000, realizado: 0 },
+                { projeto_id: 1, categoria: 'Serviços', previsto: 30000, realizado: 0 },
+                { projeto_id: 2, categoria: 'Equipamentos', previsto: 30000, realizado: 0 },
+                { projeto_id: 2, categoria: 'Materiais', previsto: 30000, realizado: 0 },
+                { projeto_id: 3, categoria: 'Materiais', previsto: 40000, realizado: 0 },
+                { projeto_id: 4, categoria: 'Equipamentos', previsto: 50000, realizado: 0 },
+                { projeto_id: 4, categoria: 'Serviços', previsto: 50000, realizado: 0 }
+            ];
+            localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
         }
-    } else {
-        dados.id = Date.now();
-        dados.status = 'pendente';
-        dados.dataCriacao = new Date().toISOString();
-        notas.push(dados);
-    }
 
-    salvar();
-    fecharForm();
-    filtrar();
-    alert('✅ Nota fiscal salva com sucesso!');
-};
+        // ============================================================
+        // FUNÇÃO PARA SALVAR
+        // ============================================================
+        function salvarNotas() {
+            localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas));
+        }
 
-window.visualizarNota = function(id) {
-    var n = notas.find(function(x) { return x.id === id; });
-    if (!n) return;
+        // ============================================================
+        // 1. PROCESSAR ARQUIVO
+        // ============================================================
+        function processarArquivo(event) {
+            var file = event.target.files[0];
+            if (!file) return;
 
-    var dataEmissao = n.dataEmissao ? new Date(n.dataEmissao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
-    var dataRecebimento = n.dataRecebimento ? new Date(n.dataRecebimento + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+            var preview = document.getElementById('previewNota');
+            var nomeArquivo = document.getElementById('nomeArquivo');
+            nomeArquivo.textContent = '📎 ' + file.name;
 
-    alert(
-        '📄 NOTA FISCAL\n' +
-        '═'.repeat(40) + '\n\n' +
-        'Número: ' + n.numero + '\n' +
-        'Série: ' + (n.serie || '-') + '\n' +
-        'Chave: ' + (n.chaveAcesso || '-') + '\n' +
-        'Tipo: ' + (n.tipo === 'entrada' ? '📥 Entrada' : '📤 Saída') + '\n\n' +
-        '🏢 EMITENTE\n' +
-        'Nome: ' + n.emitenteNome + '\n' +
-        'CNPJ: ' + (n.emitenteCnpj || '-') + '\n\n' +
-        '👤 DESTINATÁRIO\n' +
-        'Nome: ' + n.destinatarioNome + '\n' +
-        'CNPJ: ' + (n.destinatarioCnpj || '-') + '\n\n' +
-        '💰 VALORES\n' +
-        'Valor Total: ' + fm(n.valorTotal) + '\n' +
-        'Data Emissão: ' + dataEmissao + '\n' +
-        'Data Recebimento: ' + dataRecebimento + '\n\n' +
-        'Status: ' + getStatusLabel(n.status) + '\n' +
-        'Observações: ' + (n.observacoes || '-')
-    );
-};
+            // Mostra loading
+            preview.classList.add('visivel');
+            preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando arquivo...</p></div>';
 
-window.aprovarNota = function(id) {
-    if (!confirm('✅ Aprovar esta nota fiscal?')) return;
-    var n = notas.find(function(x) { return x.id === id; });
-    if (n) {
-        n.status = 'aprovada';
-        n.dataAprovacao = new Date().toISOString();
-        n.aprovadoPor = sessionStorage.getItem('amovin_nome') || 'Admin';
-        salvar();
-        filtrar();
-        alert('✅ Nota fiscal aprovada com sucesso!');
-    }
-};
+            var ext = file.name.split('.').pop().toLowerCase();
 
-window.reprovarNota = function(id) {
-    var motivo = prompt('Motivo da reprovação:');
-    if (motivo === null) return;
-    var n = notas.find(function(x) { return x.id === id; });
-    if (n) {
-        n.status = 'reprovada';
-        n.motivoReprovacao = motivo;
-        salvar();
-        filtrar();
-        alert('❌ Nota fiscal reprovada.');
-    }
-};
+            if (ext === 'pdf') {
+                lerPDF(file);
+            } else if (ext === 'xml') {
+                lerXML(file);
+            } else if (['jpg', 'jpeg', 'png'].indexOf(ext) >= 0) {
+                lerImagem(file);
+            } else {
+                mostrarToast('Formato não suportado: ' + ext, 'error');
+                limparPreview();
+            }
+        }
 
-filtrar();
+        // ============================================================
+        // LEITURA DE PDF
+        // ============================================================
+        function lerPDF(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var typedarray = new Uint8Array(e.target.result);
+                pdfjsLib.getDocument(typedarray).promise
+                    .then(function(pdf) {
+                        var promises = [];
+                        for (var i = 1; i <= Math.min(pdf.numPages, 3); i++) {
+                            promises.push(pdf.getPage(i).then(function(page) {
+                                return page.getTextContent().then(function(textContent) {
+                                    return textContent.items.map(function(item) {
+                                        return item.str;
+                                    }).join(' ');
+                                });
+                            }));
+                        }
+                        return Promise.all(promises);
+                    })
+                    .then(function(paginas) {
+                        var texto = paginas.join('\n');
+                        extrairDadosNota(texto);
+                    })
+                    .catch(function(err) {
+                        mostrarToast('Erro ao ler PDF: ' + err.message, 'error');
+                        limparPreview();
+                    });
+            };
+            reader.readAsArrayBuffer(file);
+        }
 
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
+        // ============================================================
+        // LEITURA DE XML
+        // ============================================================
+        function lerXML(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var texto = e.target.result;
+                try {
+                    var parser = new DOMParser();
+                    var xmlDoc = parser.parseFromString(texto, 'text/xml');
 
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
+                    var dados = {};
 
-if (!sessionStorage.getItem('amovin_logado')) {
-    window.location.href = 'index.html';
-}
+                    // Tenta extrair campos comuns de NF-e
+                    var numero = xmlDoc.querySelector('nNF') || xmlDoc.querySelector('numero');
+                    var emitente = xmlDoc.querySelector('xNome') || xmlDoc.querySelector('emitente');
+                    var cnpj = xmlDoc.querySelector('CNPJ') || xmlDoc.querySelector('cnpj');
+                    var valor = xmlDoc.querySelector('vTotal') || xmlDoc.querySelector('valorTotal');
+                    var data = xmlDoc.querySelector('dhEmi') || xmlDoc.querySelector('dataEmissao');
 
-var timeout;
-function resetTimeout() {
-    clearTimeout(timeout);
-    timeout = setTimeout(function() {
-        sessionStorage.clear();
-        alert('⏰ Sessão expirada.');
-        window.location.href = 'index.html';
-    }, 30 * 60 * 1000);
-}
-document.addEventListener('mousemove', resetTimeout);
-document.addEventListener('keypress', resetTimeout);
-document.addEventListener('click', resetTimeout);
-resetTimeout();
-</script>
+                    dados.numero = numero ? numero.textContent : '---';
+                    dados.emitente = emitente ? emitente.textContent : '---';
+                    dados.cnpj = cnpj ? cnpj.textContent : '---';
+                    dados.valor = valor ? parseFloat(valor.textContent.replace(',', '.')) || 0 : 0;
+                    dados.data = data ? data.textContent.substring(0, 10) : '---';
+
+                    mostrarPreview(dados);
+                } catch (err) {
+                    mostrarToast('Erro ao ler XML: ' + err.message, 'error');
+                    limparPreview();
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ============================================================
+        // LEITURA DE IMAGEM (OCR)
+        // ============================================================
+        function lerImagem(file) {
+            var preview = document.getElementById('previewNota');
+            preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Reconhecendo texto da imagem (OCR)...</p><p style="font-size:11px;color:#9CA3AF;">Isso pode levar alguns segundos</p></div>';
+
+            Tesseract.recognize(file, 'por', {
+                    logger: function(m) {
+                        if (m.status === 'recognizing text') {
+                            // Atualiza progresso
+                        }
+                    }
+                })
+                .then(function(result) {
+                    var texto = result.data.text;
+                    extrairDadosNota(texto);
+                })
+                .catch(function(err) {
+                    mostrarToast('Erro no OCR: ' + err.message, 'error');
+                    limparPreview();
+                });
+        }
+
+        // ============================================================
+        // EXTRAIR DADOS DA NOTA (TEXTO)
+        // ============================================================
+        function extrairDadosNota(texto) {
+            var dados = {
+                numero: '---',
+                emitente: '---',
+                cnpj: '---',
+                valor: 0,
+                data: '---',
+                itens: '---'
+            };
+
+            // Padrões de busca
+            var padroes = {
+                numero: [
+                    /\b(\d{6,9})\b/,
+                    /N[°º]?\s*[:]?\s*(\d{6,9})/i,
+                    /nNF[:]?\s*(\d+)/i
+                ],
+                emitente: [
+                    /Emitente[:]?\s*([^\n]+)/i,
+                    /Fornecedor[:]?\s*([^\n]+)/i,
+                    /Razão Social[:]?\s*([^\n]+)/i,
+                    /Nome[:]?\s*([^\n]+)/i
+                ],
+                cnpj: [
+                    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
+                    /\b(\d{14})\b/
+                ],
+                valor: [
+                    /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i,
+                    /Total[:]?\s*R?\$?\s*([\d.,]+)/i,
+                    /vTotal[:]?\s*([\d.,]+)/i,
+                    /Valor[:]?\s*R?\$?\s*([\d.,]+)/i
+                ],
+                data: [
+                    /\b(\d{2}\/\d{2}\/\d{4})\b/,
+                    /\b(\d{4}-\d{2}-\d{2})\b/
+                ]
+            };
+
+            // Tenta encontrar cada campo
+            for (var campo in padroes) {
+                for (var i = 0; i < padroes[campo].length; i++) {
+                    var match = texto.match(padroes[campo][i]);
+                    if (match) {
+                        if (campo === 'valor') {
+                            var v = match[1].replace(/\./g, '').replace(',', '.');
+                            dados.valor = parseFloat(v) || 0;
+                        } else if (campo === 'data') {
+                            var d = match[1];
+                            if (d.indexOf('/') > 0) {
+                                var parts = d.split('/');
+                                dados.data = parts[2] + '-' + parts[1] + '-' + parts[0];
+                            } else {
+                                dados.data = d;
+                            }
+                        } else {
+                            dados[campo] = match[1] || match[0];
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Tenta encontrar itens (descrições com valores)
+            var itens = texto.match(/(\w+[\s\w]+)\s*[\d,]+\s*x\s*[\d,]+/g);
+            if (itens && itens.length > 0) {
+                dados.itens = itens.slice(0, 3).join('; ');
+            }
+
+            mostrarPreview(dados);
+        }
+
+        // ============================================================
+        // MOSTRAR PREVIEW
+        // ============================================================
+        function mostrarPreview(dados) {
+            var preview = document.getElementById('previewNota');
+            dadosNota = dados;
+
+            // Atualiza campos
+            document.getElementById('previewNumero').textContent = dados.numero || '---';
+            document.getElementById('previewEmitente').textContent = dados.emitente || '---';
+            document.getElementById('previewValor').textContent = 'R$ ' + (dados.valor || 0).toFixed(2).replace('.', ',');
+            document.getElementById('previewData').textContent = dados.data || '---';
+            document.getElementById('previewItens').textContent = dados.itens || 'Nenhum item identificado';
+
+            preview.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Dados extraídos com sucesso!</span>
+                    <span style="font-size:11px;color:var(--cinza);" id="nomeArquivo">📎 ${document.getElementById('nomeArquivo').textContent}</span>
+                </div>
+                <div class="linha">
+                    <span class="label">📋 Número da Nota</span>
+                    <span class="valor" id="previewNumero">${dados.numero || '---'}</span>
+                </div>
+                <div class="linha">
+                    <span class="label">🏢 Emitente</span>
+                    <span class="valor" id="previewEmitente">${dados.emitente || '---'}</span>
+                </div>
+                <div class="linha">
+                    <span class="label">💰 Valor Total</span>
+                    <span class="valor destaque" id="previewValor">R$ ${(dados.valor || 0).toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div class="linha">
+                    <span class="label">📅 Data Emissão</span>
+                    <span class="valor" id="previewData">${dados.data || '---'}</span>
+                </div>
+                <div class="linha">
+                    <span class="label">📦 Itens</span>
+                    <span class="valor" id="previewItens">${dados.itens || 'Nenhum item identificado'}</span>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
+                    <button class="btn btn-outline" onclick="limparPreview()">🔄 Refazer Leitura</button>
+                </div>
+            `;
+
+            preview.classList.add('visivel', 'slide-down');
+
+            // Atualiza etapa
+            document.getElementById('etapa1').classList.remove('ativo');
+            document.getElementById('etapa1').classList.add('concluido');
+            document.getElementById('etapa2').classList.add('ativo');
+
+            mostrarToast('📄 Nota lida com sucesso! Avance para vincular.', 'success');
+        }
+
+        // ============================================================
+        // LIMPAR PREVIEW
+        // ============================================================
+        function limparPreview() {
+            var preview = document.getElementById('previewNota');
+            preview.classList.remove('visivel');
+            preview.innerHTML = '';
+            dadosNota = null;
+            document.getElementById('fileInput').value = '';
+
+            document.getElementById('etapa1').classList.remove('concluido');
+            document.getElementById('etapa1').classList.add('ativo');
+            document.getElementById('etapa2').classList.remove('ativo');
+        }
+
+        // ============================================================
+        // AVANÇAR PARA VINCULAÇÃO
+        // ============================================================
+        function avancarParaVinculo() {
+            if (!dadosNota) {
+                mostrarToast('⚠️ Nenhuma nota lida. Faça o upload primeiro.', 'warning');
+                return;
+            }
+
+            // Esconde passo 1, mostra passo 2
+            document.getElementById('passoUpload').style.display = 'none';
+            document.getElementById('passoVinculo').style.display = 'block';
+            document.getElementById('passoConfirmacao').style.display = 'none';
+
+            // Atualiza etapas
+            document.getElementById('etapa2').classList.remove('ativo');
+            document.getElementById('etapa2').classList.add('concluido');
+            document.getElementById('etapa3').classList.add('ativo');
+
+            // Preenche projetos no select
+            var selectProjeto = document.getElementById('projetoVinculo');
+            selectProjeto.innerHTML = '<option value="">Selecione um projeto...</option>';
+            projetos.forEach(function(p) {
+                selectProjeto.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + p.orcamento_total
+                    .toFixed(2).replace('.', ',') + ')</option>';
+            });
+
+            // Preenche resumo
+            document.getElementById('resumoNumero').textContent = dadosNota.numero || '---';
+            document.getElementById('resumoEmitente').textContent = dadosNota.emitente || '---';
+            document.getElementById('resumoValor').textContent = 'R$ ' + (dadosNota.valor || 0).toFixed(2).replace('.', ',');
+
+            // Gera ID temporário
+            var notaId = Date.now();
+            document.getElementById('notaIdVinculo').value = notaId;
+
+            // Tenta sugerir projeto baseado no emitente
+            sugerirProjeto(dadosNota.emitente);
+
+            // Mostra saldo
+            document.getElementById('saldoBox').style.display = 'grid';
+
+            mostrarToast('🔗 Agora vincule a nota a um projeto.', 'info');
+        }
+
+        // ============================================================
+        // SUGERIR PROJETO (baseado no emitente)
+        // ============================================================
+        function sugerirProjeto(emitente) {
+            if (!emitente) return;
+
+            var keywords = {
+                'informática': 'Inclusão Digital',
+                'computador': 'Inclusão Digital',
+                'notebook': 'Inclusão Digital',
+                'esporte': 'Esporte para Todos',
+                'bola': 'Esporte para Todos',
+                'uniforme': 'Esporte para Todos',
+                'escola': 'Reforço Escolar',
+                'material': 'Reforço Escolar',
+                'curso': 'Capacitação Profissional',
+                'treinamento': 'Capacitação Profissional'
+            };
+
+            var texto = emitente.toLowerCase();
+            for (var key in keywords) {
+                if (texto.indexOf(key) >= 0) {
+                    var projeto = projetos.find(function(p) { return p.nome === keywords[key]; });
+                    if (projeto) {
+                        document.getElementById('projetoVinculo').value = projeto.id;
+                        atualizarSaldo();
+                        mostrarToast('💡 Projeto sugerido: ' + projeto.nome, 'info');
+                        return;
+                    }
+                }
+            }
+        }
+
+        // ============================================================
+        // ATUALIZAR SALDO DO PROJETO
+        // ============================================================
+        function atualizarSaldo() {
+            var projetoId = parseInt(document.getElementById('projetoVinculo').value);
+            var categoria = document.getElementById('categoriaVinculo').value;
+
+            if (!projetoId || !categoria) {
+                document.getElementById('saldoBox').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('saldoBox').style.display = 'grid';
+
+            // Busca orçamento
+            var orc = orcamentos.find(function(o) {
+                return o.projeto_id === projetoId && o.categoria === categoria;
+            });
+
+            var previsto = orc ? orc.previsto : 0;
+            var realizado = orc ? orc.realizado : 0;
+            var disponivel = previsto - realizado;
+
+            // Busca valor da nota
+            var valorNota = dadosNota ? dadosNota.valor || 0 : 0;
+
+            document.getElementById('saldoPrevisto').textContent = 'R$ ' + previsto.toFixed(2).replace('.', ',');
+            document.getElementById('saldoRealizado').textContent = 'R$ ' + realizado.toFixed(2).replace('.', ',');
+            document.getElementById('saldoDisponivel').textContent = 'R$ ' + disponivel.toFixed(2).replace('.', ',');
+
+            // Alerta se o valor da nota ultrapassa o disponível
+            if (valorNota > disponivel && disponivel > 0) {
+                document.getElementById('saldoDisponivel').style.color = 'var(--vermelho)';
+                mostrarToast('⚠️ Atenção: O valor da nota (R$ ' + valorNota.toFixed(2) + ') excede o disponível (R$ ' +
+                    disponivel.toFixed(2) + ')', 'warning');
+            } else {
+                document.getElementById('saldoDisponivel').style.color = '';
+            }
+        }
+
+        // ============================================================
+        // SELECIONAR DESTINO
+        // ============================================================
+        function selecionarDestino(el) {
+            document.querySelectorAll('.destino-card').forEach(function(c) {
+                c.classList.remove('selecionado');
+            });
+            el.classList.add('selecionado');
+            destinoSelecionado = el.getAttribute('data-destino');
+        }
+
+        // ============================================================
+        // CONFIRMAR VINCULAÇÃO
+        // ============================================================
+        function confirmarVinculo() {
+            var projetoId = parseInt(document.getElementById('projetoVinculo').value);
+            var categoria = document.getElementById('categoriaVinculo').value;
+            var obs = document.getElementById('obsVinculo').value.trim();
+
+            if (!projetoId) {
+                mostrarToast('⚠️ Selecione um projeto!', 'warning');
+                return;
+            }
+            if (!categoria) {
+                mostrarToast('⚠️ Selecione uma categoria!', 'warning');
+                return;
+            }
+
+            var valorNota = dadosNota ? dadosNota.valor || 0 : 0;
+
+            // Verifica saldo
+            var orc = orcamentos.find(function(o) {
+                return o.projeto_id === projetoId && o.categoria === categoria;
+            });
+            if (orc) {
+                var disponivel = orc.previsto - orc.realizado;
+                if (valorNota > disponivel) {
+                    if (!confirm('⚠️ O valor da nota (R$ ' + valorNota.toFixed(2) +
+                            ') excede o disponível (R$ ' + disponivel.toFixed(2) +
+                            '). Deseja continuar mesmo assim?')) {
+                        return;
+                    }
+                }
+            }
+
+            // Cria a nota
+            var novaNota = {
+                id: parseInt(document.getElementById('notaIdVinculo').value),
+                numero: dadosNota.numero || '---',
+                emitente: dadosNota.emitente || '---',
+                cnpj_emitente: dadosNota.cnpj || '---',
+                valor_total: valorNota,
+                data_emissao: dadosNota.data || new Date().toISOString().split('T')[0],
+                projeto_id: projetoId,
+                categoria_orcamento: categoria,
+                destino: destinoSelecionado,
+                status: 'vinculado',
+                observacao: obs,
+                data_criacao: new Date().toISOString()
+            };
+
+            notas.push(novaNota);
+            salvarNotas();
+
+            // Atualiza orçamento
+            if (orc) {
+                orc.realizado += valorNota;
+                localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
+            }
+
+            // Atualiza estoque/patrimônio/serviço
+            direcionarProdutos(novaNota);
+
+            // Mostra confirmação
+            document.getElementById('passoVinculo').style.display = 'none';
+            document.getElementById('passoConfirmacao').style.display = 'block';
+
+            // Atualiza etapas
+            document.getElementById('etapa3').classList.remove('ativo');
+            document.getElementById('etapa3').classList.add('concluido');
+            document.getElementById('etapa4').classList.add('concluido');
+
+            // Preenche confirmação
+            var projeto = projetos.find(function(p) { return p.id === projetoId; });
+            document.getElementById('confProjeto').textContent = projeto ? projeto.nome : '---';
+            document.getElementById('confCategoria').textContent = categoria;
+            var destinos = { 'estoque': '📦 Estoque', 'patrimonio': '🏢 Patrimônio', 'servico': '🛠️ Serviço' };
+            document.getElementById('confDestino').textContent = destinos[destinoSelecionado] || destinoSelecionado;
+            document.getElementById('confValor').textContent = 'R$ ' + valorNota.toFixed(2).replace('.', ',');
+
+            // Remove dados da nota
+            dadosNota = null;
+
+            renderizarListaNotas();
+            mostrarToast('✅ Nota vinculada com sucesso!', 'success');
+        }
+
+        // ============================================================
+        // DIRECIONAR PRODUTOS
+        // ============================================================
+        function direcionarProdutos(nota) {
+            // Busca ou cria item genérico baseado na nota
+            var nomeProduto = 'Item da NF ' + nota.numero;
+
+            if (nota.destino === 'estoque') {
+                var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+                estoque.push({
+                    id: Date.now(),
+                    nome: nomeProduto,
+                    categoria: 'Equipamentos',
+                    unidade: 'Unidade',
+                    qtd: 1,
+                    qtdMinima: 0,
+                    local: 'Almoxarifado',
+                    obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+                });
+                localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
+                mostrarToast('📦 Produto adicionado ao Estoque', 'info');
+            } else if (nota.destino === 'patrimonio') {
+                var patrimonio = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
+                var ultimoNumero = parseInt(localStorage.getItem('amovin_patrimonio_num') || '0');
+                ultimoNumero++;
+                patrimonio.push({
+                    id: Date.now(),
+                    nome: nomeProduto,
+                    numero: 'AMOVIN-' + String(ultimoNumero).padStart(4, '0'),
+                    categoria: 'Equipamento',
+                    marca: '',
+                    modelo: '',
+                    valor: nota.valor_total,
+                    status: 'Em Operação',
+                    local: 'Sede AMOVIN',
+                    obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+                });
+                localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
+                localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
+                mostrarToast('🏢 Bem adicionado ao Patrimônio', 'info');
+            } else if (nota.destino === 'servico') {
+                // Para serviços, apenas registra
+                var servicos = JSON.parse(localStorage.getItem('amovin_servicos') || '[]');
+                servicos.push({
+                    id: Date.now(),
+                    nota_id: nota.id,
+                    descricao: 'Serviço - NF ' + nota.numero,
+                    valor: nota.valor_total,
+                    projeto_id: nota.projeto_id,
+                    data: new Date().toISOString()
+                });
+                localStorage.setItem('amovin_servicos', JSON.stringify(servicos));
+                mostrarToast('🛠️ Serviço registrado', 'info');
+            }
+        }
+
+        // ============================================================
+        // RENDERIZAR LISTA DE NOTAS
+        // ============================================================
+        function renderizarListaNotas() {
+            var container = document.getElementById('listaNotas');
+            document.getElementById('totalNotas').textContent = '(' + notas.length + ')';
+
+            if (notas.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhuma nota fiscal vinculada.</div>';
+                return;
+            }
+
+            // Ordena por data (mais recente primeiro)
+            var lista = notas.slice().sort(function(a, b) {
+                return new Date(b.data_criacao) - new Date(a.data_criacao);
+            });
+
+            container.innerHTML = lista.map(function(n) {
+                var statusMap = {
+                    'pendente': 'status-pendente',
+                    'vinculado': 'status-vinculado',
+                    'aprovado': 'status-aprovado',
+                    'reprovado': 'status-reprovado'
+                };
+                var statusLabel = {
+                    'pendente': '⏳ Pendente',
+                    'vinculado': '✅ Vinculado',
+                    'aprovado': '📋 Aprovado',
+                    'reprovado': '❌ Reprovado'
+                };
+                var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
+                var projetoNome = projeto ? projeto.nome : '---';
+
+                var data = n.data_emissao ? new Date(n.data_emissao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+
+                return '<div class="nota-item">' +
+                    '<div class="info">' +
+                    '<div class="num">NF ' + n.numero + '</div>' +
+                    '<div class="detalhe">🏢 ' + n.emitente + ' | 📅 ' + data + ' | 💰 R$ ' + n.valor_total.toFixed(2)
+                    .replace('.', ',') + '</div>' +
+                    '<div class="projeto">📋 ' + projetoNome + ' | ' + n.categoria_orcamento + '</div>' +
+                    '</div>' +
+                    '<div>' +
+                    '<span class="status-badge ' + (statusMap[n.status] || 'status-pendente') + '">' + (statusLabel[n
+                        .status] || n.status) + '</span>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // ============================================================
+        // NAVEGAÇÃO
+        // ============================================================
+        function voltarParaUpload() {
+            document.getElementById('passoVinculo').style.display = 'none';
+            document.getElementById('passoUpload').style.display = 'block';
+
+            document.getElementById('etapa2').classList.remove('concluido');
+            document.getElementById('etapa2').classList.add('ativo');
+            document.getElementById('etapa3').classList.remove('ativo');
+        }
+
+        function novaNota() {
+            document.getElementById('passoConfirmacao').style.display = 'none';
+            document.getElementById('passoUpload').style.display = 'block';
+            document.getElementById('passoVinculo').style.display = 'none';
+
+            document.getElementById('etapa1').classList.remove('concluido');
+            document.getElementById('etapa1').classList.add('ativo');
+            document.getElementById('etapa3').classList.remove('concluido');
+            document.getElementById('etapa4').classList.remove('concluido');
+
+            limparPreview();
+            document.getElementById('obsVinculo').value = '';
+            document.getElementById('saldoBox').style.display = 'none';
+        }
+
+        function irParaRelatorio() {
+            window.location.href = 'relatorios-comprovacao.html';
+        }
+
+        function verNotaVinculada() {
+            renderizarListaNotas();
+            document.getElementById('passoConfirmacao').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ============================================================
+        // TOAST (notificações)
+        // ============================================================
+        function mostrarToast(mensagem, tipo) {
+            var toast = document.createElement('div');
+            var classes = {
+                'success': 'toast-success',
+                'error': 'toast-error',
+                'info': 'toast-info',
+                'warning': 'toast-warning'
+            };
+            toast.className = 'toast ' + (classes[tipo] || 'toast-info');
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(function() { toast.remove(); }, 400);
+            }, 4000);
+        }
+
+        // ============================================================
+        // DRAG AND DROP
+        // ============================================================
+        var dropzone = document.getElementById('dropzone');
+
+        dropzone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            var files = e.dataTransfer.files;
+            if (files.length > 0) {
+                var input = document.getElementById('fileInput');
+                input.files = files;
+                processarArquivo({ target: input });
+            }
+        });
+
+        // ============================================================
+        // CONTROLE DE PERFIL
+        // ============================================================
+        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+        var modulosPermitidos = {
+            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
+                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
+                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
+                'configuracoes', 'backup'
+            ],
+            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
+            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
+            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
+            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
+        };
+
+        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+        setTimeout(function() {
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                var href = item.getAttribute('href') || '';
+                var pagina = href.replace('.html', '');
+                pagina = pagina.split('?')[0].split('#')[0];
+                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+                    item.style.display = 'none';
+                }
+            });
+        }, 500);
+
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        renderizarListaNotas();
+    </script>
 </body>
 </html>
