@@ -1,1007 +1,1103 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social • Beneficiários</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --laranja: #C65A11;
-  --amarelo: #F5C518;
-  --verde: #57C220;
-  --azul: #1E88E5;
-  --grafite: #1A1A1A;
-  --cinza: #6B7280;
-  --cinza-claro: #F8F4ED;
-  --branco: #FFFFFF;
-  --vermelho: #E53935;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amovin ERP • Beneficiários</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F8F4ED;
+            display: flex;
+            min-height: 100vh;
+        }
 
-/* ==================== SIDEBAR (vem do menu.js) ==================== */
-.sidebar { width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
-.sidebar-header { padding: 28px 24px 24px; text-align: center; border-bottom: 1px solid #F0E9DF; }
-.sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
-.sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
-.sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.4px; }
-.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
-.nav-categoria { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
-.nav-item { display: flex; align-items: center; gap: 13px; padding: 11px 24px; color: #4B5563; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
-.nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
-.nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
-.nav-item .icone { font-size: 17px; width: 24px; text-align: center; }
-.sidebar-footer { padding: 20px 24px; border-top: 1px solid #F0E9DF; }
-.user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.user-avatar { width: 38px; height: 38px; background: #F5C518; color: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
-.user-info .nome { font-weight: 600; font-size: 13.5px; }
-.user-info .cargo { font-size: 11px; color: #6B7280; }
-.btn-sair { width: 100%; padding: 9px; background: #F8F4ED; color: #1A1A1A; border: none; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-sair:hover { background: #F0E9DF; }
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+        }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .topo-bar h1 span {
+            color: var(--laranja);
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-/* ==================== MAIN CONTENT ==================== */
-.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
-.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .card {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
-.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
-.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
-.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+        .kpi-card {
+            background: #FFFFFF;
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+            text-align: center;
+        }
+        .kpi-card .kpi-valor {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--laranja);
+        }
+        .kpi-card .kpi-label {
+            font-size: 11px;
+            color: var(--cinza);
+        }
 
-.busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
-.btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .form-full {
+            grid-column: 1 / -1;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cinza);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: border 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--laranja);
+            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.08);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
 
-.pessoa-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.pessoa-card.status-inativo { opacity: 0.7; border-left: 4px solid var(--amarelo); }
-.pessoa-card.status-descredenciado { opacity: 0.5; border-left: 4px solid var(--vermelho); }
-.pessoa-info { display: flex; align-items: center; gap: 14px; flex: 1; }
-.pessoa-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; border: 2px solid #F0E9DF; font-weight: 700; }
-.pessoa-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-.pessoa-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
-.pessoa-dados p { font-size: 11px; color: var(--cinza); margin: 1px 0; }
-.status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 9px; font-weight: 600; }
-.status-ativo { background: #E8F5E9; color: #2E7D32; }
-.status-inativo { background: #FFF3E0; color: #E65100; }
-.status-descredenciado { background: #FFEBEE; color: #C62828; }
-.btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
-.btn-editar { background: #F5A623; color: white; }
-.btn-excluir { background: var(--vermelho); color: white; }
-.btn-crm { background: var(--azul); color: white; }
-.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .btn-salvar {
+            background: var(--laranja);
+            color: white;
+        }
+        .btn-salvar:hover {
+            background: var(--laranja-escuro);
+        }
+        .btn-editar {
+            background: var(--amarelo);
+            color: #1A1A1A;
+        }
+        .btn-editar:hover {
+            background: #E6B800;
+        }
+        .btn-excluir {
+            background: #E5E0D8;
+            color: #1A1A1A;
+        }
+        .btn-excluir:hover {
+            background: #D5D0C8;
+        }
+        .btn-prontuario {
+            background: var(--azul);
+            color: white;
+        }
+        .btn-prontuario:hover {
+            background: #1565C0;
+        }
+        .btn-verde {
+            background: var(--verde);
+            color: white;
+        }
+        .btn-verde:hover {
+            background: #388E3C;
+        }
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal { background: white; border-radius: 16px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; }
-.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
-.modal-header h3 { font-size: 18px; }
-.modal-body { padding: 22px; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-full { grid-column: 1 / -1; }
-.form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
-.form-group textarea { resize: vertical; min-height: 50px; }
-.form-group .campo-obrigatorio { color: var(--vermelho); }
-.form-group .campo-opcional { color: var(--cinza); font-weight: 400; font-size: 10px; }
-.form-group .campo-ajuda { color: var(--cinza); font-weight: 400; font-size: 9px; display: block; margin-top: 2px; }
-.foto-container { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0; }
-.foto-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #F0E9DF; display: none; }
-.foto-preview.visible { display: block; }
-.foto-placeholder { width: 120px; height: 120px; border-radius: 50%; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--cinza); border: 4px dashed #E5E0D8; }
-.foto-placeholder.hidden { display: none; }
-.btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-.btn-salvar:hover { background: #A04A0E; }
-.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
-.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; background: #FFF8E7; padding: 8px 12px; border-radius: 6px; }
-.idade-info { font-size: 13px; font-weight: 400; color: var(--verde); margin-left: 6px; }
-.sub-campo { display: none; }
-.sub-campo.visible { display: block; }
+        .pessoa-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .pessoa-item:hover {
+            background: #FFF8E7;
+        }
+        .pessoa-item .info {
+            flex: 1;
+            min-width: 150px;
+        }
+        .pessoa-item .info .nome {
+            font-weight: 600;
+            color: var(--grafite);
+            font-size: 14px;
+        }
+        .pessoa-item .info .detalhe {
+            font-size: 12px;
+            color: var(--cinza);
+        }
+        .pessoa-item .acoes {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .pessoa-item .btn {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
 
-.checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
-.checkbox-group label { font-size: 12px; font-weight: 400; text-transform: none; color: var(--grafite); display: flex; align-items: center; gap: 6px; cursor: pointer; }
-.checkbox-group input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-ativo {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .status-inativo {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        .status-pendente {
+            background: #FFF3E0;
+            color: #E65100;
+        }
 
-.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; }
-.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
-.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+        .sem-dados {
+            text-align: center;
+            padding: 30px;
+            color: #9CA3AF;
+        }
 
-@media (max-width: 900px) { .sidebar { width: 100%; position: relative; } .main-content { margin-left: 0; } }
-@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } .checkbox-group { grid-template-columns: 1fr; } }
-</style>
+        /* ============================================
+           MODAL PRONTUÁRIO
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideUpModal {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-prontuario {
+            background: var(--branco);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+            animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-header {
+            padding: 24px 28px 16px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            border-radius: 20px 20px 0 0;
+        }
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .modal-header h2 span {
+            color: var(--laranja);
+        }
+        .modal-header .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
+        }
+        .btn-fechar-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--cinza);
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .btn-fechar-modal:hover {
+            background: #F8F4ED;
+        }
+
+        .modal-body {
+            padding: 24px 28px 28px;
+        }
+
+        .prontuario-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #F0E9DF;
+            flex-wrap: wrap;
+        }
+        .prontuario-tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--cinza);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+        .prontuario-tab:hover {
+            color: var(--laranja);
+        }
+        .prontuario-tab.ativo {
+            color: var(--laranja);
+            border-bottom-color: var(--laranja);
+        }
+
+        .prontuario-content {
+            display: none;
+        }
+        .prontuario-content.ativo {
+            display: block;
+        }
+
+        .prontuario-item {
+            padding: 12px 16px;
+            background: #F8F4ED;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--laranja);
+        }
+        .prontuario-item .data {
+            font-size: 11px;
+            color: var(--cinza);
+        }
+        .prontuario-item .texto {
+            font-size: 13px;
+            color: var(--grafite);
+            margin-top: 4px;
+        }
+        .prontuario-item .autor {
+            font-size: 11px;
+            color: var(--cinza);
+            margin-top: 4px;
+        }
+
+        .prontuario-form {
+            background: #F8F4ED;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+        .prontuario-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .prontuario-form textarea:focus {
+            outline: none;
+            border-color: var(--laranja);
+        }
+        .prontuario-form .row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .prontuario-form select {
+            padding: 8px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .rodape {
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo {
+            flex-shrink: 0;
+        }
+        .rodape-logo .logo-vigorre {
+            width: 50px;
+        }
+        .rodape-info {
+            flex: 1;
+        }
+        .rodape-info .copyright {
+            font-size: 8px;
+            color: #8A8F98;
+        }
+        .rodape-info .tm {
+            font-size: 6px;
+            vertical-align: super;
+        }
+        .rodape-info .contato {
+            font-size: 9px;
+            color: #8A8F98;
+        }
+        .rodape-info a {
+            color: #C65A11;
+            text-decoration: none;
+        }
+        .rodape-info .email {
+            font-size: 8px;
+            color: #aaa;
+        }
+        .logo-vigorre-fallback {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-prontuario {
+                max-width: 100%;
+                margin: 10px;
+            }
+            .modal-body {
+                padding: 16px;
+            }
+            .kpi-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .kpi-row {
+                grid-template-columns: 1fr;
+            }
+            .prontuario-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .prontuario-tab {
+                padding: 8px 14px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- ==================== MENU LATERAL ==================== -->
-<div id="menu-container"></div>
+    <!-- MENU CARREGADO DINAMICAMENTE -->
+    <div id="menu-container"></div>
 
-<main class="main-content">
-  <div class="topo-bar">
-    <h1>👥 Beneficiários</h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
-  </div>
+    <main class="main-content">
+        <div class="topo-bar">
+            <h1>👥 Beneficiários <span>AMOVIN</span></h1>
+            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+        </div>
 
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiInativos">0</div><div class="kpi-label">⚠️ Inativos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiDescredenciados">0</div><div class="kpi-label">🚫 Descredenciados</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiEstudantes">0</div><div class="kpi-label">📚 Estudantes</div></div>
-  </div>
-
-  <div class="busca-bar">
-    <input type="text" id="buscaPessoa" placeholder="Buscar por nome, matrícula, CPF, responsável..." oninput="filtrar()">
-    <button class="btn-novo" onclick="abrirForm()">+ Novo Beneficiário</button>
-  </div>
-
-  <div id="listaPessoas"></div>
-
-  <div class="rodape">
-    <div class="rodape-grid">
-      <div class="rodape-logo">
-        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="logo-vigorre-fallback">Vigorre</span>
-      </div>
-      <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
-        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
-        <div class="email">contato@vigorre.com.br</div>
-      </div>
-    </div>
-  </div>
-</main>
-
-<!-- MODAL FORM -->
-<div class="modal-overlay" id="modalForm" style="display:none;">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="tituloModal">📝 Novo Beneficiário</h3>
-      <button class="btn-fechar" onclick="fecharForm()">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="pessoaId">
-      <div class="form-grid">
-        
-        <!-- ============================================ -->
-        <!-- FOTO -->
-        <!-- ============================================ -->
-        <div class="section-title">📸 Foto do Beneficiário <span class="campo-opcional">(opcional)</span></div>
-        <div class="form-full">
-          <div class="form-group" style="text-align:center;">
-            <div class="foto-container">
-              <div id="fotoPlaceholder" class="foto-placeholder">📷</div>
-              <img id="fotoPreview" class="foto-preview" alt="Pré-visualização">
-              <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-                <input type="file" id="fotoPessoa" accept="image/*" onchange="previewFoto(event)" style="display:none;">
-                <button type="button" class="btn" style="background:var(--azul);color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="document.getElementById('fotoPessoa').click()">📁 Escolher Foto</button>
-                <button type="button" class="btn" style="background:var(--vermelho);color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="removerFoto()">🗑️ Remover</button>
-              </div>
-              <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">Formatos: JPG, PNG | Tamanho máximo: 5MB</small>
+        <!-- KPIs -->
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-valor" id="kpiTotal">0</div>
+                <div class="kpi-label">📋 Total</div>
             </div>
-          </div>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- PARTE 1: DADOS DO BENEFICIÁRIO -->
-        <!-- ============================================ -->
-        <div class="section-title">📋 PARTE 1 - DADOS DO BENEFICIÁRIO</div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="nomePessoa" placeholder="Nome completo do beneficiário">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>Matrícula <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="matriculaPessoa" placeholder="6 primeiros dígitos do CPF" readonly style="background:#F8F4ED;">
-            <span class="campo-ajuda">Gerada automaticamente pelos 6 primeiros dígitos do CPF</span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>CPF <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="cpfPessoa" placeholder="000.000.000-00" oninput="gerarMatricula()">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>Data de Nascimento <span class="campo-obrigatorio">*</span></label>
-            <input type="date" id="dataNascimentoPessoa" onchange="calcularIdadeDisplay()">
-            <span id="idadeDisplay" class="idade-info"></span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>Gênero <span class="campo-obrigatorio">*</span></label>
-            <select id="sexoPessoa">
-              <option value="">Selecione...</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Feminino">Feminino</option>
-              <option value="NaoBinario">Não Binário</option>
-              <option value="PrefiroNaoResponder">Prefiro não responder</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>RG</label>
-            <input type="text" id="rgPessoa" placeholder="RG do beneficiário">
-          </div>
-        </div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Diagnóstico/Condição</label>
-            <input type="text" id="diagnosticoPessoa" placeholder="Ex: TEA / DI / TDAH / TC">
-          </div>
-        </div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>CID (Código Internacional de Doença)</label>
-            <input type="text" id="cidPessoa" placeholder="Ex: CID-10:F84.0">
-          </div>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- PARTE 2: PERFIL E NECESSIDADES -->
-        <!-- ============================================ -->
-        <div class="section-title">📋 PARTE 2 - PERFIL E NECESSIDADES</div>
-
-        <!-- Nível de Suporte -->
-        <div class="form-full">
-          <div class="form-group">
-            <label>Nível de Suporte <span class="campo-obrigatorio">*</span></label>
-            <select id="nivelSuportePessoa" onchange="toggleSubCampo('nivelSuporte')">
-              <option value="">Selecione...</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-full sub-campo" id="subNivelSuporte">
-          <div class="form-group">
-            <label>Qual nível de suporte?</label>
-            <input type="text" id="nivelSuporteTexto" placeholder="Ex: 1, 2, 3">
-          </div>
-        </div>
-
-        <!-- Comorbidades -->
-        <div class="form-full">
-          <div class="form-group">
-            <label>Comorbidades <span class="campo-obrigatorio">*</span></label>
-            <select id="comorbidadesPessoa" onchange="toggleSubCampo('comorbidades')">
-              <option value="">Selecione...</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-full sub-campo" id="subComorbidades">
-          <div class="form-group">
-            <label>Quais comorbidades?</label>
-            <input type="text" id="comorbidadesTexto" placeholder="Ex: Epilepsia, Diabetes">
-          </div>
-        </div>
-
-        <!-- Estudante -->
-        <div class="form-full">
-          <div class="form-group">
-            <label>Estudante? <span class="campo-obrigatorio">*</span></label>
-            <select id="estudantePessoa" onchange="toggleSubCampo('estudante')">
-              <option value="">Selecione...</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-full sub-campo" id="subEstudante">
-          <div class="form-group">
-            <label>Escola</label>
-            <input type="text" id="escolaPessoa" placeholder="Nome da escola">
-          </div>
-          <div class="form-group">
-            <label>Série</label>
-            <input type="text" id="seriePessoa" placeholder="Ex: 5º ANO">
-          </div>
-        </div>
-
-        <!-- Alergia -->
-        <div class="form-full">
-          <div class="form-group">
-            <label>Possui alergia ou restrição alimentar? <span class="campo-obrigatorio">*</span></label>
-            <select id="alergiaPessoa" onchange="toggleSubCampo('alergia')">
-              <option value="">Selecione...</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-full sub-campo" id="subAlergia">
-          <div class="form-group">
-            <label>Qual alergia?</label>
-            <input type="text" id="alergiaTexto" placeholder="Ex: Sardinha, Lactose, Glúten">
-          </div>
-        </div>
-
-        <!-- Medicação -->
-        <div class="form-full">
-          <div class="form-group">
-            <label>Faz uso de medicação contínua? <span class="campo-obrigatorio">*</span></label>
-            <select id="medicacaoPessoa" onchange="toggleSubCampo('medicacao')">
-              <option value="">Selecione...</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-full sub-campo" id="subMedicacao">
-          <div class="form-group">
-            <label>Qual medicação?</label>
-            <input type="text" id="medicacaoTexto" placeholder="Ex: Ritalina, Depakene">
-          </div>
-        </div>
-
-        <!-- Atendimentos -->
-        <div class="form-full">
-          <div class="form-group">
-            <label>Quais atendimentos ou atividades você mais busca na associação hoje:</label>
-            <div class="checkbox-group">
-              <label><input type="checkbox" class="atendimento-check" value="Apoio Informativo Jurídico/Direitos"> Apoio Informativo Jurídico/Direitos</label>
-              <label><input type="checkbox" class="atendimento-check" value="Oficinas Pedagógicas"> Oficinas Pedagógicas</label>
-              <label><input type="checkbox" class="atendimento-check" value="Terapias"> Terapias</label>
-              <label><input type="checkbox" class="atendimento-check" value="Lazer/Socialização"> Lazer/Socialização</label>
-              <label><input type="checkbox" class="atendimento-check" value="Acolhimento Familiar"> Acolhimento Familiar</label>
+            <div class="kpi-card">
+                <div class="kpi-valor" style="color:var(--verde);" id="kpiAtivos">0</div>
+                <div class="kpi-label">✅ Ativos</div>
             </div>
-          </div>
+            <div class="kpi-card">
+                <div class="kpi-valor" style="color:#E65100;" id="kpiPendentes">0</div>
+                <div class="kpi-label">⏳ Pendentes</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-valor" style="color:var(--vermelho);" id="kpiInativos">0</div>
+                <div class="kpi-label">❌ Inativos</div>
+            </div>
         </div>
 
-        <!-- ============================================ -->
-        <!-- PARTE 3: DADOS DO RESPONSÁVEL -->
-        <!-- ============================================ -->
-        <div class="section-title">📋 PARTE 3 - DADOS DO RESPONSÁVEL</div>
+        <!-- Form + Lista -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div class="card">
+                <h3 id="tituloForm">📝 Novo Beneficiário</h3>
+                <input type="hidden" id="pessoaId">
+                <div class="form-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="nome" placeholder="Nome do beneficiário">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="cpf" placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Data Nascimento</label>
+                        <input type="date" id="nascimento">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="email@exemplo.com">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="telefone" placeholder="(34) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp</label>
+                        <input type="text" id="whatsapp" placeholder="(34) 99999-9999">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="endereco" placeholder="Rua, número, bairro">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="status">
+                            <option value="ativo">✅ Ativo</option>
+                            <option value="pendente">⏳ Pendente</option>
+                            <option value="inativo">❌ Inativo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Projeto</label>
+                        <select id="projeto">
+                            <option value="Inclusão Digital">💻 Inclusão Digital</option>
+                            <option value="Esporte para Todos">⚽ Esporte para Todos</option>
+                            <option value="Reforço Escolar">📚 Reforço Escolar</option>
+                            <option value="Capacitação Profissional">🛠️ Capacitação Profissional</option>
+                            <option value="Outros">📌 Outros</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Observações</label>
+                    <textarea id="obs" rows="2" placeholder="Informações adicionais..."></textarea>
+                </div>
+                <button class="btn btn-salvar" onclick="salvarPessoa()" style="width:100%;padding:12px;font-size:14px;">💾 Salvar</button>
+            </div>
 
-        <div class="form-full">
-          <div class="form-group">
-            <label>Nome completo do responsável <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="responsavelPessoa" placeholder="Nome completo do responsável">
-          </div>
+            <div class="card">
+                <h3>📋 Beneficiários <span style="font-weight:400;font-size:13px;color:var(--cinza);" id="totalPessoas">(0)</span></h3>
+                <div id="listaPessoas">
+                    <div class="sem-dados">Nenhum beneficiário cadastrado.</div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-full">
-          <div class="form-group">
-            <label>Telefone/WhatsApp <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="telefonePessoa" placeholder="(34) 99999-9999">
-          </div>
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
         </div>
+    </main>
 
-        <div class="form-group">
-          <div class="form-group">
-            <label>Vínculo com Beneficiário <span class="campo-obrigatorio">*</span></label>
-            <input type="text" id="vinculoPessoa" placeholder="Ex: Mãe, Pai, Avó, Tio">
-          </div>
+    <!-- ============================================
+    MODAL PRONTUÁRIO
+    ============================================ -->
+    <div class="modal-overlay hidden" id="modalProntuario">
+        <div class="modal-prontuario">
+            <div class="modal-header">
+                <div>
+                    <h2>📋 Prontuário <span id="prontuarioNome">Beneficiário</span></h2>
+                    <span class="sub" id="prontuarioInfo">Histórico de atendimentos e evoluções</span>
+                </div>
+                <button class="btn-fechar-modal" onclick="fecharProntuario()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="prontuarioPessoaId">
+
+                <!-- Tabs do Prontuário -->
+                <div class="prontuario-tabs">
+                    <button class="prontuario-tab ativo" data-tab="evolucao" onclick="mudarTabProntuario('evolucao',this)">📝 Evoluções</button>
+                    <button class="prontuario-tab" data-tab="atendimentos" onclick="mudarTabProntuario('atendimentos',this)">🩺 Atendimentos</button>
+                    <button class="prontuario-tab" data-tab="observacoes" onclick="mudarTabProntuario('observacoes',this)">📌 Observações</button>
+                </div>
+
+                <!-- Conteúdo: Evoluções -->
+                <div class="prontuario-content ativo" id="tab-evolucao">
+                    <div class="prontuario-form">
+                        <textarea id="evolucaoTexto" placeholder="Descreva a evolução do beneficiário..."></textarea>
+                        <div class="row">
+                            <select id="evolucaoTipo">
+                                <option value="Rotina">📋 Rotina</option>
+                                <option value="Melhora">📈 Melhora</option>
+                                <option value="Piora">📉 Piora</option>
+                                <option value="Alta">✅ Alta</option>
+                                <option value="Encaminhamento">🔀 Encaminhamento</option>
+                            </select>
+                            <button class="btn btn-salvar" onclick="adicionarEvolucao()">➕ Adicionar</button>
+                        </div>
+                    </div>
+                    <div id="listaEvolucoes">
+                        <div class="sem-dados">Nenhuma evolução registrada.</div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo: Atendimentos -->
+                <div class="prontuario-content" id="tab-atendimentos">
+                    <div class="prontuario-form">
+                        <textarea id="atendimentoTexto" placeholder="Descreva o atendimento realizado..."></textarea>
+                        <div class="row">
+                            <select id="atendimentoTipo">
+                                <option value="Consulta">🩺 Consulta</option>
+                                <option value="Terapia">🧠 Terapia</option>
+                                <option value="Oficina">🛠️ Oficina</option>
+                                <option value="Acompanhamento">👥 Acompanhamento</option>
+                                <option value="Outro">📌 Outro</option>
+                            </select>
+                            <button class="btn btn-salvar" onclick="adicionarAtendimento()">➕ Adicionar</button>
+                        </div>
+                    </div>
+                    <div id="listaAtendimentos">
+                        <div class="sem-dados">Nenhum atendimento registrado.</div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo: Observações -->
+                <div class="prontuario-content" id="tab-observacoes">
+                    <div class="prontuario-form">
+                        <textarea id="observacaoTexto" placeholder="Observações gerais sobre o beneficiário..."></textarea>
+                        <button class="btn btn-salvar" onclick="adicionarObservacao()" style="margin-top:10px;">➕ Adicionar Observação</button>
+                    </div>
+                    <div id="listaObservacoes">
+                        <div class="sem-dados">Nenhuma observação registrada.</div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>RG do Responsável</label>
-            <input type="text" id="rgResponsavel" placeholder="RG do responsável">
-          </div>
-        </div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>CPF do Responsável</label>
-            <input type="text" id="cpfResponsavel" placeholder="000.000.000-00">
-          </div>
-        </div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Endereço completo</label>
-            <input type="text" id="enderecoPessoa" placeholder="Rua, número, bairro, cidade">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>Renda familiar</label>
-            <select id="rendaPessoa">
-              <option value="">Selecione...</option>
-              <option value="Até 2.000">Até 2.000</option>
-              <option value="2.001 a 5.000">2.001 a 5.000</option>
-              <option value="5.001 a 10.000">5.001 a 10.000</option>
-              <option value="Acima de 10.001">Acima de 10.001</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group">
-            <label>Incluída no IRPF</label>
-            <select id="irpfPessoa">
-              <option value="">Selecione...</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-              <option value="NaoSeiDizer">Não sei dizer</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- ============================================ -->
-        <!-- STATUS -->
-        <!-- ============================================ -->
-        <div class="section-title">📌 STATUS DO BENEFICIÁRIO</div>
-
-        <div class="form-full">
-          <div class="form-group">
-            <label>Status <span class="campo-obrigatorio">*</span></label>
-            <select id="statusPessoa" onchange="toggleMotivoDescredenciado()">
-              <option value="Ativo">✅ Ativo</option>
-              <option value="Inativo">⚠️ Inativo</option>
-              <option value="Descredenciado">🚫 Descredenciado</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-full sub-campo" id="subMotivoDescredenciado">
-          <div class="form-group">
-            <label>Motivo do Descredenciamento <span class="campo-obrigatorio">*</span></label>
-            <textarea id="motivoDescredenciado" rows="3" placeholder="Descreva o motivo do descredenciamento..."></textarea>
-          </div>
-        </div>
-      </div>
-      <button class="btn-salvar" onclick="salvarPessoa()">💾 Salvar</button>
     </div>
-  </div>
-</div>
 
-<script src="menu.js"></script>
-<script>
-// ============================================================
-// BANCO DE DADOS LOCAL
-// ============================================================
-var pessoas = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
-var editandoId = null;
-var fotoDataURL = null;
+    <script src="menu.js"></script>
+    <script>
+        // ============================================================
+        // DADOS
+        // ============================================================
+        var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+        var prontuarios = JSON.parse(localStorage.getItem('amovin_prontuarios') || '{}');
+        var editandoId = null;
 
-// Dados iniciais
-if (pessoas.length === 0) {
-    pessoas = [
-        { id: 1, nome: 'João Silva', matricula: '123456', cpf: '12345678900', dataNasc: '2010-05-15', sexo: 'Masculino', rg: 'MG-12.345.678', diagnostico: 'TEA', cid: 'F84.0', nivelSuporte: 'Sim', nivelSuporteTexto: '3', comorbidades: 'Sim', comorbidadesTexto: 'Epilepsia', estudante: 'Sim', escola: 'Apae', serie: '5º ANO', alergia: 'Sim', alergiaTexto: 'Sardinha', medicacao: 'Sim', medicacaoTexto: 'Varios', atendimentos: ['Terapias', 'Lazer/Socialização'], responsavel: 'Maria Silva', telefone: '(34) 99999-1111', vinculo: 'Mãe', rgResponsavel: 'MG-12.345.678', cpfResponsavel: '98765432100', endereco: 'Rua das Flores, 123', renda: 'Até 2.000', irpf: 'Não', status: 'Ativo', motivoDescredenciado: '', dataCadastro: '2026-07-01', foto: null }
-    ];
-    salvar();
-}
-
-function salvar() {
-    localStorage.setItem('amovin_beneficiarios', JSON.stringify(pessoas));
-}
-
-// ============================================================
-// FUNÇÕES DE FORMATAÇÃO
-// ============================================================
-function formatarDataBR(dataISO) {
-    if (!dataISO) return '-';
-    var partes = dataISO.split('-');
-    return partes[2] + '/' + partes[1] + '/' + partes[0];
-}
-
-function calcularIdade(dataNasc) {
-    if (!dataNasc) return '-';
-    var hoje = new Date();
-    var nasc = new Date(dataNasc + 'T00:00:00');
-    var idade = hoje.getFullYear() - nasc.getFullYear();
-    var m = hoje.getMonth() - nasc.getMonth();
-    if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) {
-        idade--;
-    }
-    return idade;
-}
-
-function getAvatarHtml(pessoa) {
-    if (pessoa.foto) {
-        return '<img src="' + pessoa.foto + '" alt="' + pessoa.nome + '" class="pessoa-avatar">';
-    }
-    var iniciais = pessoa.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
-    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
-    var cor = cores[pessoa.id % cores.length] || '#C65A11';
-    return '<div class="pessoa-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
-}
-
-function getStatusBadge(status) {
-    if (status === 'Ativo') return '<span class="status-badge status-ativo">✅ Ativo</span>';
-    if (status === 'Inativo') return '<span class="status-badge status-inativo">⚠️ Inativo</span>';
-    if (status === 'Descredenciado') return '<span class="status-badge status-descredenciado">🚫 Descredenciado</span>';
-    return '<span class="status-badge status-ativo">✅ Ativo</span>';
-}
-
-function getStatusClass(status) {
-    if (status === 'Inativo') return 'status-inativo';
-    if (status === 'Descredenciado') return 'status-descredenciado';
-    return '';
-}
-
-// ============================================================
-// MATRÍCULA AUTOMÁTICA
-// ============================================================
-function gerarMatricula() {
-    var cpf = document.getElementById('cpfPessoa').value.replace(/\D/g, '');
-    if (cpf.length >= 6) {
-        var base = cpf.substring(0, 6);
-        var matricula = base;
-        var count = 0;
-        pessoas.forEach(function(p) {
-            if (p.matricula && p.matricula.indexOf(base) === 0 && p.id !== editandoId) {
-                count++;
-            }
-        });
-        if (count > 0) {
-            matricula = base + '-' + count;
+        if (pessoas.length === 0) {
+            pessoas = [
+                { id: 1, nome: 'Maria Silva', cpf: '123.456.789-00', nascimento: '1985-06-15', email: 'maria@email.com',
+                    telefone: '(34) 99999-0001', whatsapp: '(34) 99999-0001', endereco: 'Rua A, 123', status: 'ativo',
+                    projeto: 'Inclusão Digital', obs: '' },
+                { id: 2, nome: 'João Santos', cpf: '987.654.321-00', nascimento: '1990-08-20', email: 'joao@email.com',
+                    telefone: '(34) 99999-0002', whatsapp: '(34) 99999-0002', endereco: 'Rua B, 456', status: 'ativo',
+                    projeto: 'Esporte para Todos', obs: '' }
+            ];
+            salvar();
         }
-        document.getElementById('matriculaPessoa').value = matricula;
-    }
-}
 
-// ============================================================
-// IDADE AUTOMÁTICA
-// ============================================================
-function calcularIdadeDisplay() {
-    var data = document.getElementById('dataNascimentoPessoa').value;
-    if (data) {
-        var idade = calcularIdade(data);
-        document.getElementById('idadeDisplay').textContent = idade + ' anos';
-    } else {
-        document.getElementById('idadeDisplay').textContent = '';
-    }
-}
+        function salvar() {
+            localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
+            localStorage.setItem('amovin_prontuarios', JSON.stringify(prontuarios));
+        }
 
-// ============================================================
-// SUB-CAMPOS (mostrar/esconder)
-// ============================================================
-function toggleSubCampo(tipo) {
-    var map = {
-        'nivelSuporte': { select: 'nivelSuportePessoa', sub: 'subNivelSuporte' },
-        'comorbidades': { select: 'comorbidadesPessoa', sub: 'subComorbidades' },
-        'estudante': { select: 'estudantePessoa', sub: 'subEstudante' },
-        'alergia': { select: 'alergiaPessoa', sub: 'subAlergia' },
-        'medicacao': { select: 'medicacaoPessoa', sub: 'subMedicacao' }
-    };
-    var item = map[tipo];
-    if (!item) return;
-    var select = document.getElementById(item.select);
-    var sub = document.getElementById(item.sub);
-    if (select.value === 'Sim') {
-        sub.classList.add('visible');
-    } else {
-        sub.classList.remove('visible');
-    }
-}
+        // ============================================================
+        // FUNÇÕES PRINCIPAIS
+        // ============================================================
+        function getStatusBadge(status) {
+            var map = { 'ativo': 'status-ativo', 'pendente': 'status-pendente', 'inativo': 'status-inativo' };
+            return map[status] || 'status-pendente';
+        }
 
-function toggleMotivoDescredenciado() {
-    var status = document.getElementById('statusPessoa').value;
-    var sub = document.getElementById('subMotivoDescredenciado');
-    if (status === 'Descredenciado') {
-        sub.classList.add('visible');
-    } else {
-        sub.classList.remove('visible');
-        document.getElementById('motivoDescredenciado').value = '';
-    }
-}
+        function getStatusLabel(status) {
+            var map = { 'ativo': '✅ Ativo', 'pendente': '⏳ Pendente', 'inativo': '❌ Inativo' };
+            return map[status] || status;
+        }
 
-// ============================================================
-// PRÉ-VISUALIZAÇÃO DA FOTO
-// ============================================================
-window.previewFoto = function(event) {
-    var file = event.target.files[0];
-    if (!file) {
-        removerFoto();
-        return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-        alert('⚠️ A foto não pode ter mais que 5MB.');
-        document.getElementById('fotoPessoa').value = '';
-        return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        fotoDataURL = e.target.result;
-        var preview = document.getElementById('fotoPreview');
-        preview.src = fotoDataURL;
-        preview.className = 'foto-preview visible';
-        document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
-    };
-    reader.readAsDataURL(file);
-};
+        function atualizarKPIs() {
+            var total = pessoas.length;
+            var ativos = pessoas.filter(function(p) { return p.status === 'ativo'; }).length;
+            var pendentes = pessoas.filter(function(p) { return p.status === 'pendente'; }).length;
+            var inativos = pessoas.filter(function(p) { return p.status === 'inativo'; }).length;
 
-window.removerFoto = function() {
-    fotoDataURL = null;
-    document.getElementById('fotoPessoa').value = '';
-    document.getElementById('fotoPreview').className = 'foto-preview';
-    document.getElementById('fotoPreview').src = '';
-    document.getElementById('fotoPlaceholder').className = 'foto-placeholder';
-};
+            document.getElementById('kpiTotal').textContent = total;
+            document.getElementById('kpiAtivos').textContent = ativos;
+            document.getElementById('kpiPendentes').textContent = pendentes;
+            document.getElementById('kpiInativos').textContent = inativos;
+            document.getElementById('totalPessoas').textContent = '(' + total + ')';
+        }
 
-// ============================================================
-// IMPORTAR PARA CRM
-// ============================================================
-function importarParaCRM(pessoa) {
-    var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
-    var existe = contatos.some(function(c) {
-        return c.nome === pessoa.nome && c.tipo === 'beneficiario' && c.origem === 'pessoas';
-    });
+        function renderizarLista() {
+            var container = document.getElementById('listaPessoas');
+            if (pessoas.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum beneficiário cadastrado.</div>';
+                return;
+            }
 
-    if (!existe) {
-        var novoContato = {
-            id: Date.now(),
-            nome: pessoa.nome || '',
-            tipo: 'beneficiario',
-            cpf: pessoa.cpf || '',
-            rg: pessoa.rg || '',
-            tel1: pessoa.telefone || '',
-            whatsapp: pessoa.telefone || '',
-            email: '',
-            endereco: pessoa.endereco || '',
-            cidade: '',
-            estado: '',
-            responsavel: pessoa.responsavel || '',
-            categoria: 'Beneficiário',
-            obs: pessoa.diagnostico || '',
-            favorito: false,
-            origem: 'pessoas',
-            ativo: pessoa.status === 'Ativo',
-            status: pessoa.status || 'Ativo',
-            motivoDescredenciado: pessoa.motivoDescredenciado || '',
-            foto: pessoa.foto || null,
-            dataCadastro: new Date().toISOString().split('T')[0]
+            container.innerHTML = pessoas.map(function(p) {
+                var statusBadge = getStatusBadge(p.status);
+                var statusLabel = getStatusLabel(p.status);
+                var temProntuario = prontuarios[p.id] ? '📋' : '';
+
+                return '<div class="pessoa-item">' +
+                    '<div class="info">' +
+                    '<div class="nome">' + p.nome + ' ' + temProntuario + '</div>' +
+                    '<div class="detalhe">' + p.projeto + ' | 📧 ' + (p.email || '-') + ' | 📞 ' + (p.telefone || '-') +
+                    '</div>' +
+                    '<div class="detalhe"><span class="status-badge ' + statusBadge + '">' + statusLabel + '</span></div>' +
+                    '</div>' +
+                    '<div class="acoes">' +
+                    '<button class="btn btn-prontuario" onclick="abrirProntuario(' + p.id + ')">📋 Prontuário</button>' +
+                    '<button class="btn btn-editar" onclick="editarPessoa(' + p.id + ')">✏️</button>' +
+                    '<button class="btn btn-excluir" onclick="excluirPessoa(' + p.id + ')">🗑️</button>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+
+            atualizarKPIs();
+        }
+
+        window.salvarPessoa = function() {
+            var nome = document.getElementById('nome').value.trim();
+            if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
+
+            var dados = {
+                nome: nome,
+                cpf: document.getElementById('cpf').value.trim(),
+                nascimento: document.getElementById('nascimento').value,
+                email: document.getElementById('email').value.trim(),
+                telefone: document.getElementById('telefone').value.trim(),
+                whatsapp: document.getElementById('whatsapp').value.trim(),
+                endereco: document.getElementById('endereco').value.trim(),
+                status: document.getElementById('status').value,
+                projeto: document.getElementById('projeto').value,
+                obs: document.getElementById('obs').value.trim()
+            };
+
+            if (editandoId) {
+                var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
+                if (idx >= 0) {
+                    for (var k in dados) pessoas[idx][k] = dados[k];
+                }
+                editandoId = null;
+            } else {
+                dados.id = Date.now();
+                dados.dataCriacao = new Date().toISOString();
+                pessoas.push(dados);
+                // Inicializa prontuário vazio
+                prontuarios[dados.id] = { evolucoes: [], atendimentos: [], observacoes: [] };
+            }
+
+            salvar();
+            limparForm();
+            renderizarLista();
+            alert('✅ Beneficiário salvo com sucesso!');
         };
-        contatos.push(novoContato);
-        localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
-        return true;
-    }
-    return false;
-}
 
-// ============================================================
-// RENDERIZAÇÃO
-// ============================================================
-function filtrar() {
-    var lista = pessoas.slice();
+        window.editarPessoa = function(id) {
+            var p = pessoas.find(function(x) { return x.id === id; });
+            if (!p) return;
+            editandoId = id;
+            document.getElementById('pessoaId').value = id;
+            document.getElementById('nome').value = p.nome;
+            document.getElementById('cpf').value = p.cpf || '';
+            document.getElementById('nascimento').value = p.nascimento || '';
+            document.getElementById('email').value = p.email || '';
+            document.getElementById('telefone').value = p.telefone || '';
+            document.getElementById('whatsapp').value = p.whatsapp || '';
+            document.getElementById('endereco').value = p.endereco || '';
+            document.getElementById('status').value = p.status || 'ativo';
+            document.getElementById('projeto').value = p.projeto || 'Inclusão Digital';
+            document.getElementById('obs').value = p.obs || '';
+            document.getElementById('tituloForm').textContent = '✏️ Editando: ' + p.nome;
+        };
 
-    var busca = document.getElementById('buscaPessoa').value.toLowerCase();
-    if (busca) {
-        lista = lista.filter(function(p) {
-            return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
-                   (p.matricula || '').indexOf(busca) >= 0 ||
-                   (p.cpf || '').indexOf(busca) >= 0 ||
-                   (p.responsavel || '').toLowerCase().indexOf(busca) >= 0;
-        });
-    }
+        window.excluirPessoa = function(id) {
+            if (!confirm('Excluir este beneficiário?')) return;
+            pessoas = pessoas.filter(function(p) { return p.id !== id; });
+            delete prontuarios[id];
+            salvar();
+            renderizarLista();
+        };
 
-    lista.sort(function(a, b) {
-        return (a.nome || '').localeCompare(b.nome || '');
-    });
-
-    var container = document.getElementById('listaPessoas');
-    if (lista.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhum beneficiário cadastrado.</div>';
-    } else {
-        container.innerHTML = lista.map(function(p) {
-            var idade = p.dataNasc ? calcularIdade(p.dataNasc) + ' anos' : '-';
-            var statusBadge = getStatusBadge(p.status || 'Ativo');
-            var statusClass = getStatusClass(p.status || 'Ativo');
-            var motivoInfo = p.status === 'Descredenciado' && p.motivoDescredenciado ? ' | Motivo: ' + p.motivoDescredenciado : '';
-
-            return '<div class="pessoa-card ' + statusClass + '">' +
-                '<div class="pessoa-info">' +
-                getAvatarHtml(p) +
-                '<div class="pessoa-dados">' +
-                '<h4>' + p.nome + ' | Matrícula: ' + (p.matricula || '-') + ' | ' + idade + '</h4>' +
-                '<p>👤 Responsável: ' + (p.responsavel || '-') + ' | 📞 ' + (p.telefone || '-') + '</p>' +
-                '<p>' + statusBadge + motivoInfo + ' | 📅 ' + formatarDataBR(p.dataCadastro) + '</p>' +
-                '</div></div>' +
-                '<div class="contato-acoes">' +
-                '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
-                '<button class="btn-acao btn-excluir" onclick="excluirPessoa(' + p.id + ')">🗑️</button>' +
-                '<button class="btn-acao btn-crm" onclick="enviarParaCRM(' + p.id + ')">📤 CRM</button>' +
-                '</div></div>';
-        }).join('');
-    }
-
-    atualizarKPIs();
-}
-
-function atualizarKPIs() {
-    document.getElementById('kpiTotal').textContent = pessoas.length;
-    document.getElementById('kpiAtivos').textContent = pessoas.filter(function(p) { return p.status === 'Ativo' || !p.status; }).length;
-    document.getElementById('kpiInativos').textContent = pessoas.filter(function(p) { return p.status === 'Inativo'; }).length;
-    document.getElementById('kpiDescredenciados').textContent = pessoas.filter(function(p) { return p.status === 'Descredenciado'; }).length;
-    document.getElementById('kpiEstudantes').textContent = pessoas.filter(function(p) { return p.estudante === 'Sim'; }).length;
-}
-
-// ============================================================
-// FORMULÁRIO
-// ============================================================
-window.abrirForm = function(id) {
-    editandoId = id || null;
-    document.getElementById('modalForm').style.display = 'flex';
-    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Beneficiário' : '📝 Novo Beneficiário';
-
-    removerFoto();
-
-    if (id) {
-        var p = pessoas.find(function(x) { return x.id === id; });
-        if (!p) return;
-        document.getElementById('pessoaId').value = p.id;
-        document.getElementById('nomePessoa').value = p.nome || '';
-        document.getElementById('cpfPessoa').value = p.cpf || '';
-        document.getElementById('matriculaPessoa').value = p.matricula || '';
-        document.getElementById('dataNascimentoPessoa').value = p.dataNasc || '';
-        document.getElementById('sexoPessoa').value = p.sexo || '';
-        document.getElementById('rgPessoa').value = p.rg || '';
-        document.getElementById('diagnosticoPessoa').value = p.diagnostico || '';
-        document.getElementById('cidPessoa').value = p.cid || '';
-        document.getElementById('nivelSuportePessoa').value = p.nivelSuporte || '';
-        document.getElementById('nivelSuporteTexto').value = p.nivelSuporteTexto || '';
-        document.getElementById('comorbidadesPessoa').value = p.comorbidades || '';
-        document.getElementById('comorbidadesTexto').value = p.comorbidadesTexto || '';
-        document.getElementById('estudantePessoa').value = p.estudante || '';
-        document.getElementById('escolaPessoa').value = p.escola || '';
-        document.getElementById('seriePessoa').value = p.serie || '';
-        document.getElementById('alergiaPessoa').value = p.alergia || '';
-        document.getElementById('alergiaTexto').value = p.alergiaTexto || '';
-        document.getElementById('medicacaoPessoa').value = p.medicacao || '';
-        document.getElementById('medicacaoTexto').value = p.medicacaoTexto || '';
-        document.getElementById('responsavelPessoa').value = p.responsavel || '';
-        document.getElementById('telefonePessoa').value = p.telefone || '';
-        document.getElementById('vinculoPessoa').value = p.vinculo || '';
-        document.getElementById('rgResponsavel').value = p.rgResponsavel || '';
-        document.getElementById('cpfResponsavel').value = p.cpfResponsavel || '';
-        document.getElementById('enderecoPessoa').value = p.endereco || '';
-        document.getElementById('rendaPessoa').value = p.renda || '';
-        document.getElementById('irpfPessoa').value = p.irpf || '';
-        document.getElementById('statusPessoa').value = p.status || 'Ativo';
-        document.getElementById('motivoDescredenciado').value = p.motivoDescredenciado || '';
-
-        document.querySelectorAll('.atendimento-check').forEach(function(cb) {
-            cb.checked = p.atendimentos && p.atendimentos.indexOf(cb.value) >= 0;
-        });
-
-        calcularIdadeDisplay();
-        ['nivelSuporte', 'comorbidades', 'estudante', 'alergia', 'medicacao'].forEach(function(tipo) {
-            toggleSubCampo(tipo);
-        });
-        toggleMotivoDescredenciado();
-
-        if (p.foto) {
-            fotoDataURL = p.foto;
-            var preview = document.getElementById('fotoPreview');
-            preview.src = p.foto;
-            preview.className = 'foto-preview visible';
-            document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
+        function limparForm() {
+            editandoId = null;
+            document.getElementById('pessoaId').value = '';
+            document.getElementById('nome').value = '';
+            document.getElementById('cpf').value = '';
+            document.getElementById('nascimento').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('telefone').value = '';
+            document.getElementById('whatsapp').value = '';
+            document.getElementById('endereco').value = '';
+            document.getElementById('status').value = 'ativo';
+            document.getElementById('projeto').value = 'Inclusão Digital';
+            document.getElementById('obs').value = '';
+            document.getElementById('tituloForm').textContent = '📝 Novo Beneficiário';
         }
-    } else {
-        document.getElementById('pessoaId').value = '';
-        document.getElementById('nomePessoa').value = '';
-        document.getElementById('cpfPessoa').value = '';
-        document.getElementById('matriculaPessoa').value = '';
-        document.getElementById('dataNascimentoPessoa').value = '';
-        document.getElementById('sexoPessoa').value = '';
-        document.getElementById('rgPessoa').value = '';
-        document.getElementById('diagnosticoPessoa').value = '';
-        document.getElementById('cidPessoa').value = '';
-        document.getElementById('nivelSuportePessoa').value = '';
-        document.getElementById('nivelSuporteTexto').value = '';
-        document.getElementById('comorbidadesPessoa').value = '';
-        document.getElementById('comorbidadesTexto').value = '';
-        document.getElementById('estudantePessoa').value = '';
-        document.getElementById('escolaPessoa').value = '';
-        document.getElementById('seriePessoa').value = '';
-        document.getElementById('alergiaPessoa').value = '';
-        document.getElementById('alergiaTexto').value = '';
-        document.getElementById('medicacaoPessoa').value = '';
-        document.getElementById('medicacaoTexto').value = '';
-        document.getElementById('responsavelPessoa').value = '';
-        document.getElementById('telefonePessoa').value = '';
-        document.getElementById('vinculoPessoa').value = '';
-        document.getElementById('rgResponsavel').value = '';
-        document.getElementById('cpfResponsavel').value = '';
-        document.getElementById('enderecoPessoa').value = '';
-        document.getElementById('rendaPessoa').value = '';
-        document.getElementById('irpfPessoa').value = '';
-        document.getElementById('statusPessoa').value = 'Ativo';
-        document.getElementById('motivoDescredenciado').value = '';
-        document.querySelectorAll('.atendimento-check').forEach(function(cb) { cb.checked = false; });
-        document.getElementById('idadeDisplay').textContent = '';
-        ['nivelSuporte', 'comorbidades', 'estudante', 'alergia', 'medicacao'].forEach(function(tipo) {
-            toggleSubCampo(tipo);
-        });
-        toggleMotivoDescredenciado();
-    }
-};
 
-window.fecharForm = function() {
-    document.getElementById('modalForm').style.display = 'none';
-};
+        // ============================================================
+        // PRONTUÁRIO - FUNÇÕES
+        // ============================================================
+        var prontuarioAtual = null;
 
-window.salvarPessoa = function() {
-    console.log('🔵 Botão Salvar clicado!');
-    
-    var nome = document.getElementById('nomePessoa').value.trim();
-    if (!nome) { 
-        alert('⚠️ Nome é obrigatório!'); 
-        return; 
-    }
+        function abrirProntuario(id) {
+            var p = pessoas.find(function(x) { return x.id === id; });
+            if (!p) return;
 
-    var cpf = document.getElementById('cpfPessoa').value.replace(/\D/g, '');
-    if (!cpf || cpf.length < 6) {
-        alert('⚠️ CPF inválido! Digite um CPF válido.');
-        return;
-    }
+            prontuarioAtual = id;
 
-    var dataNasc = document.getElementById('dataNascimentoPessoa').value;
-    if (!dataNasc) {
-        alert('⚠️ Data de nascimento é obrigatória!');
-        return;
-    }
-
-    var matricula = document.getElementById('matriculaPessoa').value;
-    if (!matricula) {
-        alert('⚠️ Matrícula não gerada. Verifique o CPF.');
-        return;
-    }
-
-    var responsavel = document.getElementById('responsavelPessoa').value.trim();
-    if (!responsavel) {
-        alert('⚠️ Nome do responsável é obrigatório!');
-        return;
-    }
-
-    var telefone = document.getElementById('telefonePessoa').value.trim();
-    if (!telefone) {
-        alert('⚠️ Telefone do responsável é obrigatório!');
-        return;
-    }
-
-    var status = document.getElementById('statusPessoa').value;
-    var motivoDescredenciado = '';
-    if (status === 'Descredenciado') {
-        motivoDescredenciado = document.getElementById('motivoDescredenciado').value.trim();
-        if (!motivoDescredenciado) {
-            alert('⚠️ Para descredenciar, informe o motivo!');
-            return;
-        }
-    }
-
-    var atendimentos = [];
-    document.querySelectorAll('.atendimento-check:checked').forEach(function(cb) {
-        atendimentos.push(cb.value);
-    });
-
-    var dados = {
-        nome: nome,
-        tipo: 'beneficiario',
-        cpf: cpf,
-        matricula: matricula,
-        dataNasc: dataNasc,
-        sexo: document.getElementById('sexoPessoa').value,
-        rg: document.getElementById('rgPessoa').value.trim(),
-        diagnostico: document.getElementById('diagnosticoPessoa').value.trim(),
-        cid: document.getElementById('cidPessoa').value.trim(),
-        nivelSuporte: document.getElementById('nivelSuportePessoa').value,
-        nivelSuporteTexto: document.getElementById('nivelSuporteTexto').value.trim(),
-        comorbidades: document.getElementById('comorbidadesPessoa').value,
-        comorbidadesTexto: document.getElementById('comorbidadesTexto').value.trim(),
-        estudante: document.getElementById('estudantePessoa').value,
-        escola: document.getElementById('escolaPessoa').value.trim(),
-        serie: document.getElementById('seriePessoa').value.trim(),
-        alergia: document.getElementById('alergiaPessoa').value,
-        alergiaTexto: document.getElementById('alergiaTexto').value.trim(),
-        medicacao: document.getElementById('medicacaoPessoa').value,
-        medicacaoTexto: document.getElementById('medicacaoTexto').value.trim(),
-        atendimentos: atendimentos,
-        responsavel: responsavel,
-        telefone: telefone,
-        vinculo: document.getElementById('vinculoPessoa').value.trim(),
-        rgResponsavel: document.getElementById('rgResponsavel').value.trim(),
-        cpfResponsavel: document.getElementById('cpfResponsavel').value.replace(/\D/g, ''),
-        endereco: document.getElementById('enderecoPessoa').value.trim(),
-        renda: document.getElementById('rendaPessoa').value,
-        irpf: document.getElementById('irpfPessoa').value,
-        status: status,
-        motivoDescredenciado: motivoDescredenciado
-    };
-
-    if (fotoDataURL) {
-        dados.foto = fotoDataURL;
-    } else if (editandoId) {
-        var existente = pessoas.find(function(p) { return p.id === editandoId; });
-        if (existente && existente.foto) {
-            dados.foto = existente.foto;
-        }
-    }
-
-    console.log('📝 Dados a salvar:', dados);
-
-    if (editandoId) {
-        var idx = pessoas.findIndex(function(p) { return p.id === editandoId; });
-        if (idx >= 0) {
-            for (var k in dados) {
-                pessoas[idx][k] = dados[k];
+            // Inicializa se não existir
+            if (!prontuarios[id]) {
+                prontuarios[id] = { evolucoes: [], atendimentos: [], observacoes: [] };
+                salvar();
             }
-            pessoas[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
+
+            document.getElementById('prontuarioPessoaId').value = id;
+            document.getElementById('prontuarioNome').textContent = p.nome;
+            document.getElementById('prontuarioInfo').textContent = p.projeto + ' • ' + (p.email || 'Sem email');
+
+            // Reseta tabs
+            document.querySelectorAll('.prontuario-tab').forEach(function(tab) {
+                tab.classList.remove('ativo');
+            });
+            document.querySelector('.prontuario-tab[data-tab="evolucao"]').classList.add('ativo');
+            document.querySelectorAll('.prontuario-content').forEach(function(c) { c.classList.remove('ativo'); });
+            document.getElementById('tab-evolucao').classList.add('ativo');
+
+            // Renderiza
+            renderizarEvolucoes();
+            renderizarAtendimentos();
+            renderizarObservacoes();
+
+            document.getElementById('modalProntuario').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
-    } else {
-        dados.id = Date.now();
-        dados.dataCadastro = new Date().toISOString().split('T')[0];
-        pessoas.push(dados);
-    }
 
-    salvar();
-    console.log('✅ Dados salvos! Total:', pessoas.length);
+        function fecharProntuario() {
+            document.getElementById('modalProntuario').classList.add('hidden');
+            document.body.style.overflow = '';
+            prontuarioAtual = null;
+        }
 
-    var pessoaSalva = editandoId ? pessoas.find(function(p) { return p.id === editandoId; }) : dados;
-    if (pessoaSalva) {
-        importarParaCRM(pessoaSalva);
-    }
+        function mudarTabProntuario(tab, btn) {
+            document.querySelectorAll('.prontuario-tab').forEach(function(t) { t.classList.remove('ativo'); });
+            btn.classList.add('ativo');
+            document.querySelectorAll('.prontuario-content').forEach(function(c) { c.classList.remove('ativo'); });
+            document.getElementById('tab-' + tab).classList.add('ativo');
+        }
 
-    fecharForm();
-    filtrar();
-    alert('✅ Beneficiário salvo com sucesso!');
-};
+        // --- Evoluções ---
+        function renderizarEvolucoes() {
+            var id = document.getElementById('prontuarioPessoaId').value;
+            var dados = prontuarios[id] || { evolucoes: [] };
+            var container = document.getElementById('listaEvolucoes');
 
-// ============================================================
-// ENVIAR PARA CRM
-// ============================================================
-window.enviarParaCRM = function(id) {
-    var p = pessoas.find(function(x) { return x.id === id; });
-    if (!p) return;
+            if (dados.evolucoes.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhuma evolução registrada.</div>';
+                return;
+            }
 
-    var importado = importarParaCRM(p);
-    if (importado) {
-        alert('✅ ' + p.nome + ' foi importado para o CRM Social!');
-    } else {
-        alert('ℹ️ ' + p.nome + ' já existe no CRM Social.');
-    }
-};
+            container.innerHTML = dados.evolucoes.map(function(e) {
+                var data = new Date(e.data).toLocaleString('pt-BR');
+                return '<div class="prontuario-item">' +
+                    '<div class="data">📅 ' + data + ' | ' + e.tipo + '</div>' +
+                    '<div class="texto">' + e.texto + '</div>' +
+                    '<div class="autor">👤 ' + (e.autor || 'Admin') + '</div>' +
+                    '</div>';
+            }).join('');
+        }
 
-// ============================================================
-// EXCLUIR (apenas marca como inativo)
-// ============================================================
-window.excluirPessoa = function(id) {
-    var p = pessoas.find(function(x) { return x.id === id; });
-    if (!p) return;
+        function adicionarEvolucao() {
+            var id = document.getElementById('prontuarioPessoaId').value;
+            var texto = document.getElementById('evolucaoTexto').value.trim();
+            var tipo = document.getElementById('evolucaoTipo').value;
 
-    if (!confirm('⚠️ Tem certeza que deseja marcar ' + p.nome + ' como INATIVO?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social.')) return;
+            if (!texto) { alert('⚠️ Descreva a evolução!'); return; }
 
-    p.status = 'Inativo';
-    salvar();
-    filtrar();
-    alert('✅ ' + p.nome + ' foi marcado como INATIVO.');
-};
+            if (!prontuarios[id]) prontuarios[id] = { evolucoes: [], atendimentos: [], observacoes: [] };
+            prontuarios[id].evolucoes.push({
+                texto: texto,
+                tipo: tipo,
+                data: new Date().toISOString(),
+                autor: sessionStorage.getItem('amovin_nome') || 'Admin'
+            });
 
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
-filtrar();
+            salvar();
+            document.getElementById('evolucaoTexto').value = '';
+            renderizarEvolucoes();
+            alert('✅ Evolução adicionada!');
+        }
 
-// ============================================================
-// VERIFICAÇÃO DE SESSÃO
-// ============================================================
-if (!sessionStorage.getItem('amovin_logado')) {
-    window.location.href = 'index.html';
-}
-</script>
+        // --- Atendimentos ---
+        function renderizarAtendimentos() {
+            var id = document.getElementById('prontuarioPessoaId').value;
+            var dados = prontuarios[id] || { atendimentos: [] };
+            var container = document.getElementById('listaAtendimentos');
+
+            if (dados.atendimentos.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum atendimento registrado.</div>';
+                return;
+            }
+
+            container.innerHTML = dados.atendimentos.map(function(a) {
+                var data = new Date(a.data).toLocaleString('pt-BR');
+                return '<div class="prontuario-item" style="border-left-color:var(--azul);">' +
+                    '<div class="data">🩺 ' + data + ' | ' + a.tipo + '</div>' +
+                    '<div class="texto">' + a.texto + '</div>' +
+                    '<div class="autor">👤 ' + (a.autor || 'Admin') + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function adicionarAtendimento() {
+            var id = document.getElementById('prontuarioPessoaId').value;
+            var texto = document.getElementById('atendimentoTexto').value.trim();
+            var tipo = document.getElementById('atendimentoTipo').value;
+
+            if (!texto) { alert('⚠️ Descreva o atendimento!'); return; }
+
+            if (!prontuarios[id]) prontuarios[id] = { evolucoes: [], atendimentos: [], observacoes: [] };
+            prontuarios[id].atendimentos.push({
+                texto: texto,
+                tipo: tipo,
+                data: new Date().toISOString(),
+                autor: sessionStorage.getItem('amovin_nome') || 'Admin'
+            });
+
+            salvar();
+            document.getElementById('atendimentoTexto').value = '';
+            renderizarAtendimentos();
+            alert('✅ Atendimento adicionado!');
+        }
+
+        // --- Observações ---
+        function renderizarObservacoes() {
+            var id = document.getElementById('prontuarioPessoaId').value;
+            var dados = prontuarios[id] || { observacoes: [] };
+            var container = document.getElementById('listaObservacoes');
+
+            if (dados.observacoes.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhuma observação registrada.</div>';
+                return;
+            }
+
+            container.innerHTML = dados.observacoes.map(function(o) {
+                var data = new Date(o.data).toLocaleString('pt-BR');
+                return '<div class="prontuario-item" style="border-left-color:var(--amarelo);">' +
+                    '<div class="data">📌 ' + data + '</div>' +
+                    '<div class="texto">' + o.texto + '</div>' +
+                    '<div class="autor">👤 ' + (o.autor || 'Admin') + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function adicionarObservacao() {
+            var id = document.getElementById('prontuarioPessoaId').value;
+            var texto = document.getElementById('observacaoTexto').value.trim();
+
+            if (!texto) { alert('⚠️ Digite a observação!'); return; }
+
+            if (!prontuarios[id]) prontuarios[id] = { evolucoes: [], atendimentos: [], observacoes: [] };
+            prontuarios[id].observacoes.push({
+                texto: texto,
+                data: new Date().toISOString(),
+                autor: sessionStorage.getItem('amovin_nome') || 'Admin'
+            });
+
+            salvar();
+            document.getElementById('observacaoTexto').value = '';
+            renderizarObservacoes();
+            alert('✅ Observação adicionada!');
+        }
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                fecharProntuario();
+            }
+        });
+
+        // Fechar ao clicar fora
+        document.getElementById('modalProntuario').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharProntuario();
+            }
+        });
+
+        // ============================================================
+        // CONTROLE DE PERFIL
+        // ============================================================
+        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+        var modulosPermitidos = {
+            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
+                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
+                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
+                'configuracoes', 'backup'
+            ],
+            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
+            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
+            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
+            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
+        };
+
+        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+        setTimeout(function() {
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                var href = item.getAttribute('href') || '';
+                var pagina = href.replace('.html', '');
+                pagina = pagina.split('?')[0].split('#')[0];
+                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+                    item.style.display = 'none';
+                }
+            });
+        }, 500);
+
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        renderizarLista();
+    </script>
 </body>
 </html>
