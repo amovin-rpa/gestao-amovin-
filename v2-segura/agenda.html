@@ -20,8 +20,6 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-/* A SIDEBAR FOI REMOVIDA - VEM DO menu.js */
-
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
@@ -78,7 +76,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 </head>
 <body>
 
-<!-- MENU CARREGADO DINAMICAMENTE -->
 <div id="menu-container"></div>
 
 <main class="main-content">
@@ -127,9 +124,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 <script src="menu.js"></script>
 <script>
-// ============================================================
-// TODAS AS FUNÇÕES ORIGINAIS MANTIDAS
-// ============================================================
 var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
 var slots = JSON.parse(localStorage.getItem('amovin_slots') || '[]');
 var editandoId = null;
@@ -180,9 +174,6 @@ function renderizarSlots() { var c=document.getElementById('listaSlots'); if(slo
 
 window.mudarAba = function(aba, btn) { document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('ativa');}); btn.classList.add('ativa'); document.getElementById('aba-agendamentos').style.display = aba==='agendamentos'?'block':'none'; document.getElementById('aba-disponibilidade').style.display = aba==='disponibilidade'?'block':'none'; };
 
-// ============================================================
-// CONTROLE DE PERFIL
-// ============================================================
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = {
     admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
