@@ -1,362 +1,536 @@
 // ============================================================
-// MENU.JS - AMOVIN ERP SOCIAL
-// Versão completa com todos os módulos - Padrão SAP/Internacional
+// MENU.JS - VERSÃO COMPLETA E CORRIGIDA
+// Sistema de menu unificado para todos os módulos AMOVIN ERP
 // ============================================================
 
-// ============================================================
-// MÓDULOS DO SISTEMA
-// ============================================================
-var MODULOS_SISTEMA = [
-    // ========== PRINCIPAL ==========
-    { id: 'dashboard', nome: 'Dashboard', categoria: 'Principal', url: 'dashboard.html', icone: '📊', externo: false },
-    { id: 'bi', nome: 'BI Executivo', categoria: 'Principal', url: 'bi.html', icone: '📈', externo: false },
-    { id: 'dashboard-executivo', nome: 'Dashboard Executivo', categoria: 'Principal', url: 'dashboard-executivo.html', icone: '📊', externo: false },
+(function() {
+    'use strict';
 
-    // ========== CAPTAÇÃO ==========
-    { id: 'capta', nome: 'Amovin Capta+', categoria: 'Captação', url: 'https://amovin-capta.vercel.app/login', icone: '🚀', externo: true },
-    { id: 'sala-espera', nome: 'Sala de Espera', categoria: 'Captação', url: 'sala-espera.html', icone: '📋', externo: false },
-    { id: 'pre-cadastro', nome: 'Pré-Cadastro', categoria: 'Captação', url: 'pre-cadastro.html', icone: '📝', externo: false },
+    // ============================================================
+    // CONFIGURAÇÃO DO USUÁRIO
+    // ============================================================
+    var PERFIL_ATUAL = sessionStorage.getItem('amovin_perfil') || 'admin';
+    var USUARIO_NOME = sessionStorage.getItem('amovin_nome') || 'Administrador';
+    var USUARIO_ID = sessionStorage.getItem('amovin_id') || '1';
 
-    // ========== FINANCEIRO ==========
-    { id: 'financeiro', nome: 'Financeiro', categoria: 'Financeiro', url: 'financeiro.html', icone: '💰', externo: false },
-    { id: 'financeiro-avancado', nome: 'Financeiro Avançado', categoria: 'Financeiro', url: 'financeiro-avancado.html', icone: '📊', externo: false },
-    { id: 'orcamentos', nome: 'Orçamentos', categoria: 'Financeiro', url: 'orcamentos.html', icone: '📋', externo: false },
-    { id: 'prestacao-contas', nome: 'Prest. Contas', categoria: 'Financeiro', url: 'prestacao-contas.html', icone: '📄', externo: false },
-    { id: 'idp', nome: 'IDP - Leitor de Docs', categoria: 'Financeiro', url: 'idp.html', icone: '📄', externo: false },
+    // ============================================================
+    // ESTRUTURA COMPLETA DO MENU (TODOS OS MÓDULOS)
+    // ============================================================
+    var MENU_CONFIG = {
+        // PERFIL ADMIN - Acesso total
+        admin: {
+            categorias: [
+                {
+                    nome: 'Principal',
+                    itens: [
+                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' },
+                        { icone: '📈', label: 'BI Executivo', href: 'bi.html' },
+                        { icone: '📋', label: 'Dashboard Executivo', href: 'dashboard-executivo.html' }
+                    ]
+                },
+                {
+                    nome: 'Captação',
+                    itens: [
+                        { icone: '🚀', label: 'Amovin Capta+', href: 'https://amovin-capta.vercel.app/login', target: '_blank' },
+                        { icone: '📋', label: 'Sala de Espera', href: 'sala-espera.html' },
+                        { icone: '📝', label: 'Pré-Cadastro', href: 'pre-cadastro.html' },
+                        { icone: '📋', label: 'Projetos e Convênios', href: 'projetos-convenios.html' }
+                    ]
+                },
+                {
+                    nome: 'Financeiro',
+                    itens: [
+                        { icone: '💰', label: 'Financeiro', href: 'financeiro.html' },
+                        { icone: '📊', label: 'Financeiro Avançado', href: 'financeiro-avancado.html' },
+                        { icone: '📊', label: 'Orçamentos', href: 'orcamentos.html' },
+                        { icone: '📋', label: 'Prest. Contas', href: 'prestacao-contas.html' },
+                        { icone: '📄', label: 'Notas Fiscais', href: 'notas-fiscais.html' }
+                    ]
+                },
+                {
+                    nome: 'Pessoas',
+                    itens: [
+                        { icone: '👥', label: 'Beneficiários', href: 'pessoas.html' },
+                        { icone: '👨‍⚕️', label: 'Profissionais', href: 'profissionais.html' },
+                        { icone: '💪', label: 'Voluntários', href: 'voluntarios.html' },
+                        { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }
+                    ]
+                },
+                {
+                    nome: 'Atendimento',
+                    itens: [
+                        { icone: '📅', label: 'Agenda', href: 'agenda.html' },
+                        { icone: '💬', label: 'Chat Interno', href: 'chat.html' },
+                        { icone: '📝', label: 'Prontuário', href: 'prontuario.html' }
+                    ]
+                },
+                {
+                    nome: 'Documentos',
+                    itens: [
+                        { icone: '📝', label: 'Documentos Oficiais', href: 'documentos.html' },
+                        { icone: '📱', label: 'QR Codes', href: 'qrcodes.html' },
+                        { icone: '📦', label: 'Estoque', href: 'estoque.html' },
+                        { icone: '🏢', label: 'Patrimônio', href: 'patrimonio.html' }
+                    ]
+                },
+                {
+                    nome: 'Educação',
+                    itens: [
+                        { icone: '📚', label: 'Biblioteca Digital', href: 'biblioteca.html' },
+                        { icone: '🎓', label: 'Certificados', href: 'certificados.html' }
+                    ]
+                },
+                {
+                    nome: 'Comunicação',
+                    itens: [
+                        { icone: '🤖', label: 'Assistente IA', href: 'assistente.html' }
+                    ]
+                },
+                {
+                    nome: 'Relatórios',
+                    itens: [
+                        { icone: '📈', label: 'Relatórios', href: 'relatorios.html' },
+                        { icone: '📊', label: 'Relatórios Avançados', href: 'relatorios-avancado.html' }
+                    ]
+                },
+                {
+                    nome: 'Sistema',
+                    itens: [
+                        { icone: '⚙️', label: 'Configurações', href: 'configuracoes.html' },
+                        { icone: '💾', label: 'Backup', href: 'backup.html' },
+                        { icone: '🔑', label: 'IDP', href: 'idp.html' }
+                    ]
+                }
+            ]
+        },
 
-    // ========== PROJETOS ==========
-    { id: 'projetos-convenios', nome: 'Projetos e Convênios', categoria: 'Projetos', url: 'projetos-convenios.html', icone: '📋', externo: false },
+        // PERFIL RECEPÇÃO - Acesso limitado
+        recepcao: {
+            categorias: [
+                {
+                    nome: 'Principal',
+                    itens: [
+                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
+                    ]
+                },
+                {
+                    nome: 'Pessoas',
+                    itens: [
+                        { icone: '👥', label: 'Beneficiários', href: 'pessoas.html' },
+                        { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }
+                    ]
+                },
+                {
+                    nome: 'Atendimento',
+                    itens: [
+                        { icone: '📅', label: 'Agenda', href: 'agenda.html' }
+                    ]
+                },
+                {
+                    nome: 'Documentos',
+                    itens: [
+                        { icone: '📝', label: 'Documentos', href: 'documentos.html' }
+                    ]
+                }
+            ]
+        },
 
-    // ========== PESSOAS ==========
-    { id: 'pessoas', nome: 'Beneficiários', categoria: 'Pessoas', url: 'pessoas.html', icone: '👥', externo: false },
-    { id: 'profissionais', nome: 'Profissionais', categoria: 'Pessoas', url: 'profissionais.html', icone: '👨‍⚕️', externo: false },
-    { id: 'voluntarios', nome: 'Voluntários', categoria: 'Pessoas', url: 'voluntarios.html', icone: '💪', externo: false },
-    { id: 'agenda-telefonica', nome: 'CRM Social', categoria: 'Pessoas', url: 'agenda-telefonica.html', icone: '☎️', externo: false },
+        // PERFIL CONSULTA - Acesso para profissionais
+        consulta: {
+            categorias: [
+                {
+                    nome: 'Principal',
+                    itens: [
+                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
+                    ]
+                },
+                {
+                    nome: 'Atendimento',
+                    itens: [
+                        { icone: '📅', label: 'Agenda', href: 'agenda.html' },
+                        { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' },
+                        { icone: '📝', label: 'Prontuário', href: 'prontuario.html' }
+                    ]
+                },
+                {
+                    nome: 'Comunicação',
+                    itens: [
+                        { icone: '🤖', label: 'Assistente IA', href: 'assistente.html' },
+                        { icone: '💬', label: 'Chat Interno', href: 'chat.html' }
+                    ]
+                }
+            ]
+        },
 
-    // ========== ATENDIMENTO ==========
-    { id: 'agenda', nome: 'Agenda', categoria: 'Atendimento', url: 'agenda.html', icone: '📅', externo: false },
+        // PERFIL FINANCEIRO - Acesso financeiro
+        financeiro: {
+            categorias: [
+                {
+                    nome: 'Principal',
+                    itens: [
+                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
+                    ]
+                },
+                {
+                    nome: 'Financeiro',
+                    itens: [
+                        { icone: '💰', label: 'Financeiro', href: 'financeiro.html' },
+                        { icone: '📊', label: 'Financeiro Avançado', href: 'financeiro-avancado.html' },
+                        { icone: '📊', label: 'Orçamentos', href: 'orcamentos.html' },
+                        { icone: '📋', label: 'Prest. Contas', href: 'prestacao-contas.html' },
+                        { icone: '📄', label: 'Notas Fiscais', href: 'notas-fiscais.html' }
+                    ]
+                },
+                {
+                    nome: 'Relatórios',
+                    itens: [
+                        { icone: '📈', label: 'Relatórios', href: 'relatorios.html' },
+                        { icone: '📊', label: 'Relatórios Avançados', href: 'relatorios-avancado.html' }
+                    ]
+                }
+            ]
+        },
 
-    // ========== DOCUMENTOS ==========
-    { id: 'documentos', nome: 'Documentos', categoria: 'Documentos', url: 'documentos.html', icone: '📝', externo: false },
-    { id: 'qrcodes', nome: 'QR Codes', categoria: 'Documentos', url: 'qrcodes.html', icone: '📱', externo: false },
-    { id: 'notas-fiscais', nome: 'Notas Fiscais', categoria: 'Documentos', url: 'notas-fiscais.html', icone: '📄', externo: false },
-    { id: 'estoque', nome: 'Estoque', categoria: 'Documentos', url: 'estoque.html', icone: '📦', externo: false },
-    { id: 'patrimonio', nome: 'Patrimônio', categoria: 'Documentos', url: 'patrimonio.html', icone: '🏢', externo: false },
+        // PERFIL VOLUNTÁRIO - Acesso básico
+        voluntario: {
+            categorias: [
+                {
+                    nome: 'Principal',
+                    itens: [
+                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
+                    ]
+                },
+                {
+                    nome: 'Atendimento',
+                    itens: [
+                        { icone: '📅', label: 'Agenda', href: 'agenda.html' },
+                        { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }
+                    ]
+                },
+                {
+                    nome: 'Pessoas',
+                    itens: [
+                        { icone: '💪', label: 'Voluntários', href: 'voluntarios.html' }
+                    ]
+                }
+            ]
+        }
+    };
 
-    // ========== EDUCAÇÃO ==========
-    { id: 'biblioteca', nome: 'Biblioteca', categoria: 'Educação', url: 'biblioteca.html', icone: '📚', externo: false },
-    { id: 'certificados', nome: 'Certificados', categoria: 'Educação', url: 'certificados.html', icone: '🎓', externo: false },
+    // ============================================================
+    // FUNÇÃO PARA GERAR O HTML DO MENU
+    // ============================================================
+    function gerarMenuHTML() {
+        var perfilConfig = MENU_CONFIG[PERFIL_ATUAL] || MENU_CONFIG.admin;
+        var html = '';
 
-    // ========== COMUNICAÇÃO ==========
-    { id: 'chat', nome: 'Chat', categoria: 'Comunicação', url: 'chat.html', icone: '💬', externo: false },
-    { id: 'assistente', nome: 'Assistente IA', categoria: 'Comunicação', url: 'assistente.html', icone: '🤖', externo: false },
+        // Cabeçalho do menu
+        html += '<aside class="sidebar">';
+        html += '  <div class="sidebar-header">';
+        html += '    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">';
+        html += '    <div class="sidebar-logo-fallback">🌻</div>';
+        html += '    <div class="brand">Amovin ERP Social</div>';
+        html += '    <div class="user-info">';
+        html += '      <span class="user-name">👤 ' + USUARIO_NOME + '</span>';
+        html += '      <span class="user-perfil">' + PERFIL_ATUAL.toUpperCase() + '</span>';
+        html += '    </div>';
+        html += '  </div>';
+        html += '  <nav class="sidebar-nav">';
 
-    // ========== RELATÓRIOS ==========
-    { id: 'relatorios', nome: 'Relatórios', categoria: 'Relatórios', url: 'relatorios.html', icone: '📈', externo: false },
-    { id: 'relatorios-avancado', nome: 'Relatórios Avançados', categoria: 'Relatórios', url: 'relatorios-avancado.html', icone: '📊', externo: false },
-
-    // ========== SISTEMA ==========
-    { id: 'configuracoes', nome: 'Configurações', categoria: 'Sistema', url: 'configuracoes.html', icone: '⚙️', externo: false },
-    { id: 'backup', nome: 'Backup', categoria: 'Sistema', url: 'backup.html', icone: '💾', externo: false },
-];
-
-// ============================================================
-// PERFIS E PERMISSÕES
-// ============================================================
-var PERFIS_PERMITIDOS = {
-    admin: MODULOS_SISTEMA.map(function(m) { return m.id; }),
-    recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-    consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-    financeiro: ['dashboard', 'financeiro', 'financeiro-avancado', 'orcamentos', 'prestacao-contas', 'relatorios', 'relatorios-avancado', 'idp', 'projetos-convenios'],
-    voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-};
-
-// ============================================================
-// CSS DA SIDEBAR (injetado via JS)
-// ============================================================
-function injectSidebarCSS() {
-    var css = `
-        /* ==================== SIDEBAR ==================== */
-        .sidebar {
-            width: 270px;
-            background: #FFFFFF;
-            color: #1A1A1A;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #F0E9DF;
-            box-shadow: 0 0 20px rgba(0,0,0,0.03);
-            transition: all 0.3s ease;
-        }
-        .sidebar-header {
-            padding: 28px 24px 24px;
-            text-align: center;
-            border-bottom: 1px solid #F0E9DF;
-            flex-shrink: 0;
-        }
-        .sidebar-logo-img {
-            width: 80px;
-            height: auto;
-            margin-bottom: 8px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .sidebar-logo-fallback {
-            font-size: 48px;
-            margin-bottom: 8px;
-            display: none;
-        }
-        .sidebar-header .brand {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1A1A1A;
-            letter-spacing: -0.4px;
-        }
-        .sidebar-nav {
-            flex: 1;
-            padding: 16px 0;
-            overflow-y: auto;
-            scrollbar-width: thin;
-        }
-        .sidebar-nav::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar-nav::-webkit-scrollbar-thumb {
-            background: #E5E0D8;
-            border-radius: 4px;
-        }
-        .nav-categoria {
-            padding: 16px 24px 6px;
-            font-size: 10px;
-            font-weight: 700;
-            color: #9CA3AF;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-            padding: 11px 24px;
-            color: #4B5563;
-            text-decoration: none;
-            font-size: 13.5px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-        }
-        .nav-item:hover {
-            background: #FFF8E7;
-            color: #C65A11;
-            border-left-color: #F5C518;
-        }
-        .nav-item.ativo {
-            background: #FFF3E0;
-            color: #C65A11;
-            border-left-color: #C65A11;
-            font-weight: 600;
-        }
-        .nav-item .icone {
-            font-size: 17px;
-            width: 24px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .sidebar-footer {
-            padding: 20px 24px;
-            border-top: 1px solid #F0E9DF;
-            flex-shrink: 0;
-            background: #FFFFFF;
-        }
-        .user-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-        .user-avatar {
-            width: 38px;
-            height: 38px;
-            background: #F5C518;
-            color: #1A1A1A;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-        .user-info .nome {
-            font-weight: 600;
-            font-size: 13.5px;
-            color: #1A1A1A;
-        }
-        .user-info .cargo {
-            font-size: 11px;
-            color: #6B7280;
-        }
-        .btn-sair {
-            width: 100%;
-            padding: 9px;
-            background: #F8F4ED;
-            color: #1A1A1A;
-            border: none;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-sair:hover {
-            background: #F0E9DF;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-            }
-            .main-content {
-                margin-left: 0 !important;
-            }
-        }
-    `;
-    var style = document.createElement('style');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
-
-// ============================================================
-// RENDERIZAR MENU
-// ============================================================
-function renderizarMenu() {
-    var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-    var permitidos = PERFIS_PERMITIDOS[perfil] || PERFIS_PERMITIDOS.admin;
-    var paginaAtual = window.location.pathname.split('/').pop().replace('.html', '');
-    var nome = sessionStorage.getItem('amovin_nome') || 'Administrador';
-    var inicial = nome.charAt(0).toUpperCase();
-
-    // Agrupar por categoria
-    var categorias = {};
-    MODULOS_SISTEMA.forEach(function(m) {
-        if (permitidos.indexOf(m.id) === -1) return;
-        if (!categorias[m.categoria]) categorias[m.categoria] = [];
-        categorias[m.categoria].push(m);
-    });
-
-    // Montar HTML
-    var html = '';
-    html += '<aside class="sidebar">';
-    html += '  <div class="sidebar-header">';
-    html += '    <img src="images/amovin-logo.png" alt="AMOVIN" class="sidebar-logo-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">';
-    html += '    <div class="sidebar-logo-fallback">🌻</div>';
-    html += '    <div class="brand">Amovin ERP Social</div>';
-    html += '  </div>';
-    html += '  <nav class="sidebar-nav">';
-
-    for (var cat in categorias) {
-        html += '    <div class="nav-categoria">' + cat + '</div>';
-        categorias[cat].forEach(function(m) {
-            var ativo = (paginaAtual === m.id || (paginaAtual === '' && m.id === 'dashboard')) ? 'ativo' : '';
-            var target = m.externo ? ' target="_blank"' : '';
-            var url = m.externo ? m.url : m.url;
-            html += '    <a href="' + url + '" class="nav-item ' + ativo + '"' + target + '>';
-            html += '      <span class="icone">' + m.icone + '</span> ' + m.nome;
-            html += '    </a>';
+        // Categorias e itens do menu
+        perfilConfig.categorias.forEach(function(categoria) {
+            html += '    <div class="nav-categoria">' + categoria.nome + '</div>';
+            categoria.itens.forEach(function(item) {
+                var target = item.target ? ' target="' + item.target + '"' : '';
+                var paginaAtual = window.location.pathname.split('/').pop() || 'dashboard.html';
+                var isAtivo = (paginaAtual === item.href) ? ' ativo' : '';
+                html += '    <a href="' + item.href + '" class="nav-item' + isAtivo + '"' + target + '>';
+                html += '      <span class="icone">' + item.icone + '</span> ' + item.label;
+                html += '    </a>';
+            });
         });
+
+        // Rodapé do menu com botão de logout
+        html += '  </nav>';
+        html += '  <div class="sidebar-footer">';
+        html += '    <button class="btn-logout" onclick="logout()">🚪 Sair</button>';
+        html += '  </div>';
+        html += '</aside>';
+
+        return html;
     }
 
-    html += '  </nav>';
-    html += '  <div class="sidebar-footer">';
-    html += '    <div class="user-card">';
-    html += '      <div class="user-avatar">' + inicial + '</div>';
-    html += '      <div class="user-info">';
-    html += '        <div class="nome">' + nome + '</div>';
-    html += '        <div class="cargo">' + (perfil === 'admin' ? 'Administrador Master' : perfil.charAt(0).toUpperCase() + perfil.slice(1)) + '</div>';
-    html += '      </div>';
-    html += '    </div>';
-    html += '    <button class="btn-sair" onclick="sairSistema()">🚪 Sair do Sistema</button>';
-    html += '  </div>';
-    html += '</aside>';
+    // ============================================================
+    // FUNÇÃO DE LOGOUT
+    // ============================================================
+    window.logout = function() {
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+    };
 
-    // Injetar no DOM
-    var container = document.getElementById('menu-container');
-    if (container) {
-        container.innerHTML = html;
-    } else {
-        var main = document.querySelector('.main-content');
-        if (main) {
-            var wrapper = document.createElement('div');
-            wrapper.id = 'menu-container';
-            wrapper.innerHTML = html;
-            document.body.insertBefore(wrapper, main);
-        } else {
-            document.body.insertAdjacentHTML('afterbegin', html);
+    // ============================================================
+    // FUNÇÃO PARA INSERIR O MENU NA PÁGINA
+    // ============================================================
+    function carregarMenu() {
+        var container = document.getElementById('menu-container');
+        if (!container) {
+            console.error('❌ Div #menu-container não encontrada!');
+            return;
+        }
+
+        // Gera e insere o HTML do menu
+        container.innerHTML = gerarMenuHTML();
+
+        // Verifica se é admin para mostrar itens de admin
+        var isAdmin = (PERFIL_ATUAL === 'admin');
+        if (!isAdmin) {
+            // Oculta itens que não são permitidos para o perfil atual
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                var href = item.getAttribute('href') || '';
+                var modulo = href.replace('.html', '').split('/').pop();
+                // Remove target _blank para não abrir em nova aba
+                if (item.getAttribute('target') === '_blank') {
+                    item.removeAttribute('target');
+                }
+            });
         }
     }
-}
 
-// ============================================================
-// SAIR DO SISTEMA
-// ============================================================
-function sairSistema() {
-    if (confirm('Tem certeza que deseja sair do sistema?')) {
-        sessionStorage.clear();
-        window.location.href = 'index.html';
+    // ============================================================
+    // ESTILOS COMPLEMENTARES DO MENU (INJETADOS DINAMICAMENTE)
+    // ============================================================
+    function injectMenuStyles() {
+        var style = document.createElement('style');
+        style.textContent = `
+            /* ============================================================
+               ESTILOS DO MENU LATERAL - CARREGADO PELO MENU.JS
+               ============================================================ */
+            .sidebar {
+                width: 270px;
+                background: #FFFFFF;
+                color: #1A1A1A;
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 100;
+                display: flex;
+                flex-direction: column;
+                border-right: 1px solid #F0E9DF;
+                overflow-y: auto;
+                overflow-x: hidden;
+                transition: transform 0.3s ease;
+            }
+            .sidebar-header {
+                padding: 20px 24px 16px;
+                text-align: center;
+                border-bottom: 1px solid #F0E9DF;
+                flex-shrink: 0;
+                background: #FFFFFF;
+            }
+            .sidebar-logo-img {
+                width: 80px;
+                height: auto;
+                margin-bottom: 8px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .sidebar-logo-fallback {
+                font-size: 48px;
+                margin-bottom: 8px;
+                display: none;
+            }
+            .sidebar-header .brand {
+                font-family: 'Playfair Display', Georgia, serif;
+                font-size: 18px;
+                font-weight: 700;
+                color: #1A1A1A;
+            }
+            .user-info {
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 1px solid #F0E9DF;
+            }
+            .user-info .user-name {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--grafite, #1A1A1A);
+            }
+            .user-info .user-perfil {
+                display: inline-block;
+                font-size: 9px;
+                background: #F0E9DF;
+                padding: 2px 12px;
+                border-radius: 12px;
+                color: #6B7280;
+                font-weight: 600;
+                margin-top: 2px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .sidebar-nav {
+                flex: 1;
+                padding: 12px 0 20px;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+            .nav-categoria {
+                padding: 12px 24px 6px;
+                font-size: 10px;
+                font-weight: 700;
+                color: #9CA3AF;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+            }
+            .nav-item {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                padding: 10px 24px;
+                color: #4B5563;
+                text-decoration: none;
+                font-size: 13px;
+                font-weight: 500;
+                transition: all 0.2s;
+                border-left: 3px solid transparent;
+                cursor: pointer;
+            }
+            .nav-item:hover {
+                background: #FFF8E7;
+                color: #C65A11;
+                border-left-color: #F5C518;
+            }
+            .nav-item.ativo {
+                background: #FFF3E0;
+                color: #C65A11;
+                border-left-color: #C65A11;
+                font-weight: 600;
+            }
+            .nav-item .icone {
+                font-size: 17px;
+                width: 24px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+            .sidebar-footer {
+                padding: 12px 20px 16px;
+                border-top: 1px solid #F0E9DF;
+                flex-shrink: 0;
+                background: #FFFFFF;
+            }
+            .btn-logout {
+                width: 100%;
+                padding: 10px;
+                background: #F8F4ED;
+                color: #1A1A1A;
+                border: 1px solid #F0E9DF;
+                border-radius: 10px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-family: 'Inter', sans-serif;
+            }
+            .btn-logout:hover {
+                background: #FFEBEE;
+                border-color: #E53935;
+                color: #E53935;
+            }
+            /* Responsivo - Mobile */
+            @media (max-width: 768px) {
+                .sidebar {
+                    transform: translateX(-100%);
+                    width: 280px;
+                    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+                }
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+                .menu-toggle {
+                    display: flex !important;
+                }
+                .main-content {
+                    margin-left: 0 !important;
+                }
+            }
+            .menu-toggle {
+                display: none;
+                position: fixed;
+                top: 12px;
+                left: 12px;
+                z-index: 200;
+                background: #FFFFFF;
+                border: 1px solid #F0E9DF;
+                border-radius: 10px;
+                padding: 8px 12px;
+                font-size: 20px;
+                cursor: pointer;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            }
+            /* Scrollbar personalizada */
+            .sidebar-nav::-webkit-scrollbar {
+                width: 4px;
+            }
+            .sidebar-nav::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .sidebar-nav::-webkit-scrollbar-thumb {
+                background: #E5E0D8;
+                border-radius: 4px;
+            }
+            .sidebar-nav::-webkit-scrollbar-thumb:hover {
+                background: #C65A11;
+            }
+        `;
+        document.head.appendChild(style);
     }
-}
 
-// ============================================================
-// INICIALIZAR
-// ============================================================
-document.addEventListener('DOMContentLoaded', function() {
-    injectSidebarCSS();
-    renderizarMenu();
-});
-
-// ============================================================
-// VERIFICAR SESSÃO
-// ============================================================
-if (!sessionStorage.getItem('amovin_logado')) {
-    window.location.href = 'index.html';
-}
-
-// ============================================================
-// TIMEOUT DE SESSÃO (30 MINUTOS)
-// ============================================================
-var timeoutSessao;
-function resetarTimeout() {
-    clearTimeout(timeoutSessao);
-    timeoutSessao = setTimeout(function() {
-        sessionStorage.clear();
-        alert('⏰ Sessão expirada por inatividade.');
-        window.location.href = 'index.html';
-    }, 30 * 60 * 1000);
-}
-
-document.addEventListener('mousemove', resetarTimeout);
-document.addEventListener('keypress', resetarTimeout);
-document.addEventListener('click', resetarTimeout);
-resetarTimeout();
-
-// ============================================================
-// BLOQUEAR VOLTAR PARA LOGIN
-// ============================================================
-history.pushState(null, null, location.href);
-window.addEventListener('popstate', function() {
-    if (window.location.pathname.includes('index.html')) {
-        history.pushState(null, null, location.href);
-        window.location.href = 'dashboard.html';
+    // ============================================================
+    // BOTÃO TOGGLE PARA MOBILE
+    // ============================================================
+    function criarMenuToggle() {
+        var toggle = document.createElement('button');
+        toggle.className = 'menu-toggle';
+        toggle.innerHTML = '☰';
+        toggle.setAttribute('aria-label', 'Abrir menu');
+        toggle.onclick = function() {
+            var sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('open');
+            }
+        };
+        document.body.prepend(toggle);
     }
-});
 
-console.log('✅ menu.js carregado com sucesso!');
-console.log('📊 Total de módulos: ' + MODULOS_SISTEMA.length);
-console.log('👤 Perfil atual: ' + (sessionStorage.getItem('amovin_perfil') || 'admin'));
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    function init() {
+        // Injeta os estilos
+        injectMenuStyles();
+
+        // Carrega o menu
+        carregarMenu();
+
+        // Cria botão toggle para mobile
+        criarMenuToggle();
+
+        // Verifica se está logado
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+
+        console.log('✅ Menu carregado com sucesso! Perfil:', PERFIL_ATUAL);
+        console.log('👤 Usuário:', USUARIO_NOME);
+    }
+
+    // Executa quando o DOM estiver pronto
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
