@@ -1,253 +1,515 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amovin ERP Social • QR Codes</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --laranja: #C65A11;
-  --amarelo: #F5C518;
-  --verde: #57C220;
-  --azul: #1E88E5;
-  --grafite: #1A1A1A;
-  --cinza: #6B7280;
-  --cinza-claro: #F8F4ED;
-  --branco: #FFFFFF;
-  --vermelho: #E53935;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amovin ERP • QR Codes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F8F4ED;
+            display: flex;
+            min-height: 100vh;
+        }
 
-/* ============================================================
-   A SIDEBAR FOI REMOVIDA DAQUI - VEM DO menu.js
-   ============================================================ */
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+        }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
-.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .card {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F0E9DF;
+        }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
-.kpi-card { background: #FFFFFF; padding: 18px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
-.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
-.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+        .qrcode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .qrcode-item {
+            background: #FFFFFF;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .qrcode-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+        .qrcode-item .qr-image {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 12px;
+            background: #F8F4ED;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        .qrcode-item .qr-image canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .qrcode-item .qr-nome {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--grafite);
+        }
+        .qrcode-item .qr-desc {
+            font-size: 11px;
+            color: var(--cinza);
+            margin-top: 2px;
+        }
+        .qrcode-item .qr-acoes {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-qr {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+        .btn-baixar {
+            background: var(--azul);
+            color: white;
+        }
+        .btn-baixar:hover {
+            background: #1565C0;
+        }
+        .btn-imprimir {
+            background: var(--amarelo);
+            color: #1A1A1A;
+        }
+        .btn-imprimir:hover {
+            background: #E6B800;
+        }
+        .btn-excluir-qr {
+            background: #E5E0D8;
+            color: #1A1A1A;
+        }
+        .btn-excluir-qr:hover {
+            background: #D5D0C8;
+        }
 
-.grid-qr { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cinza);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-salvar {
+            padding: 10px 24px;
+            background: var(--laranja);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-salvar:hover {
+            background: var(--laranja-escuro);
+        }
+        .btn-gerar-qr {
+            background: var(--verde);
+        }
+        .btn-gerar-qr:hover {
+            background: #388E3C;
+        }
 
-.form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+        .sem-dados {
+            text-align: center;
+            padding: 40px;
+            color: #9CA3AF;
+        }
 
-.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
-.btn-salvar { background: var(--laranja); color: white; }
-.btn-editar { background: var(--amarelo); color: #1A1A1A; }
-.btn-excluir { background: var(--vermelho); color: white; }
-.btn-verde { background: var(--verde); color: white; }
+        .rodape {
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo {
+            flex-shrink: 0;
+        }
+        .rodape-logo .logo-vigorre {
+            width: 50px;
+        }
+        .rodape-info {
+            flex: 1;
+        }
+        .rodape-info .copyright {
+            font-size: 8px;
+            color: #8A8F98;
+        }
+        .rodape-info .tm {
+            font-size: 6px;
+            vertical-align: super;
+        }
+        .rodape-info .contato {
+            font-size: 9px;
+            color: #8A8F98;
+        }
+        .rodape-info a {
+            color: #C65A11;
+            text-decoration: none;
+        }
+        .rodape-info .email {
+            font-size: 8px;
+            color: #aaa;
+        }
+        .logo-vigorre-fallback {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
 
-.qr-item { padding: 12px 16px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
-.qr-item .nome { font-weight: 600; color: var(--grafite); font-size: 13px; }
-.qr-item .tipo { font-size: 10px; padding: 2px 10px; border-radius: 12px; font-weight: 600; background: #E3F2FD; color: #1565C0; }
-.qr-item .status { font-size: 10px; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
-.status-ativo { background: #E8F5E9; color: #2E7D32; }
-.status-inativo { background: #FFEBEE; color: #C62828; }
-.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
-
-.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
-.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
-.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
-.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
-.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
-
-@media (max-width: 900px) { .main-content { margin-left: 0; } .grid-qr { grid-template-columns: 1fr; } }
-</style>
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .grid-qr {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+    <!-- MENU CARREGADO DINAMICAMENTE -->
+    <div id="menu-container"></div>
 
-<main class="main-content">
-  <div class="topo-bar"><h1>📱 QR Codes</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+    <main class="main-content">
+        <div class="topo-bar">
+            <h1>📱 QR Codes</h1>
+            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+        </div>
 
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📱 QR Codes</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiEscaneados">0</div><div class="kpi-label">📊 Escaneados</div></div>
-  </div>
+        <!-- Form para gerar QR Code -->
+        <div class="card" style="margin-bottom:20px;">
+            <h3>➕ Gerar QR Code</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="form-group">
+                    <label>Nome / Identificação *</label>
+                    <input type="text" id="qrNome" placeholder="Ex: João Silva">
+                </div>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="qrTipo">
+                        <option value="beneficiario">👥 Beneficiário</option>
+                        <option value="profissional">👨‍⚕️ Profissional</option>
+                        <option value="voluntario">💪 Voluntário</option>
+                        <option value="evento">📅 Evento</option>
+                        <option value="documento">📄 Documento</option>
+                        <option value="outro">🔗 Outro</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Conteúdo / URL *</label>
+                <input type="text" id="qrConteudo" placeholder="https://amovin.vercel.app/... ou texto livre">
+            </div>
+            <button class="btn-salvar btn-gerar-qr" onclick="gerarQRCode()">🔲 Gerar QR Code</button>
+        </div>
 
-  <div class="grid-qr">
-    <div class="card">
-      <h3>📝 Novo QR Code</h3>
-      <input type="hidden" id="qrId">
-      <div class="form-group"><label>Nome *</label><input type="text" id="nomeQr" placeholder="Ex: Acesso Rápido"></div>
-      <div class="form-group"><label>URL / Link *</label><input type="text" id="urlQr" placeholder="https://amovin.org.br"></div>
-      <div class="form-group"><label>Descrição</label><textarea id="descricaoQr" rows="2" placeholder="Descrição do QR Code..."></textarea></div>
-      <div class="form-row"><div class="form-group"><label>Tipo</label><select id="tipoQr"><option>Link</option><option>Documento</option><option>Contato</option><option>Evento</option><option>Outros</option></select></div><div class="form-group"><label>Status</label><select id="statusQr"><option value="ativo">✅ Ativo</option><option value="inativo">❌ Inativo</option></select></div></div>
-      <button class="btn btn-salvar" onclick="salvarQr()" style="width:100%;padding:12px;font-size:14px;">💾 Salvar QR Code</button>
-    </div>
-    <div class="card">
-      <h3>📋 QR Codes</h3>
-      <div id="listaQrs"><div class="sem-dados">Nenhum QR Code.</div></div>
-    </div>
-  </div>
+        <!-- Lista de QR Codes -->
+        <div class="card">
+            <h3>📋 QR Codes Gerados <span style="font-weight:400;font-size:13px;color:var(--cinza);" id="totalQr">(0)</span></h3>
+            <div class="qrcode-grid" id="listaQrCodes">
+                <div class="sem-dados">Nenhum QR Code gerado.</div>
+            </div>
+        </div>
 
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
-</main>
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-<script>
-var qrCodes = JSON.parse(localStorage.getItem('amovin_qrcodes') || '[]');
-var editandoId = null;
+    <script src="menu.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+    </script>
+    <script>
+        // ============================================================
+        // DADOS
+        // ============================================================
+        var qrCodes = JSON.parse(localStorage.getItem('amovin_qrcodes') || '[]');
 
-if (qrCodes.length === 0) {
-    qrCodes = [
-        { id: 1, nome: 'Site AMOVIN', url: 'https://amovin.org.br', descricao: 'Acesso ao site oficial', tipo: 'Link', status: 'ativo', escaneados: 15 },
-        { id: 2, nome: 'WhatsApp AMOVIN', url: 'https://wa.me/5534999999999', descricao: 'Contato pelo WhatsApp', tipo: 'Contato', status: 'ativo', escaneados: 8 }
-    ];
-    salvar();
-}
-function salvar() { localStorage.setItem('amovin_qrcodes', JSON.stringify(qrCodes)); }
-
-function atualizarKPIs() {
-    var total = qrCodes.length;
-    var ativos = qrCodes.filter(function(q) { return q.status === 'ativo'; }).length;
-    var escaneados = qrCodes.reduce(function(s, q) { return s + (q.escaneados || 0); }, 0);
-
-    document.getElementById('kpiTotal').textContent = total;
-    document.getElementById('kpiAtivos').textContent = ativos;
-    document.getElementById('kpiEscaneados').textContent = escaneados;
-}
-
-function renderizarQrs() {
-    var lista = qrCodes.slice().sort(function(a, b) { return a.nome.localeCompare(b.nome); });
-    var container = document.getElementById('listaQrs');
-    if (lista.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhum QR Code.</div>';
-        return;
-    }
-    container.innerHTML = lista.map(function(q) {
-        var statusClass = q.status === 'ativo' ? 'status-ativo' : 'status-inativo';
-        var statusLabel = q.status === 'ativo' ? '✅ Ativo' : '❌ Inativo';
-        return '<div class="qr-item">' +
-            '<div><span class="nome">' + q.nome + '</span> <span class="tipo">' + q.tipo + '</span><br>' +
-            (q.descricao ? '<span style="font-size:12px;color:var(--cinza);">' + q.descricao + '</span><br>' : '') +
-            '<span style="font-size:11px;color:var(--cinza);">' + q.url + '</span></div>' +
-            '<div><span style="font-size:12px;color:var(--cinza);">📊 ' + (q.escaneados || 0) + '</span>' +
-            '<span class="status ' + statusClass + '">' + statusLabel + '</span>' +
-            '<button class="btn btn-verde" onclick="escanearQr(' + q.id + ')" style="padding:4px 8px;font-size:10px;">📷</button>' +
-            '<button class="btn btn-editar" onclick="editarQr(' + q.id + ')" style="padding:4px 8px;font-size:10px;">✏️</button>' +
-            '<button class="btn btn-excluir" onclick="excluirQr(' + q.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
-    }).join('');
-}
-
-window.salvarQr = function() {
-    var nome = document.getElementById('nomeQr').value.trim();
-    var url = document.getElementById('urlQr').value.trim();
-
-    if (!nome) { alert('Preencha o nome!'); return; }
-    if (!url) { alert('Preencha a URL!'); return; }
-
-    var dados = {
-        nome: nome,
-        url: url,
-        descricao: document.getElementById('descricaoQr').value.trim(),
-        tipo: document.getElementById('tipoQr').value,
-        status: document.getElementById('statusQr').value,
-        escaneados: editandoId ? null : 0
-    };
-
-    if (editandoId) {
-        var idx = qrCodes.findIndex(function(q) { return q.id === editandoId; });
-        if (idx >= 0) {
-            dados.escaneados = qrCodes[idx].escaneados || 0;
-            for (var k in dados) qrCodes[idx][k] = dados[k];
+        if (qrCodes.length === 0) {
+            qrCodes = [{
+                id: 1,
+                nome: 'AMOVIN - Site Oficial',
+                tipo: 'outro',
+                conteudo: 'https://amovin.vercel.app',
+                dataCriacao: new Date().toISOString()
+            }];
+            salvar();
         }
-        editandoId = null;
-    } else {
-        dados.id = Date.now();
-        dados.escaneados = 0;
-        qrCodes.push(dados);
-    }
 
-    salvar();
-    limparForm();
-    atualizarKPIs();
-    renderizarQrs();
-    alert('✅ QR Code salvo com sucesso!');
-};
+        function salvar() {
+            localStorage.setItem('amovin_qrcodes', JSON.stringify(qrCodes));
+        }
 
-window.editarQr = function(id) {
-    var q = qrCodes.find(function(x) { return x.id === id; });
-    if (!q) return;
-    editandoId = id;
-    document.getElementById('qrId').value = id;
-    document.getElementById('nomeQr').value = q.nome;
-    document.getElementById('urlQr').value = q.url;
-    document.getElementById('descricaoQr').value = q.descricao || '';
-    document.getElementById('tipoQr').value = q.tipo || 'Link';
-    document.getElementById('statusQr').value = q.status;
-    document.querySelector('.card h3').textContent = '✏️ Editando: ' + q.nome;
-};
+        // ============================================================
+        // FUNÇÕES PRINCIPAIS
+        // ============================================================
+        function gerarQRCode() {
+            var nome = document.getElementById('qrNome').value.trim();
+            var conteudo = document.getElementById('qrConteudo').value.trim();
+            var tipo = document.getElementById('qrTipo').value;
 
-window.excluirQr = function(id) {
-    if (!confirm('Excluir este QR Code?')) return;
-    qrCodes = qrCodes.filter(function(q) { return q.id !== id; });
-    salvar();
-    atualizarKPIs();
-    renderizarQrs();
-};
+            if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
+            if (!conteudo) { alert('⚠️ Conteúdo é obrigatório!'); return; }
 
-window.escanearQr = function(id) {
-    var q = qrCodes.find(function(x) { return x.id === id; });
-    if (q) {
-        q.escaneados = (q.escaneados || 0) + 1;
-        salvar();
-        atualizarKPIs();
-        renderizarQrs();
-        window.open(q.url, '_blank');
-    }
-};
+            var novoQr = {
+                id: Date.now(),
+                nome: nome,
+                tipo: tipo,
+                conteudo: conteudo,
+                dataCriacao: new Date().toISOString()
+            };
 
-function limparForm() {
-    editandoId = null;
-    document.getElementById('qrId').value = '';
-    document.getElementById('nomeQr').value = '';
-    document.getElementById('urlQr').value = '';
-    document.getElementById('descricaoQr').value = '';
-    document.getElementById('tipoQr').value = 'Link';
-    document.getElementById('statusQr').value = 'ativo';
-    document.querySelector('.card h3').textContent = '📝 Novo QR Code';
-}
+            qrCodes.push(novoQr);
+            salvar();
+            renderizarQRs();
 
-// ============================================================
-// CONTROLE DE PERFIL
-// ============================================================
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
+            document.getElementById('qrNome').value = '';
+            document.getElementById('qrConteudo').value = '';
 
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
+            alert('✅ QR Code gerado com sucesso!');
+        }
 
-if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+        function renderizarQRs() {
+            var container = document.getElementById('listaQrCodes');
+            document.getElementById('totalQr').textContent = '(' + qrCodes.length + ')';
 
-atualizarKPIs();
-renderizarQrs();
-</script>
+            if (qrCodes.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum QR Code gerado.</div>';
+                return;
+            }
+
+            container.innerHTML = qrCodes.map(function(qr, index) {
+                var tipoIcon = {
+                    'beneficiario': '👥',
+                    'profissional': '👨‍⚕️',
+                    'voluntario': '💪',
+                    'evento': '📅',
+                    'documento': '📄',
+                    'outro': '🔗'
+                } [qr.tipo] || '🔗';
+
+                var qrId = 'qr-' + qr.id;
+
+                return '<div class="qrcode-item">' +
+                    '<div class="qr-image" id="' + qrId + '"></div>' +
+                    '<div class="qr-nome">' + qr.nome + '</div>' +
+                    '<div class="qr-desc">' + tipoIcon + ' ' + qr.tipo + ' | ' + new Date(qr.dataCriacao).toLocaleDateString('pt-BR') + '</div>' +
+                    '<div class="qr-acoes">' +
+                    '<button class="btn-qr btn-baixar" onclick="baixarQR(' + qr.id + ')">💾 Baixar</button>' +
+                    '<button class="btn-qr btn-imprimir" onclick="imprimirQR(' + qr.id + ')">🖨️ Imprimir</button>' +
+                    '<button class="btn-qr btn-excluir-qr" onclick="excluirQR(' + qr.id + ')">🗑️</button>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+
+            // Gerar QR Codes após renderizar
+            qrCodes.forEach(function(qr) {
+                var containerId = 'qr-' + qr.id;
+                var containerEl = document.getElementById(containerId);
+                if (containerEl) {
+                    try {
+                        new QRCode(containerEl, {
+                            text: qr.conteudo,
+                            width: 160,
+                            height: 160,
+                            colorDark: "#1A1A1A",
+                            colorLight: "#FFFFFF",
+                            correctLevel: QRCode.CorrectLevel.H
+                        });
+                    } catch (e) {
+                        containerEl.innerHTML = '⚠️ Erro';
+                    }
+                }
+            });
+        }
+
+        function excluirQR(id) {
+            if (!confirm('Excluir este QR Code?')) return;
+            qrCodes = qrCodes.filter(function(q) { return q.id !== id; });
+            salvar();
+            renderizarQRs();
+        }
+
+        function baixarQR(id) {
+            var qr = qrCodes.find(function(q) { return q.id === id; });
+            if (!qr) return;
+
+            var container = document.getElementById('qr-' + id);
+            var canvas = container.querySelector('canvas');
+            if (canvas) {
+                var link = document.createElement('a');
+                link.download = 'qrcode-' + qr.nome + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } else {
+                alert('⚠️ QR Code não encontrado para download.');
+            }
+        }
+
+        function imprimirQR(id) {
+            var qr = qrCodes.find(function(q) { return q.id === id; });
+            if (!qr) return;
+
+            var container = document.getElementById('qr-' + id);
+            var canvas = container.querySelector('canvas');
+            if (canvas) {
+                var win = window.open('', '_blank');
+                win.document.write('<html><head><title>QR Code - ' + qr.nome + '</title>');
+                win.document.write('<style>body{text-align:center;padding:40px;font-family:Arial,sans-serif;}' +
+                    'img{max-width:400px;border:2px solid #ccc;border-radius:12px;padding:20px;}' +
+                    '.info{margin-top:20px;font-size:14px;color:#333;}' +
+                    '.info strong{color:#C65A11;}</style>');
+                win.document.write('</head><body>');
+                win.document.write('<img src="' + canvas.toDataURL('image/png') + '">');
+                win.document.write('<div class="info"><strong>' + qr.nome + '</strong><br>' + qr.conteudo + '</div>');
+                win.document.write('<script>window.onload=function(){window.print();}<\/script>');
+                win.document.write('</body></html>');
+                win.document.close();
+            } else {
+                alert('⚠️ QR Code não encontrado para impressão.');
+            }
+        }
+
+        // ============================================================
+        // CONTROLE DE PERFIL
+        // ============================================================
+        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+        var modulosPermitidos = {
+            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
+                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
+                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
+                'configuracoes', 'backup'
+            ],
+            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
+            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
+            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
+            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
+        };
+
+        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+        setTimeout(function() {
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                var href = item.getAttribute('href') || '';
+                var pagina = href.replace('.html', '');
+                pagina = pagina.split('?')[0].split('#')[0];
+                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+                    item.style.display = 'none';
+                }
+            });
+        }, 500);
+
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        renderizarQRs();
+    </script>
 </body>
 </html>
