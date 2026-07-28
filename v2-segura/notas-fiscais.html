@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amovin ERP • Notas Fiscais</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- PDF.js para ler PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
     </script>
-    <!-- Tesseract.js para OCR de imagens -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
     </script>
     <style>
@@ -23,7 +21,6 @@
             --cinza-claro: #F8F4ED;
             --branco: #FFFFFF;
             --vermelho: #E53935;
-            --sap-blue: #003366;
         }
         * {
             margin: 0;
@@ -42,7 +39,6 @@
             margin-left: 270px;
             padding: 24px 30px;
         }
-
         .topo-bar {
             display: flex;
             justify-content: space-between;
@@ -59,12 +55,6 @@
         .topo-bar h1 span {
             color: var(--laranja);
         }
-        .topo-bar .sub {
-            font-size: 12px;
-            color: var(--cinza);
-            font-weight: 400;
-            display: block;
-        }
         .btn-sair-topo {
             background: #F8F4ED;
             color: #1A1A1A;
@@ -76,72 +66,12 @@
             cursor: pointer;
         }
 
-        /* ============================================================
-           ETAPAS - GUIA VISUAL
-           ============================================================ */
-        .etapas {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            background: #FFFFFF;
-            padding: 14px 20px;
-            border-radius: 14px;
-            border: 1px solid #F0E9DF;
-        }
-        .etapa {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--cinza);
-            padding: 6px 14px;
-            border-radius: 20px;
-            background: #F8F4ED;
-            transition: all 0.3s;
-        }
-        .etapa .num {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 700;
-            background: #E5E0D8;
-            color: var(--cinza);
-        }
-        .etapa.ativo {
-            background: #FFF3E0;
-            color: var(--laranja);
-        }
-        .etapa.ativo .num {
-            background: var(--laranja);
-            color: white;
-        }
-        .etapa.concluido {
-            background: #E8F5E9;
-            color: #2E7D32;
-        }
-        .etapa.concluido .num {
-            background: var(--verde);
-            color: white;
-        }
-        .etapa .seta {
-            color: #E5E0D8;
-            font-size: 14px;
-            margin-left: 4px;
-        }
-
         .card {
             background: #FFFFFF;
             padding: 24px;
             border-radius: 14px;
             border: 1px solid #F0E9DF;
             margin-bottom: 20px;
-            transition: all 0.3s;
         }
         .card h3 {
             font-size: 16px;
@@ -153,6 +83,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .card h3 .badge {
             font-size: 10px;
@@ -161,14 +93,6 @@
             border-radius: 20px;
             background: #FFF3E0;
             color: var(--laranja);
-        }
-        .card.destacado {
-            border: 2px solid var(--laranja);
-            background: #FFFAF5;
-        }
-        .card.verde {
-            border: 2px solid var(--verde);
-            background: #F5FFF5;
         }
 
         .form-group {
@@ -237,8 +161,6 @@
         }
         .btn-primary:hover {
             background: var(--laranja-escuro);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(198, 90, 17, 0.25);
         }
         .btn-success {
             background: var(--verde);
@@ -246,13 +168,6 @@
         }
         .btn-success:hover {
             background: #388E3C;
-        }
-        .btn-danger {
-            background: var(--vermelho);
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #C62828;
         }
         .btn-outline {
             background: transparent;
@@ -277,7 +192,7 @@
         }
 
         /* ============================================================
-           DROPZONE - ÁREA DE UPLOAD
+           DROPZONE
            ============================================================ */
         .dropzone {
             border: 3px dashed #E5E0D8;
@@ -323,7 +238,7 @@
         }
 
         /* ============================================================
-           PREVIEW DA NOTA
+           PREVIEW DA NOTA - CAMPOS EXTRAÍDOS
            ============================================================ */
         .preview-nota {
             background: #F8F4ED;
@@ -335,31 +250,83 @@
         .preview-nota.visivel {
             display: block;
         }
-        .preview-nota .linha {
-            display: flex;
-            justify-content: space-between;
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 20px;
+        }
+        .preview-item {
             padding: 6px 0;
             border-bottom: 1px solid #E5E0D8;
+            display: flex;
+            justify-content: space-between;
             font-size: 13px;
         }
-        .preview-nota .linha:last-child {
-            border-bottom: none;
-        }
-        .preview-nota .label {
+        .preview-item .label {
             color: var(--cinza);
             font-weight: 500;
         }
-        .preview-nota .valor {
+        .preview-item .valor {
             font-weight: 600;
             color: var(--grafite);
         }
-        .preview-nota .valor.destaque {
+        .preview-item .valor.destaque {
             color: var(--laranja);
-            font-size: 16px;
+            font-size: 15px;
+        }
+        .preview-item .valor.verde {
+            color: var(--verde);
+        }
+
+        .preview-itens {
+            margin-top: 12px;
+            border-top: 2px solid #E5E0D8;
+            padding-top: 12px;
+        }
+        .preview-itens .titulo {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--cinza);
+            margin-bottom: 6px;
+        }
+        .preview-itens .item-linha {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #F0E9DF;
+        }
+        .preview-itens .item-linha .desc {
+            font-weight: 500;
+            color: var(--grafite);
+        }
+        .preview-itens .item-linha .qtd {
+            text-align: center;
+            color: var(--cinza);
+        }
+        .preview-itens .item-linha .unit {
+            text-align: right;
+            color: var(--cinza);
+        }
+        .preview-itens .item-linha .total {
+            text-align: right;
+            font-weight: 600;
+            color: var(--laranja);
+        }
+
+        .preview-acoes {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            padding-top: 12px;
+            border-top: 2px solid #E5E0D8;
         }
 
         /* ============================================================
-           VINCULAÇÃO - DESTINOS
+           DESTINOS
            ============================================================ */
         .destinos-grid {
             display: grid;
@@ -368,7 +335,7 @@
             margin: 12px 0;
         }
         .destino-card {
-            padding: 16px;
+            padding: 14px;
             border-radius: 10px;
             border: 2px solid #E5E0D8;
             text-align: center;
@@ -387,7 +354,7 @@
         .destino-card .icone {
             font-size: 28px;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .destino-card .nome {
             font-weight: 600;
@@ -399,9 +366,6 @@
             color: var(--cinza);
         }
 
-        /* ============================================================
-           SALDO E RESUMO
-           ============================================================ */
         .saldo-box {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -432,11 +396,8 @@
             color: var(--vermelho);
         }
 
-        /* ============================================================
-           LISTA DE NOTAS
-           ============================================================ */
         .nota-item {
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-bottom: 1px solid #F0E9DF;
             display: flex;
             justify-content: space-between;
@@ -465,7 +426,7 @@
             color: var(--laranja);
             font-weight: 600;
         }
-        .nota-item .status-badge {
+        .status-badge {
             padding: 4px 14px;
             border-radius: 20px;
             font-size: 10px;
@@ -488,19 +449,9 @@
             color: #C62828;
         }
 
-        .nota-item .acoes {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        .nota-item .btn {
-            padding: 4px 10px;
-            font-size: 10px;
-        }
-
         .sem-dados {
             text-align: center;
-            padding: 40px;
+            padding: 30px;
             color: #9CA3AF;
         }
 
@@ -552,75 +503,63 @@
             display: none;
         }
 
-        /* ============================================================
-           RESPONSIVO
-           ============================================================ */
-        @media (max-width: 900px) {
-            .main-content {
-                margin-left: 0;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .destinos-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .saldo-box {
-                grid-template-columns: 1fr;
-            }
-            .etapas {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-            .etapa {
-                white-space: nowrap;
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-            .etapa .seta {
-                display: none;
-            }
+        /* Etapas */
+        .etapas {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            background: #FFFFFF;
+            padding: 14px 20px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
         }
-        @media (max-width: 480px) {
-            .destinos-grid {
-                grid-template-columns: 1fr;
-            }
+        .etapa {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--cinza);
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #F8F4ED;
+            transition: all 0.3s;
         }
-
-        /* ============================================================
-           ANIMAÇÕES
-           ============================================================ */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .etapa .num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            background: #E5E0D8;
+            color: var(--cinza);
         }
-        .slide-down {
-            animation: slideDown 0.4s ease;
+        .etapa.ativo {
+            background: #FFF3E0;
+            color: var(--laranja);
         }
-
-        @keyframes pulse {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.02);
-            }
+        .etapa.ativo .num {
+            background: var(--laranja);
+            color: white;
         }
-        .pulse {
-            animation: pulse 0.5s ease 3;
+        .etapa.concluido {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .etapa.concluido .num {
+            background: var(--verde);
+            color: white;
+        }
+        .etapa .seta {
+            color: #E5E0D8;
+            font-size: 14px;
+            margin-left: 4px;
         }
 
-        /* Notificação toast */
         .toast {
             position: fixed;
             top: 20px;
@@ -657,6 +596,52 @@
                 opacity: 1;
             }
         }
+
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+            .preview-itens .item-linha {
+                grid-template-columns: 1fr 1fr;
+                font-size: 11px;
+            }
+            .destinos-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .saldo-box {
+                grid-template-columns: 1fr;
+            }
+            .etapas {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .etapa {
+                white-space: nowrap;
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .etapa .seta {
+                display: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .destinos-grid {
+                grid-template-columns: 1fr;
+            }
+            .preview-itens .item-linha {
+                grid-template-columns: 1fr;
+                gap: 2px;
+                padding: 6px 0;
+            }
+            .preview-itens .item-linha .qtd,
+            .preview-itens .item-linha .unit,
+            .preview-itens .item-linha .total {
+                text-align: left;
+            }
+        }
     </style>
 </head>
 <body>
@@ -665,41 +650,31 @@
 
     <main class="main-content">
 
-        <!-- TOPO -->
         <div class="topo-bar">
             <div>
-                <h1>📄 Notas Fiscais <span>+ Vinculação</span></h1>
-                <span class="sub">Leia notas, vincule a projetos e direcione produtos</span>
+                <h1>📄 Notas Fiscais <span>+ Extração</span></h1>
+                <span class="sub">Leia notas automaticamente, extraia dados e vincule a projetos</span>
             </div>
             <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
 
-        <!-- ETAPAS - GUIA VISUAL -->
+        <!-- ETAPAS -->
         <div class="etapas" id="etapas">
             <div class="etapa ativo" id="etapa1">
-                <span class="num">1</span>
-                Upload da Nota
-                <span class="seta">→</span>
+                <span class="num">1</span> Upload da Nota <span class="seta">→</span>
             </div>
             <div class="etapa" id="etapa2">
-                <span class="num">2</span>
-                Vincular
-                <span class="seta">→</span>
+                <span class="num">2</span> Extrair Dados <span class="seta">→</span>
             </div>
             <div class="etapa" id="etapa3">
-                <span class="num">3</span>
-                Confirmar
-                <span class="seta">→</span>
+                <span class="num">3</span> Vincular <span class="seta">→</span>
             </div>
             <div class="etapa" id="etapa4">
-                <span class="num">4</span>
-                ✅ Concluído
+                <span class="num">4</span> ✅ Concluído
             </div>
         </div>
 
-        <!-- ============================================================
-        PASSO 1: UPLOAD
-        ============================================================ -->
+        <!-- PASSO 1: UPLOAD -->
         <div class="card" id="passoUpload">
             <h3>
                 📤 PASSO 1: Envie a Nota Fiscal
@@ -713,46 +688,27 @@
                 <input type="file" id="fileInput" accept=".pdf,.xml,.jpg,.jpeg,.png" style="display:none;" onchange="processarArquivo(event)">
                 <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInput').click()">📂 Selecionar Arquivo</button>
             </div>
+        </div>
 
-            <!-- Preview da nota extraída -->
-            <div class="preview-nota" id="previewNota">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Dados extraídos com sucesso!</span>
-                    <span style="font-size:11px;color:var(--cinza);" id="nomeArquivo"></span>
-                </div>
-                <div class="linha">
-                    <span class="label">📋 Número da Nota</span>
-                    <span class="valor" id="previewNumero">---</span>
-                </div>
-                <div class="linha">
-                    <span class="label">🏢 Emitente</span>
-                    <span class="valor" id="previewEmitente">---</span>
-                </div>
-                <div class="linha">
-                    <span class="label">💰 Valor Total</span>
-                    <span class="valor destaque" id="previewValor">---</span>
-                </div>
-                <div class="linha">
-                    <span class="label">📅 Data Emissão</span>
-                    <span class="valor" id="previewData">---</span>
-                </div>
-                <div class="linha">
-                    <span class="label">📦 Itens</span>
-                    <span class="valor" id="previewItens">---</span>
-                </div>
-                <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-                    <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
-                    <button class="btn btn-outline" onclick="limparPreview()">🔄 Refazer Leitura</button>
-                </div>
+        <!-- PASSO 2: PREVIEW DOS DADOS EXTRAÍDOS -->
+        <div class="card" id="passoPreview" style="display:none;">
+            <h3>
+                📋 PASSO 2: Dados Extraídos da Nota
+                <span class="badge" id="statusExtraido" style="background:#E8F5E9;color:#2E7D32;">✅ Extraído</span>
+            </h3>
+
+            <div id="previewNota" class="preview-nota visivel"></div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+                <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
+                <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer Leitura</button>
             </div>
         </div>
 
-        <!-- ============================================================
-        PASSO 2: VINCULAÇÃO
-        ============================================================ -->
+        <!-- PASSO 3: VINCULAÇÃO -->
         <div class="card" id="passoVinculo" style="display:none;">
             <h3>
-                🔗 PASSO 2: Vincular Nota ao Projeto
+                🔗 PASSO 3: Vincular Nota ao Projeto
                 <span class="badge">Defina o destino</span>
             </h3>
 
@@ -779,7 +735,6 @@
                 </div>
             </div>
 
-            <!-- SALDO DO PROJETO -->
             <div class="saldo-box" id="saldoBox" style="display:none;">
                 <div class="saldo-item">
                     <div class="label">💰 Previsto</div>
@@ -795,7 +750,6 @@
                 </div>
             </div>
 
-            <!-- DESTINO DOS PRODUTOS -->
             <div style="margin:16px 0;">
                 <label style="font-size:11px;font-weight:600;color:var(--cinza);text-transform:uppercase;display:block;margin-bottom:8px;">🏷️ Destino dos Produtos</label>
                 <div class="destinos-grid">
@@ -817,13 +771,11 @@
                 </div>
             </div>
 
-            <!-- OBSERVAÇÕES -->
             <div class="form-group">
                 <label>📝 Observações da Vinculação</label>
-                <textarea id="obsVinculo" rows="2" placeholder="Ex: Compra para o projeto Inclusão Digital..."></textarea>
+                <textarea id="obsVinculo" rows="2" placeholder="Ex: Compra para o projeto..."></textarea>
             </div>
 
-            <!-- RESUMO DA NOTA -->
             <div style="background:#F8F4ED;border-radius:10px;padding:16px;margin:12px 0;">
                 <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
                     <span><strong>Nota:</strong> <span id="resumoNumero">---</span></span>
@@ -836,18 +788,16 @@
                 <button class="btn btn-success btn-full" onclick="confirmarVinculo()" style="flex:2;">
                     ✅ Confirmar Vinculação
                 </button>
-                <button class="btn btn-outline" onclick="voltarParaUpload()" style="flex:1;">
+                <button class="btn btn-outline" onclick="voltarPreview()" style="flex:1;">
                     ← Voltar
                 </button>
             </div>
         </div>
 
-        <!-- ============================================================
-        PASSO 3: CONFIRMAÇÃO
-        ============================================================ -->
-        <div class="card verde" id="passoConfirmacao" style="display:none;">
+        <!-- PASSO 4: CONFIRMAÇÃO -->
+        <div class="card verde" id="passoConfirmacao" style="display:none;border:2px solid var(--verde);">
             <h3>
-                ✅ PASSO 3: Vinculação Concluída!
+                ✅ PASSO 4: Vinculação Concluída!
                 <span class="badge" style="background:#E8F5E9;color:#2E7D32;">Sucesso</span>
             </h3>
 
@@ -868,14 +818,12 @@
 
             <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
                 <button class="btn btn-primary" onclick="irParaRelatorio()">📊 Ver Relatório do Projeto</button>
-                <button class="btn btn-azul" onclick="novaNota()">📄 Nova Nota</button>
-                <button class="btn btn-outline" onclick="verNotaVinculada()">📋 Ver Nota</button>
+                <button class="btn btn-success" onclick="novaNota()">📄 Nova Nota</button>
+                <button class="btn btn-azul" onclick="verNotaVinculada()">📋 Ver Nota</button>
             </div>
         </div>
 
-        <!-- ============================================================
-        LISTA DE NOTAS VINCULADAS
-        ============================================================ -->
+        <!-- LISTA DE NOTAS -->
         <div class="card">
             <h3>
                 📋 Notas Fiscais Vinculadas
@@ -886,7 +834,6 @@
             </div>
         </div>
 
-        <!-- RODAPÉ -->
         <div class="rodape">
             <div class="rodape-grid">
                 <div class="rodape-logo">
@@ -900,7 +847,6 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <script src="menu.js"></script>
@@ -914,6 +860,7 @@
         // VARIÁVEIS GLOBAIS
         // ============================================================
         var dadosNota = null;
+        var itensNota = [];
         var destinoSelecionado = 'patrimonio';
 
         // ============================================================
@@ -933,23 +880,21 @@
             ];
             localStorage.setItem('amovin_projetos', JSON.stringify(projetos));
 
-            // Orçamentos padrão
-            orcamentos = [
-                { projeto_id: 1, categoria: 'Equipamentos', previsto: 60000, realizado: 0 },
-                { projeto_id: 1, categoria: 'Materiais', previsto: 40000, realizado: 0 },
-                { projeto_id: 1, categoria: 'Serviços', previsto: 30000, realizado: 0 },
-                { projeto_id: 2, categoria: 'Equipamentos', previsto: 30000, realizado: 0 },
-                { projeto_id: 2, categoria: 'Materiais', previsto: 30000, realizado: 0 },
-                { projeto_id: 3, categoria: 'Materiais', previsto: 40000, realizado: 0 },
-                { projeto_id: 4, categoria: 'Equipamentos', previsto: 50000, realizado: 0 },
-                { projeto_id: 4, categoria: 'Serviços', previsto: 50000, realizado: 0 }
-            ];
-            localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
+            if (orcamentos.length === 0) {
+                orcamentos = [
+                    { projeto_id: 1, categoria: 'Equipamentos', previsto: 60000, realizado: 0 },
+                    { projeto_id: 1, categoria: 'Materiais', previsto: 40000, realizado: 0 },
+                    { projeto_id: 1, categoria: 'Serviços', previsto: 30000, realizado: 0 },
+                    { projeto_id: 2, categoria: 'Equipamentos', previsto: 30000, realizado: 0 },
+                    { projeto_id: 2, categoria: 'Materiais', previsto: 30000, realizado: 0 },
+                    { projeto_id: 3, categoria: 'Materiais', previsto: 40000, realizado: 0 },
+                    { projeto_id: 4, categoria: 'Equipamentos', previsto: 50000, realizado: 0 },
+                    { projeto_id: 4, categoria: 'Serviços', previsto: 50000, realizado: 0 }
+                ];
+                localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
+            }
         }
 
-        // ============================================================
-        // FUNÇÃO PARA SALVAR
-        // ============================================================
         function salvarNotas() {
             localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas));
         }
@@ -961,15 +906,10 @@
             var file = event.target.files[0];
             if (!file) return;
 
-            var preview = document.getElementById('previewNota');
-            var nomeArquivo = document.getElementById('nomeArquivo');
-            nomeArquivo.textContent = '📎 ' + file.name;
+            var ext = file.name.split('.').pop().toLowerCase();
 
             // Mostra loading
-            preview.classList.add('visivel');
-            preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando arquivo...</p></div>';
-
-            var ext = file.name.split('.').pop().toLowerCase();
+            mostrarLoading();
 
             if (ext === 'pdf') {
                 lerPDF(file);
@@ -979,12 +919,30 @@
                 lerImagem(file);
             } else {
                 mostrarToast('Formato não suportado: ' + ext, 'error');
-                limparPreview();
+                esconderLoading();
             }
         }
 
         // ============================================================
-        // LEITURA DE PDF
+        // MOSTRAR/ESCONDER LOADING
+        // ============================================================
+        function mostrarLoading() {
+            var preview = document.getElementById('previewNota');
+            preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando arquivo e extraindo dados...</p></div>';
+            preview.classList.add('visivel');
+            document.getElementById('passoPreview').style.display = 'block';
+            document.getElementById('passoUpload').style.display = 'none';
+            document.getElementById('etapa1').classList.remove('ativo');
+            document.getElementById('etapa1').classList.add('concluido');
+            document.getElementById('etapa2').classList.add('ativo');
+        }
+
+        function esconderLoading() {
+            // O preview já foi preenchido
+        }
+
+        // ============================================================
+        // 2. LEITURA DE PDF
         // ============================================================
         function lerPDF(file) {
             var reader = new FileReader();
@@ -1010,14 +968,18 @@
                     })
                     .catch(function(err) {
                         mostrarToast('Erro ao ler PDF: ' + err.message, 'error');
-                        limparPreview();
+                        document.getElementById('passoPreview').style.display = 'none';
+                        document.getElementById('passoUpload').style.display = 'block';
+                        document.getElementById('etapa1').classList.remove('concluido');
+                        document.getElementById('etapa1').classList.add('ativo');
+                        document.getElementById('etapa2').classList.remove('ativo');
                     });
             };
             reader.readAsArrayBuffer(file);
         }
 
         // ============================================================
-        // LEITURA DE XML
+        // 3. LEITURA DE XML
         // ============================================================
         function lerXML(file) {
             var reader = new FileReader();
@@ -1029,30 +991,52 @@
 
                     var dados = {};
 
-                    // Tenta extrair campos comuns de NF-e
-                    var numero = xmlDoc.querySelector('nNF') || xmlDoc.querySelector('numero');
-                    var emitente = xmlDoc.querySelector('xNome') || xmlDoc.querySelector('emitente');
-                    var cnpj = xmlDoc.querySelector('CNPJ') || xmlDoc.querySelector('cnpj');
-                    var valor = xmlDoc.querySelector('vTotal') || xmlDoc.querySelector('valorTotal');
-                    var data = xmlDoc.querySelector('dhEmi') || xmlDoc.querySelector('dataEmissao');
+                    // Campos da nota
+                    dados.numero = getXMLValue(xmlDoc, ['nNF', 'numero', 'numNF']);
+                    dados.chave = getXMLValue(xmlDoc, ['chNFe', 'chave', 'chaveAcesso']);
+                    dados.emitente = getXMLValue(xmlDoc, ['xNome', 'emitente', 'nomeEmitente']);
+                    dados.cnpj = getXMLValue(xmlDoc, ['CNPJ', 'cnpjEmitente']);
+                    dados.valor = parseFloat(getXMLValue(xmlDoc, ['vTotal', 'valorTotal', 'total']) || '0') || 0;
+                    dados.data = getXMLValue(xmlDoc, ['dhEmi', 'dataEmissao']);
 
-                    dados.numero = numero ? numero.textContent : '---';
-                    dados.emitente = emitente ? emitente.textContent : '---';
-                    dados.cnpj = cnpj ? cnpj.textContent : '---';
-                    dados.valor = valor ? parseFloat(valor.textContent.replace(',', '.')) || 0 : 0;
-                    dados.data = data ? data.textContent.substring(0, 10) : '---';
+                    // Itens da nota
+                    var itens = [];
+                    var itemElements = xmlDoc.querySelectorAll('prod, item, det');
+                    if (itemElements.length === 0) {
+                        // Tenta encontrar itens de outra forma
+                        itemElements = xmlDoc.querySelectorAll('produto');
+                    }
+
+                    itemElements.forEach(function(el) {
+                        var desc = getXMLValue(el, ['xProd', 'descricao', 'produto', 'nome']);
+                        var qtd = parseFloat(getXMLValue(el, ['qCom', 'quantidade']) || '1') || 1;
+                        var unit = parseFloat(getXMLValue(el, ['vUnCom', 'valorUnitario']) || '0') || 0;
+                        var total = parseFloat(getXMLValue(el, ['vProd', 'valorTotal']) || '0') || 0;
+
+                        if (desc || total > 0) {
+                            itens.push({
+                                descricao: desc || 'Item não identificado',
+                                quantidade: qtd,
+                                valor_unitario: unit,
+                                valor_total: total > 0 ? total : (qtd * unit)
+                            });
+                        }
+                    });
+
+                    dados.itens = itens;
 
                     mostrarPreview(dados);
                 } catch (err) {
                     mostrarToast('Erro ao ler XML: ' + err.message, 'error');
-                    limparPreview();
+                    document.getElementById('passoPreview').style.display = 'none';
+                    document.getElementById('passoUpload').style.display = 'block';
                 }
             };
             reader.readAsText(file);
         }
 
         // ============================================================
-        // LEITURA DE IMAGEM (OCR)
+        // 4. LEITURA DE IMAGEM (OCR)
         // ============================================================
         function lerImagem(file) {
             var preview = document.getElementById('previewNota');
@@ -1071,203 +1055,312 @@
                 })
                 .catch(function(err) {
                     mostrarToast('Erro no OCR: ' + err.message, 'error');
-                    limparPreview();
+                    document.getElementById('passoPreview').style.display = 'none';
+                    document.getElementById('passoUpload').style.display = 'block';
                 });
         }
 
         // ============================================================
-        // EXTRAIR DADOS DA NOTA (TEXTO)
+        // 5. EXTRAIR DADOS DA NOTA (TEXTO) - CAMPO A CAMPO
         // ============================================================
         function extrairDadosNota(texto) {
             var dados = {
                 numero: '---',
+                chave: '---',
                 emitente: '---',
                 cnpj: '---',
                 valor: 0,
                 data: '---',
-                itens: '---'
+                itens: []
             };
 
-            // Padrões de busca
-            var padroes = {
-                numero: [
-                    /\b(\d{6,9})\b/,
-                    /N[°º]?\s*[:]?\s*(\d{6,9})/i,
-                    /nNF[:]?\s*(\d+)/i
-                ],
-                emitente: [
-                    /Emitente[:]?\s*([^\n]+)/i,
-                    /Fornecedor[:]?\s*([^\n]+)/i,
-                    /Razão Social[:]?\s*([^\n]+)/i,
-                    /Nome[:]?\s*([^\n]+)/i
-                ],
-                cnpj: [
-                    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
-                    /\b(\d{14})\b/
-                ],
-                valor: [
-                    /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i,
-                    /Total[:]?\s*R?\$?\s*([\d.,]+)/i,
-                    /vTotal[:]?\s*([\d.,]+)/i,
-                    /Valor[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                data: [
-                    /\b(\d{2}\/\d{2}\/\d{4})\b/,
-                    /\b(\d{4}-\d{2}-\d{2})\b/
-                ]
-            };
+            // 🔍 EXTRAÇÃO CAMPO A CAMPO
 
-            // Tenta encontrar cada campo
-            for (var campo in padroes) {
-                for (var i = 0; i < padroes[campo].length; i++) {
-                    var match = texto.match(padroes[campo][i]);
-                    if (match) {
-                        if (campo === 'valor') {
-                            var v = match[1].replace(/\./g, '').replace(',', '.');
-                            dados.valor = parseFloat(v) || 0;
-                        } else if (campo === 'data') {
-                            var d = match[1];
-                            if (d.indexOf('/') > 0) {
-                                var parts = d.split('/');
-                                dados.data = parts[2] + '-' + parts[1] + '-' + parts[0];
-                            } else {
-                                dados.data = d;
-                            }
-                        } else {
-                            dados[campo] = match[1] || match[0];
-                        }
-                        break;
+            // 5.1 Número da Nota
+            var padroesNumero = [
+                /N[°º]?\s*[:]?\s*(\d{6,9})/i,
+                /nNF[:]?\s*(\d+)/i,
+                /Número[:]?\s*(\d+)/i,
+                /\b(\d{6,9})\b/
+            ];
+            for (var i = 0; i < padroesNumero.length; i++) {
+                var match = texto.match(padroesNumero[i]);
+                if (match) { dados.numero = match[1]; break; }
+            }
+
+            // 5.2 Chave de Acesso (44 dígitos)
+            var matchChave = texto.match(/\b(\d{44})\b/);
+            if (matchChave) dados.chave = matchChave[1];
+
+            // 5.3 Emitente
+            var padroesEmitente = [
+                /Emitente[:]?\s*([^\n]+)/i,
+                /Fornecedor[:]?\s*([^\n]+)/i,
+                /Razão Social[:]?\s*([^\n]+)/i,
+                /Nome[:]?\s*([^\n]+)/i
+            ];
+            for (var j = 0; j < padroesEmitente.length; j++) {
+                var matchE = texto.match(padroesEmitente[j]);
+                if (matchE) { dados.emitente = matchE[1].trim(); break; }
+            }
+
+            // 5.4 CNPJ
+            var padroesCnpj = [
+                /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
+                /\b(\d{14})\b/
+            ];
+            for (var k = 0; k < padroesCnpj.length; k++) {
+                var matchC = texto.match(padroesCnpj[k]);
+                if (matchC) { dados.cnpj = matchC[1]; break; }
+            }
+
+            // 5.5 Valor Total
+            var padroesValor = [
+                /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i,
+                /Total[:]?\s*R?\$?\s*([\d.,]+)/i,
+                /vTotal[:]?\s*([\d.,]+)/i,
+                /Valor[:]?\s*R?\$?\s*([\d.,]+)/i
+            ];
+            for (var l = 0; l < padroesValor.length; l++) {
+                var matchV = texto.match(padroesValor[l]);
+                if (matchV) {
+                    var v = matchV[1].replace(/\./g, '').replace(',', '.');
+                    dados.valor = parseFloat(v) || 0;
+                    break;
+                }
+            }
+
+            // 5.6 Data de Emissão
+            var padroesData = [
+                /\b(\d{2}\/\d{2}\/\d{4})\b/,
+                /\b(\d{4}-\d{2}-\d{2})\b/
+            ];
+            for (var m = 0; m < padroesData.length; m++) {
+                var matchD = texto.match(padroesData[m]);
+                if (matchD) {
+                    var d = matchD[1];
+                    if (d.indexOf('/') > 0) {
+                        var parts = d.split('/');
+                        dados.data = parts[2] + '-' + parts[1] + '-' + parts[0];
+                    } else {
+                        dados.data = d;
+                    }
+                    break;
+                }
+            }
+
+            // 5.7 Itens da Nota (PRODUTOS/SERVIÇOS)
+            // Padrão: Descrição + Quantidade + Valor Unitário + Valor Total
+            var itens = [];
+
+            // Tenta encontrar itens com padrão: "descrição 1 x R$ 100,00"
+            var padraoItem = /([\w\s]+)\s*(\d+)\s*x\s*R?\$?\s*([\d.,]+)/gi;
+            var matchItem;
+            while ((matchItem = padraoItem.exec(texto)) !== null) {
+                var desc = matchItem[1].trim();
+                var qtd = parseInt(matchItem[2]) || 1;
+                var unit = parseFloat(matchItem[3].replace(/\./g, '').replace(',', '.')) || 0;
+                if (desc && desc.length > 3) {
+                    itens.push({
+                        descricao: desc,
+                        quantidade: qtd,
+                        valor_unitario: unit,
+                        valor_total: qtd * unit
+                    });
+                }
+            }
+
+            // Se não encontrou itens, tenta outro padrão
+            if (itens.length === 0) {
+                var padraoItem2 = /([\w\s]+)\s*R?\$?\s*([\d.,]+)/gi;
+                while ((matchItem = padraoItem2.exec(texto)) !== null) {
+                    var desc2 = matchItem[1].trim();
+                    var valor2 = parseFloat(matchItem[2].replace(/\./g, '').replace(',', '.')) || 0;
+                    if (desc2 && desc2.length > 3 && valor2 > 0) {
+                        itens.push({
+                            descricao: desc2,
+                            quantidade: 1,
+                            valor_unitario: valor2,
+                            valor_total: valor2
+                        });
                     }
                 }
             }
 
-            // Tenta encontrar itens (descrições com valores)
-            var itens = texto.match(/(\w+[\s\w]+)\s*[\d,]+\s*x\s*[\d,]+/g);
-            if (itens && itens.length > 0) {
-                dados.itens = itens.slice(0, 3).join('; ');
+            // Limita a 20 itens e remove duplicatas
+            var itensUnicos = [];
+            var descs = {};
+            itens.forEach(function(item) {
+                var key = item.descricao.substring(0, 20);
+                if (!descs[key]) {
+                    descs[key] = true;
+                    itensUnicos.push(item);
+                }
+            });
+
+            dados.itens = itensUnicos.slice(0, 20);
+
+            // Se não encontrou itens, cria um item genérico
+            if (dados.itens.length === 0 && dados.valor > 0) {
+                dados.itens.push({
+                    descricao: 'Produto/Serviço da NF ' + dados.numero,
+                    quantidade: 1,
+                    valor_unitario: dados.valor,
+                    valor_total: dados.valor
+                });
             }
 
             mostrarPreview(dados);
         }
 
         // ============================================================
-        // MOSTRAR PREVIEW
+        // 6. MOSTRAR PREVIEW DOS DADOS EXTRAÍDOS
         // ============================================================
         function mostrarPreview(dados) {
-            var preview = document.getElementById('previewNota');
             dadosNota = dados;
 
-            // Atualiza campos
-            document.getElementById('previewNumero').textContent = dados.numero || '---';
-            document.getElementById('previewEmitente').textContent = dados.emitente || '---';
-            document.getElementById('previewValor').textContent = 'R$ ' + (dados.valor || 0).toFixed(2).replace('.', ',');
-            document.getElementById('previewData').textContent = dados.data || '---';
-            document.getElementById('previewItens').textContent = dados.itens || 'Nenhum item identificado';
+            var preview = document.getElementById('previewNota');
+
+            // Formata data
+            var dataFormatada = dados.data && dados.data !== '---' ? new Date(dados.data + 'T00:00:00').toLocaleDateString(
+                'pt-BR') : '---';
+
+            // Gera HTML dos itens
+            var itensHtml = '';
+            if (dados.itens && dados.itens.length > 0) {
+                itensHtml = '<div class="preview-itens"><div class="titulo">📦 Itens da Nota (' + dados.itens.length +
+                    ' itens)</div>';
+                dados.itens.forEach(function(item) {
+                    itensHtml += '<div class="item-linha">' +
+                        '<span class="desc">' + item.descricao + '</span>' +
+                        '<span class="qtd">' + item.quantidade + 'x</span>' +
+                        '<span class="unit">R$ ' + (item.valor_unitario || 0).toFixed(2).replace('.', ',') +
+                        '</span>' +
+                        '<span class="total">R$ ' + (item.valor_total || 0).toFixed(2).replace('.', ',') +
+                        '</span>' +
+                        '</div>';
+                });
+                itensHtml += '</div>';
+            } else {
+                itensHtml = '<div class="preview-itens"><div class="titulo">📦 Itens da Nota</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado automaticamente.</p></div>';
+            }
 
             preview.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
                     <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Dados extraídos com sucesso!</span>
-                    <span style="font-size:11px;color:var(--cinza);" id="nomeArquivo">📎 ${document.getElementById('nomeArquivo').textContent}</span>
+                    <span style="font-size:11px;color:var(--cinza);">Extraído via ${dados.fonte || 'OCR/PDF'}</span>
                 </div>
-                <div class="linha">
-                    <span class="label">📋 Número da Nota</span>
-                    <span class="valor" id="previewNumero">${dados.numero || '---'}</span>
+
+                <div class="preview-grid">
+                    <div class="preview-item">
+                        <span class="label">📋 Número da Nota</span>
+                        <span class="valor">${dados.numero || '---'}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="label">🔑 Chave de Acesso</span>
+                        <span class="valor" style="font-size:11px;">${dados.chave || '---'}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="label">🏢 Emitente</span>
+                        <span class="valor">${dados.emitente || '---'}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="label">📄 CNPJ</span>
+                        <span class="valor">${dados.cnpj || '---'}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="label">💰 Valor Total</span>
+                        <span class="valor destaque">R$ ${(dados.valor || 0).toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="label">📅 Data Emissão</span>
+                        <span class="valor">${dataFormatada}</span>
+                    </div>
                 </div>
-                <div class="linha">
-                    <span class="label">🏢 Emitente</span>
-                    <span class="valor" id="previewEmitente">${dados.emitente || '---'}</span>
-                </div>
-                <div class="linha">
-                    <span class="label">💰 Valor Total</span>
-                    <span class="valor destaque" id="previewValor">R$ ${(dados.valor || 0).toFixed(2).replace('.', ',')}</span>
-                </div>
-                <div class="linha">
-                    <span class="label">📅 Data Emissão</span>
-                    <span class="valor" id="previewData">${dados.data || '---'}</span>
-                </div>
-                <div class="linha">
-                    <span class="label">📦 Itens</span>
-                    <span class="valor" id="previewItens">${dados.itens || 'Nenhum item identificado'}</span>
-                </div>
-                <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+
+                ${itensHtml}
+
+                <div class="preview-acoes">
                     <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
-                    <button class="btn btn-outline" onclick="limparPreview()">🔄 Refazer Leitura</button>
+                    <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer Leitura</button>
                 </div>
             `;
 
-            preview.classList.add('visivel', 'slide-down');
-
-            // Atualiza etapa
+            document.getElementById('passoPreview').style.display = 'block';
+            document.getElementById('passoUpload').style.display = 'none';
             document.getElementById('etapa1').classList.remove('ativo');
             document.getElementById('etapa1').classList.add('concluido');
             document.getElementById('etapa2').classList.add('ativo');
 
-            mostrarToast('📄 Nota lida com sucesso! Avance para vincular.', 'success');
+            mostrarToast('📄 Nota lida com sucesso! ' + (dados.itens ? dados.itens.length : 0) + ' itens extraídos.',
+                'success');
         }
 
         // ============================================================
-        // LIMPAR PREVIEW
+        // 7. FUNÇÃO AUXILIAR PARA XML
         // ============================================================
-        function limparPreview() {
-            var preview = document.getElementById('previewNota');
-            preview.classList.remove('visivel');
-            preview.innerHTML = '';
-            dadosNota = null;
-            document.getElementById('fileInput').value = '';
+        function getXMLValue(xmlDoc, tags) {
+            for (var i = 0; i < tags.length; i++) {
+                var el = xmlDoc.querySelector(tags[i]);
+                if (el && el.textContent) return el.textContent.trim();
+            }
+            return '';
+        }
 
+        // ============================================================
+        // 8. NAVEGAÇÃO
+        // ============================================================
+        function voltarUpload() {
+            document.getElementById('passoPreview').style.display = 'none';
+            document.getElementById('passoUpload').style.display = 'block';
             document.getElementById('etapa1').classList.remove('concluido');
             document.getElementById('etapa1').classList.add('ativo');
             document.getElementById('etapa2').classList.remove('ativo');
+            dadosNota = null;
+            document.getElementById('fileInput').value = '';
         }
 
-        // ============================================================
-        // AVANÇAR PARA VINCULAÇÃO
-        // ============================================================
         function avancarParaVinculo() {
             if (!dadosNota) {
                 mostrarToast('⚠️ Nenhuma nota lida. Faça o upload primeiro.', 'warning');
                 return;
             }
 
-            // Esconde passo 1, mostra passo 2
-            document.getElementById('passoUpload').style.display = 'none';
+            document.getElementById('passoPreview').style.display = 'none';
             document.getElementById('passoVinculo').style.display = 'block';
-            document.getElementById('passoConfirmacao').style.display = 'none';
+            document.getElementById('passoUpload').style.display = 'none';
 
-            // Atualiza etapas
             document.getElementById('etapa2').classList.remove('ativo');
             document.getElementById('etapa2').classList.add('concluido');
             document.getElementById('etapa3').classList.add('ativo');
 
-            // Preenche projetos no select
-            var selectProjeto = document.getElementById('projetoVinculo');
-            selectProjeto.innerHTML = '<option value="">Selecione um projeto...</option>';
-            projetos.forEach(function(p) {
-                selectProjeto.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + p.orcamento_total
-                    .toFixed(2).replace('.', ',') + ')</option>';
-            });
-
-            // Preenche resumo
+            preencherProjetos();
             document.getElementById('resumoNumero').textContent = dadosNota.numero || '---';
             document.getElementById('resumoEmitente').textContent = dadosNota.emitente || '---';
             document.getElementById('resumoValor').textContent = 'R$ ' + (dadosNota.valor || 0).toFixed(2).replace('.', ',');
 
-            // Gera ID temporário
-            var notaId = Date.now();
-            document.getElementById('notaIdVinculo').value = notaId;
+            document.getElementById('notaIdVinculo').value = Date.now();
 
-            // Tenta sugerir projeto baseado no emitente
+            // Sugere projeto baseado no emitente
             sugerirProjeto(dadosNota.emitente);
-
-            // Mostra saldo
-            document.getElementById('saldoBox').style.display = 'grid';
-
-            mostrarToast('🔗 Agora vincule a nota a um projeto.', 'info');
         }
 
-        // ============================================================
-        // SUGERIR PROJETO (baseado no emitente)
-        // ============================================================
+        function voltarPreview() {
+            document.getElementById('passoVinculo').style.display = 'none';
+            document.getElementById('passoPreview').style.display = 'block';
+            document.getElementById('etapa3').classList.remove('ativo');
+            document.getElementById('etapa2').classList.add('ativo');
+        }
+
+        function preencherProjetos() {
+            var select = document.getElementById('projetoVinculo');
+            select.innerHTML = '<option value="">Selecione um projeto...</option>';
+            projetos.forEach(function(p) {
+                select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + p.orcamento_total.toFixed(2)
+                    .replace('.', ',') + ')</option>';
+            });
+        }
+
         function sugerirProjeto(emitente) {
             if (!emitente) return;
 
@@ -1299,7 +1392,7 @@
         }
 
         // ============================================================
-        // ATUALIZAR SALDO DO PROJETO
+        // 9. ATUALIZAR SALDO
         // ============================================================
         function atualizarSaldo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
@@ -1312,7 +1405,6 @@
 
             document.getElementById('saldoBox').style.display = 'grid';
 
-            // Busca orçamento
             var orc = orcamentos.find(function(o) {
                 return o.projeto_id === projetoId && o.categoria === categoria;
             });
@@ -1320,15 +1412,12 @@
             var previsto = orc ? orc.previsto : 0;
             var realizado = orc ? orc.realizado : 0;
             var disponivel = previsto - realizado;
-
-            // Busca valor da nota
             var valorNota = dadosNota ? dadosNota.valor || 0 : 0;
 
             document.getElementById('saldoPrevisto').textContent = 'R$ ' + previsto.toFixed(2).replace('.', ',');
             document.getElementById('saldoRealizado').textContent = 'R$ ' + realizado.toFixed(2).replace('.', ',');
             document.getElementById('saldoDisponivel').textContent = 'R$ ' + disponivel.toFixed(2).replace('.', ',');
 
-            // Alerta se o valor da nota ultrapassa o disponível
             if (valorNota > disponivel && disponivel > 0) {
                 document.getElementById('saldoDisponivel').style.color = 'var(--vermelho)';
                 mostrarToast('⚠️ Atenção: O valor da nota (R$ ' + valorNota.toFixed(2) + ') excede o disponível (R$ ' +
@@ -1339,7 +1428,7 @@
         }
 
         // ============================================================
-        // SELECIONAR DESTINO
+        // 10. DESTINO
         // ============================================================
         function selecionarDestino(el) {
             document.querySelectorAll('.destino-card').forEach(function(c) {
@@ -1350,25 +1439,18 @@
         }
 
         // ============================================================
-        // CONFIRMAR VINCULAÇÃO
+        // 11. CONFIRMAR VINCULAÇÃO
         // ============================================================
         function confirmarVinculo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
             var categoria = document.getElementById('categoriaVinculo').value;
             var obs = document.getElementById('obsVinculo').value.trim();
 
-            if (!projetoId) {
-                mostrarToast('⚠️ Selecione um projeto!', 'warning');
-                return;
-            }
-            if (!categoria) {
-                mostrarToast('⚠️ Selecione uma categoria!', 'warning');
-                return;
-            }
+            if (!projetoId) { mostrarToast('⚠️ Selecione um projeto!', 'warning'); return; }
+            if (!categoria) { mostrarToast('⚠️ Selecione uma categoria!', 'warning'); return; }
 
             var valorNota = dadosNota ? dadosNota.valor || 0 : 0;
 
-            // Verifica saldo
             var orc = orcamentos.find(function(o) {
                 return o.projeto_id === projetoId && o.categoria === categoria;
             });
@@ -1383,10 +1465,10 @@
                 }
             }
 
-            // Cria a nota
             var novaNota = {
                 id: parseInt(document.getElementById('notaIdVinculo').value),
                 numero: dadosNota.numero || '---',
+                chave: dadosNota.chave || '---',
                 emitente: dadosNota.emitente || '---',
                 cnpj_emitente: dadosNota.cnpj || '---',
                 valor_total: valorNota,
@@ -1394,6 +1476,7 @@
                 projeto_id: projetoId,
                 categoria_orcamento: categoria,
                 destino: destinoSelecionado,
+                itens: dadosNota.itens || [],
                 status: 'vinculado',
                 observacao: obs,
                 data_criacao: new Date().toISOString()
@@ -1402,25 +1485,20 @@
             notas.push(novaNota);
             salvarNotas();
 
-            // Atualiza orçamento
             if (orc) {
                 orc.realizado += valorNota;
                 localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
             }
 
-            // Atualiza estoque/patrimônio/serviço
             direcionarProdutos(novaNota);
 
-            // Mostra confirmação
             document.getElementById('passoVinculo').style.display = 'none';
             document.getElementById('passoConfirmacao').style.display = 'block';
 
-            // Atualiza etapas
             document.getElementById('etapa3').classList.remove('ativo');
             document.getElementById('etapa3').classList.add('concluido');
             document.getElementById('etapa4').classList.add('concluido');
 
-            // Preenche confirmação
             var projeto = projetos.find(function(p) { return p.id === projetoId; });
             document.getElementById('confProjeto').textContent = projeto ? projeto.nome : '---';
             document.getElementById('confCategoria').textContent = categoria;
@@ -1428,71 +1506,79 @@
             document.getElementById('confDestino').textContent = destinos[destinoSelecionado] || destinoSelecionado;
             document.getElementById('confValor').textContent = 'R$ ' + valorNota.toFixed(2).replace('.', ',');
 
-            // Remove dados da nota
             dadosNota = null;
-
             renderizarListaNotas();
             mostrarToast('✅ Nota vinculada com sucesso!', 'success');
         }
 
         // ============================================================
-        // DIRECIONAR PRODUTOS
+        // 12. DIRECIONAR PRODUTOS
         // ============================================================
         function direcionarProdutos(nota) {
-            // Busca ou cria item genérico baseado na nota
-            var nomeProduto = 'Item da NF ' + nota.numero;
-
-            if (nota.destino === 'estoque') {
-                var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
-                estoque.push({
-                    id: Date.now(),
-                    nome: nomeProduto,
-                    categoria: 'Equipamentos',
-                    unidade: 'Unidade',
-                    qtd: 1,
-                    qtdMinima: 0,
-                    local: 'Almoxarifado',
-                    obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
-                });
-                localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
-                mostrarToast('📦 Produto adicionado ao Estoque', 'info');
-            } else if (nota.destino === 'patrimonio') {
-                var patrimonio = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
-                var ultimoNumero = parseInt(localStorage.getItem('amovin_patrimonio_num') || '0');
-                ultimoNumero++;
-                patrimonio.push({
-                    id: Date.now(),
-                    nome: nomeProduto,
-                    numero: 'AMOVIN-' + String(ultimoNumero).padStart(4, '0'),
-                    categoria: 'Equipamento',
-                    marca: '',
-                    modelo: '',
-                    valor: nota.valor_total,
-                    status: 'Em Operação',
-                    local: 'Sede AMOVIN',
-                    obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
-                });
-                localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
-                localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
-                mostrarToast('🏢 Bem adicionado ao Patrimônio', 'info');
-            } else if (nota.destino === 'servico') {
-                // Para serviços, apenas registra
-                var servicos = JSON.parse(localStorage.getItem('amovin_servicos') || '[]');
-                servicos.push({
-                    id: Date.now(),
-                    nota_id: nota.id,
-                    descricao: 'Serviço - NF ' + nota.numero,
-                    valor: nota.valor_total,
-                    projeto_id: nota.projeto_id,
-                    data: new Date().toISOString()
-                });
-                localStorage.setItem('amovin_servicos', JSON.stringify(servicos));
-                mostrarToast('🛠️ Serviço registrado', 'info');
+            if (!nota.itens || nota.itens.length === 0) {
+                // Cria item genérico
+                nota.itens = [{
+                    descricao: 'Item da NF ' + nota.numero,
+                    quantidade: 1,
+                    valor_unitario: nota.valor_total,
+                    valor_total: nota.valor_total
+                }];
             }
+
+            nota.itens.forEach(function(item) {
+                var nomeProduto = item.descricao || 'Item da NF ' + nota.numero;
+
+                if (nota.destino === 'estoque') {
+                    var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+                    estoque.push({
+                        id: Date.now(),
+                        nome: nomeProduto,
+                        categoria: nota.categoria_orcamento || 'Diversos',
+                        unidade: 'Unidade',
+                        qtd: item.quantidade || 1,
+                        qtdMinima: 0,
+                        local: 'Almoxarifado',
+                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+                    });
+                    localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
+                    mostrarToast('📦 ' + item.quantidade + 'x ' + nomeProduto + ' adicionado ao Estoque', 'info');
+                } else if (nota.destino === 'patrimonio') {
+                    var patrimonio = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
+                    var ultimoNumero = parseInt(localStorage.getItem('amovin_patrimonio_num') || '0');
+                    ultimoNumero++;
+                    patrimonio.push({
+                        id: Date.now(),
+                        nome: nomeProduto,
+                        numero: 'AMOVIN-' + String(ultimoNumero).padStart(4, '0'),
+                        categoria: nota.categoria_orcamento || 'Equipamento',
+                        marca: '',
+                        modelo: '',
+                        valor: item.valor_total || nota.valor_total,
+                        status: 'Em Operação',
+                        local: 'Sede AMOVIN',
+                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+                    });
+                    localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
+                    localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
+                    mostrarToast('🏢 ' + nomeProduto + ' adicionado ao Patrimônio', 'info');
+                } else if (nota.destino === 'servico') {
+                    var servicos = JSON.parse(localStorage.getItem('amovin_servicos') || '[]');
+                    servicos.push({
+                        id: Date.now(),
+                        nota_id: nota.id,
+                        descricao: nomeProduto,
+                        valor: item.valor_total || nota.valor_total,
+                        projeto_id: nota.projeto_id,
+                        data: new Date().toISOString()
+                    });
+                    localStorage.setItem('amovin_servicos', JSON.stringify(servicos));
+                    mostrarToast('🛠️ Serviço registrado: ' + nomeProduto, 'info');
+                }
+            });
         }
 
         // ============================================================
-        // RENDERIZAR LISTA DE NOTAS
+        // 13. RENDERIZAR LISTA
         // ============================================================
         function renderizarListaNotas() {
             var container = document.getElementById('listaNotas');
@@ -1503,7 +1589,6 @@
                 return;
             }
 
-            // Ordena por data (mais recente primeiro)
             var lista = notas.slice().sort(function(a, b) {
                 return new Date(b.data_criacao) - new Date(a.data_criacao);
             });
@@ -1523,49 +1608,44 @@
                 };
                 var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
                 var projetoNome = projeto ? projeto.nome : '---';
-
                 var data = n.data_emissao ? new Date(n.data_emissao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+                var qtdItens = n.itens ? n.itens.length : 0;
 
                 return '<div class="nota-item">' +
                     '<div class="info">' +
-                    '<div class="num">NF ' + n.numero + '</div>' +
+                    '<div class="num">NF ' + n.numero + ' <span style="font-size:11px;color:var(--cinza);font-weight:400;">(' +
+                    qtdItens + ' itens)</span></div>' +
                     '<div class="detalhe">🏢 ' + n.emitente + ' | 📅 ' + data + ' | 💰 R$ ' + n.valor_total.toFixed(2)
                     .replace('.', ',') + '</div>' +
                     '<div class="projeto">📋 ' + projetoNome + ' | ' + n.categoria_orcamento + '</div>' +
                     '</div>' +
-                    '<div>' +
-                    '<span class="status-badge ' + (statusMap[n.status] || 'status-pendente') + '">' + (statusLabel[n
-                        .status] || n.status) + '</span>' +
-                    '</div>' +
+                    '<div><span class="status-badge ' + (statusMap[n.status] || 'status-pendente') + '">' + (statusLabel[n
+                        .status] || n.status) + '</span></div>' +
                     '</div>';
             }).join('');
         }
 
         // ============================================================
-        // NAVEGAÇÃO
+        // 14. NAVEGAÇÃO FINAL
         // ============================================================
-        function voltarParaUpload() {
-            document.getElementById('passoVinculo').style.display = 'none';
-            document.getElementById('passoUpload').style.display = 'block';
-
-            document.getElementById('etapa2').classList.remove('concluido');
-            document.getElementById('etapa2').classList.add('ativo');
-            document.getElementById('etapa3').classList.remove('ativo');
-        }
-
         function novaNota() {
             document.getElementById('passoConfirmacao').style.display = 'none';
             document.getElementById('passoUpload').style.display = 'block';
             document.getElementById('passoVinculo').style.display = 'none';
+            document.getElementById('passoPreview').style.display = 'none';
 
             document.getElementById('etapa1').classList.remove('concluido');
             document.getElementById('etapa1').classList.add('ativo');
+            document.getElementById('etapa2').classList.remove('ativo');
+            document.getElementById('etapa2').classList.remove('concluido');
+            document.getElementById('etapa3').classList.remove('ativo');
             document.getElementById('etapa3').classList.remove('concluido');
             document.getElementById('etapa4').classList.remove('concluido');
 
-            limparPreview();
+            dadosNota = null;
             document.getElementById('obsVinculo').value = '';
             document.getElementById('saldoBox').style.display = 'none';
+            document.getElementById('fileInput').value = '';
         }
 
         function irParaRelatorio() {
@@ -1578,20 +1658,15 @@
         }
 
         // ============================================================
-        // TOAST (notificações)
+        // 15. TOAST
         // ============================================================
         function mostrarToast(mensagem, tipo) {
             var toast = document.createElement('div');
-            var classes = {
-                'success': 'toast-success',
-                'error': 'toast-error',
-                'info': 'toast-info',
-                'warning': 'toast-warning'
-            };
+            var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info',
+                'warning': 'toast-warning' };
             toast.className = 'toast ' + (classes[tipo] || 'toast-info');
             toast.textContent = mensagem;
             document.body.appendChild(toast);
-
             setTimeout(function() {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(100%)';
@@ -1601,7 +1676,7 @@
         }
 
         // ============================================================
-        // DRAG AND DROP
+        // 16. DRAG AND DROP
         // ============================================================
         var dropzone = document.getElementById('dropzone');
 
@@ -1627,7 +1702,7 @@
         });
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // 17. CONTROLE DE PERFIL
         // ============================================================
         var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
         var modulosPermitidos = {
@@ -1659,7 +1734,7 @@
         }
 
         // ============================================================
-        // INICIALIZAÇÃO
+        // 18. INICIALIZAÇÃO
         // ============================================================
         renderizarListaNotas();
     </script>
