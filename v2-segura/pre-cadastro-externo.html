@@ -316,7 +316,6 @@
                 return;
             }
 
-            // Coleta dados
             var dados = {
                 nome: nome,
                 email: email,
@@ -330,7 +329,6 @@
                 origemCadastro: 'externo'
             };
 
-            // Envia para o localStorage
             enviarPreCadastro(dados);
         });
 
@@ -341,13 +339,10 @@
             btn.classList.add('loading');
             btn.disabled = true;
 
-            // Simula envio com delay
             setTimeout(function() {
                 try {
-                    // Busca pré-cadastros existentes
                     var preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
 
-                    // Verifica duplicidade de email
                     var existe = preCadastros.some(function(p) {
                         return p.email === dados.email;
                     });
@@ -359,20 +354,14 @@
                         return;
                     }
 
-                    // Adiciona novo
                     dados.id = Date.now();
                     dados.dataCriacao = new Date().toISOString();
                     preCadastros.push(dados);
-
-                    // Salva
                     localStorage.setItem('amovin_pre_cadastros', JSON.stringify(preCadastros));
 
-                    // 🔥 Tenta salvar também no Supabase (se configurado)
                     tentarSalvarSupabase(dados);
 
                     mostrarMensagem('✅ Pré-cadastro enviado com sucesso! Em breve entraremos em contato.', 'sucesso');
-
-                    // Limpa formulário
                     document.getElementById('formPreCadastro').reset();
 
                 } catch (err) {
@@ -391,9 +380,6 @@
             el.className = 'mensagem ' + tipo;
         }
 
-        // ============================================================
-        // SUPABASE (opcional - se estiver configurado)
-        // ============================================================
         function tentarSalvarSupabase(dados) {
             try {
                 if (typeof supabase !== 'undefined' && supabase) {
