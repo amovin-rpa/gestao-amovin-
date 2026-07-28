@@ -16,6 +16,10 @@
       "destination": "/pre-cadastro.html"
     },
     {
+      "source": "/pre-cadastro-externo",
+      "destination": "/pre-cadastro-externo.html"
+    },
+    {
       "source": "/sala-espera",
       "destination": "/sala-espera.html"
     },
