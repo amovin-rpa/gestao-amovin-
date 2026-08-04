@@ -73,6 +73,7 @@
             padding: 20px 24px;
             border-radius: 14px;
             border: 1px solid #F0E9DF;
+            margin-bottom: 20px;
         }
         .card h3 {
             font-size: 15px;
@@ -96,9 +97,6 @@
             color: var(--laranja);
         }
 
-        /* ============================================================
-           KPIs
-           ============================================================ */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -145,9 +143,6 @@
             color: var(--azul);
         }
 
-        /* ============================================================
-           ALERTAS
-           ============================================================ */
         .alertas-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -204,9 +199,6 @@
             border-color: var(--verde);
         }
 
-        /* ============================================================
-           PROJETOS
-           ============================================================ */
         .projeto-item {
             padding: 12px 0;
             border-bottom: 1px solid #F0E9DF;
@@ -257,9 +249,6 @@
             background: var(--vermelho);
         }
 
-        /* ============================================================
-           NOTAS RECENTES
-           ============================================================ */
         .nota-item {
             padding: 10px 0;
             border-bottom: 1px solid #F0E9DF;
@@ -407,41 +396,26 @@
         </div>
 
         <!-- ALERTAS -->
-        <div class="alertas-grid" id="alertasContainer">
-            <!-- Gerado via JavaScript -->
-        </div>
+        <div class="alertas-grid" id="alertasContainer"></div>
 
         <!-- GRID 2 COLUNAS -->
         <div class="grid-2col">
-            <!-- PROJETOS -->
             <div class="card">
-                <h3>
-                    📋 Projetos em Andamento
-                    <span class="badge" id="totalProjetosBadge">0</span>
-                </h3>
+                <h3>📋 Projetos em Andamento <span class="badge" id="totalProjetosBadge">0</span></h3>
                 <div id="listaProjetos">
                     <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum projeto ativo.</div>
                 </div>
             </div>
-
-            <!-- NOTAS RECENTES -->
             <div class="card">
-                <h3>
-                    📄 Últimas Notas Vinculadas
-                    <span class="badge" id="totalNotasBadge">0</span>
-                </h3>
+                <h3>📄 Últimas Notas Vinculadas <span class="badge" id="totalNotasBadge">0</span></h3>
                 <div id="listaNotas">
                     <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhuma nota vinculada.</div>
                 </div>
             </div>
         </div>
 
-        <!-- SALA DE ESPERA - RESUMO -->
         <div class="card">
-            <h3>
-                ⏳ Sala de Espera - Produtos Aguardando
-                <span class="badge" id="totalEsperaBadge">0</span>
-            </h3>
+            <h3>⏳ Sala de Espera - Produtos Aguardando <span class="badge" id="totalEsperaBadge">0</span></h3>
             <div id="listaEspera">
                 <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum produto aguardando.</div>
             </div>
@@ -473,9 +447,7 @@
             var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
             var produtosEspera = JSON.parse(localStorage.getItem('amovin_produtos_espera') || '[]');
 
-            // ============================================================
             // KPIs
-            // ============================================================
             var projetosAtivos = projetos.filter(function(p) { return p.status === 'ativo'; });
             var totalPrevisto = 0,
                 totalRealizado = 0;
@@ -492,17 +464,14 @@
             document.getElementById('kpiOrcamento').textContent = 'R$ ' + totalPrevisto.toFixed(2).replace('.', ',');
             document.getElementById('kpiGasto').textContent = 'R$ ' + totalRealizado.toFixed(2).replace('.', ',');
             document.getElementById('kpiSaldo').textContent = 'R$ ' + (totalPrevisto - totalRealizado).toFixed(2).replace('.',
-            ',');
+                ',');
             document.getElementById('kpiPendentes').textContent = notasPendentes;
             document.getElementById('kpiEspera').textContent = emEspera;
 
-            // ============================================================
             // ALERTAS
-            // ============================================================
             var alertasContainer = document.getElementById('alertasContainer');
             var alertas = [];
 
-            // Alertas de notas pendentes
             if (notasPendentes > 0) {
                 alertas.push({
                     tipo: 'urgente',
@@ -514,7 +483,6 @@
                 });
             }
 
-            // Alertas de produtos em espera
             if (emEspera > 0) {
                 alertas.push({
                     tipo: 'atencao',
@@ -526,7 +494,6 @@
                 });
             }
 
-            // Alertas de projetos com orçamento baixo
             orcamentos.forEach(function(o) {
                 var previsto = o.previsto || 0;
                 var realizado = o.realizado || 0;
@@ -548,7 +515,6 @@
                 }
             });
 
-            // Se não houver alertas, mostra sucesso
             if (alertas.length === 0) {
                 alertas.push({
                     tipo: 'sucesso',
@@ -560,7 +526,6 @@
                 });
             }
 
-            // Limita a 5 alertas
             alertas = alertas.slice(0, 5);
 
             alertasContainer.innerHTML = alertas.map(function(a) {
@@ -577,19 +542,17 @@
                     '<div class="desc">' + a.desc + '</div>' +
                     '</div>' +
                     (a.link && a.link !== '#' ? '<a href="' + a.link + '" class="btn-link">' + a.linkText +
-                    ' →</a>' : '') +
+                        ' →</a>' : '') +
                     '</div>';
             }).join('');
 
-            // ============================================================
             // PROJETOS
-            // ============================================================
             var listaProjetos = document.getElementById('listaProjetos');
             document.getElementById('totalProjetosBadge').textContent = projetosAtivos.length;
 
             if (projetosAtivos.length === 0) {
                 listaProjetos.innerHTML =
-                '<div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum projeto ativo.</div>';
+                    '<div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum projeto ativo.</div>';
             } else {
                 listaProjetos.innerHTML = projetosAtivos.slice(0, 5).map(function(p) {
                     var orcProjeto = orcamentos.filter(function(o) { return o.projeto_id === p.id; });
@@ -612,9 +575,7 @@
                 }).join('');
             }
 
-            // ============================================================
-            // NOTAS RECENTES
-            // ============================================================
+            // NOTAS
             var listaNotas = document.getElementById('listaNotas');
             var notasVinculadas = notas.filter(function(n) { return n.status === 'vinculado' || n.status === 'aprovado'; })
                 .sort(function(a, b) {
@@ -630,7 +591,7 @@
                 listaNotas.innerHTML = notasVinculadas.slice(0, 5).map(function(n) {
                     var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
                     var data = n.data_emissao ? new Date(n.data_emissao + 'T00:00:00').toLocaleDateString(
-                    'pt-BR') : '-';
+                        'pt-BR') : '-';
                     return '<div class="nota-item">' +
                         '<div class="info">' +
                         '<span class="num">NF ' + (n.numero || '---') + '</span>' +
@@ -642,9 +603,7 @@
                 }).join('');
             }
 
-            // ============================================================
             // SALA DE ESPERA
-            // ============================================================
             var listaEspera = document.getElementById('listaEspera');
             var emEsperaLista = produtosEspera.filter(function(p) { return p.status === 'aguardando'; });
             document.getElementById('totalEsperaBadge').textContent = emEsperaLista.length;
@@ -701,8 +660,6 @@
         // INICIALIZAÇÃO
         // ============================================================
         carregarDados();
-
-        // Atualizar a cada 30 segundos
         setInterval(carregarDados, 30000);
     </script>
 </body>
