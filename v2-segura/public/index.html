@@ -328,16 +328,6 @@ body {
   padding: 8px;
 }
 
-.perfil-select .icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--cinza);
-  font-size: 17px;
-  opacity: 0.5;
-}
-
 .perfil-hint {
   font-size: 10px;
   color: var(--cinza);
@@ -839,7 +829,7 @@ body {
         </div>
       </div>
 
-      <!-- 🔥 NOVO: SELECT DE PERFIL -->
+      <!-- 🔥 SELECT DE PERFIL -->
       <div class="form-group">
         <label for="perfilSelect" class="form-label">🎯 Perfil de Acesso</label>
         <div class="perfil-select-wrapper">
@@ -1034,7 +1024,7 @@ function showNotification(msg, type) {
 }
 
 // ============================================
-// 🔥 LOGIN CORRIGIDO - COM SELEÇÃO DE PERFIL
+// 🔥 LOGIN - COM SELEÇÃO DE PERFIL E LGPD
 // ============================================
 function handleLogin(e) {
   e.preventDefault();
@@ -1059,9 +1049,8 @@ function handleLogin(e) {
   hideError();
   
   setTimeout(function() {
-    // 🔥 CRUCIAL: Se for admin, força perfil admin
+    // 🔥 Se for admin, força perfil admin
     if (user.toLowerCase() === CONFIG.ADMIN_USER && pass === CONFIG.ADMIN_PASS) {
-      // Admin sempre tem perfil admin, independente do select
       var perfilFinal = 'admin';
       
       sessionStorage.setItem('amovin_logado', 'true');
@@ -1069,10 +1058,9 @@ function handleLogin(e) {
       sessionStorage.setItem('amovin_nome', 'Administrador Master');
       sessionStorage.setItem('amovin_usuario', user);
       
-      showNotification('✅ Bem-vindo, Administrador Master! (Perfil: ' + perfilFinal + ')', 'success');
+      showNotification('✅ Bem-vindo, Administrador Master!', 'success');
       
     } else {
-      // Para outros usuários, usa o perfil selecionado
       var perfilFinal = perfilSelecionado || 'recepcao';
       
       sessionStorage.setItem('amovin_logado', 'true');
@@ -1080,7 +1068,7 @@ function handleLogin(e) {
       sessionStorage.setItem('amovin_nome', user);
       sessionStorage.setItem('amovin_usuario', user);
       
-      showNotification('✅ Bem-vindo(a), ' + user + '! (Perfil: ' + perfilFinal + ')', 'success');
+      showNotification('✅ Bem-vindo(a), ' + user + '!', 'success');
     }
     
     if (elements.rememberMe.checked) {
@@ -1103,7 +1091,7 @@ function handleLogin(e) {
 // EVENTOS
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 AMOVIN ERP - Sistema Corporativo inicializado');
+  console.log('🚀 AMOVIN ERP - v2 iniciado');
 
   checkLGPDStatus();
 
@@ -1147,11 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('linkTermos').addEventListener('click', function(e) { e.preventDefault(); alert('Termos de Uso completos'); });
 
   console.log('📋 Versão da LGPD:', CONFIG.LGPD_VERSION);
-  
-  // 🔥 INFO CREDENCIAIS NO CONSOLE
-  console.log('🔑 Credenciais disponíveis:');
-  console.log('   admin / amovin2026 → Administrador Master (todos módulos)');
-  console.log('   (qualquer outro usuário/senha) → Perfil selecionado');
+  console.log('🔑 Credenciais: admin / amovin2026');
   console.log('📌 Perfis disponíveis: admin, recepcao, consulta, financeiro, voluntario');
 });
 </script>
