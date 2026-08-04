@@ -1,4 +1,10 @@
 {
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -12,141 +18,44 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/pre-cadastro",
-      "destination": "/pre-cadastro.html"
-    },
-    {
-      "source": "/pre-cadastro-externo",
-      "destination": "/pre-cadastro-externo.html"
-    },
-    {
-      "source": "/sala-espera",
-      "destination": "/sala-espera.html"
-    },
-    {
-      "source": "/notas-fiscais",
-      "destination": "/notas-fiscais.html"
-    },
-    {
-      "source": "/dashboard",
-      "destination": "/dashboard.html"
-    },
-    {
-      "source": "/agenda",
-      "destination": "/agenda.html"
-    },
-    {
-      "source": "/agenda-telefonica",
-      "destination": "/agenda-telefonica.html"
-    },
-    {
-      "source": "/documentos",
-      "destination": "/documentos.html"
-    },
-    {
-      "source": "/estoque",
-      "destination": "/estoque.html"
-    },
-    {
-      "source": "/patrimonio",
-      "destination": "/patrimonio.html"
-    },
-    {
-      "source": "/biblioteca",
-      "destination": "/biblioteca.html"
-    },
-    {
-      "source": "/certificados",
-      "destination": "/certificados.html"
-    },
-    {
-      "source": "/chat",
-      "destination": "/chat.html"
-    },
-    {
-      "source": "/assistente",
-      "destination": "/assistente.html"
-    },
-    {
-      "source": "/relatorios",
-      "destination": "/relatorios.html"
-    },
-    {
-      "source": "/relatorios-comprovacao",
-      "destination": "/relatorios-comprovacao.html"
-    },
-    {
-      "source": "/projetos-convenios",
-      "destination": "/projetos-convenios.html"
-    },
-    {
-      "source": "/orcamentos",
-      "destination": "/orcamentos.html"
-    },
-    {
-      "source": "/prestacao-contas",
-      "destination": "/prestacao-contas.html"
-    },
-    {
-      "source": "/qrcodes",
-      "destination": "/qrcodes.html"
-    },
-    {
-      "source": "/configuracoes",
-      "destination": "/configuracoes.html"
-    },
-    {
-      "source": "/pessoas",
-      "destination": "/pessoas.html"
-    },
-    {
-      "source": "/profissionais",
-      "destination": "/profissionais.html"
-    },
-    {
-      "source": "/voluntarios",
-      "destination": "/voluntarios.html"
-    },
-    {
-      "source": "/idp",
-      "destination": "/idp.html"
-    },
-    {
-      "source": "/sala-espera-produtos",
-      "destination": "/sala-espera-produtos.html"
-    },
-    {
-      "source": "/bi",
-      "destination": "/bi.html"
-    },
-    {
-      "source": "/dashboard-executivo",
-      "destination": "/dashboard-executivo.html"
-    },
-    {
-      "source": "/financeiro",
-      "destination": "/financeiro.html"
-    },
-    {
-      "source": "/financeiro-avancado",
-      "destination": "/financeiro-avancado.html"
-    },
-    {
-      "source": "/backup",
-      "destination": "/backup.html"
-    },
-    {
-      "source": "/oficios",
-      "destination": "/oficios.html"
-    },
-    {
-      "source": "/projetos",
-      "destination": "/projetos.html"
-    }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/pre-cadastro", "destination": "/pre-cadastro.html" },
+    { "source": "/pre-cadastro-externo", "destination": "/pre-cadastro-externo.html" },
+    { "source": "/sala-espera", "destination": "/sala-espera.html" },
+    { "source": "/notas-fiscais", "destination": "/notas-fiscais.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/agenda", "destination": "/agenda.html" },
+    { "source": "/agenda-telefonica", "destination": "/agenda-telefonica.html" },
+    { "source": "/documentos", "destination": "/documentos.html" },
+    { "source": "/estoque", "destination": "/estoque.html" },
+    { "source": "/patrimonio", "destination": "/patrimonio.html" },
+    { "source": "/biblioteca", "destination": "/biblioteca.html" },
+    { "source": "/certificados", "destination": "/certificados.html" },
+    { "source": "/chat", "destination": "/chat.html" },
+    { "source": "/assistente", "destination": "/assistente.html" },
+    { "source": "/relatorios", "destination": "/relatorios.html" },
+    { "source": "/relatorios-comprovacao", "destination": "/relatorios-comprovacao.html" },
+    { "source": "/projetos-convenios", "destination": "/projetos-convenios.html" },
+    { "source": "/orcamentos", "destination": "/orcamentos.html" },
+    { "source": "/prestacao-contas", "destination": "/prestacao-contas.html" },
+    { "source": "/qrcodes", "destination": "/qrcodes.html" },
+    { "source": "/configuracoes", "destination": "/configuracoes.html" },
+    { "source": "/pessoas", "destination": "/pessoas.html" },
+    { "source": "/profissionais", "destination": "/profissionais.html" },
+    { "source": "/voluntarios", "destination": "/voluntarios.html" },
+    { "source": "/idp", "destination": "/idp.html" },
+    { "source": "/sala-espera-produtos", "destination": "/sala-espera-produtos.html" },
+    { "source": "/bi", "destination": "/bi.html" },
+    { "source": "/dashboard-executivo", "destination": "/dashboard-executivo.html" },
+    { "source": "/financeiro", "destination": "/financeiro.html" },
+    { "source": "/financeiro-avancado", "destination": "/financeiro-avancado.html" },
+    { "source": "/backup", "destination": "/backup.html" },
+    { "source": "/oficios", "destination": "/oficios.html" },
+    { "source": "/projetos", "destination": "/projetos.html" },
+    { "source": "/em-breve", "destination": "/em-breve.html" },
+    { "source": "/idp-local", "destination": "/idp-local.html" },
+    { "source": "/config-chave", "destination": "/config-chave.html" },
+    { "source": "/qr-redirect", "destination": "/qr-redirect.html" },
+    { "source": "/relatorios-avancado", "destination": "/relatorios-avancado.html" }
   ]
 }
