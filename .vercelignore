@@ -1,0 +1,22 @@
+# Ignorar o Next.js
+v2-segura/
+
+# Ignorar dependências
+node_modules/
+
+# Ignorar builds do Next.js
+.next/
+out/
+dist/
+build/
+
+# Ignorar arquivos de ambiente
+.env.local
+.env.production
+
+# Ignorar arquivos do Git
+.git/
+.gitignore
+
+# Ignorar logs
+*.log
