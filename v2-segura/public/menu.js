@@ -1,21 +1,13 @@
 // ============================================================
-// MENU.JS - VERSÃO COMPLETA E CORRIGIDA
-// Sistema de menu unificado para todos os módulos AMOVIN ERP
+// MENU.JS - VERSÃO COMPLETA (SEM DEPENDÊNCIA DO SUPABASE)
 // ============================================================
 
 (function() {
     'use strict';
 
-    // ============================================================
-    // CONFIGURAÇÃO DO USUÁRIO
-    // ============================================================
     var PERFIL_ATUAL = sessionStorage.getItem('amovin_perfil') || 'admin';
     var USUARIO_NOME = sessionStorage.getItem('amovin_nome') || 'Administrador';
-    var USUARIO_ID = sessionStorage.getItem('amovin_id') || '1';
 
-    // ============================================================
-    // ESTRUTURA COMPLETA DO MENU (TODOS OS MÓDULOS)
-    // ============================================================
     var MENU_CONFIG = {
         admin: {
             categorias: [
@@ -30,7 +22,6 @@
                 {
                     nome: 'Captação',
                     itens: [
-                        { icone: '🚀', label: 'Amovin Capta+', href: 'https://amovin-capta.vercel.app/login', target: '_blank' },
                         { icone: '📋', label: 'Sala de Espera', href: 'sala-espera.html' },
                         { icone: '📝', label: 'Pré-Cadastro', href: 'pre-cadastro.html' },
                         { icone: '📋', label: 'Projetos e Convênios', href: 'projetos-convenios.html' }
@@ -104,113 +95,35 @@
         },
         recepcao: {
             categorias: [
-                {
-                    nome: 'Principal',
-                    itens: [
-                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
-                    ]
-                },
-                {
-                    nome: 'Pessoas',
-                    itens: [
-                        { icone: '👥', label: 'Beneficiários', href: 'pessoas.html' },
-                        { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }
-                    ]
-                },
-                {
-                    nome: 'Atendimento',
-                    itens: [
-                        { icone: '📅', label: 'Agenda', href: 'agenda.html' }
-                    ]
-                },
-                {
-                    nome: 'Documentos',
-                    itens: [
-                        { icone: '📝', label: 'Documentos', href: 'documentos.html' }
-                    ]
-                }
+                { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
+                { nome: 'Pessoas', itens: [{ icone: '👥', label: 'Beneficiários', href: 'pessoas.html' }, { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }] },
+                { nome: 'Atendimento', itens: [{ icone: '📅', label: 'Agenda', href: 'agenda.html' }] },
+                { nome: 'Documentos', itens: [{ icone: '📝', label: 'Documentos', href: 'documentos.html' }] }
             ]
         },
         consulta: {
             categorias: [
-                {
-                    nome: 'Principal',
-                    itens: [
-                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
-                    ]
-                },
-                {
-                    nome: 'Atendimento',
-                    itens: [
-                        { icone: '📅', label: 'Agenda', href: 'agenda.html' },
-                        { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' },
-                        { icone: '📝', label: 'Prontuário', href: 'prontuario.html' }
-                    ]
-                },
-                {
-                    nome: 'Comunicação',
-                    itens: [
-                        { icone: '🤖', label: 'Assistente IA', href: 'assistente.html' },
-                        { icone: '💬', label: 'Chat Interno', href: 'chat.html' }
-                    ]
-                }
+                { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
+                { nome: 'Atendimento', itens: [{ icone: '📅', label: 'Agenda', href: 'agenda.html' }, { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }, { icone: '📝', label: 'Prontuário', href: 'prontuario.html' }] },
+                { nome: 'Comunicação', itens: [{ icone: '🤖', label: 'Assistente IA', href: 'assistente.html' }, { icone: '💬', label: 'Chat Interno', href: 'chat.html' }] }
             ]
         },
         financeiro: {
             categorias: [
-                {
-                    nome: 'Principal',
-                    itens: [
-                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
-                    ]
-                },
-                {
-                    nome: 'Financeiro',
-                    itens: [
-                        { icone: '💰', label: 'Financeiro', href: 'financeiro.html' },
-                        { icone: '📊', label: 'Financeiro Avançado', href: 'financeiro-avancado.html' },
-                        { icone: '📊', label: 'Orçamentos', href: 'orcamentos.html' },
-                        { icone: '📋', label: 'Prest. Contas', href: 'prestacao-contas.html' },
-                        { icone: '📄', label: 'Notas Fiscais', href: 'notas-fiscais.html' }
-                    ]
-                },
-                {
-                    nome: 'Relatórios',
-                    itens: [
-                        { icone: '📈', label: 'Relatórios', href: 'relatorios.html' },
-                        { icone: '📊', label: 'Relatórios Avançados', href: 'relatorios-avancado.html' }
-                    ]
-                }
+                { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
+                { nome: 'Financeiro', itens: [{ icone: '💰', label: 'Financeiro', href: 'financeiro.html' }, { icone: '📊', label: 'Financeiro Avançado', href: 'financeiro-avancado.html' }, { icone: '📊', label: 'Orçamentos', href: 'orcamentos.html' }, { icone: '📋', label: 'Prest. Contas', href: 'prestacao-contas.html' }, { icone: '📄', label: 'Notas Fiscais', href: 'notas-fiscais.html' }] },
+                { nome: 'Relatórios', itens: [{ icone: '📈', label: 'Relatórios', href: 'relatorios.html' }, { icone: '📊', label: 'Relatórios Avançados', href: 'relatorios-avancado.html' }] }
             ]
         },
         voluntario: {
             categorias: [
-                {
-                    nome: 'Principal',
-                    itens: [
-                        { icone: '📊', label: 'Dashboard', href: 'dashboard.html' }
-                    ]
-                },
-                {
-                    nome: 'Atendimento',
-                    itens: [
-                        { icone: '📅', label: 'Agenda', href: 'agenda.html' },
-                        { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }
-                    ]
-                },
-                {
-                    nome: 'Pessoas',
-                    itens: [
-                        { icone: '💪', label: 'Voluntários', href: 'voluntarios.html' }
-                    ]
-                }
+                { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
+                { nome: 'Atendimento', itens: [{ icone: '📅', label: 'Agenda', href: 'agenda.html' }, { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }] },
+                { nome: 'Pessoas', itens: [{ icone: '💪', label: 'Voluntários', href: 'voluntarios.html' }] }
             ]
         }
     };
 
-    // ============================================================
-    // FUNÇÃO PARA GERAR O HTML DO MENU
-    // ============================================================
     function gerarMenuHTML() {
         var perfilConfig = MENU_CONFIG[PERFIL_ATUAL] || MENU_CONFIG.admin;
         var html = '';
@@ -248,21 +161,14 @@
         return html;
     }
 
-    // ============================================================
-    // FUNÇÃO DE LOGOUT
-    // ============================================================
     window.logout = function() {
         sessionStorage.clear();
         window.location.href = 'index.html';
     };
 
-    // ============================================================
-    // FUNÇÃO PARA INSERIR O MENU NA PÁGINA
-    // ============================================================
     function carregarMenu() {
         var container = document.getElementById('menu-container');
         if (!container) {
-            console.warn('⚠️ Div #menu-container não encontrada! Criando automaticamente...');
             container = document.createElement('div');
             container.id = 'menu-container';
             document.body.insertBefore(container, document.body.firstChild);
@@ -270,244 +176,44 @@
 
         container.innerHTML = gerarMenuHTML();
         document.body.classList.add('has-menu');
-
-        var isAdmin = (PERFIL_ATUAL === 'admin');
-        if (!isAdmin) {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                if (item.getAttribute('target') === '_blank') {
-                    item.removeAttribute('target');
-                }
-            });
-        }
     }
 
-    // ============================================================
-    // ESTILOS COMPLEMENTARES DO MENU
-    // ============================================================
     function injectMenuStyles() {
         if (document.getElementById('menu-styles')) return;
 
         var style = document.createElement('style');
         style.id = 'menu-styles';
         style.textContent = `
-            body.has-menu {
-                display: flex;
-                min-height: 100vh;
-                margin: 0;
-                padding: 0;
-            }
-            .sidebar {
-                width: 270px;
-                min-width: 270px;
-                background: #FFFFFF;
-                color: #1A1A1A;
-                position: fixed;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 100;
-                display: flex;
-                flex-direction: column;
-                border-right: 1px solid #F0E9DF;
-                overflow-y: auto;
-                overflow-x: hidden;
-                transition: transform 0.3s ease;
-                height: 100vh;
-            }
-            .sidebar-header {
-                padding: 20px 24px 16px;
-                text-align: center;
-                border-bottom: 1px solid #F0E9DF;
-                flex-shrink: 0;
-                background: #FFFFFF;
-            }
-            .sidebar-logo-img {
-                width: 80px;
-                height: auto;
-                margin-bottom: 8px;
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .sidebar-logo-fallback {
-                font-size: 48px;
-                margin-bottom: 8px;
-                display: none;
-            }
-            .sidebar-header .brand {
-                font-family: 'Playfair Display', Georgia, serif;
-                font-size: 18px;
-                font-weight: 700;
-                color: #1A1A1A;
-            }
-            .user-info {
-                margin-top: 8px;
-                padding-top: 8px;
-                border-top: 1px solid #F0E9DF;
-            }
-            .user-info .user-name {
-                display: block;
-                font-size: 12px;
-                font-weight: 600;
-                color: #1A1A1A;
-            }
-            .user-info .user-perfil {
-                display: inline-block;
-                font-size: 9px;
-                background: #F0E9DF;
-                padding: 2px 12px;
-                border-radius: 12px;
-                color: #6B7280;
-                font-weight: 600;
-                margin-top: 2px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-            .sidebar-nav {
-                flex: 1;
-                padding: 12px 0 20px;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-            .nav-categoria {
-                padding: 12px 24px 6px;
-                font-size: 10px;
-                font-weight: 700;
-                color: #9CA3AF;
-                text-transform: uppercase;
-                letter-spacing: 1.5px;
-            }
-            .nav-item {
-                display: flex;
-                align-items: center;
-                gap: 13px;
-                padding: 10px 24px;
-                color: #4B5563;
-                text-decoration: none;
-                font-size: 13px;
-                font-weight: 500;
-                transition: all 0.2s;
-                border-left: 3px solid transparent;
-                cursor: pointer;
-            }
-            .nav-item:hover {
-                background: #FFF8E7;
-                color: #C65A11;
-                border-left-color: #F5C518;
-            }
-            .nav-item.ativo {
-                background: #FFF3E0;
-                color: #C65A11;
-                border-left-color: #C65A11;
-                font-weight: 600;
-            }
-            .nav-item .icone {
-                font-size: 17px;
-                width: 24px;
-                text-align: center;
-                flex-shrink: 0;
-            }
-            .sidebar-footer {
-                padding: 12px 20px 16px;
-                border-top: 1px solid #F0E9DF;
-                flex-shrink: 0;
-                background: #FFFFFF;
-            }
-            .btn-logout {
-                width: 100%;
-                padding: 10px;
-                background: #F8F4ED;
-                color: #1A1A1A;
-                border: 1px solid #F0E9DF;
-                border-radius: 10px;
-                font-size: 12px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s;
-                font-family: 'Inter', sans-serif;
-            }
-            .btn-logout:hover {
-                background: #FFEBEE;
-                border-color: #E53935;
-                color: #E53935;
-            }
-            .main-content {
-                flex: 1;
-                margin-left: 270px;
-                padding: 24px 30px;
-                min-height: 100vh;
-                transition: margin-left 0.3s ease;
-                width: calc(100% - 270px);
-            }
-            @media (max-width: 768px) {
-                .sidebar {
-                    transform: translateX(-100%);
-                    width: 280px;
-                    min-width: 280px;
-                    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
-                }
-                .sidebar.open {
-                    transform: translateX(0);
-                }
-                .menu-toggle {
-                    display: flex !important;
-                }
-                .main-content {
-                    margin-left: 0 !important;
-                    width: 100% !important;
-                    padding: 16px;
-                    padding-top: 60px;
-                }
-                .sidebar-overlay {
-                    display: none;
-                    position: fixed;
-                    inset: 0;
-                    background: rgba(0,0,0,0.3);
-                    z-index: 99;
-                }
-                .sidebar-overlay.active {
-                    display: block;
-                }
-            }
-            .menu-toggle {
-                display: none;
-                position: fixed;
-                top: 12px;
-                left: 12px;
-                z-index: 200;
-                background: #FFFFFF;
-                border: 1px solid #F0E9DF;
-                border-radius: 10px;
-                padding: 8px 12px;
-                font-size: 20px;
-                cursor: pointer;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-                font-family: 'Inter', sans-serif;
-            }
-            .menu-toggle:hover {
-                background: #F8F4ED;
-            }
-            .sidebar-nav::-webkit-scrollbar {
-                width: 4px;
-            }
-            .sidebar-nav::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            .sidebar-nav::-webkit-scrollbar-thumb {
-                background: #E5E0D8;
-                border-radius: 4px;
-            }
-            .sidebar-nav::-webkit-scrollbar-thumb:hover {
-                background: #C65A11;
-            }
+            body.has-menu { display: flex; min-height: 100vh; margin: 0; padding: 0; }
+            .sidebar { width: 270px; min-width: 270px; background: #FFFFFF; color: #1A1A1A; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid #F0E9DF; overflow-y: auto; overflow-x: hidden; transition: transform 0.3s ease; height: 100vh; }
+            .sidebar-header { padding: 20px 24px 16px; text-align: center; border-bottom: 1px solid #F0E9DF; flex-shrink: 0; background: #FFFFFF; }
+            .sidebar-logo-img { width: 80px; height: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
+            .sidebar-logo-fallback { font-size: 48px; margin-bottom: 8px; display: none; }
+            .sidebar-header .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1A1A1A; }
+            .user-info { margin-top: 8px; padding-top: 8px; border-top: 1px solid #F0E9DF; }
+            .user-info .user-name { display: block; font-size: 12px; font-weight: 600; color: #1A1A1A; }
+            .user-info .user-perfil { display: inline-block; font-size: 9px; background: #F0E9DF; padding: 2px 12px; border-radius: 12px; color: #6B7280; font-weight: 600; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .sidebar-nav { flex: 1; padding: 12px 0 20px; overflow-y: auto; overflow-x: hidden; }
+            .nav-categoria { padding: 12px 24px 6px; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px; }
+            .nav-item { display: flex; align-items: center; gap: 13px; padding: 10px 24px; color: #4B5563; text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; }
+            .nav-item:hover { background: #FFF8E7; color: #C65A11; border-left-color: #F5C518; }
+            .nav-item.ativo { background: #FFF3E0; color: #C65A11; border-left-color: #C65A11; font-weight: 600; }
+            .nav-item .icone { font-size: 17px; width: 24px; text-align: center; flex-shrink: 0; }
+            .sidebar-footer { padding: 12px 20px 16px; border-top: 1px solid #F0E9DF; flex-shrink: 0; background: #FFFFFF; }
+            .btn-logout { width: 100%; padding: 10px; background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+            .btn-logout:hover { background: #FFEBEE; border-color: #E53935; color: #E53935; }
+            .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; min-height: 100vh; transition: margin-left 0.3s ease; width: calc(100% - 270px); }
+            @media (max-width: 768px) { .sidebar { transform: translateX(-100%); width: 280px; min-width: 280px; box-shadow: 4px 0 20px rgba(0,0,0,0.1); } .sidebar.open { transform: translateX(0); } .menu-toggle { display: flex !important; } .main-content { margin-left: 0 !important; width: 100% !important; padding: 16px; padding-top: 60px; } .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 99; } .sidebar-overlay.active { display: block; } }
+            .menu-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 200; background: #FFFFFF; border: 1px solid #F0E9DF; border-radius: 10px; padding: 8px 12px; font-size: 20px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.08); font-family: 'Inter', sans-serif; }
+            .menu-toggle:hover { background: #F8F4ED; }
+            .sidebar-nav::-webkit-scrollbar { width: 4px; }
+            .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+            .sidebar-nav::-webkit-scrollbar-thumb { background: #E5E0D8; border-radius: 4px; }
+            .sidebar-nav::-webkit-scrollbar-thumb:hover { background: #C65A11; }
         `;
         document.head.appendChild(style);
     }
 
-    // ============================================================
-    // BOTÃO TOGGLE PARA MOBILE
-    // ============================================================
     function criarMenuToggle() {
         if (document.querySelector('.menu-toggle')) return;
 
@@ -539,9 +245,6 @@
         document.body.appendChild(overlay);
     }
 
-    // ============================================================
-    // INICIALIZAÇÃO
-    // ============================================================
     function init() {
         injectMenuStyles();
         carregarMenu();
