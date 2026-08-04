@@ -1,22 +1,26 @@
-# Ignorar o Next.js
-v2-segura/
+# Ignorar a v1 (raiz) - tudo que não for v2-segura
+/*.html
+/*.js
+/*.css
+!v2-segura/
 
-# Ignorar dependências
-node_modules/
+# Ignorar arquivos do Next.js (para não tentar buildar)
+v2-segura/app/
+v2-segura/components/
+v2-segura/lib/
+v2-segura/types/
+v2-segura/supabase/
+v2-segura/node_modules/
+v2-segura/package.json
+v2-segura/package-lock.json
+v2-segura/next.config.js
+v2-segura/postcss.config.js
+v2-segura/tailwind.config.js
+v2-segura/tsconfig.json
+v2-segura/.env.local
+v2-segura/.env.example
 
-# Ignorar builds do Next.js
-.next/
-out/
-dist/
-build/
-
-# Ignorar arquivos de ambiente
-.env.local
-.env.production
-
-# Ignorar arquivos do Git
-.git/
-.gitignore
-
-# Ignorar logs
+# Ignorar arquivos do sistema
+.DS_Store
 *.log
+*.tmp
