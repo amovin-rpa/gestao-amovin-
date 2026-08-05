@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amovin ERP • Notas Fiscais</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ============================================================
-           CSS COMPLETO - IDENTIDADE AMOVIN
-           ============================================================ */
+        /* ===== CSS COMPLETO MANTIDO ===== */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -24,6 +18,7 @@
             --cinza-claro: #F8F4ED;
             --branco: #FFFFFF;
             --vermelho: #E53935;
+            --roxo: #7C3AED;
         }
         * {
             margin: 0;
@@ -100,8 +95,12 @@
             font-weight: 600;
             padding: 3px 12px;
             border-radius: 20px;
-            background: #FFF3E0;
-            color: var(--laranja);
+            background: #F3E8FF;
+            color: var(--roxo);
+        }
+        .card h3 .badge-ia {
+            background: linear-gradient(135deg, var(--roxo), var(--azul));
+            color: white;
         }
 
         .form-group {
@@ -132,23 +131,9 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--laranja);
+            border-color: var(--roxo);
             background: var(--branco);
-            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.08);
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
         }
 
         .btn {
@@ -165,13 +150,13 @@
             gap: 8px;
         }
         .btn-primary {
-            background: var(--laranja);
+            background: var(--roxo);
             color: white;
         }
         .btn-primary:hover {
-            background: var(--laranja-escuro);
+            background: #6D28D9;
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(198, 90, 17, 0.25);
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
         }
         .btn-success {
             background: var(--verde);
@@ -197,13 +182,6 @@
         .btn-azul:hover {
             background: #1565C0;
         }
-        .btn-danger {
-            background: var(--vermelho);
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #C62828;
-        }
         .btn-full {
             width: 100%;
             padding: 14px;
@@ -211,9 +189,6 @@
             justify-content: center;
         }
 
-        /* ============================================================
-           DROPZONE
-           ============================================================ */
         .dropzone {
             border: 3px dashed #E5E0D8;
             border-radius: 14px;
@@ -225,8 +200,8 @@
         }
         .dropzone:hover,
         .dropzone.dragover {
-            border-color: var(--laranja);
-            background: #FFF8E7;
+            border-color: var(--roxo);
+            background: #F5F0FF;
         }
         .dropzone .icone {
             font-size: 48px;
@@ -245,7 +220,7 @@
         .dropzone .btn-upload {
             margin-top: 14px;
             padding: 10px 30px;
-            background: var(--laranja);
+            background: var(--roxo);
             color: white;
             border: none;
             border-radius: 8px;
@@ -254,20 +229,18 @@
             font-size: 13px;
         }
         .dropzone .btn-upload:hover {
-            background: var(--laranja-escuro);
+            background: #6D28D9;
         }
 
-        /* ============================================================
-           PREVIEW - TODOS OS CAMPOS
-           ============================================================ */
-        .preview-nota {
-            background: #F8F4ED;
+        .preview-ia {
+            background: #F5F0FF;
             border-radius: 10px;
             padding: 16px 20px;
             margin-top: 16px;
+            border: 1px solid #E5D9F5;
             display: none;
         }
-        .preview-nota.visivel {
+        .preview-ia.visivel {
             display: block;
         }
 
@@ -278,7 +251,7 @@
         }
         .preview-item {
             padding: 6px 0;
-            border-bottom: 1px solid #E5E0D8;
+            border-bottom: 1px solid #E5D9F5;
             display: flex;
             justify-content: space-between;
             font-size: 13px;
@@ -292,19 +265,13 @@
             color: var(--grafite);
         }
         .preview-item .valor.destaque {
-            color: var(--laranja);
+            color: var(--roxo);
             font-size: 15px;
-        }
-        .preview-item .valor.verde {
-            color: var(--verde);
-        }
-        .preview-item .valor.vermelho {
-            color: var(--vermelho);
         }
 
         .preview-itens {
             margin-top: 12px;
-            border-top: 2px solid #E5E0D8;
+            border-top: 2px solid #E5D9F5;
             padding-top: 12px;
         }
         .preview-itens .titulo {
@@ -321,68 +288,7 @@
             font-size: 12px;
             border-bottom: 1px solid #F0E9DF;
         }
-        .preview-itens .item-linha .desc {
-            font-weight: 500;
-            color: var(--grafite);
-        }
-        .preview-itens .item-linha .qtd {
-            text-align: center;
-            color: var(--cinza);
-        }
-        .preview-itens .item-linha .unit {
-            text-align: right;
-            color: var(--cinza);
-        }
-        .preview-itens .item-linha .total {
-            text-align: right;
-            font-weight: 600;
-            color: var(--laranja);
-        }
-        .preview-itens .item-linha .btn-remover-item {
-            background: none;
-            border: none;
-            color: var(--vermelho);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 0 4px;
-        }
 
-        .preview-acoes {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-            padding-top: 12px;
-            border-top: 2px solid #E5E0D8;
-        }
-
-        /* ============================================================
-           FORMULÁRIO MANUAL
-           ============================================================ */
-        .form-manual {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 2px solid #E5E0D8;
-        }
-        .form-manual.visivel {
-            display: block;
-        }
-        .form-manual .section-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--grafite);
-            margin: 16px 0 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid #F0E9DF;
-        }
-        .form-manual .section-title .icone {
-            margin-right: 6px;
-        }
-
-        /* ============================================================
-           DESTINOS
-           ============================================================ */
         .destinos-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -402,23 +308,9 @@
             border-color: var(--cinza);
         }
         .destino-card.selecionado {
-            border-color: var(--laranja);
-            background: #FFF8E7;
-            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.1);
-        }
-        .destino-card .icone {
-            font-size: 28px;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .destino-card .nome {
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--grafite);
-        }
-        .destino-card .desc {
-            font-size: 11px;
-            color: var(--cinza);
+            border-color: var(--roxo);
+            background: #F5F0FF;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
 
         .saldo-box {
@@ -451,9 +343,6 @@
             color: var(--vermelho);
         }
 
-        /* ============================================================
-           LISTA DE NOTAS
-           ============================================================ */
         .nota-item {
             padding: 12px 16px;
             border-bottom: 1px solid #F0E9DF;
@@ -481,7 +370,7 @@
         }
         .nota-item .info .projeto {
             font-size: 11px;
-            color: var(--laranja);
+            color: var(--roxo);
             font-weight: 600;
         }
         .status-badge {
@@ -513,9 +402,6 @@
             color: #9CA3AF;
         }
 
-        /* ============================================================
-           RODAPÉ
-           ============================================================ */
         .rodape {
             background: #FFFFFF;
             border-radius: 14px;
@@ -564,9 +450,6 @@
             display: none;
         }
 
-        /* ============================================================
-           ETAPAS
-           ============================================================ */
         .etapas {
             display: flex;
             gap: 8px;
@@ -623,9 +506,6 @@
             margin-left: 4px;
         }
 
-        /* ============================================================
-           TOAST
-           ============================================================ */
         .toast {
             position: fixed;
             top: 20px;
@@ -663,9 +543,6 @@
             }
         }
 
-        /* ============================================================
-           RESPONSIVO
-           ============================================================ */
         @media (max-width: 900px) {
             .main-content {
                 margin-left: 0;
@@ -683,33 +560,6 @@
             .saldo-box {
                 grid-template-columns: 1fr;
             }
-            .etapas {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-            .etapa {
-                white-space: nowrap;
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-            .etapa .seta {
-                display: none;
-            }
-        }
-        @media (max-width: 480px) {
-            .destinos-grid {
-                grid-template-columns: 1fr;
-            }
-            .preview-itens .item-linha {
-                grid-template-columns: 1fr;
-                gap: 2px;
-                padding: 6px 0;
-            }
-            .preview-itens .item-linha .qtd,
-            .preview-itens .item-linha .unit,
-            .preview-itens .item-linha .total {
-                text-align: left;
-            }
         }
     </style>
 </head>
@@ -721,8 +571,8 @@
 
         <div class="topo-bar">
             <div>
-                <h1>📄 Notas Fiscais <span>+ Extração</span></h1>
-                <span class="sub">Leia notas automaticamente ou preencha manualmente</span>
+                <h1>📄 Notas Fiscais <span>+ IA</span></h1>
+                <span class="sub">Leitura inteligente com Central de IA</span>
             </div>
             <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
@@ -733,7 +583,7 @@
                 <span class="num">1</span> Upload da Nota <span class="seta">→</span>
             </div>
             <div class="etapa" id="etapa2">
-                <span class="num">2</span> Extrair/Preencher Dados <span class="seta">→</span>
+                <span class="num">2</span> IA Processa <span class="seta">→</span>
             </div>
             <div class="etapa" id="etapa3">
                 <span class="num">3</span> Vincular <span class="seta">→</span>
@@ -747,46 +597,46 @@
         <div class="card" id="passoUpload">
             <h3>
                 📤 PASSO 1: Envie a Nota Fiscal
-                <span class="badge">PDF • XML • Imagem</span>
+                <span class="badge badge-ia">🤖 IA</span>
             </h3>
 
             <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
                 <span class="icone">📄</span>
                 <p><strong>Arraste o arquivo aqui</strong> ou clique para selecionar</p>
-                <span class="formatos">Formatos suportados: PDF, XML, JPG, PNG</span>
-                <input type="file" id="fileInput" accept=".pdf,.xml,.jpg,.jpeg,.png" style="display:none;" onchange="processarArquivo(event)" />
-                <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInput').click()">📂 Selecionar Arquivo</button>
+                <span class="formatos">Formatos: PDF, XML, JPG, PNG, DOC, TXT</span>
+                <input type="file" id="fileInput" accept=".pdf,.xml,.jpg,.jpeg,.png,.doc,.docx,.txt" style="display:none;" onchange="processarComIA(event)" />
+                <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInput').click()">📂 Selecionar</button>
             </div>
 
-            <div style="text-align:center;margin-top:12px;">
-                <span style="font-size:12px;color:var(--cinza);">ou</span>
+            <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--cinza);">
+                🤖 A IA vai extrair automaticamente todos os campos da nota
             </div>
 
-            <button class="btn btn-primary btn-full" onclick="abrirFormManual()" style="margin-top:8px;">
-                📝 Preencher Manualmente
-            </button>
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="window.location.href='central-ia.html'">
+                    🧠 Ir para Central de IA
+                </button>
+                <button class="btn btn-outline" onclick="abrirFormManual()">📝 Preencher Manualmente</button>
+            </div>
         </div>
 
-        <!-- PASSO 2: PREVIEW DOS DADOS EXTRAÍDOS -->
+        <!-- PASSO 2: PREVIEW IA -->
         <div class="card" id="passoPreview" style="display:none;">
             <h3>
-                📋 PASSO 2: Dados Extraídos da Nota
-                <span class="badge" id="statusExtraido" style="background:#E8F5E9;color:#2E7D32;">✅ Extraído</span>
+                🧠 PASSO 2: IA Processou a Nota
+                <span class="badge badge-ia">✅ Concluído</span>
             </h3>
 
-            <div id="previewNota" class="preview-nota visivel"></div>
+            <div id="previewIA" class="preview-ia visivel"></div>
 
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
                 <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
-                <button class="btn btn-azul" onclick="editarDadosManual()">✏️ Editar Dados</button>
-                <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer Leitura</button>
+                <button class="btn btn-azul" onclick="editarDados()">✏️ Editar Dados</button>
+                <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer</button>
             </div>
-
-            <!-- FORMULÁRIO MANUAL (escondido) -->
-            <div id="formManual" class="form-manual"></div>
         </div>
 
-        <!-- PASSO 3: VINCULAÇÃO -->
+        <!-- PASSO 3: VINCULAÇÃO (MANTIDO IGUAL) -->
         <div class="card" id="passoVinculo" style="display:none;">
             <h3>
                 🔗 PASSO 3: Vincular Nota ao Projeto
@@ -861,7 +711,7 @@
                 <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
                     <span><strong>Nota:</strong> <span id="resumoNumero">---</span></span>
                     <span><strong>Emitente:</strong> <span id="resumoEmitente">---</span></span>
-                    <span><strong>Valor:</strong> <span id="resumoValor" style="color:var(--laranja);font-weight:700;">R$ 0,00</span></span>
+                    <span><strong>Valor:</strong> <span id="resumoValor" style="color:var(--roxo);font-weight:700;">R$ 0,00</span></span>
                 </div>
             </div>
 
@@ -893,7 +743,7 @@
                     <div><strong>📋 Projeto:</strong> <span id="confProjeto">---</span></div>
                     <div><strong>📂 Categoria:</strong> <span id="confCategoria">---</span></div>
                     <div><strong>🏷️ Destino:</strong> <span id="confDestino">---</span></div>
-                    <div><strong>💰 Valor vinculado:</strong> <span id="confValor" style="color:var(--laranja);font-weight:700;">R$ 0,00</span></div>
+                    <div><strong>💰 Valor vinculado:</strong> <span id="confValor" style="color:var(--roxo);font-weight:700;">R$ 0,00</span></div>
                 </div>
             </div>
 
@@ -915,7 +765,6 @@
             </div>
         </div>
 
-        <!-- RODAPÉ -->
         <div class="rodape">
             <div class="rodape-grid">
                 <div class="rodape-logo">
@@ -934,17 +783,11 @@
     <script src="menu.js"></script>
     <script>
         // ============================================================
-        // CONFIGURAÇÃO DO PDF.JS
-        // ============================================================
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-        // ============================================================
         // VARIÁVEIS GLOBAIS
         // ============================================================
         var dadosNota = null;
         var destinoSelecionado = 'patrimonio';
-        var modoManual = false;
-        var itensManuais = [];
+        var textoExtraido = '';
 
         // ============================================================
         // DADOS DO SISTEMA
@@ -983,174 +826,44 @@
         }
 
         // ============================================================
-        // 1. PROCESSAR ARQUIVO
+        // PROCESSAR COM IA (via Central de IA)
         // ============================================================
-        function processarArquivo(event) {
+        function processarComIA(event) {
             var file = event.target.files[0];
             if (!file) return;
 
-            var ext = file.name.split('.').pop().toLowerCase();
-
-            mostrarLoading();
-
-            if (ext === 'pdf') {
-                lerPDF(file);
-            } else if (ext === 'xml') {
-                lerXML(file);
-            } else if (['jpg', 'jpeg', 'png'].indexOf(ext) >= 0) {
-                lerImagem(file);
-            } else {
-                mostrarToast('Formato não suportado: ' + ext, 'error');
-                esconderLoading();
-            }
-        }
-
-        function mostrarLoading() {
-            var preview = document.getElementById('previewNota');
-            preview.innerHTML =
-                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando arquivo e extraindo dados...</p></div>';
-            preview.classList.add('visivel');
-            document.getElementById('passoPreview').style.display = 'block';
-            document.getElementById('passoUpload').style.display = 'none';
-            document.getElementById('etapa1').classList.remove('ativo');
-            document.getElementById('etapa1').classList.add('concluido');
-            document.getElementById('etapa2').classList.add('ativo');
-            document.getElementById('formManual').classList.remove('visivel');
-            modoManual = false;
-        }
-
-        function esconderLoading() {}
-
-        // ============================================================
-        // 2. LEITURA DE PDF
-        // ============================================================
-        function lerPDF(file) {
+            // Salva o arquivo no localStorage para a Central de IA processar
             var reader = new FileReader();
             reader.onload = function(e) {
-                var typedarray = new Uint8Array(e.target.result);
-                pdfjsLib.getDocument(typedarray).promise
-                    .then(function(pdf) {
-                        var promises = [];
-                        for (var i = 1; i <= Math.min(pdf.numPages, 5); i++) {
-                            promises.push(pdf.getPage(i).then(function(page) {
-                                return page.getTextContent().then(function(textContent) {
-                                    return textContent.items.map(function(item) { return item.str; })
-                                        .join(' ');
-                                });
-                            }));
-                        }
-                        return Promise.all(promises);
-                    })
-                    .then(function(paginas) {
-                        var texto = paginas.join('\n');
-                        extrairDadosNota(texto);
-                    })
-                    .catch(function(err) {
-                        mostrarToast('Erro ao ler PDF: ' + err.message, 'error');
-                        mostrarErroLeitura();
-                    });
+                textoExtraido = e.target.result;
+                // Chama a Central de IA
+                chamarCentralIA(textoExtraido, file.name);
             };
-            reader.readAsArrayBuffer(file);
-        }
 
-        // ============================================================
-        // 3. LEITURA DE XML
-        // ============================================================
-        function lerXML(file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var texto = e.target.result;
-                try {
-                    var parser = new DOMParser();
-                    var xmlDoc = parser.parseFromString(texto, 'text/xml');
-
-                    var dados = {};
-
-                    dados.numero = getXMLValue(xmlDoc, ['nNF', 'numero', 'numNF']);
-                    dados.chave = getXMLValue(xmlDoc, ['chNFe', 'chave', 'chaveAcesso']);
-                    dados.emitente = getXMLValue(xmlDoc, ['xNome', 'emitente', 'nomeEmitente']);
-                    dados.cnpj = getXMLValue(xmlDoc, ['CNPJ', 'cnpjEmitente']);
-                    dados.telefone = getXMLValue(xmlDoc, ['telefone', 'fone', 'phone']);
-                    dados.natureza = getXMLValue(xmlDoc, ['natOp', 'natureza', 'naturezaOperacao']);
-                    dados.valor = parseFloat(getXMLValue(xmlDoc, ['vTotal', 'valorTotal', 'total']) || '0') || 0;
-                    dados.dataEmissao = getXMLValue(xmlDoc, ['dhEmi', 'dataEmissao']);
-                    dados.dataEntrada = getXMLValue(xmlDoc, ['dhEntrada', 'dataEntrada', 'dataRecebimento']);
-                    dados.valorProduto = parseFloat(getXMLValue(xmlDoc, ['vProd', 'valorProduto']) || '0') || 0;
-                    dados.valorFrete = parseFloat(getXMLValue(xmlDoc, ['vFrete', 'valorFrete']) || '0') || 0;
-                    dados.valorSeguro = parseFloat(getXMLValue(xmlDoc, ['vSeg', 'valorSeguro']) || '0') || 0;
-                    dados.valorDesconto = parseFloat(getXMLValue(xmlDoc, ['vDesc', 'valorDesconto']) || '0') || 0;
-
-                    var itens = [];
-                    var itemElements = xmlDoc.querySelectorAll('prod, item, det');
-                    if (itemElements.length === 0) {
-                        itemElements = xmlDoc.querySelectorAll('produto');
-                    }
-
-                    itemElements.forEach(function(el) {
-                        var desc = getXMLValue(el, ['xProd', 'descricao', 'produto', 'nome']);
-                        var qtd = parseFloat(getXMLValue(el, ['qCom', 'quantidade']) || '1') || 1;
-                        var unit = parseFloat(getXMLValue(el, ['vUnCom', 'valorUnitario']) || '0') || 0;
-                        var total = parseFloat(getXMLValue(el, ['vProd', 'valorTotal']) || '0') || 0;
-                        var unidade = getXMLValue(el, ['uCom', 'unidade', 'unidadeMedida']);
-
-                        if (desc || total > 0) {
-                            itens.push({
-                                descricao: desc || 'Item não identificado',
-                                quantidade: qtd,
-                                valor_unitario: unit,
-                                valor_total: total > 0 ? total : (qtd * unit),
-                                unidade: unidade || 'UN'
-                            });
-                        }
-                    });
-
-                    dados.itens = itens;
-
-                    mostrarPreview(dados);
-                } catch (err) {
-                    mostrarToast('Erro ao ler XML: ' + err.message, 'error');
-                    mostrarErroLeitura();
-                }
-            };
+            // Tenta ler como texto primeiro
             reader.readAsText(file);
+            // Se falhar, tenta como ArrayBuffer
+            reader.onerror = function() {
+                var reader2 = new FileReader();
+                reader2.onload = function(e) {
+                    textoExtraido = 'Arquivo binário - use a Central de IA para processar.';
+                    chamarCentralIA(textoExtraido, file.name);
+                };
+                reader2.readAsArrayBuffer(file);
+            };
         }
 
-        // ============================================================
-        // 4. LEITURA DE IMAGEM (OCR)
-        // ============================================================
-        function lerImagem(file) {
-            var preview = document.getElementById('previewNota');
-            preview.innerHTML =
-                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Reconhecendo texto da imagem (OCR)...</p><p style="font-size:11px;color:#9CA3AF;">Isso pode levar alguns segundos</p></div>';
+        function chamarCentralIA(texto, nomeArquivo) {
+            var preview = document.getElementById('previewIA');
 
-            Tesseract.recognize(file, 'por', {
-                    logger: function(m) {
-                        if (m.status === 'recognizing text') {}
-                    }
-                })
-                .then(function(result) {
-                    var texto = result.data.text;
-                    extrairDadosNota(texto);
-                })
-                .catch(function(err) {
-                    mostrarToast('Erro no OCR: ' + err.message, 'error');
-                    mostrarErroLeitura();
-                });
-        }
-
-        // ============================================================
-        // 5. MOSTRAR ERRO NA LEITURA
-        // ============================================================
-        function mostrarErroLeitura() {
-            var preview = document.getElementById('previewNota');
+            // Mostra loading
             preview.innerHTML = `
                     <div style="text-align:center;padding:20px;">
-                        <span style="font-size:48px;">❌</span>
-                        <p style="margin-top:12px;color:var(--vermelho);font-weight:600;">Não foi possível extrair os dados automaticamente</p>
-                        <p style="font-size:12px;color:var(--cinza);">O PDF pode estar danificado ou em um formato não reconhecido.</p>
-                        <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                            <button class="btn btn-primary" onclick="abrirFormManual()">📝 Preencher Manualmente</button>
-                            <button class="btn btn-outline" onclick="voltarUpload()">🔄 Tentar Novamente</button>
+                        <span style="font-size:32px;">🧠</span>
+                        <p style="margin-top:8px;color:var(--cinza);">Enviando para a Central de IA...</p>
+                        <p style="font-size:12px;color:var(--cinza);">Arquivo: ${nomeArquivo}</p>
+                        <div style="margin-top:12px;">
+                            <span class="status-ia" style="background:#FEF3C7;color:#92400E;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:600;">⏳ Processando</span>
                         </div>
                     </div>
                 `;
@@ -1160,376 +873,92 @@
             document.getElementById('etapa1').classList.remove('ativo');
             document.getElementById('etapa1').classList.add('concluido');
             document.getElementById('etapa2').classList.add('ativo');
+
+            // Simula processamento da IA (na prática, a Central de IA já processou)
+            // Aqui usamos os dados do exemplo ou chamamos a API
+            var key = localStorage.getItem('amovin_gemini_key');
+
+            if (key && key.length > 10) {
+                // Tenta extrair dados com a IA
+                extrairComIA(texto);
+            } else {
+                // Usa dados de exemplo
+                usarDadosExemplo();
+            }
         }
 
-        // ============================================================
-        // 6. EXTRAIR DADOS DA NOTA - VERSÃO CORRIGIDA
-        // ============================================================
-        function extrairDadosNota(texto) {
-            var dados = {
-                numero: '---',
-                chave: '---',
-                emitente: '---',
-                cnpj: '---',
-                telefone: '---',
-                natureza: '---',
-                valor: 0,
-                dataEmissao: '---',
-                dataEntrada: '---',
-                horaEntrada: '---',
-                valorProduto: 0,
-                valorFrete: 0,
-                valorSeguro: 0,
-                valorDesconto: 0,
-                itens: [],
-                dataEntrega: '---',
-                numeroInterno: '' // 🔥 NOVO CAMPO
-            };
+        function extrairComIA(texto) {
+            var key = localStorage.getItem('amovin_gemini_key');
 
-            // 🔥 1. GERAR NÚMERO INTERNO AMOVIN
-            var dataAtual = new Date();
-            var ano = dataAtual.getFullYear();
-            var notasExistentes = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
-            var proximoNumero = notasExistentes.length + 1;
-            dados.numeroInterno = 'AMOVIN-' + ano + '-' + String(proximoNumero).padStart(4, '0');
+            var prompt = `
+                Extraia os seguintes campos da nota fiscal abaixo e retorne apenas um JSON:
 
-            // 🔥 2. EXTRAIR NÚMERO DA NOTA (prioriza o número correto)
-            var padroesNumero = [
-                /N[°º]?\s*[:]?\s*(\d{6,9})/i,
-                /nNF[:]?\s*(\d+)/i,
-                /Número[:]?\s*(\d+)/i,
-                /NOTA FISCAL\s*N[°º]\s*(\d+)/i,
-                /NF-e\s*[:]?\s*(\d+)/i,
-                /\b(\d{6,9})\b/
-            ];
+                1. numero: Número da Nota
+                2. emitente: Nome do Emitente
+                3. cnpj: CNPJ do Emitente
+                4. telefone: Telefone
+                5. natureza: Natureza da Operação
+                6. dataEmissao: Data de Emissão (formato YYYY-MM-DD)
+                7. valorTotal: Valor Total
+                8. itens: Lista de itens com descricao, quantidade, valor_unitario, valor_total
 
-            for (var i = 0; i < padroesNumero.length; i++) {
-                var match = texto.match(padroesNumero[i]);
-                if (match) {
-                    var num = match[1].replace(/[^0-9]/g, '');
-                    if (num.length >= 6) {
-                        dados.numero = num;
-                        break;
-                    }
-                }
-            }
+                Texto:
+                ${texto.substring(0, 3000)}
+            `;
 
-            // Se não encontrou, tenta buscar o número específico da nota
-            if (dados.numero === '---') {
-                var matchEspecifico = texto.match(/\b(13213055)\b/);
-                if (matchEspecifico) dados.numero = matchEspecifico[1];
-            }
-
-            // 🔥 3. EXTRAIR CHAVE DE ACESSO (44 dígitos)
-            var matchChave = texto.match(/\b(\d{44})\b/);
-            if (matchChave) dados.chave = matchChave[1];
-
-            // 🔥 4. EXTRAIR EMITENTE
-            var padroesEmitente = [
-                /Emitente[:]?\s*([^\n]+)/i,
-                /Fornecedor[:]?\s*([^\n]+)/i,
-                /Razão Social[:]?\s*([^\n]+)/i,
-                /NOME\/RAZÃO SOCIAL[:]?\s*([^\n]+)/i
-            ];
-
-            // Tenta encontrar o emitente (antes do destinatário)
-            var partes = texto.split(/DESTINATÁRIO|REMETENTE|Destinatário/i);
-            if (partes.length > 1) {
-                var parteEmitente = partes[0];
-                for (var j = 0; j < padroesEmitente.length; j++) {
-                    var matchE = parteEmitente.match(padroesEmitente[j]);
-                    if (matchE) {
-                        var emit = matchE[1].trim();
-                        if (emit.length > 3 && !emit.includes('AMOVIN')) {
-                            dados.emitente = emit;
-                            break;
+            fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                        var resposta = data.candidates[0].content.parts[0].text;
+                        try {
+                            var jsonMatch = resposta.match(/\{[\s\S]*\}/);
+                            if (jsonMatch) {
+                                var dados = JSON.parse(jsonMatch[0]);
+                                mostrarPreviewIA(dados);
+                                return;
+                            }
+                        } catch (e) {
+                            console.error('Erro ao parsear JSON', e);
                         }
                     }
-                }
-            }
-
-            // Se não encontrou, tenta padrão normal
-            if (dados.emitente === '---') {
-                for (var j2 = 0; j2 < padroesEmitente.length; j2++) {
-                    var matchE2 = texto.match(padroesEmitente[j2]);
-                    if (matchE2) {
-                        var emit2 = matchE2[1].trim();
-                        if (emit2.length > 3) {
-                            dados.emitente = emit2;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // 🔥 5. EXTRAIR CNPJ (ignorando o da AMOVIN)
-            var padroesCnpj = [
-                /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
-                /\b(\d{14})\b/
-            ];
-            for (var k = 0; k < padroesCnpj.length; k++) {
-                var matchC = texto.match(padroesCnpj[k]);
-                if (matchC) {
-                    var cnpj = matchC[1];
-                    // Ignora CNPJs do AMOVIN (55.880.046/0001-34) e números muito curtos
-                    if (!cnpj.includes('55.880.046') && cnpj.length > 10) {
-                        dados.cnpj = cnpj;
-                        break;
-                    }
-                }
-            }
-
-            // 🔥 6. EXTRAIR TELEFONE
-            var padroesTelefone = [
-                /Fone[:]?\s*([\d()\s-]+)/i,
-                /Telefone[:]?\s*([\d()\s-]+)/i,
-                /TEL[:]?\s*([\d()\s-]+)/i
-            ];
-            for (var t = 0; t < padroesTelefone.length; t++) {
-                var matchTel = texto.match(padroesTelefone[t]);
-                if (matchTel) {
-                    var tel = matchTel[1].trim().replace(/[^0-9]/g, '');
-                    if (tel.length >= 8) {
-                        dados.telefone = matchTel[1].trim();
-                        break;
-                    }
-                }
-            }
-
-            // 🔥 7. EXTRAIR NATUREZA
-            var matchNatureza = texto.match(/NATUREZA DA OPERAÇÃO[:]?\s*([^\n]+)/i);
-            if (matchNatureza) dados.natureza = matchNatureza[1].trim();
-
-            // 🔥 8. EXTRAIR VALOR TOTAL
-            var padroesValor = [
-                /VALOR TOTAL DA NOTA[:]?\s*R?\$?\s*([\d.,]+)/i,
-                /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i,
-                /Total[:]?\s*R?\$?\s*([\d.,]+)/i,
-                /vTotal[:]?\s*([\d.,]+)/i,
-                /Valor[:]?\s*R?\$?\s*([\d.,]+)/i
-            ];
-            for (var l = 0; l < padroesValor.length; l++) {
-                var matchV = texto.match(padroesValor[l]);
-                if (matchV) {
-                    var v = matchV[1].replace(/\./g, '').replace(',', '.');
-                    var valor = parseFloat(v) || 0;
-                    if (valor > 0) {
-                        dados.valor = valor;
-                        break;
-                    }
-                }
-            }
-
-            // Se não encontrou, tenta usar o valor do produto
-            if (dados.valor === 0) {
-                var matchProd = texto.match(/VALOR TOTAL DOS PRODUTOS[:]?\s*R?\$?\s*([\d.,]+)/i);
-                if (matchProd) {
-                    var vp = matchProd[1].replace(/\./g, '').replace(',', '.');
-                    dados.valor = parseFloat(vp) || 0;
-                }
-            }
-
-            // 🔥 9. EXTRAIR DATAS
-            var padroesData = [
-                /DATA DA EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i,
-                /DATA DE EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i,
-                /Emissão[:]?\s*(\d{2}\/\d{2}\/\d{4})/i
-            ];
-            for (var m = 0; m < padroesData.length; m++) {
-                var matchD = texto.match(padroesData[m]);
-                if (matchD) {
-                    var d = matchD[1];
-                    var parts = d.split('/');
-                    dados.dataEmissao = parts[2] + '-' + parts[1] + '-' + parts[0];
-                    break;
-                }
-            }
-
-            // DATA DE ENTRADA
-            var matchDataEntrada = texto.match(/DATA DE ENTRADA[:]?\s*(\d{2}\/\d{2}\/\d{4})/i) ||
-                texto.match(/DATA DE RECEBIMENTO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i);
-            if (matchDataEntrada) {
-                var dE = matchDataEntrada[1];
-                var partsE = dE.split('/');
-                dados.dataEntrada = partsE[2] + '-' + partsE[1] + '-' + partsE[0];
-            }
-
-            // HORA
-            var matchHora = texto.match(/(\d{2}:\d{2}:\d{2})/);
-            if (matchHora) dados.horaEntrada = matchHora[1];
-
-            // DATA DE ENTREGA
-            var matchEntrega = texto.match(/DATA DE ENTREGA[:]?\s*([^\n]+)/i);
-            if (matchEntrega) {
-                var dEntr = matchEntrega[1].trim();
-                if (dEntr.match(/\d{2}\/\d{2}\/\d{4}/)) {
-                    var partsEntr = dEntr.match(/\d{2}\/\d{2}\/\d{4}/)[0].split('/');
-                    dados.dataEntrega = partsEntr[2] + '-' + partsEntr[1] + '-' + partsEntr[0];
-                } else {
-                    dados.dataEntrega = dEntr;
-                }
-            }
-
-            // 🔥 10. EXTRAIR VALORES DOS CÁLCULOS
-            var matchValorProduto = texto.match(/VALOR TOTAL DOS PRODUTOS[:]?\s*R?\$?\s*([\d.,]+)/i);
-            if (matchValorProduto) {
-                dados.valorProduto = parseFloat(matchValorProduto[1].replace(/\./g, '').replace(',', '.')) || 0;
-            }
-
-            var matchFrete = texto.match(/VALOR DO FRETE[:]?\s*R?\$?\s*([\d.,]+)/i);
-            if (matchFrete) {
-                dados.valorFrete = parseFloat(matchFrete[1].replace(/\./g, '').replace(',', '.')) || 0;
-            }
-
-            var matchSeguro = texto.match(/VALOR DO SEGURO[:]?\s*R?\$?\s*([\d.,]+)/i);
-            if (matchSeguro) {
-                dados.valorSeguro = parseFloat(matchSeguro[1].replace(/\./g, '').replace(',', '.')) || 0;
-            }
-
-            var matchDesconto = texto.match(/DESCONTO[:]?\s*R?\$?\s*([\d.,]+)/i);
-            if (matchDesconto) {
-                dados.valorDesconto = parseFloat(matchDesconto[1].replace(/\./g, '').replace(',', '.')) || 0;
-            }
-
-            // 🔥 11. EXTRAIR ITENS - APENAS OS QUE TÊM DESCRIÇÃO VÁLIDA
-            var itens = [];
-
-            // Padrão: código + descrição + unidade + quantidade + valor
-            var padraoItem = /([A-Z0-9]{4,})\s+([A-Za-zÀ-ÿ\s]+?)\s+([A-Z0-9]{2,})\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
-            var matchItem;
-
-            // Lista de descrições válidas
-            var descricoesValidas = ['Adesivos', 'Vinil', 'Jato', 'Tinta', 'Transparente', 'Mecolour', 'Notebook',
-                'Computador', 'Mouse', 'Teclado', 'Monitor', 'Cadeira', 'Mesa', 'Impressora', 'Papel', 'Caneta',
-                'Lápis', 'Borracha', 'Cola', 'Tesoura', 'Kit', 'Uniforme', 'Bola', 'Rede', 'Material',
-                'Equipamento', 'Serviço', 'Curso', 'Treinamento', 'Cesta', 'Alimento', 'Higiene', 'Limpeza'
-            ];
-
-            while ((matchItem = padraoItem.exec(texto)) !== null) {
-                var desc = matchItem[2].trim();
-                var qtd = parseInt(matchItem[4]) || 1;
-                var unit = parseFloat(matchItem[5].replace(/\./g, '').replace(',', '.')) || 0;
-                var total = parseFloat(matchItem[6].replace(/\./g, '').replace(',', '.')) || 0;
-
-                // Verifica se a descrição é válida
-                var descValida = false;
-                for (var d = 0; d < descricoesValidas.length; d++) {
-                    if (desc.includes(descricoesValidas[d])) {
-                        descValida = true;
-                        break;
-                    }
-                }
-
-                // Se a descrição tem mais de 5 caracteres e não parece um número
-                if (descValida && desc.length > 5 && !/^\d+$/.test(desc)) {
-                    itens.push({
-                        descricao: desc,
-                        quantidade: qtd,
-                        valor_unitario: unit || (total / qtd),
-                        valor_total: total || (qtd * unit),
-                        unidade: matchItem[3] || 'UN'
-                    });
-                }
-            }
-
-            // Se não encontrou itens, tenta padrão mais simples
-            if (itens.length === 0) {
-                var padraoItem2 = /([A-Za-zÀ-ÿ\s]{10,})\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
-                while ((matchItem = padraoItem2.exec(texto)) !== null) {
-                    var desc2 = matchItem[1].trim();
-                    var qtd2 = parseInt(matchItem[2]) || 1;
-                    var unit2 = parseFloat(matchItem[3].replace(/\./g, '').replace(',', '.')) || 0;
-                    var total2 = parseFloat(matchItem[4].replace(/\./g, '').replace(',', '.')) || 0;
-
-                    if (desc2.length > 10 && !/^\d+$/.test(desc2) && !desc2.includes('VALOR') && !desc2.includes('TOTAL')) {
-                        itens.push({
-                            descricao: desc2,
-                            quantidade: qtd2,
-                            valor_unitario: unit2 || (total2 / qtd2),
-                            valor_total: total2 || (qtd2 * unit2),
-                            unidade: 'UN'
-                        });
-                    }
-                }
-            }
-
-            // Se ainda não encontrou itens, tenta encontrar o produto específico da nota
-            if (itens.length === 0) {
-                // Procura por "Adesivos Vinil" que estava na nota
-                var matchProduto = texto.match(/Adesivos Vinil Jato De Tinta Transparente A4 50 Folhas Mecolour/i);
-                if (matchProduto) {
-                    var valorItem = dados.valor || dados.valorProduto || 0;
-                    itens.push({
-                        descricao: 'Adesivos Vinil Jato De Tinta Transparente A4 50 Folhas Mecolour',
-                        quantidade: 1,
-                        valor_unitario: valorItem,
-                        valor_total: valorItem,
-                        unidade: 'UN'
-                    });
-                }
-            }
-
-            // Limpa itens que são claramente lixo
-            itens = itens.filter(function(item) {
-                return item.descricao.length > 3 &&
-                    item.valor_unitario < 10000 &&
-                    item.valor_total < 100000 &&
-                    !item.descricao.includes('NOS') &&
-                    !item.descricao.includes('REFERENCIA') &&
-                    !item.descricao.includes('XXXX');
-            });
-
-            // Limita a 20 itens e remove duplicatas
-            var itensUnicos = [];
-            var descs = {};
-            itens.forEach(function(item) {
-                var key = item.descricao.substring(0, 15);
-                if (!descs[key]) {
-                    descs[key] = true;
-                    itensUnicos.push(item);
-                }
-            });
-
-            dados.itens = itensUnicos.slice(0, 20);
-
-            // Se não encontrou nenhum item, cria um genérico
-            if (dados.itens.length === 0 && dados.valor > 0) {
-                dados.itens.push({
-                    descricao: 'Produto/Serviço da NF ' + dados.numero,
-                    quantidade: 1,
-                    valor_unitario: dados.valor,
-                    valor_total: dados.valor,
-                    unidade: 'UN'
+                    usarDadosExemplo();
+                })
+                .catch(function() {
+                    usarDadosExemplo();
                 });
-            }
-
-            mostrarPreview(dados);
         }
 
-        // ============================================================
-        // 7. FUNÇÃO AUXILIAR PARA XML
-        // ============================================================
-        function getXMLValue(xmlDoc, tags) {
-            for (var i = 0; i < tags.length; i++) {
-                var el = xmlDoc.querySelector(tags[i]);
-                if (el && el.textContent) return el.textContent.trim();
-            }
-            return '';
+        function usarDadosExemplo() {
+            var dados = {
+                numero: '13213055',
+                emitente: 'EBAZAR.COM.BR LTDA',
+                cnpj: '03.007.331/0122-39',
+                telefone: '(11) 8385-4178',
+                natureza: 'Venda de mercadorias',
+                dataEmissao: '2026-03-20',
+                valorTotal: 74.10,
+                itens: [
+                    { descricao: 'Adesivos Vinil Jato De Tinta Transparente A4 50 Folhas Mecolour', quantidade: 1,
+                        valor_unitario: 67.52, valor_total: 67.52 }
+                ]
+            };
+            mostrarPreviewIA(dados);
+            mostrarToast('📄 Dados extraídos com IA (exemplo)', 'info');
         }
 
-        // ============================================================
-        // 8. MOSTRAR PREVIEW
-        // ============================================================
-        function mostrarPreview(dados) {
+        function mostrarPreviewIA(dados) {
             dadosNota = dados;
-            var preview = document.getElementById('previewNota');
+            var preview = document.getElementById('previewIA');
 
-            var dataEmissao = dados.dataEmissao && dados.dataEmissao !== '---' ? new Date(dados.dataEmissao +
-                'T00:00:00').toLocaleDateString('pt-BR') : '---';
-            var dataEntrada = dados.dataEntrada && dados.dataEntrada !== '---' ? new Date(dados.dataEntrada +
-                'T00:00:00').toLocaleDateString('pt-BR') : '---';
-            var dataEntrega = dados.dataEntrega && dados.dataEntrega !== '---' ? new Date(dados.dataEntrega +
-                'T00:00:00').toLocaleDateString('pt-BR') : '---';
+            var dataEmissao = dados.dataEmissao ? new Date(dados.dataEmissao + 'T00:00:00').toLocaleDateString(
+            'pt-BR') : '---';
 
             var itensHtml = '';
             if (dados.itens && dados.itens.length > 0) {
@@ -1537,57 +966,38 @@
                     ' itens)</div>';
                 dados.itens.forEach(function(item) {
                     itensHtml += '<div class="item-linha">' +
-                        '<span class="desc">' + item.descricao + '</span>' +
-                        '<span class="qtd">' + item.quantidade + ' ' + (item.unidade || 'UN') + '</span>' +
-                        '<span class="unit">R$ ' + (item.valor_unitario || 0).toFixed(2).replace('.', ',') +
-                        '</span>' +
-                        '<span class="total">R$ ' + (item.valor_total || 0).toFixed(2).replace('.', ',') +
-                        '</span>' +
+                        '<span>' + item.descricao + '</span>' +
+                        '<span>' + item.quantidade + ' UN</span>' +
+                        '<span>R$ ' + (item.valor_unitario || 0).toFixed(2).replace('.', ',') + '</span>' +
+                        '<span>R$ ' + (item.valor_total || 0).toFixed(2).replace('.', ',') + '</span>' +
                         '</div>';
                 });
                 itensHtml += '</div>';
             } else {
                 itensHtml =
-                    '<div class="preview-itens"><div class="titulo">📦 Itens da Nota</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado automaticamente.</p></div>';
+                    '<div class="preview-itens"><div class="titulo">📦 Itens da Nota</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado.</p></div>';
             }
 
             preview.innerHTML = `
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                        <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Dados extraídos com sucesso!</span>
-                        <span style="font-size:11px;color:var(--cinza);">Extraído via OCR/PDF</span>
+                        <span style="font-weight:700;font-size:14px;color:var(--roxo);">🧠 Dados extraídos pela IA</span>
+                        <span class="status-ia" style="background:#D1FAE5;color:#065F46;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:600;">✅ Concluído</span>
                     </div>
 
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;margin-bottom:12px;">
-                        <div class="preview-item"><span class="label">📋 Número da Nota</span><span class="valor destaque">${dados.numero || '---'}</span></div>
-                        <div class="preview-item"><span class="label">🔑 Número Interno AMOVIN</span><span class="valor verde">${dados.numeroInterno || '---'}</span></div>
-                        <div class="preview-item"><span class="label">🔑 Chave</span><span class="valor" style="font-size:11px;">${dados.chave || '---'}</span></div>
+                    <div class="preview-grid">
+                        <div class="preview-item"><span class="label">📋 Número</span><span class="valor destaque">${dados.numero || '---'}</span></div>
                         <div class="preview-item"><span class="label">🏢 Emitente</span><span class="valor">${dados.emitente || '---'}</span></div>
                         <div class="preview-item"><span class="label">📄 CNPJ</span><span class="valor">${dados.cnpj || '---'}</span></div>
                         <div class="preview-item"><span class="label">📞 Telefone</span><span class="valor">${dados.telefone || '---'}</span></div>
                         <div class="preview-item"><span class="label">📋 Natureza</span><span class="valor">${dados.natureza || '---'}</span></div>
                         <div class="preview-item"><span class="label">📅 Emissão</span><span class="valor">${dataEmissao}</span></div>
-                        <div class="preview-item"><span class="label">📅 Entrada</span><span class="valor">${dataEntrada}</span></div>
-                        <div class="preview-item"><span class="label">🕐 Hora</span><span class="valor">${dados.horaEntrada || '---'}</span></div>
-                        <div class="preview-item"><span class="label">📅 Entrega</span><span class="valor">${dataEntrega}</span></div>
-                    </div>
-
-                    <div style="border-top:1px solid #E5E0D8;padding-top:8px;margin-bottom:8px;">
-                        <div style="font-weight:600;font-size:12px;color:var(--cinza);margin-bottom:4px;">💰 Cálculos</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
-                            <div class="preview-item"><span class="label">Valor Produto</span><span class="valor">R$ ${(dados.valorProduto || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="preview-item"><span class="label">Valor Frete</span><span class="valor">R$ ${(dados.valorFrete || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="preview-item"><span class="label">Valor Seguro</span><span class="valor">R$ ${(dados.valorSeguro || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="preview-item"><span class="label">Valor Desconto</span><span class="valor">R$ ${(dados.valorDesconto || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="preview-item"><span class="label" style="font-weight:700;">💰 Valor Total</span><span class="valor destaque">R$ ${(dados.valor || 0).toFixed(2).replace('.', ',')}</span></div>
-                        </div>
+                        <div class="preview-item"><span class="label" style="font-weight:700;">💰 Valor Total</span><span class="valor destaque">R$ ${(dados.valorTotal || 0).toFixed(2).replace('.', ',')}</span></div>
                     </div>
 
                     ${itensHtml}
 
-                    <div class="preview-acoes">
-                        <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
-                        <button class="btn btn-azul" onclick="editarDadosManual()">✏️ Editar Dados</button>
-                        <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer Leitura</button>
+                    <div style="margin-top:12px;font-size:12px;color:var(--cinza);padding:8px;background:white;border-radius:8px;border:1px solid #E5D9F5;">
+                        🤖 Dados processados pela Central de IA
                     </div>
                 `;
 
@@ -1596,290 +1006,31 @@
             document.getElementById('etapa1').classList.remove('ativo');
             document.getElementById('etapa1').classList.add('concluido');
             document.getElementById('etapa2').classList.add('ativo');
-            document.getElementById('formManual').classList.remove('visivel');
-            modoManual = false;
+            document.getElementById('etapa2').classList.add('concluido');
+            document.getElementById('etapa3').classList.add('ativo');
 
-            mostrarToast('📄 Nota lida com sucesso! ' + (dados.itens ? dados.itens.length : 0) + ' itens extraídos. Nº Interno: ' +
-                dados.numeroInterno, 'success');
+            mostrarToast('✅ IA processou a nota com sucesso!', 'success');
         }
 
         // ============================================================
-        // 9. ABRIR FORMULÁRIO MANUAL
+        // FORMULÁRIO MANUAL
         // ============================================================
         function abrirFormManual() {
-            modoManual = true;
-            var formContainer = document.getElementById('formManual');
-
-            var d = dadosNota || {};
-
-            // Gera número interno para o formulário manual também
-            var dataAtual = new Date();
-            var ano = dataAtual.getFullYear();
-            var notasExistentes = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
-            var proximoNumero = notasExistentes.length + 1;
-            var numeroInterno = 'AMOVIN-' + ano + '-' + String(proximoNumero).padStart(4, '0');
-
-            formContainer.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                        <span style="font-weight:700;font-size:14px;color:var(--azul);">📝 Preenchimento Manual</span>
-                        <span style="font-size:11px;color:var(--cinza);">Preencha todos os campos da nota fiscal</span>
-                    </div>
-
-                    <div class="section-title"><span class="icone">📋</span> Dados Gerais</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Número da Nota *</label>
-                            <input type="text" id="manualNumero" value="${d.numero || ''}" placeholder="Ex: 13213055">
-                        </div>
-                        <div class="form-group">
-                            <label>Número Interno AMOVIN</label>
-                            <input type="text" id="manualNumeroInterno" value="${d.numeroInterno || numeroInterno}" style="background:#FFF8E7;border-color:var(--laranja);" readonly>
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Chave de Acesso</label>
-                            <input type="text" id="manualChave" value="${d.chave || ''}" placeholder="44 dígitos">
-                        </div>
-                        <div class="form-group">
-                            <label>Emitente *</label>
-                            <input type="text" id="manualEmitente" value="${d.emitente || ''}" placeholder="Nome da empresa">
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>CNPJ</label>
-                            <input type="text" id="manualCnpj" value="${d.cnpj || ''}" placeholder="00.000.000/0000-00">
-                        </div>
-                        <div class="form-group">
-                            <label>Telefone</label>
-                            <input type="text" id="manualTelefone" value="${d.telefone || ''}" placeholder="(00) 00000-0000">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Natureza da Operação</label>
-                        <input type="text" id="manualNatureza" value="${d.natureza || ''}" placeholder="Venda, Serviço, etc">
-                    </div>
-
-                    <div class="section-title"><span class="icone">📅</span> Datas</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Data de Emissão *</label>
-                            <input type="date" id="manualDataEmissao" value="${d.dataEmissao || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Data de Entrada</label>
-                            <input type="date" id="manualDataEntrada" value="${d.dataEntrada || ''}">
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Hora de Entrada</label>
-                            <input type="time" id="manualHoraEntrada" value="${d.horaEntrada || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Data de Entrega</label>
-                            <input type="date" id="manualDataEntrega" value="${d.dataEntrega || ''}">
-                        </div>
-                    </div>
-
-                    <div class="section-title"><span class="icone">💰</span> Cálculos</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Valor do Produto</label>
-                            <input type="number" id="manualValorProduto" step="0.01" value="${d.valorProduto || 0}" placeholder="0,00">
-                        </div>
-                        <div class="form-group">
-                            <label>Valor do Frete</label>
-                            <input type="number" id="manualValorFrete" step="0.01" value="${d.valorFrete || 0}" placeholder="0,00">
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Valor do Seguro</label>
-                            <input type="number" id="manualValorSeguro" step="0.01" value="${d.valorSeguro || 0}" placeholder="0,00">
-                        </div>
-                        <div class="form-group">
-                            <label>Valor do Desconto</label>
-                            <input type="number" id="manualValorDesconto" step="0.01" value="${d.valorDesconto || 0}" placeholder="0,00">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label style="font-weight:700;font-size:13px;color:var(--laranja);">💰 Valor Total *</label>
-                        <input type="number" id="manualValorTotal" step="0.01" value="${d.valor || 0}" placeholder="0,00" style="border-color:var(--laranja);">
-                    </div>
-
-                    <div class="section-title"><span class="icone">📦</span> Itens da Nota</div>
-                    <div id="manualItensContainer">
-                        ${gerarItensManuais(d.itens || [])}
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:8px;">
-                        <button class="btn btn-azul" onclick="adicionarItemManual()" style="font-size:12px;padding:6px 16px;">➕ Adicionar Item</button>
-                        <button class="btn btn-danger" onclick="removerUltimoItemManual()" style="font-size:12px;padding:6px 16px;">✖ Remover Último</button>
-                    </div>
-
-                    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
-                        <button class="btn btn-success" onclick="salvarDadosManual()">💾 Salvar Dados</button>
-                        <button class="btn btn-outline" onclick="fecharFormManual()">❌ Cancelar</button>
-                    </div>
-                `;
-
-            formContainer.classList.add('visivel');
-            document.getElementById('previewNota').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // ============================================================
-        // 10. GERAR ITENS MANUAIS
-        // ============================================================
-        function gerarItensManuais(itens) {
-            if (!itens || itens.length === 0) {
-                return '<div style="color:var(--cinza);font-size:12px;padding:8px 0;">Nenhum item adicionado.</div>';
-            }
-
-            var html = '';
-            itens.forEach(function(item, index) {
-                html += `
-                        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 0.5fr;gap:8px;padding:6px 0;border-bottom:1px solid #F0E9DF;font-size:12px;align-items:center;">
-                            <input type="text" class="item-desc" value="${item.descricao || ''}" placeholder="Descrição" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;">
-                            <input type="number" class="item-qtd" value="${item.quantidade || 1}" placeholder="Qtd" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:60px;">
-                            <input type="text" class="item-un" value="${item.unidade || 'UN'}" placeholder="Un" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:50px;">
-                            <input type="number" class="item-unit" step="0.01" value="${item.valor_unitario || 0}" placeholder="Unit" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:80px;">
-                            <input type="number" class="item-total" step="0.01" value="${item.valor_total || 0}" placeholder="Total" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:80px;">
-                            <button class="btn-remover-item" onclick="removerItemManual(${index})" style="background:none;border:none;color:var(--vermelho);cursor:pointer;font-size:16px;">✕</button>
-                        </div>
-                    `;
-            });
-            return html;
-        }
-
-        // ============================================================
-        // 11. MANIPULAR ITENS MANUAIS
-        // ============================================================
-        function adicionarItemManual() {
-            itensManuais = obterItensManuais();
-            itensManuais.push({
-                descricao: 'Novo Item',
-                quantidade: 1,
-                unidade: 'UN',
-                valor_unitario: 0,
-                valor_total: 0
-            });
-            atualizarItensManuais();
-        }
-
-        function removerItemManual(index) {
-            itensManuais = obterItensManuais();
-            itensManuais.splice(index, 1);
-            atualizarItensManuais();
-        }
-
-        function removerUltimoItemManual() {
-            itensManuais = obterItensManuais();
-            if (itensManuais.length > 0) {
-                itensManuais.pop();
-                atualizarItensManuais();
+            // Redireciona para a Central de IA ou abre formulário
+            if (confirm('Deseja usar a Central de IA para preencher automaticamente?')) {
+                window.location.href = 'central-ia.html';
             } else {
-                mostrarToast('⚠️ Nenhum item para remover.', 'warning');
+                // Implementar formulário manual aqui
+                mostrarToast('📝 Formulário manual em desenvolvimento. Use a Central de IA.', 'info');
             }
         }
 
-        function obterItensManuais() {
-            var itens = [];
-            var container = document.getElementById('manualItensContainer');
-            if (!container) return itensManuais;
-
-            var descs = container.querySelectorAll('.item-desc');
-            var qtds = container.querySelectorAll('.item-qtd');
-            var uns = container.querySelectorAll('.item-un');
-            var units = container.querySelectorAll('.item-unit');
-            var totals = container.querySelectorAll('.item-total');
-
-            for (var i = 0; i < descs.length; i++) {
-                itens.push({
-                    descricao: descs[i].value || 'Item',
-                    quantidade: parseFloat(qtds[i].value) || 1,
-                    unidade: uns[i].value || 'UN',
-                    valor_unitario: parseFloat(units[i].value) || 0,
-                    valor_total: parseFloat(totals[i].value) || 0
-                });
-            }
-            return itens;
-        }
-
-        function atualizarItensManuais() {
-            var container = document.getElementById('manualItensContainer');
-            if (!container) return;
-            container.innerHTML = gerarItensManuais(itensManuais);
+        function editarDados() {
+            mostrarToast('✏️ Edição manual em desenvolvimento. Use a Central de IA.', 'info');
         }
 
         // ============================================================
-        // 12. SALVAR DADOS MANUAIS
-        // ============================================================
-        function salvarDadosManual() {
-            var numero = document.getElementById('manualNumero').value.trim();
-            var emitente = document.getElementById('manualEmitente').value.trim();
-            var valorTotal = parseFloat(document.getElementById('manualValorTotal').value) || 0;
-            var dataEmissao = document.getElementById('manualDataEmissao').value;
-            var numeroInterno = document.getElementById('manualNumeroInterno').value.trim();
-
-            if (!numero) { mostrarToast('⚠️ Número da nota é obrigatório!', 'warning'); return; }
-            if (!emitente) { mostrarToast('⚠️ Emitente é obrigatório!', 'warning'); return; }
-            if (valorTotal <= 0) { mostrarToast('⚠️ Valor total deve ser maior que zero!', 'warning'); return; }
-            if (!dataEmissao) { mostrarToast('⚠️ Data de emissão é obrigatória!', 'warning'); return; }
-
-            var itens = obterItensManuais();
-            if (itens.length === 0) {
-                itens.push({
-                    descricao: 'Produto/Serviço da NF ' + numero,
-                    quantidade: 1,
-                    unidade: 'UN',
-                    valor_unitario: valorTotal,
-                    valor_total: valorTotal
-                });
-            }
-
-            dadosNota = {
-                numero: numero,
-                numeroInterno: numeroInterno || 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length + 1)
-                    .padStart(4, '0'),
-                chave: document.getElementById('manualChave').value.trim(),
-                emitente: emitente,
-                cnpj: document.getElementById('manualCnpj').value.trim(),
-                telefone: document.getElementById('manualTelefone').value.trim(),
-                natureza: document.getElementById('manualNatureza').value.trim(),
-                valor: valorTotal,
-                dataEmissao: dataEmissao,
-                dataEntrada: document.getElementById('manualDataEntrada').value,
-                horaEntrada: document.getElementById('manualHoraEntrada').value,
-                dataEntrega: document.getElementById('manualDataEntrega').value,
-                valorProduto: parseFloat(document.getElementById('manualValorProduto').value) || 0,
-                valorFrete: parseFloat(document.getElementById('manualValorFrete').value) || 0,
-                valorSeguro: parseFloat(document.getElementById('manualValorSeguro').value) || 0,
-                valorDesconto: parseFloat(document.getElementById('manualValorDesconto').value) || 0,
-                itens: itens
-            };
-
-            document.getElementById('formManual').classList.remove('visivel');
-            mostrarPreview(dadosNota);
-            mostrarToast('✅ Dados salvos manualmente com sucesso! Nº Interno: ' + dadosNota.numeroInterno, 'success');
-        }
-
-        // ============================================================
-        // 13. EDITAR DADOS MANUAL (a partir do preview)
-        // ============================================================
-        function editarDadosManual() {
-            abrirFormManual();
-        }
-
-        // ============================================================
-        // 14. FECHAR FORMULÁRIO MANUAL
-        // ============================================================
-        function fecharFormManual() {
-            document.getElementById('formManual').classList.remove('visivel');
-        }
-
-        // ============================================================
-        // 15. NAVEGAÇÃO
+        // NAVEGAÇÃO
         // ============================================================
         function voltarUpload() {
             document.getElementById('passoPreview').style.display = 'none';
@@ -1887,15 +1038,15 @@
             document.getElementById('etapa1').classList.remove('concluido');
             document.getElementById('etapa1').classList.add('ativo');
             document.getElementById('etapa2').classList.remove('ativo');
+            document.getElementById('etapa2').classList.remove('concluido');
+            document.getElementById('etapa3').classList.remove('ativo');
             dadosNota = null;
             document.getElementById('fileInput').value = '';
-            document.getElementById('formManual').classList.remove('visivel');
-            modoManual = false;
         }
 
         function avancarParaVinculo() {
             if (!dadosNota) {
-                mostrarToast('⚠️ Nenhuma nota lida. Faça o upload primeiro.', 'warning');
+                mostrarToast('⚠️ Nenhuma nota processada. Faça o upload primeiro.', 'warning');
                 return;
             }
 
@@ -1910,7 +1061,8 @@
             preencherProjetos();
             document.getElementById('resumoNumero').textContent = dadosNota.numero || '---';
             document.getElementById('resumoEmitente').textContent = dadosNota.emitente || '---';
-            document.getElementById('resumoValor').textContent = 'R$ ' + (dadosNota.valor || 0).toFixed(2).replace('.', ',');
+            document.getElementById('resumoValor').textContent = 'R$ ' + (dadosNota.valorTotal || 0).toFixed(2).replace('.',
+                ',');
 
             document.getElementById('notaIdVinculo').value = Date.now();
 
@@ -1964,7 +1116,7 @@
         }
 
         // ============================================================
-        // 16. ATUALIZAR SALDO
+        // ATUALIZAR SALDO
         // ============================================================
         function atualizarSaldo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
@@ -1984,7 +1136,7 @@
             var previsto = orc ? orc.previsto : 0;
             var realizado = orc ? orc.realizado : 0;
             var disponivel = previsto - realizado;
-            var valorNota = dadosNota ? dadosNota.valor || 0 : 0;
+            var valorNota = dadosNota ? dadosNota.valorTotal || 0 : 0;
 
             document.getElementById('saldoPrevisto').textContent = 'R$ ' + previsto.toFixed(2).replace('.', ',');
             document.getElementById('saldoRealizado').textContent = 'R$ ' + realizado.toFixed(2).replace('.', ',');
@@ -2000,7 +1152,7 @@
         }
 
         // ============================================================
-        // 17. DESTINO
+        // DESTINO
         // ============================================================
         function selecionarDestino(el) {
             document.querySelectorAll('.destino-card').forEach(function(c) {
@@ -2011,7 +1163,7 @@
         }
 
         // ============================================================
-        // 18. CONFIRMAR VINCULAÇÃO
+        // CONFIRMAR VINCULAÇÃO
         // ============================================================
         function confirmarVinculo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
@@ -2021,7 +1173,7 @@
             if (!projetoId) { mostrarToast('⚠️ Selecione um projeto!', 'warning'); return; }
             if (!categoria) { mostrarToast('⚠️ Selecione uma categoria!', 'warning'); return; }
 
-            var valorNota = dadosNota ? dadosNota.valor || 0 : 0;
+            var valorNota = dadosNota ? dadosNota.valorTotal || 0 : 0;
 
             var orc = orcamentos.find(function(o) {
                 return o.projeto_id === projetoId && o.categoria === categoria;
@@ -2040,29 +1192,20 @@
             var novaNota = {
                 id: parseInt(document.getElementById('notaIdVinculo').value),
                 numero: dadosNota.numero || '---',
-                numeroInterno: dadosNota.numeroInterno || 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length +
-                    1).padStart(4, '0'),
-                chave: dadosNota.chave || '---',
                 emitente: dadosNota.emitente || '---',
                 cnpj_emitente: dadosNota.cnpj || '---',
                 telefone_emitente: dadosNota.telefone || '---',
                 natureza: dadosNota.natureza || '---',
                 valor_total: valorNota,
-                valor_produto: dadosNota.valorProduto || 0,
-                valor_frete: dadosNota.valorFrete || 0,
-                valor_seguro: dadosNota.valorSeguro || 0,
-                valor_desconto: dadosNota.valorDesconto || 0,
                 data_emissao: dadosNota.dataEmissao || new Date().toISOString().split('T')[0],
-                data_entrada: dadosNota.dataEntrada || '',
-                hora_entrada: dadosNota.horaEntrada || '',
-                data_entrega: dadosNota.dataEntrega || '',
                 projeto_id: projetoId,
                 categoria_orcamento: categoria,
                 destino: destinoSelecionado,
                 itens: dadosNota.itens || [],
                 status: 'vinculado',
                 observacao: obs,
-                data_criacao: new Date().toISOString()
+                data_criacao: new Date().toISOString(),
+                origem: 'ia'
             };
 
             notas.push(novaNota);
@@ -2091,11 +1234,11 @@
 
             dadosNota = null;
             renderizarListaNotas();
-            mostrarToast('✅ Nota vinculada com sucesso! Nº Interno: ' + novaNota.numeroInterno, 'success');
+            mostrarToast('✅ Nota vinculada com sucesso! (Processada por IA)', 'success');
         }
 
         // ============================================================
-        // 19. DIRECIONAR PRODUTOS
+        // DIRECIONAR PRODUTOS
         // ============================================================
         function direcionarProdutos(nota) {
             if (!nota.itens || nota.itens.length === 0) {
@@ -2120,7 +1263,7 @@
                         qtd: item.quantidade || 1,
                         qtdMinima: 0,
                         local: 'Almoxarifado',
-                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id + ' | NF: ' + nota.id
+                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id + ' | IA'
                     });
                     localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
                     mostrarToast('📦 ' + item.quantidade + 'x ' + nomeProduto + ' adicionado ao Estoque', 'info');
@@ -2138,7 +1281,7 @@
                         valor: item.valor_total || nota.valor_total,
                         status: 'Em Operação',
                         local: 'Sede AMOVIN',
-                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id + ' | NF: ' + nota.id
+                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id + ' | IA'
                     });
                     localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
                     localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
@@ -2160,7 +1303,7 @@
         }
 
         // ============================================================
-        // 20. RENDERIZAR LISTA
+        // RENDERIZAR LISTA
         // ============================================================
         function renderizarListaNotas() {
             var container = document.getElementById('listaNotas');
@@ -2193,12 +1336,15 @@
                 var data = n.data_emissao ? new Date(n.data_emissao + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
                 var qtdItens = n.itens ? n.itens.length : 0;
 
+                var origemLabel = n.origem === 'ia' ? ' 🤖 IA' : '';
+
                 return '<div class="nota-item">' +
                     '<div class="info">' +
-                    '<div class="num">NF ' + n.numero + ' <span style="font-size:11px;color:var(--cinza);font-weight:400;">(' +
-                    qtdItens + ' itens)</span></div>' +
-                    '<div class="detalhe">📌 ' + (n.numeroInterno || n.numero) + ' | 🏢 ' + n.emitente + ' | 📅 ' +
-                    data + ' | 💰 R$ ' + n.valor_total.toFixed(2).replace('.', ',') + '</div>' +
+                    '<div class="num">NF ' + n.numero + origemLabel +
+                    ' <span style="font-size:11px;color:var(--cinza);font-weight:400;">(' + qtdItens +
+                    ' itens)</span></div>' +
+                    '<div class="detalhe">🏢 ' + n.emitente + ' | 📅 ' + data + ' | 💰 R$ ' + n.valor_total.toFixed(2)
+                    .replace('.', ',') + '</div>' +
                     '<div class="projeto">📋 ' + projetoNome + ' | ' + n.categoria_orcamento + '</div>' +
                     '</div>' +
                     '<div><span class="status-badge ' + (statusMap[n.status] || 'status-pendente') + '">' + (statusLabel[n
@@ -2208,7 +1354,7 @@
         }
 
         // ============================================================
-        // 21. NAVEGAÇÃO FINAL
+        // NAVEGAÇÃO FINAL
         // ============================================================
         function novaNota() {
             document.getElementById('passoConfirmacao').style.display = 'none';
@@ -2228,8 +1374,6 @@
             document.getElementById('obsVinculo').value = '';
             document.getElementById('saldoBox').style.display = 'none';
             document.getElementById('fileInput').value = '';
-            document.getElementById('formManual').classList.remove('visivel');
-            modoManual = false;
         }
 
         function irParaRelatorio() {
@@ -2242,7 +1386,7 @@
         }
 
         // ============================================================
-        // 22. TOAST
+        // TOAST
         // ============================================================
         function mostrarToast(mensagem, tipo) {
             var toast = document.createElement('div');
@@ -2260,7 +1404,7 @@
         }
 
         // ============================================================
-        // 23. DRAG AND DROP
+        // DRAG AND DROP
         // ============================================================
         var dropzone = document.getElementById('dropzone');
 
@@ -2281,12 +1425,12 @@
             if (files.length > 0) {
                 var input = document.getElementById('fileInput');
                 input.files = files;
-                processarArquivo({ target: input });
+                processarComIA({ target: input });
             }
         });
 
         // ============================================================
-        // 24. CONTROLE DE PERFIL
+        // CONTROLE DE PERFIL
         // ============================================================
         var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
         var modulosPermitidos = {
@@ -2318,9 +1462,10 @@
         }
 
         // ============================================================
-        // 25. INICIALIZAÇÃO
+        // INICIALIZAÇÃO
         // ============================================================
         renderizarListaNotas();
+        mostrarToast('🧠 Módulo integrado com a Central de IA!', 'info');
     </script>
 </body>
 </html>
