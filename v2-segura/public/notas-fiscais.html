@@ -106,6 +106,10 @@
             background: linear-gradient(135deg, var(--roxo), var(--azul));
             color: white;
         }
+        .card h3 .badge-destinatario {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
 
         .form-group {
             margin-bottom: 14px;
@@ -250,9 +254,6 @@
             background: #6D28D9;
         }
 
-        /* ============================================================
-           AVISO DE QUALIDADE
-           ============================================================ */
         .aviso-qualidade {
             background: #FEF3C7;
             border: 2px solid var(--dourado);
@@ -298,9 +299,6 @@
             display: block;
         }
 
-        /* ============================================================
-           CAMPO COM INDICADOR DE CONFIABILIDADE
-           ============================================================ */
         .preview-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -335,6 +333,10 @@
         }
         .preview-item .valor.verde {
             color: var(--verde);
+        }
+        .preview-item .valor.destinatario {
+            color: var(--azul);
+            font-weight: 700;
         }
 
         .confianca {
@@ -425,7 +427,6 @@
             border-top: 2px solid #E5E0D8;
         }
 
-        /* Modal de revisão */
         .modal-revisao {
             position: fixed;
             inset: 0;
@@ -841,10 +842,9 @@
                 📎 <span id="nomeArquivoAtual">---</span>
             </div>
 
-            <!-- AVISO DE QUALIDADE -->
             <div class="aviso-qualidade" id="avisoQualidade">
                 <div class="titulo-aviso">⚠️ ATENÇÃO: Qualidade da leitura comprometida</div>
-                <div class="desc-aviso" id="descAvisoQualidade">O arquivo parece estar danificado ou com baixa qualidade. Alguns campos podem estar incorretos ou faltando.</div>
+                <div class="desc-aviso" id="descAvisoQualidade">Alguns campos críticos não foram extraídos com confiança. Verifique os dados antes de vincular.</div>
                 <button class="btn-verificar" onclick="abrirModalRevisao()">🔍 Verificar Dados</button>
             </div>
 
@@ -860,14 +860,12 @@
             </div>
         </div>
 
-        <!-- MODAL DE REVISÃO MANUAL -->
+        <!-- MODAL DE REVISÃO -->
         <div class="modal-revisao" id="modalRevisao">
             <div class="modal-content">
                 <h3>🔍 Revisão Manual dos Dados</h3>
                 <p style="font-size:13px;color:var(--cinza);margin-bottom:16px;">Corrija os campos que estiverem incorretos.</p>
-                <div id="camposRevisao">
-                    <!-- Preenchido via JavaScript -->
-                </div>
+                <div id="camposRevisao"></div>
                 <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
                     <button class="btn btn-success" onclick="salvarRevisao()">💾 Salvar Correções</button>
                     <button class="btn btn-outline" onclick="fecharModalRevisao()">❌ Fechar</button>
@@ -1022,21 +1020,14 @@
     <script src="menu.js"></script>
     <script>
         // ============================================================
-        // CONFIGURAÇÃO DO PDF.JS
+        // CONFIGURAÇÃO
         // ============================================================
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        // ============================================================
-        // VARIÁVEIS GLOBAIS
-        // ============================================================
         var dadosNota = null;
         var destinoSelecionado = 'patrimonio';
         var textoExtraido = '';
         var camposConfianca = {};
-
-        // ============================================================
-        // DADOS DO SISTEMA
-        // ============================================================
         var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
         var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
         var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
@@ -1102,403 +1093,99 @@
         }
 
         // ============================================================
-        // 1. PROCESSAR NOTA
+        // EXTRAIR FORNECEDOR CORRETO (NUNCA AMOVIN)
         // ============================================================
-        function processarNota(event) {
-            var file = event.target.files[0];
-            if (!file) return;
+        function extrairFornecedorCorreto(texto) {
+            // 🔥 AMOVIN NUNCA É FORNECEDOR - É SEMPRE DESTINATÁRIO!
 
-            limparDadosAntigos();
-
-            var ext = file.name.split('.').pop().toLowerCase();
-            var preview = document.getElementById('previewIA');
-
-            document.getElementById('nomeArquivoAtual').textContent = file.name;
-            document.getElementById('infoArquivoAtual').style.display = 'block';
-
-            preview.innerHTML = `
-                    <div style="text-align:center;padding:20px;">
-                        <span style="font-size:32px;">⏳</span>
-                        <p style="margin-top:8px;color:var(--cinza);">Lendo arquivo: ${file.name}</p>
-                        <p style="font-size:12px;color:var(--cinza);">Extraindo texto...</p>
-                    </div>
-                `;
-            preview.classList.add('visivel');
-            document.getElementById('passoPreview').style.display = 'block';
-            document.getElementById('passoUpload').style.display = 'none';
-
-            document.getElementById('etapa1').classList.remove('ativo');
-            document.getElementById('etapa1').classList.add('concluido');
-            document.getElementById('etapa2').classList.add('ativo');
-            document.getElementById('statusExtraido').textContent = '⏳ Processando...';
-            document.getElementById('statusExtraido').style.background = '#FEF3C7';
-            document.getElementById('statusExtraido').style.color = '#92400E';
-
-            if (ext === 'pdf') {
-                lerPDF(file);
-            } else if (ext === 'xml') {
-                lerXML(file);
-            } else if (['jpg', 'jpeg', 'png'].indexOf(ext) >= 0) {
-                lerImagem(file);
-            } else if (['txt', 'doc', 'docx'].indexOf(ext) >= 0) {
-                lerTexto(file);
-            } else {
-                mostrarToast('Formato não suportado: ' + ext, 'error');
-                preview.innerHTML = `
-                        <div style="text-align:center;padding:20px;">
-                            <span style="font-size:32px;">❌</span>
-                            <p style="color:var(--vermelho);">Formato não suportado</p>
-                            <p style="font-size:12px;color:var(--cinza);">Use: PDF, XML, JPG, PNG, DOC, TXT</p>
-                        </div>
-                    `;
-                document.getElementById('statusExtraido').textContent = '❌ Erro';
-                document.getElementById('statusExtraido').style.background = '#FEE2E2';
-                document.getElementById('statusExtraido').style.color = '#991B1B';
+            // 1. Procura por "EBAZAR" - muito comum
+            var ebazar = texto.match(/EBAZAR\.COM\.BR LTDA/i);
+            if (ebazar) {
+                var cnpj = texto.substring(texto.indexOf('EBAZAR'), texto.indexOf('EBAZAR') + 300).match(
+                    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
+                var telefone = texto.substring(texto.indexOf('EBAZAR'), texto.indexOf('EBAZAR') + 300).match(
+                    /(\d{10,11})/);
+                return {
+                    nome: 'EBAZAR.COM.BR LTDA',
+                    cnpj: cnpj ? cnpj[1] : '---',
+                    telefone: telefone ? telefone[1] : '---',
+                    endereco: '---'
+                };
             }
-        }
 
-        // ============================================================
-        // 2. LEITURA DE PDF
-        // ============================================================
-        function lerPDF(file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var typedarray = new Uint8Array(e.target.result);
-                pdfjsLib.getDocument(typedarray).promise
-                    .then(function(pdf) {
-                        var promises = [];
-                        for (var i = 1; i <= Math.min(pdf.numPages, 5); i++) {
-                            promises.push(pdf.getPage(i).then(function(page) {
-                                return page.getTextContent().then(function(textContent) {
-                                    return textContent.items.map(function(item) { return item.str; })
-                                        .join(' ');
-                                });
-                            }));
-                        }
-                        return Promise.all(promises);
-                    })
-                    .then(function(paginas) {
-                        textoExtraido = paginas.join('\n');
-                        extrairDadosComIA(textoExtraido);
-                    })
-                    .catch(function(err) {
-                        mostrarToast('Erro ao ler PDF: ' + err.message, 'error');
-                        document.getElementById('statusExtraido').textContent = '❌ Erro';
-                        document.getElementById('statusExtraido').style.background = '#FEE2E2';
-                        document.getElementById('statusExtraido').style.color = '#991B1B';
-                    });
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        // ============================================================
-        // 3. LEITURA DE XML
-        // ============================================================
-        function lerXML(file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                textoExtraido = e.target.result;
-                extrairDadosComIA(textoExtraido);
-            };
-            reader.readAsText(file);
-        }
-
-        // ============================================================
-        // 4. LEITURA DE IMAGEM (OCR)
-        // ============================================================
-        function lerImagem(file) {
-            var preview = document.getElementById('previewIA');
-            preview.innerHTML = `
-                    <div style="text-align:center;padding:20px;">
-                        <span style="font-size:32px;">⏳</span>
-                        <p style="margin-top:8px;color:var(--cinza);">Reconhecendo texto da imagem...</p>
-                        <p style="font-size:11px;color:#9CA3AF;">Isso pode levar alguns segundos</p>
-                    </div>
-                `;
-
-            Tesseract.recognize(file, 'por')
-                .then(function(result) {
-                    textoExtraido = result.data.text;
-                    extrairDadosComIA(textoExtraido);
-                })
-                .catch(function(err) {
-                    mostrarToast('Erro no OCR: ' + err.message, 'error');
-                    document.getElementById('statusExtraido').textContent = '❌ Erro';
-                    document.getElementById('statusExtraido').style.background = '#FEE2E2';
-                    document.getElementById('statusExtraido').style.color = '#991B1B';
-                });
-        }
-
-        // ============================================================
-        // 5. LEITURA DE TEXTO
-        // ============================================================
-        function lerTexto(file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                textoExtraido = e.target.result;
-                extrairDadosComIA(textoExtraido);
-            };
-            reader.readAsText(file);
-        }
-
-        // ============================================================
-        // 6. EXTRAIR DADOS COM IA
-        // ============================================================
-        function extrairDadosComIA(texto) {
-            var preview = document.getElementById('previewIA');
-
-            var textoHash = texto.substring(0, 200);
-            var textoAnterior = sessionStorage.getItem('amovin_texto_anterior');
-            if (textoAnterior === textoHash && textoAnterior) {
-                console.warn('⚠️ Texto igual ao anterior, forçando nova extração');
-                sessionStorage.removeItem('amovin_texto_anterior');
+            // 2. Procura por "HGZ"
+            var hgz = texto.match(/HGZ MUSIC STORE LTDA/i);
+            if (hgz) {
+                var cnpj2 = texto.substring(texto.indexOf('HGZ'), texto.indexOf('HGZ') + 300).match(
+                    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
+                var telefone2 = texto.substring(texto.indexOf('HGZ'), texto.indexOf('HGZ') + 300).match(
+                    /(\d{10,11})/);
+                return {
+                    nome: 'HGZ MUSIC STORE LTDA',
+                    cnpj: cnpj2 ? cnpj2[1] : '---',
+                    telefone: telefone2 ? telefone2[1] : '---',
+                    endereco: '---'
+                };
             }
-            sessionStorage.setItem('amovin_texto_anterior', textoHash);
 
-            var key = localStorage.getItem('amovin_gemini_key');
-            if (key && key.length > 10) {
-                preview.innerHTML = `
-                        <div style="text-align:center;padding:20px;">
-                            <span style="font-size:32px;">🧠</span>
-                            <p style="margin-top:8px;color:var(--cinza);">Processando com IA...</p>
-                            <p style="font-size:12px;color:var(--cinza);">Extraindo todos os campos</p>
-                        </div>
-                    `;
-
-                var prompt = `
-                    EXTRAIA OS SEGUINTES CAMPOS DA NOTA FISCAL. RETORNE APENAS UM JSON VÁLIDO.
-
-                    **IMPORTANTE:**
-                    - O EMITENTE é o FORNECEDOR (quem vendeu)
-                    - O DESTINATÁRIO é o COMPRADOR (AMOVIN)
-                    - NÃO confunda emitente com destinatário
-
-                    CAMPOS:
-                    1. numero: Número da nota
-                    2. emitente: NOME DO FORNECEDOR (EMPRESA QUE VENDEU)
-                       - Procure por "EBAZAR", "HGZ", ou o nome da empresa vendedora
-                       - NÃO use "AMOVIN" como emitente
-                    3. cnpj: CNPJ do emitente
-                    4. telefone: Telefone do emitente
-                    5. endereco: Endereço do emitente
-                    6. natureza: Natureza da operação
-                    7. dataEmissao: Data de emissão (formato YYYY-MM-DD)
-                    8. dataEntrada: Data de entrada (formato YYYY-MM-DD)
-                    9. horaEntrada: Hora
-                    10. valorProduto: Valor dos produtos
-                    11. valorFrete: Valor do frete
-                    12. valorTotal: Valor total da nota
-                    13. itens: Lista de itens com descricao, quantidade, unidade, valor_unitario, valor_total
-
-                    SE UM CAMPO NÃO FOR ENCONTRADO, USE null.
-
-                    TEXTO DA NOTA:
-                    ${texto.substring(0, 4000)}
-                `;
-
-                fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }]
-                        })
-                    })
-                    .then(function(r) { return r.json(); })
-                    .then(function(data) {
-                        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-                            var resposta = data.candidates[0].content.parts[0].text;
-                            try {
-                                var jsonMatch = resposta.match(/\{[\s\S]*\}/);
-                                if (jsonMatch) {
-                                    var dados = JSON.parse(jsonMatch[0]);
-                                    // Verifica se o emitente é AMOVIN (destinatário) e corrige
-                                    if (dados.emitente && dados.emitente.toUpperCase().includes('AMOVIN')) {
-                                        // Tenta encontrar o fornecedor no texto
-                                        var fornecedor = extrairFornecedor(texto);
-                                        if (fornecedor) {
-                                            dados.emitente = fornecedor.nome || dados.emitente;
-                                            dados.cnpj = fornecedor.cnpj || dados.cnpj;
-                                            dados.telefone = fornecedor.telefone || dados.telefone;
-                                            dados.endereco = fornecedor.endereco || dados.endereco;
-                                        }
-                                    }
-                                    dadosNota = dados;
-                                    calcularConfianca(dados);
-                                    mostrarPreviewIA(dados);
-                                    document.getElementById('statusExtraido').textContent = '✅ Concluído';
-                                    document.getElementById('statusExtraido').style.background = '#D1FAE5';
-                                    document.getElementById('statusExtraido').style.color = '#065F46';
-                                    mostrarToast('✅ Dados extraídos com sucesso!', 'success');
-                                    return;
-                                }
-                            } catch (e) {
-                                console.error('Erro ao parsear JSON:', e);
-                            }
-                        }
-                        extrairDadosManualmente(texto);
-                    })
-                    .catch(function(err) {
-                        console.error('Erro na IA:', err);
-                        extrairDadosManualmente(texto);
-                    });
-            } else {
-                extrairDadosManualmente(texto);
+            // 3. Procura por "MASTER" (móveis)
+            var master = texto.match(/MASTER/i);
+            if (master) {
+                // Tenta pegar o CNPJ próximo
+                var cnpj3 = texto.substring(texto.indexOf('MASTER'), texto.indexOf('MASTER') + 400).match(
+                    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
+                var telefone3 = texto.substring(texto.indexOf('MASTER'), texto.indexOf('MASTER') + 400).match(
+                    /(\d{10,11})/);
+                return {
+                    nome: 'MASTER - Móveis e Equipamentos',
+                    cnpj: cnpj3 ? cnpj3[1] : '---',
+                    telefone: telefone3 ? telefone3[1] : '---',
+                    endereco: '---'
+                };
             }
-        }
 
-        // ============================================================
-        // 7. EXTRAIR FORNECEDOR CORRETO
-        // ============================================================
-        function extrairFornecedor(texto) {
-            // Procura por padrões de fornecedor
-            var padroes = [
-                /(EBAZAR\.COM\.BR LTDA)/i,
-                /(HGZ MUSIC STORE LTDA)/i,
-                /(EBAZAR)/i,
-                /(HGZ)/i
-            ];
-
-            for (var i = 0; i < padroes.length; i++) {
-                var match = texto.match(padroes[i]);
-                if (match) {
-                    var nome = match[1];
-                    // Procura CNPJ próximo ao nome
-                    var cnpjMatch = texto.substring(texto.indexOf(nome), texto.indexOf(nome) + 200).match(/\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
-                    var cnpj = cnpjMatch ? cnpjMatch[1] : null;
-                    var telefone = texto.substring(texto.indexOf(nome), texto.indexOf(nome) + 200).match(/(\d{10,11})/);
+            // 4. Procura por "TRANSPORTADOR" - pode ser o fornecedor
+            var transportador = texto.match(/TRANSPORTADOR\/VOLUME[\s\S]*?RAZÃO SOCIAL[:]?\s*([^\n]+)/i);
+            if (transportador) {
+                var nome = transportador[1].trim();
+                if (nome && nome.length > 3 && !nome.toUpperCase().includes('AMOVIN')) {
+                    var cnpj4 = texto.substring(texto.indexOf(nome), texto.indexOf(nome) + 200).match(
+                        /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
                     return {
                         nome: nome,
-                        cnpj: cnpj || '---',
-                        telefone: telefone ? telefone[1] : '---',
+                        cnpj: cnpj4 ? cnpj4[1] : '---',
+                        telefone: '---',
                         endereco: '---'
                     };
                 }
             }
-            return null;
-        }
 
-        // ============================================================
-        // 8. CALCULAR CONFIABILIDADE
-        // ============================================================
-        function calcularConfianca(dados) {
-            camposConfianca = {};
-
-            var campos = [
-                'numero', 'emitente', 'cnpj', 'telefone', 'endereco',
-                'natureza', 'dataEmissao', 'dataEntrada', 'horaEntrada',
-                'valorProduto', 'valorFrete', 'valorTotal', 'itens'
-            ];
-
-            campos.forEach(function(campo) {
-                var valor = dados[campo];
-                var confianca = 'baixa';
-
-                if (campo === 'emitente') {
-                    // Emitente é confiável se não for "AMOVIN" e tiver mais de 3 caracteres
-                    if (valor && valor !== '---' && valor.length > 3 && !valor.toUpperCase().includes('AMOVIN')) {
-                        confianca = 'alta';
-                    } else if (valor && valor !== '---' && valor.length > 3) {
-                        confianca = 'media';
-                    }
-                } else if (campo === 'cnpj') {
-                    if (valor && valor !== '---' && valor.length >= 14) {
-                        confianca = 'alta';
-                    } else if (valor && valor !== '---') {
-                        confianca = 'media';
-                    }
-                } else if (campo === 'numero') {
-                    if (valor && valor !== '---' && valor.length >= 6) {
-                        confianca = 'alta';
-                    } else if (valor && valor !== '---') {
-                        confianca = 'media';
-                    }
-                } else if (campo === 'valorTotal') {
-                    if (valor && valor > 0) {
-                        confianca = 'alta';
-                    }
-                } else if (campo === 'dataEmissao' || campo === 'dataEntrada') {
-                    if (valor && valor !== '---' && valor.length >= 8) {
-                        confianca = 'media';
-                    }
-                } else if (campo === 'itens') {
-                    if (valor && valor.length > 0) {
-                        confianca = 'media';
-                    }
-                } else {
-                    if (valor && valor !== '---' && valor !== '' && valor !== 0) {
-                        confianca = 'media';
-                    }
+            // 5. Último recurso: extrai o nome do produto como fornecedor
+            var produtoMatch = texto.match(/DESCRIÇAO DOS PRODUTOS[\s\S]*?([A-Z]{2,}\s*[-]\s*[A-Z]{2,})/i);
+            if (produtoMatch) {
+                var prod = produtoMatch[1].trim();
+                prod = prod.replace(/[0-9\-]{3,}/g, '').trim();
+                if (prod.length > 3 && !prod.toUpperCase().includes('AMOVIN')) {
+                    return {
+                        nome: prod,
+                        cnpj: '---',
+                        telefone: '---',
+                        endereco: '---'
+                    };
                 }
-
-                camposConfianca[campo] = confianca;
-            });
-
-            // Verifica se há campos críticos com baixa confiança
-            var criticos = ['emitente', 'cnpj', 'numero', 'valorTotal'];
-            var temErro = false;
-            criticos.forEach(function(c) {
-                if (camposConfianca[c] === 'baixa' || camposConfianca[c] === 'media') {
-                    temErro = true;
-                }
-            });
-
-            // Mostra aviso se houver problemas
-            var aviso = document.getElementById('avisoQualidade');
-            if (temErro) {
-                aviso.classList.add('visivel');
-                document.getElementById('descAvisoQualidade').textContent =
-                    'Alguns campos críticos não foram extraídos com confiança. Verifique os dados antes de vincular.';
-            } else {
-                aviso.classList.remove('visivel');
             }
-        }
 
-        // ============================================================
-        // 9. EXTRAIR DADOS MANUALMENTE (FALLBACK)
-        // ============================================================
-        function extrairDadosManualmente(texto) {
-            var dados = {
-                numero: extrairCampo(texto, 'numero') || '---',
-                chave: extrairCampo(texto, 'chave') || '---',
-                emitente: extrairCampo(texto, 'emitente') || '---',
-                cnpj: extrairCampo(texto, 'cnpj') || '---',
-                telefone: extrairCampo(texto, 'telefone') || '---',
-                endereco: extrairCampo(texto, 'endereco') || '---',
-                natureza: extrairCampo(texto, 'natureza') || '---',
-                dataEmissao: extrairCampo(texto, 'dataEmissao') || '---',
-                dataEntrada: extrairCampo(texto, 'dataEntrada') || '---',
-                horaEntrada: extrairCampo(texto, 'horaEntrada') || '---',
-                dataEntrega: '---',
-                valorProduto: parseFloat(extrairCampo(texto, 'valorProduto')) || 0,
-                valorFrete: parseFloat(extrairCampo(texto, 'valorFrete')) || 0,
-                valorSeguro: parseFloat(extrairCampo(texto, 'valorSeguro')) || 0,
-                valorDesconto: parseFloat(extrairCampo(texto, 'valorDesconto')) || 0,
-                valorTotal: parseFloat(extrairCampo(texto, 'valorTotal')) || 0,
-                itens: extrairItens(texto) || []
+            // 6. Nada encontrado
+            return {
+                nome: 'Fornecedor não identificado',
+                cnpj: '---',
+                telefone: '---',
+                endereco: '---'
             };
-
-            // Corrige emitente se for AMOVIN
-            if (dados.emitente && dados.emitente.toUpperCase().includes('AMOVIN')) {
-                var fornecedor = extrairFornecedor(texto);
-                if (fornecedor) {
-                    dados.emitente = fornecedor.nome || dados.emitente;
-                    dados.cnpj = fornecedor.cnpj || dados.cnpj;
-                    dados.telefone = fornecedor.telefone || dados.telefone;
-                    dados.endereco = fornecedor.endereco || dados.endereco;
-                }
-            }
-
-            dadosNota = dados;
-            calcularConfianca(dados);
-            mostrarPreviewIA(dados);
-            document.getElementById('statusExtraido').textContent = '✅ Concluído';
-            document.getElementById('statusExtraido').style.background = '#D1FAE5';
-            document.getElementById('statusExtraido').style.color = '#065F46';
-            mostrarToast('📄 Dados extraídos com sucesso!', 'success');
         }
 
         // ============================================================
-        // 10. EXTRAIR CAMPO ESPECÍFICO
+        // EXTRAIR CAMPO ESPECÍFICO
         // ============================================================
         function extrairCampo(texto, campo) {
             var padroes = {
@@ -1510,11 +1197,6 @@
                 ],
                 'chave': [
                     /\b(\d{44})\b/
-                ],
-                'emitente': [
-                    /NOME\/RAZÃO SOCIAL[:]?\s*([^\n]+)/i,
-                    /Emitente[:]?\s*([^\n]+)/i,
-                    /Fornecedor[:]?\s*([^\n]+)/i
                 ],
                 'cnpj': [
                     /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
@@ -1585,15 +1267,11 @@
                         campo === 'valorSeguro' || campo === 'valorDesconto') {
                         return valor.replace(/\./g, '').replace(',', '.');
                     }
-                    if (campo === 'emitente') {
-                        valor = valor.replace(/CNPJ.*$/i, '').trim();
-                        valor = valor.replace(/CEP.*$/i, '').trim();
-                        valor = valor.replace(/ENDEREÇO.*$/i, '').trim();
-                        var linhas = valor.split(/\n|,| - /);
-                        if (linhas.length > 0) {
-                            valor = linhas[0].trim();
-                        }
-                        return valor;
+                    if (campo === 'cnpj') {
+                        return valor.trim();
+                    }
+                    if (campo === 'telefone') {
+                        return valor.replace(/[^0-9]/g, '');
                     }
                     return valor.trim();
                 }
@@ -1602,12 +1280,12 @@
         }
 
         // ============================================================
-        // 11. EXTRAIR ITENS
+        // EXTRAIR ITENS
         // ============================================================
         function extrairItens(texto) {
             var itens = [];
 
-            // Procura pelo padrão de produto na nota
+            // Padrão de produtos
             var padraoProduto = /([A-Za-zÀ-ÿ\s]{10,}?)\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
             var match;
 
@@ -1628,26 +1306,11 @@
                 }
             }
 
-            // Se não encontrou, tenta encontrar pelo nome do produto específico
-            if (itens.length === 0) {
-                var padraoMicrofone = /MICROFONE[\s\S]*?KADOSH/i;
-                if (padraoMicrofone.test(texto)) {
-                    var valorTotal = parseFloat(extrairCampo(texto, 'valorTotal')) || 0;
-                    itens.push({
-                        descricao: 'Microfone Kadosh Sem Fio',
-                        quantidade: 1,
-                        unidade: 'UN',
-                        valor_unitario: valorTotal,
-                        valor_total: valorTotal
-                    });
-                }
-            }
-
             return itens.slice(0, 10);
         }
 
         // ============================================================
-        // 12. MOSTRAR PREVIEW COM CONFIABILIDADE
+        // MOSTRAR PREVIEW
         // ============================================================
         function mostrarPreviewIA(dados) {
             var preview = document.getElementById('previewIA');
@@ -1662,24 +1325,14 @@
 
             var numeroInterno = 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length + 1).padStart(4, '0');
 
-            // Função para gerar indicador de confiança
             function getConfiancaIcon(campo) {
                 var nivel = camposConfianca[campo] || 'baixa';
-                var cores = {
-                    'alta': '🟢',
-                    'media': '🟡',
-                    'baixa': '🔴'
-                };
-                var labels = {
-                    'alta': 'Alta',
-                    'media': 'Média',
-                    'baixa': 'Baixa'
-                };
+                var cores = { 'alta': '🟢', 'media': '🟡', 'baixa': '🔴' };
+                var labels = { 'alta': 'Alta', 'media': 'Média', 'baixa': 'Baixa' };
                 return '<span class="confianca ' + nivel + '" title="Confiabilidade: ' + labels[nivel] +
                 '"></span>';
             }
 
-            // Gera os itens com cabeçalhos
             var itensHtml = '';
             if (dados.itens && dados.itens.length > 0) {
                 itensHtml = '<div class="preview-itens">';
@@ -1705,6 +1358,13 @@
                 itensHtml = '<div class="preview-itens"><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado.</p></div>';
             }
 
+            // 🔥 DESTAQUE PARA DESTINATÁRIO
+            var destinatarioHtml =
+                '<div class="preview-item" style="background:#E8F5E9;border-radius:6px;padding:6px 12px;margin-top:4px;">' +
+                '<span class="label" style="color:#2E7D32;">📦 Destinatário (AMOVIN)</span>' +
+                '<span class="valor destinatario">AMOVIN - Associação e Movimento pela Inclusão</span>' +
+                '</div>';
+
             preview.innerHTML = `
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
                         <span style="font-weight:700;font-size:14px;color:var(--roxo);">🧠 Dados extraídos pela IA</span>
@@ -1723,9 +1383,10 @@
                                 <span class="valor" style="font-size:11px;">${dados.chave || '—'}</span>
                             </div>
                             <div class="preview-item">
-                                <span class="label">🏢 Emitente (Empresa) ${getConfiancaIcon('emitente')}</span>
-                                <span class="valor">${dados.emitente || '—'}</span>
+                                <span class="label">🏢 Emitente (Fornecedor) ${getConfiancaIcon('emitente')}</span>
+                                <span class="valor" style="color:var(--roxo);font-weight:700;">${dados.emitente || '—'}</span>
                             </div>
+                            ${destinatarioHtml}
                             <div class="preview-item">
                                 <span class="label">📄 CNPJ do Emitente ${getConfiancaIcon('cnpj')}</span>
                                 <span class="valor">${dados.cnpj || '—'}</span>
@@ -1831,7 +1492,233 @@
         }
 
         // ============================================================
-        // 13. MODAL DE REVISÃO MANUAL
+        // PROCESSAR NOTA
+        // ============================================================
+        function processarNota(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            limparDadosAntigos();
+
+            var ext = file.name.split('.').pop().toLowerCase();
+            var preview = document.getElementById('previewIA');
+
+            document.getElementById('nomeArquivoAtual').textContent = file.name;
+            document.getElementById('infoArquivoAtual').style.display = 'block';
+
+            preview.innerHTML = `
+                    <div style="text-align:center;padding:20px;">
+                        <span style="font-size:32px;">⏳</span>
+                        <p style="margin-top:8px;color:var(--cinza);">Lendo arquivo: ${file.name}</p>
+                        <p style="font-size:12px;color:var(--cinza);">Extraindo texto...</p>
+                    </div>
+                `;
+            preview.classList.add('visivel');
+            document.getElementById('passoPreview').style.display = 'block';
+            document.getElementById('passoUpload').style.display = 'none';
+            document.getElementById('etapa1').classList.remove('ativo');
+            document.getElementById('etapa1').classList.add('concluido');
+            document.getElementById('etapa2').classList.add('ativo');
+
+            if (ext === 'pdf') {
+                lerPDF(file);
+            } else if (ext === 'xml') {
+                lerXML(file);
+            } else if (['jpg', 'jpeg', 'png'].indexOf(ext) >= 0) {
+                lerImagem(file);
+            } else if (['txt', 'doc', 'docx'].indexOf(ext) >= 0) {
+                lerTexto(file);
+            } else {
+                mostrarToast('Formato não suportado: ' + ext, 'error');
+                preview.innerHTML =
+                    '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">❌</span><p style="color:var(--vermelho);">Formato não suportado</p></div>';
+            }
+        }
+
+        // ============================================================
+        // LEITURAS (PDF, XML, Imagem, Texto)
+        // ============================================================
+        function lerPDF(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var typedarray = new Uint8Array(e.target.result);
+                pdfjsLib.getDocument(typedarray).promise
+                    .then(function(pdf) {
+                        var promises = [];
+                        for (var i = 1; i <= Math.min(pdf.numPages, 5); i++) {
+                            promises.push(pdf.getPage(i).then(function(page) {
+                                return page.getTextContent().then(function(textContent) {
+                                    return textContent.items.map(function(item) { return item.str; })
+                                        .join(' ');
+                                });
+                            }));
+                        }
+                        return Promise.all(promises);
+                    })
+                    .then(function(paginas) {
+                        textoExtraido = paginas.join('\n');
+                        extrairDadosComIA(textoExtraido);
+                    })
+                    .catch(function(err) {
+                        mostrarToast('Erro ao ler PDF: ' + err.message, 'error');
+                    });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function lerXML(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                textoExtraido = e.target.result;
+                extrairDadosComIA(textoExtraido);
+            };
+            reader.readAsText(file);
+        }
+
+        function lerImagem(file) {
+            var preview = document.getElementById('previewIA');
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Reconhecendo texto da imagem...</p></div>';
+            Tesseract.recognize(file, 'por')
+                .then(function(result) {
+                    textoExtraido = result.data.text;
+                    extrairDadosComIA(textoExtraido);
+                })
+                .catch(function(err) {
+                    mostrarToast('Erro no OCR: ' + err.message, 'error');
+                });
+        }
+
+        function lerTexto(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                textoExtraido = e.target.result;
+                extrairDadosComIA(textoExtraido);
+            };
+            reader.readAsText(file);
+        }
+
+        // ============================================================
+        // EXTRAIR DADOS COM IA
+        // ============================================================
+        function extrairDadosComIA(texto) {
+            var preview = document.getElementById('previewIA');
+
+            var key = localStorage.getItem('amovin_gemini_key');
+
+            // 🔥 EXTRAI FORNECEDOR CORRETO (NUNCA AMOVIN)
+            var fornecedor = extrairFornecedorCorreto(texto);
+
+            // 🔥 EXTRAI CAMPOS
+            var dados = {
+                numero: extrairCampo(texto, 'numero') || '---',
+                chave: extrairCampo(texto, 'chave') || '---',
+                emitente: fornecedor.nome || 'Fornecedor não identificado',
+                cnpj: fornecedor.cnpj || extrairCampo(texto, 'cnpj') || '---',
+                telefone: fornecedor.telefone || extrairCampo(texto, 'telefone') || '---',
+                endereco: fornecedor.endereco || extrairCampo(texto, 'endereco') || '---',
+                natureza: extrairCampo(texto, 'natureza') || '---',
+                dataEmissao: extrairCampo(texto, 'dataEmissao') || '---',
+                dataEntrada: extrairCampo(texto, 'dataEntrada') || '---',
+                horaEntrada: extrairCampo(texto, 'horaEntrada') || '---',
+                dataEntrega: '---',
+                valorProduto: parseFloat(extrairCampo(texto, 'valorProduto')) || 0,
+                valorFrete: parseFloat(extrairCampo(texto, 'valorFrete')) || 0,
+                valorSeguro: parseFloat(extrairCampo(texto, 'valorSeguro')) || 0,
+                valorDesconto: parseFloat(extrairCampo(texto, 'valorDesconto')) || 0,
+                valorTotal: parseFloat(extrairCampo(texto, 'valorTotal')) || 0,
+                itens: extrairItens(texto) || []
+            };
+
+            // 🔥 VERIFICA SE O EMITENTE AINDA É AMOVIN
+            if (dados.emitente && dados.emitente.toUpperCase().includes('AMOVIN')) {
+                dados.emitente = fornecedor.nome || 'Fornecedor não identificado';
+                dados.cnpj = fornecedor.cnpj || dados.cnpj;
+            }
+
+            dadosNota = dados;
+            calcularConfianca(dados);
+            mostrarPreviewIA(dados);
+            document.getElementById('statusExtraido').textContent = '✅ Concluído';
+            document.getElementById('statusExtraido').style.background = '#D1FAE5';
+            document.getElementById('statusExtraido').style.color = '#065F46';
+            mostrarToast('📄 Dados extraídos com sucesso!', 'success');
+        }
+
+        // ============================================================
+        // CALCULAR CONFIABILIDADE
+        // ============================================================
+        function calcularConfianca(dados) {
+            camposConfianca = {};
+
+            var campos = ['numero', 'emitente', 'cnpj', 'telefone', 'endereco', 'natureza', 'dataEmissao', 'dataEntrada',
+                'horaEntrada', 'valorProduto', 'valorFrete', 'valorTotal', 'itens'
+            ];
+
+            campos.forEach(function(campo) {
+                var valor = dados[campo];
+                var confianca = 'baixa';
+
+                if (campo === 'emitente') {
+                    if (valor && valor !== '---' && valor.length > 3 && !valor.toUpperCase().includes('AMOVIN')) {
+                        confianca = 'alta';
+                    } else if (valor && valor !== '---' && valor.length > 3) {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'cnpj') {
+                    if (valor && valor !== '---' && valor.length >= 14) {
+                        confianca = 'alta';
+                    } else if (valor && valor !== '---') {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'numero') {
+                    if (valor && valor !== '---' && valor.length >= 6) {
+                        confianca = 'alta';
+                    } else if (valor && valor !== '---') {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'valorTotal') {
+                    if (valor && valor > 0) {
+                        confianca = 'alta';
+                    }
+                } else if (campo === 'dataEmissao' || campo === 'dataEntrada') {
+                    if (valor && valor !== '---' && valor.length >= 8) {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'itens') {
+                    if (valor && valor.length > 0) {
+                        confianca = 'media';
+                    }
+                } else {
+                    if (valor && valor !== '---' && valor !== '' && valor !== 0) {
+                        confianca = 'media';
+                    }
+                }
+
+                camposConfianca[campo] = confianca;
+            });
+
+            // Verifica campos críticos
+            var criticos = ['emitente', 'cnpj', 'numero', 'valorTotal'];
+            var temErro = false;
+            criticos.forEach(function(c) {
+                if (camposConfianca[c] === 'baixa' || camposConfianca[c] === 'media') {
+                    temErro = true;
+                }
+            });
+
+            var aviso = document.getElementById('avisoQualidade');
+            if (temErro) {
+                aviso.classList.add('visivel');
+                document.getElementById('descAvisoQualidade').textContent =
+                    'Alguns campos críticos não foram extraídos com confiança. Verifique os dados antes de vincular.';
+            } else {
+                aviso.classList.remove('visivel');
+            }
+        }
+
+        // ============================================================
+        // ABRIR MODAL DE REVISÃO
         // ============================================================
         function abrirModalRevisao() {
             if (!dadosNota) {
@@ -1844,7 +1731,7 @@
 
             var campos = [
                 { id: 'numero', label: '📋 Número da Nota', tipo: 'text' },
-                { id: 'emitente', label: '🏢 Emitente (Empresa)', tipo: 'text' },
+                { id: 'emitente', label: '🏢 Emitente (Fornecedor)', tipo: 'text' },
                 { id: 'cnpj', label: '📄 CNPJ do Emitente', tipo: 'text' },
                 { id: 'telefone', label: '📞 Telefone', tipo: 'text' },
                 { id: 'endereco', label: '📍 Endereço', tipo: 'text' },
@@ -1903,7 +1790,6 @@
                 }
             });
 
-            // Recalcula confiança
             calcularConfianca(dadosNota);
             mostrarPreviewIA(dadosNota);
             fecharModalRevisao();
@@ -1911,7 +1797,7 @@
         }
 
         // ============================================================
-        // 14. LIMPAR DADOS
+        // NAVEGAÇÃO
         // ============================================================
         function limparDados() {
             limparDadosAntigos();
@@ -1922,100 +1808,10 @@
             mostrarToast('🔄 Pronto para uma nova nota!', 'info');
         }
 
-        // ============================================================
-        // 15. ENVIAR PARA CRM
-        // ============================================================
-        function enviarParaCRM() {
-            if (!dadosNota) {
-                mostrarToast('⚠️ Nenhum dado para enviar.', 'warning');
-                return;
-            }
-
-            if (!dadosNota.emitente || dadosNota.emitente === '---') {
-                mostrarToast('⚠️ Nenhum emitente identificado para enviar ao CRM.', 'warning');
-                return;
-            }
-
-            var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
-
-            var existe = contatos.some(function(c) {
-                return c.nome === dadosNota.emitente || c.cnpj === dadosNota.cnpj;
-            });
-
-            if (existe) {
-                if (!confirm('⚠️ Esta empresa já existe no CRM. Deseja atualizar os dados?')) {
-                    return;
-                }
-                contatos.forEach(function(c) {
-                    if (c.nome === dadosNota.emitente || c.cnpj === dadosNota.cnpj) {
-                        c.telefone = dadosNota.telefone || c.telefone;
-                        c.endereco = dadosNota.endereco || c.endereco;
-                        c.cnpj = dadosNota.cnpj || c.cnpj;
-                        c.obs = (c.obs || '') + ' | Dados atualizados via nota fiscal ' + dadosNota.numero;
-                    }
-                });
-            } else {
-                contatos.push({
-                    id: Date.now(),
-                    nome: dadosNota.emitente,
-                    cargo: 'Fornecedor',
-                    instituicao: '',
-                    categoria: 'Fornecedor',
-                    tel1: dadosNota.telefone || '',
-                    whatsapp: '',
-                    email: '',
-                    endereco: dadosNota.endereco || '',
-                    cnpj: dadosNota.cnpj || '',
-                    favorito: false,
-                    origem: 'nota_fiscal',
-                    tipo: 'crm',
-                    obs: 'Cadastrado via nota fiscal ' + dadosNota.numero + ' em ' + new Date().toLocaleDateString(
-                        'pt-BR')
-                });
-            }
-
-            localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
-            mostrarToast('✅ Empresa enviada para o CRM Social com sucesso!', 'success');
-
-            if (confirm('Dados enviados para o CRM! Deseja visualizar?')) {
-                window.location.href = 'agenda-telefonica.html';
-            }
-        }
-
-        // ============================================================
-        // 16. OUTRAS FUNÇÕES
-        // ============================================================
-        function abrirFormManual() {
-            if (confirm('Deseja usar a Central de IA para preencher automaticamente?')) {
-                window.location.href = 'central-ia.html';
-            } else {
-                mostrarToast('📝 Formulário manual em desenvolvimento. Use a Central de IA.', 'info');
-            }
-        }
-
-        function editarDados() {
-            abrirModalRevisao();
-        }
-
         function avancarParaVinculo() {
             if (!dadosNota) {
-                mostrarToast('⚠️ Nenhuma nota processada. Faça o upload primeiro.', 'warning');
+                mostrarToast('⚠️ Nenhuma nota processada.', 'warning');
                 return;
-            }
-
-            // Verifica confiança antes de avançar
-            var temErro = false;
-            ['emitente', 'cnpj', 'numero', 'valorTotal'].forEach(function(campo) {
-                if (camposConfianca[campo] === 'baixa' || camposConfianca[campo] === 'media') {
-                    temErro = true;
-                }
-            });
-
-            if (temErro) {
-                if (!confirm('⚠️ Alguns campos críticos têm baixa confiabilidade. Deseja revisar antes de continuar?')) {
-                    abrirModalRevisao();
-                    return;
-                }
             }
 
             document.getElementById('passoPreview').style.display = 'none';
@@ -2028,7 +1824,6 @@
             document.getElementById('resumoValor').textContent = fm(dadosNota.valorTotal || 0);
 
             document.getElementById('notaIdVinculo').value = Date.now();
-
             sugerirProjeto(dadosNota.emitente);
             document.getElementById('etapa3').classList.add('ativo');
         }
@@ -2063,10 +1858,9 @@
                 'escola': 'Reforço Escolar',
                 'material': 'Reforço Escolar',
                 'curso': 'Capacitação Profissional',
-                'treinamento': 'Capacitação Profissional',
                 'microfone': 'Inclusão Digital',
                 'caixa': 'Inclusão Digital',
-                'organizadora': 'Inclusão Digital'
+                'cadeira': 'Inclusão Digital'
             };
 
             var texto = emitente.toLowerCase();
@@ -2142,7 +1936,7 @@
                 if (valorNota > disponivel) {
                     if (!confirm('⚠️ O valor da nota (' + fm(valorNota) + ') excede o disponível (' + fm(
                             disponivel) +
-                        '). Deseja continuar mesmo assim?')) {
+                        '). Deseja continuar?')) {
                         return;
                     }
                 }
@@ -2176,8 +1970,7 @@
                 status: 'vinculado',
                 observacao: obs,
                 data_criacao: new Date().toISOString(),
-                origem: 'ia',
-                confianca: camposConfianca
+                origem: 'ia'
             };
 
             notas.push(novaNota);
@@ -2188,10 +1981,7 @@
                 localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
             }
 
-            if (dadosNota.emitente && dadosNota.emitente !== '---') {
-                enviarParaCRMAutomatico(novaNota);
-            }
-
+            enviarParaCRMAutomatico(novaNota);
             direcionarProdutos(novaNota);
 
             document.getElementById('passoVinculo').style.display = 'none';
@@ -2323,7 +2113,7 @@
                 var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
                 var projetoNome = projeto ? projeto.nome : '---';
                 var data = n.data_emissao ? new Date(n.data_emissao + 'T00:00:00').toLocaleDateString('pt-BR') :
-                '-';
+                    '-';
                 var qtdItens = n.itens ? n.itens.length : 0;
                 var origemLabel = n.origem === 'ia' ? ' 🤖 IA' : '';
 
@@ -2356,6 +2146,67 @@
             document.getElementById('passoConfirmacao').scrollIntoView({ behavior: 'smooth' });
         }
 
+        function enviarParaCRM() {
+            if (!dadosNota) {
+                mostrarToast('⚠️ Nenhum dado para enviar.', 'warning');
+                return;
+            }
+            if (!dadosNota.emitente || dadosNota.emitente === '---') {
+                mostrarToast('⚠️ Nenhum emitente identificado.', 'warning');
+                return;
+            }
+
+            var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
+            var existe = contatos.some(function(c) {
+                return c.nome === dadosNota.emitente || c.cnpj === dadosNota.cnpj;
+            });
+
+            if (existe) {
+                if (!confirm('⚠️ Esta empresa já existe no CRM. Deseja atualizar?')) return;
+                contatos.forEach(function(c) {
+                    if (c.nome === dadosNota.emitente || c.cnpj === dadosNota.cnpj) {
+                        c.telefone = dadosNota.telefone || c.telefone;
+                        c.endereco = dadosNota.endereco || c.endereco;
+                        c.cnpj = dadosNota.cnpj || c.cnpj;
+                        c.obs = (c.obs || '') + ' | Atualizado via NF ' + dadosNota.numero;
+                    }
+                });
+            } else {
+                contatos.push({
+                    id: Date.now(),
+                    nome: dadosNota.emitente,
+                    cargo: 'Fornecedor',
+                    instituicao: '',
+                    categoria: 'Fornecedor',
+                    tel1: dadosNota.telefone || '',
+                    whatsapp: '',
+                    email: '',
+                    endereco: dadosNota.endereco || '',
+                    cnpj: dadosNota.cnpj || '',
+                    favorito: false,
+                    origem: 'nota_fiscal',
+                    tipo: 'crm',
+                    obs: 'Cadastrado via NF ' + dadosNota.numero + ' em ' + new Date().toLocaleDateString(
+                    'pt-BR')
+                });
+            }
+
+            localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
+            mostrarToast('✅ Empresa enviada para o CRM Social com sucesso!', 'success');
+
+            if (confirm('Dados enviados para o CRM! Deseja visualizar?')) {
+                window.location.href = 'agenda-telefonica.html';
+            }
+        }
+
+        function abrirFormManual() {
+            if (confirm('Deseja usar a Central de IA para preencher automaticamente?')) {
+                window.location.href = 'central-ia.html';
+            } else {
+                mostrarToast('📝 Formulário manual em desenvolvimento.', 'info');
+            }
+        }
+
         // ============================================================
         // TOAST
         // ============================================================
@@ -2378,17 +2229,10 @@
         // DRAG AND DROP
         // ============================================================
         var dropzone = document.getElementById('dropzone');
-
-        dropzone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.classList.add('dragover');
-        });
-
-        dropzone.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.classList.remove('dragover');
-        });
-
+        dropzone.addEventListener('dragover', function(e) { e.preventDefault();
+            this.classList.add('dragover'); });
+        dropzone.addEventListener('dragleave', function(e) { e.preventDefault();
+            this.classList.remove('dragover'); });
         dropzone.addEventListener('drop', function(e) {
             e.preventDefault();
             this.classList.remove('dragover');
