@@ -904,11 +904,6 @@
             } catch (e) { return data; }
         }
 
-        function valorVazio(valor) {
-            if (!valor || valor === '---' || valor === 'null' || valor === '' || valor === 0) return '—';
-            return valor;
-        }
-
         function getStatusLabel(status) {
             var map = { 'pendente': '⏳ Pendente', 'vinculado': '✅ Vinculado', 'aprovado': '📋 Aprovado',
                 'reprovado': '❌ Reprovado' };
@@ -942,12 +937,10 @@
             document.getElementById('saldoBox').style.display = 'none';
             document.getElementById('infoArquivoAtual').style.display = 'none';
             document.getElementById('fileInput').value = '';
-            // 🔥 FORÇA LIMPEZA DO CACHE
             localStorage.removeItem('amovin_nota_atual');
             sessionStorage.removeItem('amovin_nota_atual');
             sessionStorage.removeItem('amovin_texto_anterior');
 
-            // Reseta as etapas
             document.getElementById('etapa1').classList.remove('concluido');
             document.getElementById('etapa1').classList.add('ativo');
             document.getElementById('etapa2').classList.remove('ativo');
@@ -964,17 +957,14 @@
             var file = event.target.files[0];
             if (!file) return;
 
-            // 🔥 LIMPA DADOS ANTERIORES COMPLETAMENTE
             limparDadosAntigos();
 
             var ext = file.name.split('.').pop().toLowerCase();
             var preview = document.getElementById('previewIA');
 
-            // Mostra o nome do arquivo
             document.getElementById('nomeArquivoAtual').textContent = file.name;
             document.getElementById('infoArquivoAtual').style.display = 'block';
 
-            // Mostra loading
             preview.innerHTML = `
                     <div style="text-align:center;padding:20px;">
                         <span style="font-size:32px;">⏳</span>
@@ -986,7 +976,6 @@
             document.getElementById('passoPreview').style.display = 'block';
             document.getElementById('passoUpload').style.display = 'none';
 
-            // Atualiza etapas
             document.getElementById('etapa1').classList.remove('ativo');
             document.getElementById('etapa1').classList.add('concluido');
             document.getElementById('etapa2').classList.add('ativo');
@@ -1102,12 +1091,11 @@
         }
 
         // ============================================================
-        // 6. EXTRAIR DADOS COM IA (TODOS OS CAMPOS)
+        // 6. EXTRAIR DADOS COM IA - PROMPT MELHORADO
         // ============================================================
         function extrairDadosComIA(texto) {
             var preview = document.getElementById('previewIA');
 
-            // 🔥 VERIFICA SE O TEXTO É DIFERENTE DO ANTERIOR
             var textoHash = texto.substring(0, 200);
             var textoAnterior = sessionStorage.getItem('amovin_texto_anterior');
             if (textoAnterior === textoHash && textoAnterior) {
@@ -1127,32 +1115,38 @@
                     `;
 
                 var prompt = `
-                    Extraia os seguintes campos da nota fiscal abaixo. Retorne apenas um JSON.
+                    EXTRAIA OS SEGUINTES CAMPOS DA NOTA FISCAL. RETORNE APENAS UM JSON VÁLIDO.
 
-                    CAMPOS A EXTRAIR:
-                    1. numero: Número da Nota
-                    2. chave: Chave de Acesso (44 dígitos)
-                    3. emitente: Nome do Emitente/Fornecedor (EMPRESA)
-                    4. cnpj: CNPJ do Emitente (formato: 00.000.000/0000-00)
-                    5. telefone: Telefone do Emitente
-                    6. endereco: Endereço do Emitente (rua, número, bairro, cidade, UF)
-                    7. natureza: Natureza da Operação
-                    8. dataEmissao: Data de Emissão (formato YYYY-MM-DD)
-                    9. dataEntrada: Data de Entrada (formato YYYY-MM-DD)
-                    10. horaEntrada: Hora de Entrada (HH:MM:SS)
-                    11. dataEntrega: Data de Entrega (formato YYYY-MM-DD)
-                    12. valorProduto: Valor dos Produtos (número)
-                    13. valorFrete: Valor do Frete (número)
-                    14. valorSeguro: Valor do Seguro (número)
-                    15. valorDesconto: Valor do Desconto (número)
-                    16. valorTotal: Valor Total da Nota (número)
-                    17. itens: Lista de itens com: descricao, quantidade, unidade, valor_unitario, valor_total
+                    **IMPORTANTE:** NÃO INCLUA TEXTO EXPLICATIVO. APENAS O JSON.
 
-                    Texto da nota:
+                    CAMPOS:
+                    1. numero: Número da nota (ex: "08580020")
+                    2. emitente: NOME DO FORNECEDOR (ex: "SUPERMERCADO ABC LTDA")
+                       - NÃO inclua "CNPJ", "CEP", "ENDEREÇO" no nome
+                       - Pegue apenas o nome da empresa que vendeu
+                       - Se encontrar "NOME/RAZÃO SOCIAL", use esse valor
+                    3. cnpj: CNPJ do emitente (ex: "50.182.410/0001-79")
+                    4. telefone: Telefone (ex: "1197661404")
+                    5. endereco: Endereço completo (ex: "Rua Exemplo, 123 - Bairro - Cidade - UF")
+                    6. natureza: Natureza da operação (ex: "Venda de mercadorias")
+                    7. dataEmissao: Data de emissão (formato YYYY-MM-DD)
+                    8. dataEntrada: Data de entrada (formato YYYY-MM-DD)
+                    9. horaEntrada: Hora (ex: "11:13:26")
+                    10. valorProduto: Valor total dos produtos (ex: 581.81)
+                    11. valorFrete: Valor do frete (ex: 0.00)
+                    12. valorTotal: Valor total da nota (ex: 581.81)
+                    13. itens: Lista de itens com:
+                        - descricao: Nome do produto (ex: "Kit 6 Caixa Organizadora")
+                        - quantidade: Quantidade (ex: 1)
+                        - unidade: Unidade (ex: "UN")
+                        - valor_unitario: Valor unitário (ex: 581.81)
+                        - valor_total: Valor total do item (ex: 581.81)
+
+                    SE UM CAMPO NÃO FOR ENCONTRADO, USE null.
+                    RETORNE APENAS O JSON, SEM TEXTO ADICIONAL.
+
+                    TEXTO DA NOTA:
                     ${texto.substring(0, 4000)}
-
-                    Se um campo não for encontrado, coloque null.
-                    Retorne apenas o JSON, sem texto adicional.
                 `;
 
                 fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
@@ -1170,9 +1164,7 @@
                                 var jsonMatch = resposta.match(/\{[\s\S]*\}/);
                                 if (jsonMatch) {
                                     var dados = JSON.parse(jsonMatch[0]);
-                                    // Converte campos vazios
                                     dados.numero = dados.numero || '---';
-                                    dados.chave = dados.chave || '---';
                                     dados.emitente = dados.emitente || '---';
                                     dados.cnpj = dados.cnpj || '---';
                                     dados.telefone = dados.telefone || '---';
@@ -1200,23 +1192,22 @@
                                 console.error('Erro ao parsear JSON:', e);
                             }
                         }
-                        // Fallback para dados manuais
-                        usarDadosExemplo(texto);
+                        // Fallback para extração manual
+                        extrairDadosManualmente(texto);
                     })
                     .catch(function(err) {
                         console.error('Erro na IA:', err);
-                        usarDadosExemplo(texto);
+                        extrairDadosManualmente(texto);
                     });
             } else {
-                usarDadosExemplo(texto);
+                extrairDadosManualmente(texto);
             }
         }
 
         // ============================================================
-        // 7. USAR DADOS DE EXEMPLO (FALLBACK)
+        // 7. EXTRAÇÃO MANUAL (FALLBACK)
         // ============================================================
-        function usarDadosExemplo(texto) {
-            // 🔥 TENTA EXTRAIR DO TEXTO MANUALMENTE
+        function extrairDadosManualmente(texto) {
             var dados = {
                 numero: extrairCampo(texto, 'numero') || '---',
                 chave: extrairCampo(texto, 'chave') || '---',
@@ -1246,24 +1237,23 @@
         }
 
         // ============================================================
-        // 8. EXTRAIR CAMPOS DO TEXTO (MANUAL)
+        // 8. EXTRAIR CAMPO ESPECÍFICO
         // ============================================================
         function extrairCampo(texto, campo) {
             var padroes = {
                 'numero': [
-                    /N[°º]?\s*[:]?\s*(\d{6,9})/i,
+                    /N[°º]?\s*[:]?\s*(\d{8})/i,
                     /nNF[:]?\s*(\d+)/i,
                     /Número[:]?\s*(\d+)/i,
-                    /\b(\d{6,9})\b/
+                    /\b(\d{8})\b/
                 ],
                 'chave': [
                     /\b(\d{44})\b/
                 ],
                 'emitente': [
+                    /NOME\/RAZÃO SOCIAL[:]?\s*([^\n]+)/i,
                     /Emitente[:]?\s*([^\n]+)/i,
-                    /Fornecedor[:]?\s*([^\n]+)/i,
-                    /Razão Social[:]?\s*([^\n]+)/i,
-                    /NOME\/RAZÃO SOCIAL[:]?\s*([^\n]+)/i
+                    /Fornecedor[:]?\s*([^\n]+)/i
                 ],
                 'cnpj': [
                     /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
@@ -1334,6 +1324,24 @@
                         campo === 'valorSeguro' || campo === 'valorDesconto') {
                         return valor.replace(/\./g, '').replace(',', '.');
                     }
+                    // 🔥 LIMPA O VALOR DO EMITENTE
+                    if (campo === 'emitente') {
+                        // Remove "CNPJ" e outros textos indesejados
+                        valor = valor.replace(/CNPJ.*$/i, '').trim();
+                        valor = valor.replace(/CEP.*$/i, '').trim();
+                        valor = valor.replace(/ENDEREÇO.*$/i, '').trim();
+                        // Pega apenas o nome da empresa (primeira linha)
+                        var linhas = valor.split(/\n|,| - /);
+                        if (linhas.length > 0) {
+                            valor = linhas[0].trim();
+                        }
+                        return valor;
+                    }
+                    if (campo === 'endereco') {
+                        // Tenta montar endereço completo
+                        valor = valor.replace(/NOME\/RAZÃO SOCIAL.*$/i, '').trim();
+                        return valor;
+                    }
                     return valor.trim();
                 }
             }
@@ -1341,38 +1349,85 @@
         }
 
         // ============================================================
-        // 9. EXTRAIR ITENS DO TEXTO (MANUAL)
+        // 9. EXTRAIR ITENS
         // ============================================================
         function extrairItens(texto) {
             var itens = [];
 
-            // Tenta encontrar itens com padrão: descrição + quantidade + valor
-            var padraoItem = /([A-Za-zÀ-ÿ\s]{5,})\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
-            var match;
+            // Procura pela descrição do produto
+            var padraoProduto = /DESCRIÇAO DOS PRODUTOS[\s\S]*?KIT|Kit|Caixa|Adesivos|Vinil|Produto/i;
+            var matchProduto = texto.match(padraoProduto);
 
-            while ((match = padraoItem.exec(texto)) !== null) {
-                var desc = match[1].trim();
-                var qtd = parseInt(match[2]) || 1;
-                var unit = parseFloat(match[3].replace(/\./g, '').replace(',', '.')) || 0;
-                var total = parseFloat(match[4].replace(/\./g, '').replace(',', '.')) || 0;
+            var descricao = '';
+            if (matchProduto) {
+                // Tenta extrair o nome completo do produto
+                var padraoDesc = /([A-Za-zÀ-ÿ\s]{10,}?)\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/i;
+                var matchDesc = texto.match(padraoDesc);
+                if (matchDesc) {
+                    descricao = matchDesc[1].trim();
+                    var qtd = parseInt(matchDesc[2]) || 1;
+                    var unit = parseFloat(matchDesc[3].replace(/\./g, '').replace(',', '.')) || 0;
+                    var total = parseFloat(matchDesc[4].replace(/\./g, '').replace(',', '.')) || 0;
 
-                if (desc.length > 5 && !desc.match(/^\d+$/)) {
-                    itens.push({
-                        descricao: desc,
-                        quantidade: qtd,
-                        unidade: 'UN',
-                        valor_unitario: unit,
-                        valor_total: total || (qtd * unit)
-                    });
+                    if (descricao.length > 5) {
+                        itens.push({
+                            descricao: descricao,
+                            quantidade: qtd,
+                            unidade: 'UN',
+                            valor_unitario: unit,
+                            valor_total: total || (qtd * unit)
+                        });
+                    }
+                } else {
+                    // Tenta encontrar o produto pelo nome "KIT"
+                    var padraoKit = /Kit\s+(\d+)\s+([A-Za-zÀ-ÿ\s]+?)(?:\s+\d+|\s+UN|\s*$)/i;
+                    var matchKit = texto.match(padraoKit);
+                    if (matchKit) {
+                        var qtdKit = parseInt(matchKit[1]) || 1;
+                        var descKit = matchKit[2].trim();
+                        var valorKit = parseFloat(extrairCampo(texto, 'valorTotal')) || 0;
+
+                        if (descKit.length > 3) {
+                            itens.push({
+                                descricao: 'Kit ' + qtdKit + ' ' + descKit,
+                                quantidade: 1,
+                                unidade: 'UN',
+                                valor_unitario: valorKit,
+                                valor_total: valorKit
+                            });
+                        }
+                    }
                 }
             }
 
-            // Limita a 20 itens
-            return itens.slice(0, 20);
+            // Se não encontrou nenhum item, tenta outro padrão
+            if (itens.length === 0) {
+                var padraoItem = /([A-Za-zÀ-ÿ\s]{10,})\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
+                var match;
+
+                while ((match = padraoItem.exec(texto)) !== null) {
+                    var desc = match[1].trim();
+                    var qtd = parseInt(match[2]) || 1;
+                    var unit = parseFloat(match[3].replace(/\./g, '').replace(',', '.')) || 0;
+                    var total = parseFloat(match[4].replace(/\./g, ''.replace(',', '.'))) || 0;
+
+                    if (desc.length > 10 && !desc.match(/^\d+$/)) {
+                        itens.push({
+                            descricao: desc,
+                            quantidade: qtd,
+                            unidade: 'UN',
+                            valor_unitario: unit,
+                            valor_total: total || (qtd * unit)
+                        });
+                    }
+                }
+            }
+
+            return itens.slice(0, 10);
         }
 
         // ============================================================
-        // 10. MOSTRAR PREVIEW - TODOS OS CAMPOS
+        // 10. MOSTRAR PREVIEW
         // ============================================================
         function mostrarPreviewIA(dados) {
             var preview = document.getElementById('previewIA');
@@ -1385,14 +1440,11 @@
             '—';
             var horaEntrada = dados.horaEntrada && dados.horaEntrada !== '---' ? dados.horaEntrada : '—';
 
-            // Número interno
             var numeroInterno = 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length + 1).padStart(4, '0');
 
-            // Itens com cabeçalhos
             var itensHtml = '';
             if (dados.itens && dados.itens.length > 0) {
                 itensHtml = '<div class="preview-itens">';
-                // 🔥 CABEÇALHOS DAS COLUNAS
                 itensHtml += `
                         <div class="item-linha-header">
                             <span class="desc">Descrição</span>
@@ -1421,7 +1473,6 @@
                         <span style="font-size:11px;color:var(--cinza);">Nº Interno: <strong>${numeroInterno}</strong></span>
                     </div>
 
-                    <!-- DADOS GERAIS -->
                     <div class="preview-secao">
                         <div class="titulo">📋 DADOS GERAIS</div>
                         <div class="preview-grid">
@@ -1439,7 +1490,6 @@
                         </div>
                     </div>
 
-                    <!-- CÁLCULOS -->
                     <div class="preview-secao">
                         <div class="titulo">💰 CÁLCULOS</div>
                         <div class="preview-grid">
@@ -1451,13 +1501,11 @@
                         </div>
                     </div>
 
-                    <!-- ITENS -->
                     <div class="preview-secao">
                         <div class="titulo">📦 ITENS DA NOTA (${dados.itens ? dados.itens.length : 0})</div>
                         ${itensHtml}
                     </div>
 
-                    <!-- CRM -->
                     <div class="preview-secao" style="border-top:2px solid var(--verde);">
                         <div class="titulo" style="color:var(--verde);">📤 DADOS PARA CRM</div>
                         <div class="preview-grid">
@@ -1473,7 +1521,6 @@
                     </div>
                 `;
 
-            // Atualiza resumo para vinculação
             document.getElementById('resumoNumero').textContent = dados.numero || '---';
             document.getElementById('resumoEmitente').textContent = dados.emitente || '---';
             document.getElementById('resumoValor').textContent = fm(dados.valorTotal || 0);
@@ -1486,7 +1533,7 @@
         }
 
         // ============================================================
-        // 11. LIMPAR DADOS (NOVA NOTA)
+        // 11. LIMPAR DADOS
         // ============================================================
         function limparDados() {
             limparDadosAntigos();
@@ -1744,7 +1791,6 @@
                 localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
             }
 
-            // Envia para CRM automaticamente se tiver dados
             if (dadosNota.emitente && dadosNota.emitente !== '---') {
                 enviarParaCRMAutomatico(novaNota);
             }
