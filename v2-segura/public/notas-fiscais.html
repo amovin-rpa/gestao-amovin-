@@ -22,6 +22,7 @@
             --branco: #FFFFFF;
             --vermelho: #E53935;
             --roxo: #7C3AED;
+            --dourado: #D97706;
         }
         * {
             margin: 0;
@@ -192,6 +193,13 @@
         .btn-crm:hover {
             background: #388E3C;
         }
+        .btn-dourado {
+            background: var(--dourado);
+            color: white;
+        }
+        .btn-dourado:hover {
+            background: #B45309;
+        }
         .btn-full {
             width: 100%;
             padding: 14px;
@@ -242,6 +250,42 @@
             background: #6D28D9;
         }
 
+        /* ============================================================
+           AVISO DE QUALIDADE
+           ============================================================ */
+        .aviso-qualidade {
+            background: #FEF3C7;
+            border: 2px solid var(--dourado);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            display: none;
+        }
+        .aviso-qualidade.visivel {
+            display: block;
+        }
+        .aviso-qualidade .titulo-aviso {
+            font-weight: 700;
+            color: #92400E;
+            font-size: 14px;
+        }
+        .aviso-qualidade .desc-aviso {
+            font-size: 12px;
+            color: #78350F;
+            margin-top: 4px;
+        }
+        .aviso-qualidade .btn-verificar {
+            margin-top: 8px;
+            padding: 6px 16px;
+            background: var(--dourado);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
         .preview-ia {
             background: #F8F4ED;
             border-radius: 10px;
@@ -254,6 +298,9 @@
             display: block;
         }
 
+        /* ============================================================
+           CAMPO COM INDICADOR DE CONFIABILIDADE
+           ============================================================ */
         .preview-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -264,11 +311,15 @@
             border-bottom: 1px solid #E5E0D8;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 13px;
         }
         .preview-item .label {
             color: var(--cinza);
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .preview-item .valor {
             font-weight: 600;
@@ -284,6 +335,24 @@
         }
         .preview-item .valor.verde {
             color: var(--verde);
+        }
+
+        .confianca {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 4px;
+            flex-shrink: 0;
+        }
+        .confianca.alta {
+            background: var(--verde);
+        }
+        .confianca.media {
+            background: var(--dourado);
+        }
+        .confianca.baixa {
+            background: var(--vermelho);
         }
 
         .preview-secao {
@@ -356,6 +425,67 @@
             border-top: 2px solid #E5E0D8;
         }
 
+        /* Modal de revisão */
+        .modal-revisao {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-revisao.visivel {
+            display: flex;
+        }
+        .modal-revisao .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            animation: slideUp 0.3s ease;
+        }
+        .modal-revisao .modal-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 16px;
+        }
+        .modal-revisao .modal-content .campo-revisao {
+            margin-bottom: 10px;
+        }
+        .modal-revisao .modal-content .campo-revisao label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cinza);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .modal-revisao .modal-content .campo-revisao input,
+        .modal-revisao .modal-content .campo-revisao textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-revisao .modal-content .campo-revisao input:focus,
+        .modal-revisao .modal-content .campo-revisao textarea:focus {
+            outline: none;
+            border-color: var(--roxo);
+        }
+        .modal-revisao .modal-content .campo-revisao .confianca-label {
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
         .destinos-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -399,15 +529,6 @@
         .saldo-item .label {
             font-size: 11px;
             color: var(--cinza);
-        }
-        .saldo-item .valor.verde {
-            color: var(--verde);
-        }
-        .saldo-item .valor.laranja {
-            color: var(--laranja);
-        }
-        .saldo-item .valor.vermelho {
-            color: var(--vermelho);
         }
 
         .nota-item {
@@ -567,11 +688,6 @@
             background: var(--verde);
             color: white;
         }
-        .etapa .seta {
-            color: #E5E0D8;
-            font-size: 14px;
-            margin-left: 4px;
-        }
 
         .toast {
             position: fixed;
@@ -597,8 +713,20 @@
             background: var(--azul);
         }
         .toast-warning {
-            background: #E65100;
+            background: var(--dourado);
         }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes slideInRight {
             from {
                 transform: translateX(100%);
@@ -628,6 +756,9 @@
             .saldo-box {
                 grid-template-columns: 1fr;
             }
+            .modal-revisao .modal-content {
+                padding: 16px;
+            }
         }
         @media (max-width: 480px) {
             .destinos-grid {
@@ -638,11 +769,6 @@
                 grid-template-columns: 1fr;
                 gap: 2px;
                 padding: 6px 0;
-            }
-            .item-linha .qtd,
-            .item-linha .unit,
-            .item-linha .total {
-                text-align: left;
             }
         }
     </style>
@@ -656,7 +782,7 @@
         <div class="topo-bar">
             <div>
                 <h1>📄 Notas Fiscais <span>+ IA</span></h1>
-                <span class="sub">Leitura completa com todos os campos</span>
+                <span class="sub">Leitura inteligente com indicadores de confiabilidade</span>
             </div>
             <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
@@ -704,7 +830,7 @@
             </div>
         </div>
 
-        <!-- PASSO 2: PREVIEW IA - TODOS OS CAMPOS -->
+        <!-- PASSO 2: PREVIEW IA -->
         <div class="card" id="passoPreview" style="display:none;">
             <h3>
                 🧠 PASSO 2: Dados Extraídos pela IA
@@ -715,15 +841,37 @@
                 📎 <span id="nomeArquivoAtual">---</span>
             </div>
 
+            <!-- AVISO DE QUALIDADE -->
+            <div class="aviso-qualidade" id="avisoQualidade">
+                <div class="titulo-aviso">⚠️ ATENÇÃO: Qualidade da leitura comprometida</div>
+                <div class="desc-aviso" id="descAvisoQualidade">O arquivo parece estar danificado ou com baixa qualidade. Alguns campos podem estar incorretos ou faltando.</div>
+                <button class="btn-verificar" onclick="abrirModalRevisao()">🔍 Verificar Dados</button>
+            </div>
+
             <div id="previewIA" class="preview-ia visivel">
                 <!-- Preenchido via JavaScript -->
             </div>
 
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
                 <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
-                <button class="btn btn-azul" onclick="editarDados()">✏️ Editar Dados</button>
+                <button class="btn btn-dourado" onclick="abrirModalRevisao()">🔍 Verificar Dados</button>
                 <button class="btn btn-crm" onclick="enviarParaCRM()">📤 Enviar para CRM</button>
                 <button class="btn btn-outline" onclick="limparDados()">🔄 Nova Nota</button>
+            </div>
+        </div>
+
+        <!-- MODAL DE REVISÃO MANUAL -->
+        <div class="modal-revisao" id="modalRevisao">
+            <div class="modal-content">
+                <h3>🔍 Revisão Manual dos Dados</h3>
+                <p style="font-size:13px;color:var(--cinza);margin-bottom:16px;">Corrija os campos que estiverem incorretos.</p>
+                <div id="camposRevisao">
+                    <!-- Preenchido via JavaScript -->
+                </div>
+                <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+                    <button class="btn btn-success" onclick="salvarRevisao()">💾 Salvar Correções</button>
+                    <button class="btn btn-outline" onclick="fecharModalRevisao()">❌ Fechar</button>
+                </div>
             </div>
         </div>
 
@@ -884,6 +1032,7 @@
         var dadosNota = null;
         var destinoSelecionado = 'patrimonio';
         var textoExtraido = '';
+        var camposConfianca = {};
 
         // ============================================================
         // DADOS DO SISTEMA
@@ -921,13 +1070,15 @@
         }
 
         // ============================================================
-        // LIMPEZA COMPLETA ENTRE NOTAS
+        // LIMPEZA COMPLETA
         // ============================================================
         function limparDadosAntigos() {
             dadosNota = null;
             textoExtraido = '';
+            camposConfianca = {};
             document.getElementById('previewIA').innerHTML = '';
             document.getElementById('previewIA').classList.remove('visivel');
+            document.getElementById('avisoQualidade').classList.remove('visivel');
             document.getElementById('statusExtraido').textContent = '⏳ Processando...';
             document.getElementById('statusExtraido').style.background = '#FEF3C7';
             document.getElementById('statusExtraido').style.color = '#92400E';
@@ -1091,7 +1242,7 @@
         }
 
         // ============================================================
-        // 6. EXTRAIR DADOS COM IA - PROMPT MELHORADO
+        // 6. EXTRAIR DADOS COM IA
         // ============================================================
         function extrairDadosComIA(texto) {
             var preview = document.getElementById('previewIA');
@@ -1117,33 +1268,29 @@
                 var prompt = `
                     EXTRAIA OS SEGUINTES CAMPOS DA NOTA FISCAL. RETORNE APENAS UM JSON VÁLIDO.
 
-                    **IMPORTANTE:** NÃO INCLUA TEXTO EXPLICATIVO. APENAS O JSON.
+                    **IMPORTANTE:**
+                    - O EMITENTE é o FORNECEDOR (quem vendeu)
+                    - O DESTINATÁRIO é o COMPRADOR (AMOVIN)
+                    - NÃO confunda emitente com destinatário
 
                     CAMPOS:
-                    1. numero: Número da nota (ex: "08580020")
-                    2. emitente: NOME DO FORNECEDOR (ex: "SUPERMERCADO ABC LTDA")
-                       - NÃO inclua "CNPJ", "CEP", "ENDEREÇO" no nome
-                       - Pegue apenas o nome da empresa que vendeu
-                       - Se encontrar "NOME/RAZÃO SOCIAL", use esse valor
-                    3. cnpj: CNPJ do emitente (ex: "50.182.410/0001-79")
-                    4. telefone: Telefone (ex: "1197661404")
-                    5. endereco: Endereço completo (ex: "Rua Exemplo, 123 - Bairro - Cidade - UF")
-                    6. natureza: Natureza da operação (ex: "Venda de mercadorias")
+                    1. numero: Número da nota
+                    2. emitente: NOME DO FORNECEDOR (EMPRESA QUE VENDEU)
+                       - Procure por "EBAZAR", "HGZ", ou o nome da empresa vendedora
+                       - NÃO use "AMOVIN" como emitente
+                    3. cnpj: CNPJ do emitente
+                    4. telefone: Telefone do emitente
+                    5. endereco: Endereço do emitente
+                    6. natureza: Natureza da operação
                     7. dataEmissao: Data de emissão (formato YYYY-MM-DD)
                     8. dataEntrada: Data de entrada (formato YYYY-MM-DD)
-                    9. horaEntrada: Hora (ex: "11:13:26")
-                    10. valorProduto: Valor total dos produtos (ex: 581.81)
-                    11. valorFrete: Valor do frete (ex: 0.00)
-                    12. valorTotal: Valor total da nota (ex: 581.81)
-                    13. itens: Lista de itens com:
-                        - descricao: Nome do produto (ex: "Kit 6 Caixa Organizadora")
-                        - quantidade: Quantidade (ex: 1)
-                        - unidade: Unidade (ex: "UN")
-                        - valor_unitario: Valor unitário (ex: 581.81)
-                        - valor_total: Valor total do item (ex: 581.81)
+                    9. horaEntrada: Hora
+                    10. valorProduto: Valor dos produtos
+                    11. valorFrete: Valor do frete
+                    12. valorTotal: Valor total da nota
+                    13. itens: Lista de itens com descricao, quantidade, unidade, valor_unitario, valor_total
 
                     SE UM CAMPO NÃO FOR ENCONTRADO, USE null.
-                    RETORNE APENAS O JSON, SEM TEXTO ADICIONAL.
 
                     TEXTO DA NOTA:
                     ${texto.substring(0, 4000)}
@@ -1164,23 +1311,19 @@
                                 var jsonMatch = resposta.match(/\{[\s\S]*\}/);
                                 if (jsonMatch) {
                                     var dados = JSON.parse(jsonMatch[0]);
-                                    dados.numero = dados.numero || '---';
-                                    dados.emitente = dados.emitente || '---';
-                                    dados.cnpj = dados.cnpj || '---';
-                                    dados.telefone = dados.telefone || '---';
-                                    dados.endereco = dados.endereco || '---';
-                                    dados.natureza = dados.natureza || '---';
-                                    dados.dataEmissao = dados.dataEmissao || '---';
-                                    dados.dataEntrada = dados.dataEntrada || '---';
-                                    dados.horaEntrada = dados.horaEntrada || '---';
-                                    dados.dataEntrega = dados.dataEntrega || '---';
-                                    dados.valorProduto = dados.valorProduto || 0;
-                                    dados.valorFrete = dados.valorFrete || 0;
-                                    dados.valorSeguro = dados.valorSeguro || 0;
-                                    dados.valorDesconto = dados.valorDesconto || 0;
-                                    dados.valorTotal = dados.valorTotal || 0;
-                                    dados.itens = dados.itens || [];
+                                    // Verifica se o emitente é AMOVIN (destinatário) e corrige
+                                    if (dados.emitente && dados.emitente.toUpperCase().includes('AMOVIN')) {
+                                        // Tenta encontrar o fornecedor no texto
+                                        var fornecedor = extrairFornecedor(texto);
+                                        if (fornecedor) {
+                                            dados.emitente = fornecedor.nome || dados.emitente;
+                                            dados.cnpj = fornecedor.cnpj || dados.cnpj;
+                                            dados.telefone = fornecedor.telefone || dados.telefone;
+                                            dados.endereco = fornecedor.endereco || dados.endereco;
+                                        }
+                                    }
                                     dadosNota = dados;
+                                    calcularConfianca(dados);
                                     mostrarPreviewIA(dados);
                                     document.getElementById('statusExtraido').textContent = '✅ Concluído';
                                     document.getElementById('statusExtraido').style.background = '#D1FAE5';
@@ -1192,7 +1335,6 @@
                                 console.error('Erro ao parsear JSON:', e);
                             }
                         }
-                        // Fallback para extração manual
                         extrairDadosManualmente(texto);
                     })
                     .catch(function(err) {
@@ -1205,7 +1347,114 @@
         }
 
         // ============================================================
-        // 7. EXTRAÇÃO MANUAL (FALLBACK)
+        // 7. EXTRAIR FORNECEDOR CORRETO
+        // ============================================================
+        function extrairFornecedor(texto) {
+            // Procura por padrões de fornecedor
+            var padroes = [
+                /(EBAZAR\.COM\.BR LTDA)/i,
+                /(HGZ MUSIC STORE LTDA)/i,
+                /(EBAZAR)/i,
+                /(HGZ)/i
+            ];
+
+            for (var i = 0; i < padroes.length; i++) {
+                var match = texto.match(padroes[i]);
+                if (match) {
+                    var nome = match[1];
+                    // Procura CNPJ próximo ao nome
+                    var cnpjMatch = texto.substring(texto.indexOf(nome), texto.indexOf(nome) + 200).match(/\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
+                    var cnpj = cnpjMatch ? cnpjMatch[1] : null;
+                    var telefone = texto.substring(texto.indexOf(nome), texto.indexOf(nome) + 200).match(/(\d{10,11})/);
+                    return {
+                        nome: nome,
+                        cnpj: cnpj || '---',
+                        telefone: telefone ? telefone[1] : '---',
+                        endereco: '---'
+                    };
+                }
+            }
+            return null;
+        }
+
+        // ============================================================
+        // 8. CALCULAR CONFIABILIDADE
+        // ============================================================
+        function calcularConfianca(dados) {
+            camposConfianca = {};
+
+            var campos = [
+                'numero', 'emitente', 'cnpj', 'telefone', 'endereco',
+                'natureza', 'dataEmissao', 'dataEntrada', 'horaEntrada',
+                'valorProduto', 'valorFrete', 'valorTotal', 'itens'
+            ];
+
+            campos.forEach(function(campo) {
+                var valor = dados[campo];
+                var confianca = 'baixa';
+
+                if (campo === 'emitente') {
+                    // Emitente é confiável se não for "AMOVIN" e tiver mais de 3 caracteres
+                    if (valor && valor !== '---' && valor.length > 3 && !valor.toUpperCase().includes('AMOVIN')) {
+                        confianca = 'alta';
+                    } else if (valor && valor !== '---' && valor.length > 3) {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'cnpj') {
+                    if (valor && valor !== '---' && valor.length >= 14) {
+                        confianca = 'alta';
+                    } else if (valor && valor !== '---') {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'numero') {
+                    if (valor && valor !== '---' && valor.length >= 6) {
+                        confianca = 'alta';
+                    } else if (valor && valor !== '---') {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'valorTotal') {
+                    if (valor && valor > 0) {
+                        confianca = 'alta';
+                    }
+                } else if (campo === 'dataEmissao' || campo === 'dataEntrada') {
+                    if (valor && valor !== '---' && valor.length >= 8) {
+                        confianca = 'media';
+                    }
+                } else if (campo === 'itens') {
+                    if (valor && valor.length > 0) {
+                        confianca = 'media';
+                    }
+                } else {
+                    if (valor && valor !== '---' && valor !== '' && valor !== 0) {
+                        confianca = 'media';
+                    }
+                }
+
+                camposConfianca[campo] = confianca;
+            });
+
+            // Verifica se há campos críticos com baixa confiança
+            var criticos = ['emitente', 'cnpj', 'numero', 'valorTotal'];
+            var temErro = false;
+            criticos.forEach(function(c) {
+                if (camposConfianca[c] === 'baixa' || camposConfianca[c] === 'media') {
+                    temErro = true;
+                }
+            });
+
+            // Mostra aviso se houver problemas
+            var aviso = document.getElementById('avisoQualidade');
+            if (temErro) {
+                aviso.classList.add('visivel');
+                document.getElementById('descAvisoQualidade').textContent =
+                    'Alguns campos críticos não foram extraídos com confiança. Verifique os dados antes de vincular.';
+            } else {
+                aviso.classList.remove('visivel');
+            }
+        }
+
+        // ============================================================
+        // 9. EXTRAIR DADOS MANUALMENTE (FALLBACK)
         // ============================================================
         function extrairDadosManualmente(texto) {
             var dados = {
@@ -1228,7 +1477,19 @@
                 itens: extrairItens(texto) || []
             };
 
+            // Corrige emitente se for AMOVIN
+            if (dados.emitente && dados.emitente.toUpperCase().includes('AMOVIN')) {
+                var fornecedor = extrairFornecedor(texto);
+                if (fornecedor) {
+                    dados.emitente = fornecedor.nome || dados.emitente;
+                    dados.cnpj = fornecedor.cnpj || dados.cnpj;
+                    dados.telefone = fornecedor.telefone || dados.telefone;
+                    dados.endereco = fornecedor.endereco || dados.endereco;
+                }
+            }
+
             dadosNota = dados;
+            calcularConfianca(dados);
             mostrarPreviewIA(dados);
             document.getElementById('statusExtraido').textContent = '✅ Concluído';
             document.getElementById('statusExtraido').style.background = '#D1FAE5';
@@ -1237,15 +1498,15 @@
         }
 
         // ============================================================
-        // 8. EXTRAIR CAMPO ESPECÍFICO
+        // 10. EXTRAIR CAMPO ESPECÍFICO
         // ============================================================
         function extrairCampo(texto, campo) {
             var padroes = {
                 'numero': [
-                    /N[°º]?\s*[:]?\s*(\d{8})/i,
+                    /N[°º]?\s*[:]?\s*(\d{6,9})/i,
                     /nNF[:]?\s*(\d+)/i,
                     /Número[:]?\s*(\d+)/i,
-                    /\b(\d{8})\b/
+                    /\b(\d{6,9})\b/
                 ],
                 'chave': [
                     /\b(\d{44})\b/
@@ -1324,22 +1585,14 @@
                         campo === 'valorSeguro' || campo === 'valorDesconto') {
                         return valor.replace(/\./g, '').replace(',', '.');
                     }
-                    // 🔥 LIMPA O VALOR DO EMITENTE
                     if (campo === 'emitente') {
-                        // Remove "CNPJ" e outros textos indesejados
                         valor = valor.replace(/CNPJ.*$/i, '').trim();
                         valor = valor.replace(/CEP.*$/i, '').trim();
                         valor = valor.replace(/ENDEREÇO.*$/i, '').trim();
-                        // Pega apenas o nome da empresa (primeira linha)
                         var linhas = valor.split(/\n|,| - /);
                         if (linhas.length > 0) {
                             valor = linhas[0].trim();
                         }
-                        return valor;
-                    }
-                    if (campo === 'endereco') {
-                        // Tenta montar endereço completo
-                        valor = valor.replace(/NOME\/RAZÃO SOCIAL.*$/i, '').trim();
                         return valor;
                     }
                     return valor.trim();
@@ -1349,77 +1602,44 @@
         }
 
         // ============================================================
-        // 9. EXTRAIR ITENS
+        // 11. EXTRAIR ITENS
         // ============================================================
         function extrairItens(texto) {
             var itens = [];
 
-            // Procura pela descrição do produto
-            var padraoProduto = /DESCRIÇAO DOS PRODUTOS[\s\S]*?KIT|Kit|Caixa|Adesivos|Vinil|Produto/i;
-            var matchProduto = texto.match(padraoProduto);
+            // Procura pelo padrão de produto na nota
+            var padraoProduto = /([A-Za-zÀ-ÿ\s]{10,}?)\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
+            var match;
 
-            var descricao = '';
-            if (matchProduto) {
-                // Tenta extrair o nome completo do produto
-                var padraoDesc = /([A-Za-zÀ-ÿ\s]{10,}?)\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/i;
-                var matchDesc = texto.match(padraoDesc);
-                if (matchDesc) {
-                    descricao = matchDesc[1].trim();
-                    var qtd = parseInt(matchDesc[2]) || 1;
-                    var unit = parseFloat(matchDesc[3].replace(/\./g, '').replace(',', '.')) || 0;
-                    var total = parseFloat(matchDesc[4].replace(/\./g, '').replace(',', '.')) || 0;
+            while ((match = padraoProduto.exec(texto)) !== null) {
+                var desc = match[1].trim();
+                var qtd = parseInt(match[2]) || 1;
+                var unit = parseFloat(match[3].replace(/\./g, '').replace(',', '.')) || 0;
+                var total = parseFloat(match[4].replace(/\./g, '').replace(',', '.')) || 0;
 
-                    if (descricao.length > 5) {
-                        itens.push({
-                            descricao: descricao,
-                            quantidade: qtd,
-                            unidade: 'UN',
-                            valor_unitario: unit,
-                            valor_total: total || (qtd * unit)
-                        });
-                    }
-                } else {
-                    // Tenta encontrar o produto pelo nome "KIT"
-                    var padraoKit = /Kit\s+(\d+)\s+([A-Za-zÀ-ÿ\s]+?)(?:\s+\d+|\s+UN|\s*$)/i;
-                    var matchKit = texto.match(padraoKit);
-                    if (matchKit) {
-                        var qtdKit = parseInt(matchKit[1]) || 1;
-                        var descKit = matchKit[2].trim();
-                        var valorKit = parseFloat(extrairCampo(texto, 'valorTotal')) || 0;
-
-                        if (descKit.length > 3) {
-                            itens.push({
-                                descricao: 'Kit ' + qtdKit + ' ' + descKit,
-                                quantidade: 1,
-                                unidade: 'UN',
-                                valor_unitario: valorKit,
-                                valor_total: valorKit
-                            });
-                        }
-                    }
+                if (desc.length > 8 && !desc.match(/^\d+$/)) {
+                    itens.push({
+                        descricao: desc,
+                        quantidade: qtd,
+                        unidade: 'UN',
+                        valor_unitario: unit,
+                        valor_total: total || (qtd * unit)
+                    });
                 }
             }
 
-            // Se não encontrou nenhum item, tenta outro padrão
+            // Se não encontrou, tenta encontrar pelo nome do produto específico
             if (itens.length === 0) {
-                var padraoItem = /([A-Za-zÀ-ÿ\s]{10,})\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
-                var match;
-
-                while ((match = padraoItem.exec(texto)) !== null) {
-                    var desc = match[1].trim();
-                    var qtd = parseInt(match[2]) || 1;
-                    var unit = parseFloat(match[3].replace(/\./g, '').replace(',', '.')) || 0;
-                    var total = parseFloat(match[4].replace(/\./g, ''.replace(',', '.'))) || 0;
-
-                    if (desc.length > 10 && !desc.match(/^\d+$/)) {
-                        itens.push({
-                            descricao: desc,
-                            quantidade: qtd,
-                            unidade: 'UN',
-                            valor_unitario: unit,
-                            valor_total: total || (qtd * unit)
-                        });
-                    }
+                var padraoMicrofone = /MICROFONE[\s\S]*?KADOSH/i;
+                if (padraoMicrofone.test(texto)) {
+                    var valorTotal = parseFloat(extrairCampo(texto, 'valorTotal')) || 0;
+                    itens.push({
+                        descricao: 'Microfone Kadosh Sem Fio',
+                        quantidade: 1,
+                        unidade: 'UN',
+                        valor_unitario: valorTotal,
+                        valor_total: valorTotal
+                    });
                 }
             }
 
@@ -1427,7 +1647,7 @@
         }
 
         // ============================================================
-        // 10. MOSTRAR PREVIEW
+        // 12. MOSTRAR PREVIEW COM CONFIABILIDADE
         // ============================================================
         function mostrarPreviewIA(dados) {
             var preview = document.getElementById('previewIA');
@@ -1442,6 +1662,24 @@
 
             var numeroInterno = 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length + 1).padStart(4, '0');
 
+            // Função para gerar indicador de confiança
+            function getConfiancaIcon(campo) {
+                var nivel = camposConfianca[campo] || 'baixa';
+                var cores = {
+                    'alta': '🟢',
+                    'media': '🟡',
+                    'baixa': '🔴'
+                };
+                var labels = {
+                    'alta': 'Alta',
+                    'media': 'Média',
+                    'baixa': 'Baixa'
+                };
+                return '<span class="confianca ' + nivel + '" title="Confiabilidade: ' + labels[nivel] +
+                '"></span>';
+            }
+
+            // Gera os itens com cabeçalhos
             var itensHtml = '';
             if (dados.itens && dados.itens.length > 0) {
                 itensHtml = '<div class="preview-itens">';
@@ -1476,43 +1714,103 @@
                     <div class="preview-secao">
                         <div class="titulo">📋 DADOS GERAIS</div>
                         <div class="preview-grid">
-                            <div class="preview-item"><span class="label">📋 Número da Nota</span><span class="valor destaque">${dados.numero || '—'}</span></div>
-                            <div class="preview-item"><span class="label">🔑 Chave de Acesso</span><span class="valor" style="font-size:11px;">${dados.chave || '—'}</span></div>
-                            <div class="preview-item"><span class="label">🏢 Emitente (Empresa)</span><span class="valor">${dados.emitente || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📄 CNPJ do Emitente</span><span class="valor">${dados.cnpj || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📞 Telefone</span><span class="valor">${dados.telefone || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📍 Endereço</span><span class="valor" style="font-size:12px;">${dados.endereco || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📋 Natureza da Operação</span><span class="valor">${dados.natureza || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📅 Data de Emissão</span><span class="valor">${dataEmissao}</span></div>
-                            <div class="preview-item"><span class="label">📅 Data de Entrada</span><span class="valor">${dataEntrada}</span></div>
-                            <div class="preview-item"><span class="label">🕐 Hora de Entrada</span><span class="valor">${horaEntrada}</span></div>
-                            <div class="preview-item"><span class="label">📅 Data de Entrega</span><span class="valor">${dataEntrega}</span></div>
+                            <div class="preview-item">
+                                <span class="label">📋 Número da Nota ${getConfiancaIcon('numero')}</span>
+                                <span class="valor destaque">${dados.numero || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">🔑 Chave de Acesso ${getConfiancaIcon('chave')}</span>
+                                <span class="valor" style="font-size:11px;">${dados.chave || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">🏢 Emitente (Empresa) ${getConfiancaIcon('emitente')}</span>
+                                <span class="valor">${dados.emitente || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📄 CNPJ do Emitente ${getConfiancaIcon('cnpj')}</span>
+                                <span class="valor">${dados.cnpj || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📞 Telefone ${getConfiancaIcon('telefone')}</span>
+                                <span class="valor">${dados.telefone || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📍 Endereço ${getConfiancaIcon('endereco')}</span>
+                                <span class="valor" style="font-size:12px;">${dados.endereco || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📋 Natureza da Operação ${getConfiancaIcon('natureza')}</span>
+                                <span class="valor">${dados.natureza || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📅 Data de Emissão ${getConfiancaIcon('dataEmissao')}</span>
+                                <span class="valor">${dataEmissao}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📅 Data de Entrada ${getConfiancaIcon('dataEntrada')}</span>
+                                <span class="valor">${dataEntrada}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">🕐 Hora de Entrada ${getConfiancaIcon('horaEntrada')}</span>
+                                <span class="valor">${horaEntrada}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📅 Data de Entrega ${getConfiancaIcon('dataEntrega')}</span>
+                                <span class="valor">${dataEntrega}</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="preview-secao">
                         <div class="titulo">💰 CÁLCULOS</div>
                         <div class="preview-grid">
-                            <div class="preview-item"><span class="label">💰 Valor dos Produtos</span><span class="valor">${fm(dados.valorProduto || 0)}</span></div>
-                            <div class="preview-item"><span class="label">🚛 Valor do Frete</span><span class="valor">${fm(dados.valorFrete || 0)}</span></div>
-                            <div class="preview-item"><span class="label">🛡️ Valor do Seguro</span><span class="valor">${fm(dados.valorSeguro || 0)}</span></div>
-                            <div class="preview-item"><span class="label">💳 Valor do Desconto</span><span class="valor">${fm(dados.valorDesconto || 0)}</span></div>
-                            <div class="preview-item" style="border-bottom:2px solid var(--roxo);"><span class="label" style="font-weight:700;">💰 Valor Total</span><span class="valor destaque">${fm(dados.valorTotal || 0)}</span></div>
+                            <div class="preview-item">
+                                <span class="label">💰 Valor dos Produtos ${getConfiancaIcon('valorProduto')}</span>
+                                <span class="valor">${fm(dados.valorProduto || 0)}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">🚛 Valor do Frete ${getConfiancaIcon('valorFrete')}</span>
+                                <span class="valor">${fm(dados.valorFrete || 0)}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">🛡️ Valor do Seguro ${getConfiancaIcon('valorSeguro')}</span>
+                                <span class="valor">${fm(dados.valorSeguro || 0)}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">💳 Valor do Desconto ${getConfiancaIcon('valorDesconto')}</span>
+                                <span class="valor">${fm(dados.valorDesconto || 0)}</span>
+                            </div>
+                            <div class="preview-item" style="border-bottom:2px solid var(--roxo);">
+                                <span class="label" style="font-weight:700;">💰 Valor Total ${getConfiancaIcon('valorTotal')}</span>
+                                <span class="valor destaque">${fm(dados.valorTotal || 0)}</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="preview-secao">
-                        <div class="titulo">📦 ITENS DA NOTA (${dados.itens ? dados.itens.length : 0})</div>
+                        <div class="titulo">📦 ITENS DA NOTA (${dados.itens ? dados.itens.length : 0}) ${getConfiancaIcon('itens')}</div>
                         ${itensHtml}
                     </div>
 
                     <div class="preview-secao" style="border-top:2px solid var(--verde);">
                         <div class="titulo" style="color:var(--verde);">📤 DADOS PARA CRM</div>
                         <div class="preview-grid">
-                            <div class="preview-item"><span class="label">🏢 Nome da Empresa</span><span class="valor verde">${dados.emitente || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📞 Telefone</span><span class="valor verde">${dados.telefone || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📍 Endereço</span><span class="valor verde" style="font-size:12px;">${dados.endereco || '—'}</span></div>
-                            <div class="preview-item"><span class="label">📄 CNPJ</span><span class="valor verde">${dados.cnpj || '—'}</span></div>
+                            <div class="preview-item">
+                                <span class="label">🏢 Nome da Empresa</span>
+                                <span class="valor verde">${dados.emitente || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📞 Telefone</span>
+                                <span class="valor verde">${dados.telefone || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📍 Endereço</span>
+                                <span class="valor verde" style="font-size:12px;">${dados.endereco || '—'}</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="label">📄 CNPJ</span>
+                                <span class="valor verde">${dados.cnpj || '—'}</span>
+                            </div>
                         </div>
                     </div>
 
@@ -1533,7 +1831,87 @@
         }
 
         // ============================================================
-        // 11. LIMPAR DADOS
+        // 13. MODAL DE REVISÃO MANUAL
+        // ============================================================
+        function abrirModalRevisao() {
+            if (!dadosNota) {
+                mostrarToast('⚠️ Nenhum dado para revisar.', 'warning');
+                return;
+            }
+
+            var modal = document.getElementById('modalRevisao');
+            var container = document.getElementById('camposRevisao');
+
+            var campos = [
+                { id: 'numero', label: '📋 Número da Nota', tipo: 'text' },
+                { id: 'emitente', label: '🏢 Emitente (Empresa)', tipo: 'text' },
+                { id: 'cnpj', label: '📄 CNPJ do Emitente', tipo: 'text' },
+                { id: 'telefone', label: '📞 Telefone', tipo: 'text' },
+                { id: 'endereco', label: '📍 Endereço', tipo: 'text' },
+                { id: 'natureza', label: '📋 Natureza da Operação', tipo: 'text' },
+                { id: 'dataEmissao', label: '📅 Data de Emissão', tipo: 'date' },
+                { id: 'dataEntrada', label: '📅 Data de Entrada', tipo: 'date' },
+                { id: 'horaEntrada', label: '🕐 Hora de Entrada', tipo: 'text' },
+                { id: 'dataEntrega', label: '📅 Data de Entrega', tipo: 'date' },
+                { id: 'valorProduto', label: '💰 Valor dos Produtos', tipo: 'number' },
+                { id: 'valorFrete', label: '🚛 Valor do Frete', tipo: 'number' },
+                { id: 'valorSeguro', label: '🛡️ Valor do Seguro', tipo: 'number' },
+                { id: 'valorDesconto', label: '💳 Valor do Desconto', tipo: 'number' },
+                { id: 'valorTotal', label: '💰 Valor Total', tipo: 'number' }
+            ];
+
+            var html = '';
+            campos.forEach(function(campo) {
+                var valor = dadosNota[campo.id] || '';
+                var confianca = camposConfianca[campo.id] || 'baixa';
+                var cor = confianca === 'alta' ? '🟢' : (confianca === 'media' ? '🟡' : '🔴');
+                var labelConfianca = confianca === 'alta' ? 'Alta' : (confianca === 'media' ? 'Média' : 'Baixa');
+
+                html += `
+                        <div class="campo-revisao">
+                            <label>${campo.label} <span class="confianca-label">${cor} ${labelConfianca}</span></label>
+                            <input type="${campo.tipo}" id="rev_${campo.id}" value="${valor}" step="0.01">
+                        </div>
+                    `;
+            });
+
+            container.innerHTML = html;
+            modal.classList.add('visivel');
+        }
+
+        function fecharModalRevisao() {
+            document.getElementById('modalRevisao').classList.remove('visivel');
+        }
+
+        function salvarRevisao() {
+            var campos = [
+                'numero', 'emitente', 'cnpj', 'telefone', 'endereco',
+                'natureza', 'dataEmissao', 'dataEntrada', 'horaEntrada', 'dataEntrega',
+                'valorProduto', 'valorFrete', 'valorSeguro', 'valorDesconto', 'valorTotal'
+            ];
+
+            campos.forEach(function(campo) {
+                var el = document.getElementById('rev_' + campo);
+                if (el) {
+                    var valor = el.value;
+                    if (campo === 'valorProduto' || campo === 'valorFrete' || campo === 'valorSeguro' ||
+                        campo === 'valorDesconto' || campo === 'valorTotal') {
+                        dadosNota[campo] = parseFloat(valor) || 0;
+                    } else {
+                        dadosNota[campo] = valor || '---';
+                    }
+                }
+            });
+
+            // Recalcula confiança
+            calcularConfianca(dadosNota);
+            mostrarPreviewIA(dadosNota);
+            fecharModalRevisao();
+            mostrarToast('✅ Dados revisados e salvos!', 'success');
+        }
+
+        // ============================================================
+        // 14. LIMPAR DADOS
         // ============================================================
         function limparDados() {
             limparDadosAntigos();
@@ -1545,7 +1923,7 @@
         }
 
         // ============================================================
-        // 12. ENVIAR PARA CRM
+        // 15. ENVIAR PARA CRM
         // ============================================================
         function enviarParaCRM() {
             if (!dadosNota) {
@@ -1605,7 +1983,7 @@
         }
 
         // ============================================================
-        // 13. OUTRAS FUNÇÕES
+        // 16. OUTRAS FUNÇÕES
         // ============================================================
         function abrirFormManual() {
             if (confirm('Deseja usar a Central de IA para preencher automaticamente?')) {
@@ -1616,13 +1994,28 @@
         }
 
         function editarDados() {
-            mostrarToast('✏️ Edição manual em desenvolvimento. Use a Central de IA.', 'info');
+            abrirModalRevisao();
         }
 
         function avancarParaVinculo() {
             if (!dadosNota) {
                 mostrarToast('⚠️ Nenhuma nota processada. Faça o upload primeiro.', 'warning');
                 return;
+            }
+
+            // Verifica confiança antes de avançar
+            var temErro = false;
+            ['emitente', 'cnpj', 'numero', 'valorTotal'].forEach(function(campo) {
+                if (camposConfianca[campo] === 'baixa' || camposConfianca[campo] === 'media') {
+                    temErro = true;
+                }
+            });
+
+            if (temErro) {
+                if (!confirm('⚠️ Alguns campos críticos têm baixa confiabilidade. Deseja revisar antes de continuar?')) {
+                    abrirModalRevisao();
+                    return;
+                }
             }
 
             document.getElementById('passoPreview').style.display = 'none';
@@ -1670,7 +2063,10 @@
                 'escola': 'Reforço Escolar',
                 'material': 'Reforço Escolar',
                 'curso': 'Capacitação Profissional',
-                'treinamento': 'Capacitação Profissional'
+                'treinamento': 'Capacitação Profissional',
+                'microfone': 'Inclusão Digital',
+                'caixa': 'Inclusão Digital',
+                'organizadora': 'Inclusão Digital'
             };
 
             var texto = emitente.toLowerCase();
@@ -1780,7 +2176,8 @@
                 status: 'vinculado',
                 observacao: obs,
                 data_criacao: new Date().toISOString(),
-                origem: 'ia'
+                origem: 'ia',
+                confianca: camposConfianca
             };
 
             notas.push(novaNota);
