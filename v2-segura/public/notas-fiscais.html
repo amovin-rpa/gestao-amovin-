@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Amovin ERP • Notas Fiscais</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
     </script>
     <style>
+        /* ============================================================
+           CSS COMPLETO - IDENTIDADE AMOVIN
+           ============================================================ */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -54,6 +57,12 @@
         }
         .topo-bar h1 span {
             color: var(--laranja);
+        }
+        .topo-bar .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
         }
         .btn-sair-topo {
             background: #F8F4ED;
@@ -161,6 +170,8 @@
         }
         .btn-primary:hover {
             background: var(--laranja-escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(198, 90, 17, 0.25);
         }
         .btn-success {
             background: var(--verde);
@@ -168,6 +179,8 @@
         }
         .btn-success:hover {
             background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(87, 194, 32, 0.25);
         }
         .btn-outline {
             background: transparent;
@@ -183,6 +196,13 @@
         }
         .btn-azul:hover {
             background: #1565C0;
+        }
+        .btn-danger {
+            background: var(--vermelho);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #C62828;
         }
         .btn-full {
             width: 100%;
@@ -238,7 +258,7 @@
         }
 
         /* ============================================================
-           PREVIEW DA NOTA - CAMPOS EXTRAÍDOS
+           PREVIEW - TODOS OS CAMPOS
            ============================================================ */
         .preview-nota {
             background: #F8F4ED;
@@ -278,6 +298,9 @@
         .preview-item .valor.verde {
             color: var(--verde);
         }
+        .preview-item .valor.vermelho {
+            color: var(--vermelho);
+        }
 
         .preview-itens {
             margin-top: 12px;
@@ -315,6 +338,14 @@
             font-weight: 600;
             color: var(--laranja);
         }
+        .preview-itens .item-linha .btn-remover-item {
+            background: none;
+            border: none;
+            color: var(--vermelho);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 4px;
+        }
 
         .preview-acoes {
             display: flex;
@@ -323,6 +354,30 @@
             flex-wrap: wrap;
             padding-top: 12px;
             border-top: 2px solid #E5E0D8;
+        }
+
+        /* ============================================================
+           FORMULÁRIO MANUAL
+           ============================================================ */
+        .form-manual {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid #E5E0D8;
+        }
+        .form-manual.visivel {
+            display: block;
+        }
+        .form-manual .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin: 16px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #F0E9DF;
+        }
+        .form-manual .section-title .icone {
+            margin-right: 6px;
         }
 
         /* ============================================================
@@ -396,6 +451,9 @@
             color: var(--vermelho);
         }
 
+        /* ============================================================
+           LISTA DE NOTAS
+           ============================================================ */
         .nota-item {
             padding: 12px 16px;
             border-bottom: 1px solid #F0E9DF;
@@ -455,6 +513,9 @@
             color: #9CA3AF;
         }
 
+        /* ============================================================
+           RODAPÉ
+           ============================================================ */
         .rodape {
             background: #FFFFFF;
             border-radius: 14px;
@@ -503,7 +564,9 @@
             display: none;
         }
 
-        /* Etapas */
+        /* ============================================================
+           ETAPAS
+           ============================================================ */
         .etapas {
             display: flex;
             gap: 8px;
@@ -560,6 +623,9 @@
             margin-left: 4px;
         }
 
+        /* ============================================================
+           TOAST
+           ============================================================ */
         .toast {
             position: fixed;
             top: 20px;
@@ -597,6 +663,9 @@
             }
         }
 
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
         @media (max-width: 900px) {
             .main-content {
                 margin-left: 0;
@@ -653,7 +722,7 @@
         <div class="topo-bar">
             <div>
                 <h1>📄 Notas Fiscais <span>+ Extração</span></h1>
-                <span class="sub">Leia notas automaticamente, extraia dados e vincule a projetos</span>
+                <span class="sub">Leia notas automaticamente ou preencha manualmente</span>
             </div>
             <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
@@ -664,7 +733,7 @@
                 <span class="num">1</span> Upload da Nota <span class="seta">→</span>
             </div>
             <div class="etapa" id="etapa2">
-                <span class="num">2</span> Extrair Dados <span class="seta">→</span>
+                <span class="num">2</span> Extrair/Preencher Dados <span class="seta">→</span>
             </div>
             <div class="etapa" id="etapa3">
                 <span class="num">3</span> Vincular <span class="seta">→</span>
@@ -685,9 +754,17 @@
                 <span class="icone">📄</span>
                 <p><strong>Arraste o arquivo aqui</strong> ou clique para selecionar</p>
                 <span class="formatos">Formatos suportados: PDF, XML, JPG, PNG</span>
-                <input type="file" id="fileInput" accept=".pdf,.xml,.jpg,.jpeg,.png" style="display:none;" onchange="processarArquivo(event)">
+                <input type="file" id="fileInput" accept=".pdf,.xml,.jpg,.jpeg,.png" style="display:none;" onchange="processarArquivo(event)" />
                 <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInput').click()">📂 Selecionar Arquivo</button>
             </div>
+
+            <div style="text-align:center;margin-top:12px;">
+                <span style="font-size:12px;color:var(--cinza);">ou</span>
+            </div>
+
+            <button class="btn btn-primary btn-full" onclick="abrirFormManual()" style="margin-top:8px;">
+                📝 Preencher Manualmente
+            </button>
         </div>
 
         <!-- PASSO 2: PREVIEW DOS DADOS EXTRAÍDOS -->
@@ -701,8 +778,12 @@
 
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
                 <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
+                <button class="btn btn-azul" onclick="editarDadosManual()">✏️ Editar Dados</button>
                 <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer Leitura</button>
             </div>
+
+            <!-- FORMULÁRIO MANUAL (escondido) -->
+            <div id="formManual" class="form-manual"></div>
         </div>
 
         <!-- PASSO 3: VINCULAÇÃO -->
@@ -712,7 +793,7 @@
                 <span class="badge">Defina o destino</span>
             </h3>
 
-            <input type="hidden" id="notaIdVinculo">
+            <input type="hidden" id="notaIdVinculo" />
 
             <div class="form-grid">
                 <div class="form-group">
@@ -834,10 +915,11 @@
             </div>
         </div>
 
+        <!-- RODAPÉ -->
         <div class="rodape">
             <div class="rodape-grid">
                 <div class="rodape-logo">
-                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
                     <span class="logo-vigorre-fallback">Vigorre</span>
                 </div>
                 <div class="rodape-info">
@@ -860,8 +942,9 @@
         // VARIÁVEIS GLOBAIS
         // ============================================================
         var dadosNota = null;
-        var itensNota = [];
         var destinoSelecionado = 'patrimonio';
+        var modoManual = false;
+        var itensManuais = [];
 
         // ============================================================
         // DADOS DO SISTEMA
@@ -908,7 +991,6 @@
 
             var ext = file.name.split('.').pop().toLowerCase();
 
-            // Mostra loading
             mostrarLoading();
 
             if (ext === 'pdf') {
@@ -923,23 +1005,21 @@
             }
         }
 
-        // ============================================================
-        // MOSTRAR/ESCONDER LOADING
-        // ============================================================
         function mostrarLoading() {
             var preview = document.getElementById('previewNota');
-            preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando arquivo e extraindo dados...</p></div>';
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando arquivo e extraindo dados...</p></div>';
             preview.classList.add('visivel');
             document.getElementById('passoPreview').style.display = 'block';
             document.getElementById('passoUpload').style.display = 'none';
             document.getElementById('etapa1').classList.remove('ativo');
             document.getElementById('etapa1').classList.add('concluido');
             document.getElementById('etapa2').classList.add('ativo');
+            document.getElementById('formManual').classList.remove('visivel');
+            modoManual = false;
         }
 
-        function esconderLoading() {
-            // O preview já foi preenchido
-        }
+        function esconderLoading() {}
 
         // ============================================================
         // 2. LEITURA DE PDF
@@ -951,12 +1031,11 @@
                 pdfjsLib.getDocument(typedarray).promise
                     .then(function(pdf) {
                         var promises = [];
-                        for (var i = 1; i <= Math.min(pdf.numPages, 3); i++) {
+                        for (var i = 1; i <= Math.min(pdf.numPages, 5); i++) {
                             promises.push(pdf.getPage(i).then(function(page) {
                                 return page.getTextContent().then(function(textContent) {
-                                    return textContent.items.map(function(item) {
-                                        return item.str;
-                                    }).join(' ');
+                                    return textContent.items.map(function(item) { return item.str; })
+                                        .join(' ');
                                 });
                             }));
                         }
@@ -968,11 +1047,7 @@
                     })
                     .catch(function(err) {
                         mostrarToast('Erro ao ler PDF: ' + err.message, 'error');
-                        document.getElementById('passoPreview').style.display = 'none';
-                        document.getElementById('passoUpload').style.display = 'block';
-                        document.getElementById('etapa1').classList.remove('concluido');
-                        document.getElementById('etapa1').classList.add('ativo');
-                        document.getElementById('etapa2').classList.remove('ativo');
+                        mostrarErroLeitura();
                     });
             };
             reader.readAsArrayBuffer(file);
@@ -991,19 +1066,23 @@
 
                     var dados = {};
 
-                    // Campos da nota
                     dados.numero = getXMLValue(xmlDoc, ['nNF', 'numero', 'numNF']);
                     dados.chave = getXMLValue(xmlDoc, ['chNFe', 'chave', 'chaveAcesso']);
                     dados.emitente = getXMLValue(xmlDoc, ['xNome', 'emitente', 'nomeEmitente']);
                     dados.cnpj = getXMLValue(xmlDoc, ['CNPJ', 'cnpjEmitente']);
+                    dados.telefone = getXMLValue(xmlDoc, ['telefone', 'fone', 'phone']);
+                    dados.natureza = getXMLValue(xmlDoc, ['natOp', 'natureza', 'naturezaOperacao']);
                     dados.valor = parseFloat(getXMLValue(xmlDoc, ['vTotal', 'valorTotal', 'total']) || '0') || 0;
-                    dados.data = getXMLValue(xmlDoc, ['dhEmi', 'dataEmissao']);
+                    dados.dataEmissao = getXMLValue(xmlDoc, ['dhEmi', 'dataEmissao']);
+                    dados.dataEntrada = getXMLValue(xmlDoc, ['dhEntrada', 'dataEntrada', 'dataRecebimento']);
+                    dados.valorProduto = parseFloat(getXMLValue(xmlDoc, ['vProd', 'valorProduto']) || '0') || 0;
+                    dados.valorFrete = parseFloat(getXMLValue(xmlDoc, ['vFrete', 'valorFrete']) || '0') || 0;
+                    dados.valorSeguro = parseFloat(getXMLValue(xmlDoc, ['vSeg', 'valorSeguro']) || '0') || 0;
+                    dados.valorDesconto = parseFloat(getXMLValue(xmlDoc, ['vDesc', 'valorDesconto']) || '0') || 0;
 
-                    // Itens da nota
                     var itens = [];
                     var itemElements = xmlDoc.querySelectorAll('prod, item, det');
                     if (itemElements.length === 0) {
-                        // Tenta encontrar itens de outra forma
                         itemElements = xmlDoc.querySelectorAll('produto');
                     }
 
@@ -1012,13 +1091,15 @@
                         var qtd = parseFloat(getXMLValue(el, ['qCom', 'quantidade']) || '1') || 1;
                         var unit = parseFloat(getXMLValue(el, ['vUnCom', 'valorUnitario']) || '0') || 0;
                         var total = parseFloat(getXMLValue(el, ['vProd', 'valorTotal']) || '0') || 0;
+                        var unidade = getXMLValue(el, ['uCom', 'unidade', 'unidadeMedida']);
 
                         if (desc || total > 0) {
                             itens.push({
                                 descricao: desc || 'Item não identificado',
                                 quantidade: qtd,
                                 valor_unitario: unit,
-                                valor_total: total > 0 ? total : (qtd * unit)
+                                valor_total: total > 0 ? total : (qtd * unit),
+                                unidade: unidade || 'UN'
                             });
                         }
                     });
@@ -1028,8 +1109,7 @@
                     mostrarPreview(dados);
                 } catch (err) {
                     mostrarToast('Erro ao ler XML: ' + err.message, 'error');
-                    document.getElementById('passoPreview').style.display = 'none';
-                    document.getElementById('passoUpload').style.display = 'block';
+                    mostrarErroLeitura();
                 }
             };
             reader.readAsText(file);
@@ -1040,13 +1120,12 @@
         // ============================================================
         function lerImagem(file) {
             var preview = document.getElementById('previewNota');
-            preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Reconhecendo texto da imagem (OCR)...</p><p style="font-size:11px;color:#9CA3AF;">Isso pode levar alguns segundos</p></div>';
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Reconhecendo texto da imagem (OCR)...</p><p style="font-size:11px;color:#9CA3AF;">Isso pode levar alguns segundos</p></div>';
 
             Tesseract.recognize(file, 'por', {
                     logger: function(m) {
-                        if (m.status === 'recognizing text') {
-                            // Atualiza progresso
-                        }
+                        if (m.status === 'recognizing text') {}
                     }
                 })
                 .then(function(result) {
@@ -1055,13 +1134,36 @@
                 })
                 .catch(function(err) {
                     mostrarToast('Erro no OCR: ' + err.message, 'error');
-                    document.getElementById('passoPreview').style.display = 'none';
-                    document.getElementById('passoUpload').style.display = 'block';
+                    mostrarErroLeitura();
                 });
         }
 
         // ============================================================
-        // 5. EXTRAIR DADOS DA NOTA (TEXTO) - CAMPO A CAMPO
+        // 5. MOSTRAR ERRO NA LEITURA
+        // ============================================================
+        function mostrarErroLeitura() {
+            var preview = document.getElementById('previewNota');
+            preview.innerHTML = `
+                    <div style="text-align:center;padding:20px;">
+                        <span style="font-size:48px;">❌</span>
+                        <p style="margin-top:12px;color:var(--vermelho);font-weight:600;">Não foi possível extrair os dados automaticamente</p>
+                        <p style="font-size:12px;color:var(--cinza);">O PDF pode estar danificado ou em um formato não reconhecido.</p>
+                        <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="abrirFormManual()">📝 Preencher Manualmente</button>
+                            <button class="btn btn-outline" onclick="voltarUpload()">🔄 Tentar Novamente</button>
+                        </div>
+                    </div>
+                `;
+            preview.classList.add('visivel');
+            document.getElementById('passoPreview').style.display = 'block';
+            document.getElementById('passoUpload').style.display = 'none';
+            document.getElementById('etapa1').classList.remove('ativo');
+            document.getElementById('etapa1').classList.add('concluido');
+            document.getElementById('etapa2').classList.add('ativo');
+        }
+
+        // ============================================================
+        // 6. EXTRAIR DADOS DA NOTA - TODOS OS CAMPOS
         // ============================================================
         function extrairDadosNota(texto) {
             var dados = {
@@ -1069,14 +1171,21 @@
                 chave: '---',
                 emitente: '---',
                 cnpj: '---',
+                telefone: '---',
+                natureza: '---',
                 valor: 0,
-                data: '---',
-                itens: []
+                dataEmissao: '---',
+                dataEntrada: '---',
+                horaEntrada: '---',
+                valorProduto: 0,
+                valorFrete: 0,
+                valorSeguro: 0,
+                valorDesconto: 0,
+                itens: [],
+                dataEntrega: '---'
             };
 
-            // 🔍 EXTRAÇÃO CAMPO A CAMPO
-
-            // 5.1 Número da Nota
+            // Número da Nota
             var padroesNumero = [
                 /N[°º]?\s*[:]?\s*(\d{6,9})/i,
                 /nNF[:]?\s*(\d+)/i,
@@ -1088,33 +1197,50 @@
                 if (match) { dados.numero = match[1]; break; }
             }
 
-            // 5.2 Chave de Acesso (44 dígitos)
+            // Chave de Acesso
             var matchChave = texto.match(/\b(\d{44})\b/);
             if (matchChave) dados.chave = matchChave[1];
 
-            // 5.3 Emitente
+            // Emitente
             var padroesEmitente = [
                 /Emitente[:]?\s*([^\n]+)/i,
                 /Fornecedor[:]?\s*([^\n]+)/i,
                 /Razão Social[:]?\s*([^\n]+)/i,
-                /Nome[:]?\s*([^\n]+)/i
+                /Nome[:]?\s*([^\n]+)/i,
+                /NOME\/RAZÃO SOCIAL[:]?\s*([^\n]+)/i
             ];
             for (var j = 0; j < padroesEmitente.length; j++) {
                 var matchE = texto.match(padroesEmitente[j]);
                 if (matchE) { dados.emitente = matchE[1].trim(); break; }
             }
 
-            // 5.4 CNPJ
+            // CNPJ
             var padroesCnpj = [
                 /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
-                /\b(\d{14})\b/
+                /\b(\d{14})\b/,
+                /CNPJ[:]?\s*([\d./-]+)/i
             ];
             for (var k = 0; k < padroesCnpj.length; k++) {
                 var matchC = texto.match(padroesCnpj[k]);
                 if (matchC) { dados.cnpj = matchC[1]; break; }
             }
 
-            // 5.5 Valor Total
+            // Telefone
+            var padroesTelefone = [
+                /Fone[:]?\s*([\d()\s-]+)/i,
+                /Telefone[:]?\s*([\d()\s-]+)/i,
+                /TEL[:]?\s*([\d()\s-]+)/i
+            ];
+            for (var t = 0; t < padroesTelefone.length; t++) {
+                var matchTel = texto.match(padroesTelefone[t]);
+                if (matchTel) { dados.telefone = matchTel[1].trim(); break; }
+            }
+
+            // Natureza
+            var matchNatureza = texto.match(/NATUREZA DA OPERAÇÃO[:]?\s*([^\n]+)/i);
+            if (matchNatureza) dados.natureza = matchNatureza[1].trim();
+
+            // Valor Total
             var padroesValor = [
                 /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i,
                 /Total[:]?\s*R?\$?\s*([\d.,]+)/i,
@@ -1130,7 +1256,7 @@
                 }
             }
 
-            // 5.6 Data de Emissão
+            // Data de Emissão
             var padroesData = [
                 /\b(\d{2}\/\d{2}\/\d{4})\b/,
                 /\b(\d{4}-\d{2}-\d{2})\b/
@@ -1141,53 +1267,113 @@
                     var d = matchD[1];
                     if (d.indexOf('/') > 0) {
                         var parts = d.split('/');
-                        dados.data = parts[2] + '-' + parts[1] + '-' + parts[0];
+                        dados.dataEmissao = parts[2] + '-' + parts[1] + '-' + parts[0];
                     } else {
-                        dados.data = d;
+                        dados.dataEmissao = d;
                     }
                     break;
                 }
             }
 
-            // 5.7 Itens da Nota (PRODUTOS/SERVIÇOS)
-            // Padrão: Descrição + Quantidade + Valor Unitário + Valor Total
+            // Data de Entrada/Saída
+            var matchDataEntrada = texto.match(/DATA DE RECEBIMENTO[:]?\s*([^\n]+)/i) ||
+                texto.match(/DATA DE ENTRADA[:]?\s*([^\n]+)/i) ||
+                texto.match(/SAÍDA[:]?\s*([^\n]+)/i);
+            if (matchDataEntrada) {
+                var dEnt = matchDataEntrada[1].trim();
+                if (dEnt.match(/\d{2}\/\d{2}\/\d{4}/)) {
+                    var parts = dEnt.match(/\d{2}\/\d{2}\/\d{4}/)[0].split('/');
+                    dados.dataEntrada = parts[2] + '-' + parts[1] + '-' + parts[0];
+                } else {
+                    dados.dataEntrada = dEnt;
+                }
+            }
+
+            // Hora
+            var matchHora = texto.match(/(\d{2}:\d{2})\s*(?:h|H)/);
+            if (matchHora) dados.horaEntrada = matchHora[1];
+
+            // Valor Produto
+            var matchValorProduto = texto.match(/VALOR DO PRODUTO[:]?\s*R?\$?\s*([\d.,]+)/i);
+            if (matchValorProduto) {
+                dados.valorProduto = parseFloat(matchValorProduto[1].replace(/\./g, '').replace(',', '.')) || 0;
+            }
+
+            // Valor Frete
+            var matchFrete = texto.match(/VALOR DO FRETE[:]?\s*R?\$?\s*([\d.,]+)/i);
+            if (matchFrete) {
+                dados.valorFrete = parseFloat(matchFrete[1].replace(/\./g, '').replace(',', '.')) || 0;
+            }
+
+            // Valor Seguro
+            var matchSeguro = texto.match(/VALOR DO SEGURO[:]?\s*R?\$?\s*([\d.,]+)/i);
+            if (matchSeguro) {
+                dados.valorSeguro = parseFloat(matchSeguro[1].replace(/\./g, '').replace(',', '.')) || 0;
+            }
+
+            // Valor Desconto
+            var matchDesconto = texto.match(/VALOR DO DESCONTO[:]?\s*R?\$?\s*([\d.,]+)/i);
+            if (matchDesconto) {
+                dados.valorDesconto = parseFloat(matchDesconto[1].replace(/\./g, '').replace(',', '.')) || 0;
+            }
+
+            // Data de Entrega
+            var matchEntrega = texto.match(/DATA DE ENTREGA[:]?\s*([^\n]+)/i);
+            if (matchEntrega) {
+                var dEntr = matchEntrega[1].trim();
+                if (dEntr.match(/\d{2}\/\d{2}\/\d{4}/)) {
+                    var parts = dEntr.match(/\d{2}\/\d{2}\/\d{4}/)[0].split('/');
+                    dados.dataEntrega = parts[2] + '-' + parts[1] + '-' + parts[0];
+                } else {
+                    dados.dataEntrega = dEntr;
+                }
+            }
+
+            // Itens
             var itens = [];
 
-            // Tenta encontrar itens com padrão: "descrição 1 x R$ 100,00"
             var padraoItem = /([\w\s]+)\s*(\d+)\s*x\s*R?\$?\s*([\d.,]+)/gi;
             var matchItem;
             while ((matchItem = padraoItem.exec(texto)) !== null) {
                 var desc = matchItem[1].trim();
                 var qtd = parseInt(matchItem[2]) || 1;
                 var unit = parseFloat(matchItem[3].replace(/\./g, '').replace(',', '.')) || 0;
-                if (desc && desc.length > 3) {
+                if (desc && desc.length > 2 && desc !== 'R') {
                     itens.push({
                         descricao: desc,
                         quantidade: qtd,
                         valor_unitario: unit,
-                        valor_total: qtd * unit
+                        valor_total: qtd * unit,
+                        unidade: 'UN'
                     });
                 }
             }
 
-            // Se não encontrou itens, tenta outro padrão
             if (itens.length === 0) {
                 var padraoItem2 = /([\w\s]+)\s*R?\$?\s*([\d.,]+)/gi;
                 while ((matchItem = padraoItem2.exec(texto)) !== null) {
                     var desc2 = matchItem[1].trim();
                     var valor2 = parseFloat(matchItem[2].replace(/\./g, '').replace(',', '.')) || 0;
-                    if (desc2 && desc2.length > 3 && valor2 > 0) {
+                    if (desc2 && desc2.length > 3 && valor2 > 0 && desc2 !== 'VALOR') {
                         itens.push({
                             descricao: desc2,
                             quantidade: 1,
                             valor_unitario: valor2,
-                            valor_total: valor2
+                            valor_total: valor2,
+                            unidade: 'UN'
                         });
                     }
                 }
             }
 
-            // Limita a 20 itens e remove duplicatas
+            var padraoUnidade = /UNIDADE[:]?\s*([\w]+)/i;
+            var matchUnidade = texto.match(padraoUnidade);
+            var unidadeExtraida = matchUnidade ? matchUnidade[1] : 'UN';
+
+            itens.forEach(function(item) {
+                item.unidade = item.unidade || unidadeExtraida;
+            });
+
             var itensUnicos = [];
             var descs = {};
             itens.forEach(function(item) {
@@ -1200,100 +1386,17 @@
 
             dados.itens = itensUnicos.slice(0, 20);
 
-            // Se não encontrou itens, cria um item genérico
             if (dados.itens.length === 0 && dados.valor > 0) {
                 dados.itens.push({
                     descricao: 'Produto/Serviço da NF ' + dados.numero,
                     quantidade: 1,
                     valor_unitario: dados.valor,
-                    valor_total: dados.valor
+                    valor_total: dados.valor,
+                    unidade: unidadeExtraida
                 });
             }
 
             mostrarPreview(dados);
-        }
-
-        // ============================================================
-        // 6. MOSTRAR PREVIEW DOS DADOS EXTRAÍDOS
-        // ============================================================
-        function mostrarPreview(dados) {
-            dadosNota = dados;
-
-            var preview = document.getElementById('previewNota');
-
-            // Formata data
-            var dataFormatada = dados.data && dados.data !== '---' ? new Date(dados.data + 'T00:00:00').toLocaleDateString(
-                'pt-BR') : '---';
-
-            // Gera HTML dos itens
-            var itensHtml = '';
-            if (dados.itens && dados.itens.length > 0) {
-                itensHtml = '<div class="preview-itens"><div class="titulo">📦 Itens da Nota (' + dados.itens.length +
-                    ' itens)</div>';
-                dados.itens.forEach(function(item) {
-                    itensHtml += '<div class="item-linha">' +
-                        '<span class="desc">' + item.descricao + '</span>' +
-                        '<span class="qtd">' + item.quantidade + 'x</span>' +
-                        '<span class="unit">R$ ' + (item.valor_unitario || 0).toFixed(2).replace('.', ',') +
-                        '</span>' +
-                        '<span class="total">R$ ' + (item.valor_total || 0).toFixed(2).replace('.', ',') +
-                        '</span>' +
-                        '</div>';
-                });
-                itensHtml += '</div>';
-            } else {
-                itensHtml = '<div class="preview-itens"><div class="titulo">📦 Itens da Nota</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado automaticamente.</p></div>';
-            }
-
-            preview.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                    <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Dados extraídos com sucesso!</span>
-                    <span style="font-size:11px;color:var(--cinza);">Extraído via ${dados.fonte || 'OCR/PDF'}</span>
-                </div>
-
-                <div class="preview-grid">
-                    <div class="preview-item">
-                        <span class="label">📋 Número da Nota</span>
-                        <span class="valor">${dados.numero || '---'}</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">🔑 Chave de Acesso</span>
-                        <span class="valor" style="font-size:11px;">${dados.chave || '---'}</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">🏢 Emitente</span>
-                        <span class="valor">${dados.emitente || '---'}</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">📄 CNPJ</span>
-                        <span class="valor">${dados.cnpj || '---'}</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">💰 Valor Total</span>
-                        <span class="valor destaque">R$ ${(dados.valor || 0).toFixed(2).replace('.', ',')}</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">📅 Data Emissão</span>
-                        <span class="valor">${dataFormatada}</span>
-                    </div>
-                </div>
-
-                ${itensHtml}
-
-                <div class="preview-acoes">
-                    <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
-                    <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer Leitura</button>
-                </div>
-            `;
-
-            document.getElementById('passoPreview').style.display = 'block';
-            document.getElementById('passoUpload').style.display = 'none';
-            document.getElementById('etapa1').classList.remove('ativo');
-            document.getElementById('etapa1').classList.add('concluido');
-            document.getElementById('etapa2').classList.add('ativo');
-
-            mostrarToast('📄 Nota lida com sucesso! ' + (dados.itens ? dados.itens.length : 0) + ' itens extraídos.',
-                'success');
         }
 
         // ============================================================
@@ -1308,7 +1411,355 @@
         }
 
         // ============================================================
-        // 8. NAVEGAÇÃO
+        // 8. MOSTRAR PREVIEW
+        // ============================================================
+        function mostrarPreview(dados) {
+            dadosNota = dados;
+            var preview = document.getElementById('previewNota');
+
+            var dataEmissao = dados.dataEmissao && dados.dataEmissao !== '---' ? new Date(dados.dataEmissao +
+                'T00:00:00').toLocaleDateString('pt-BR') : '---';
+            var dataEntrada = dados.dataEntrada && dados.dataEntrada !== '---' ? new Date(dados.dataEntrada +
+                'T00:00:00').toLocaleDateString('pt-BR') : '---';
+            var dataEntrega = dados.dataEntrega && dados.dataEntrega !== '---' ? new Date(dados.dataEntrega +
+                'T00:00:00').toLocaleDateString('pt-BR') : '---';
+
+            var itensHtml = '';
+            if (dados.itens && dados.itens.length > 0) {
+                itensHtml = '<div class="preview-itens"><div class="titulo">📦 Itens da Nota (' + dados.itens.length +
+                    ' itens)</div>';
+                dados.itens.forEach(function(item) {
+                    itensHtml += '<div class="item-linha">' +
+                        '<span class="desc">' + item.descricao + '</span>' +
+                        '<span class="qtd">' + item.quantidade + ' ' + (item.unidade || 'UN') + '</span>' +
+                        '<span class="unit">R$ ' + (item.valor_unitario || 0).toFixed(2).replace('.', ',') +
+                        '</span>' +
+                        '<span class="total">R$ ' + (item.valor_total || 0).toFixed(2).replace('.', ',') +
+                        '</span>' +
+                        '</div>';
+                });
+                itensHtml += '</div>';
+            } else {
+                itensHtml =
+                '<div class="preview-itens"><div class="titulo">📦 Itens da Nota</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado automaticamente.</p></div>';
+            }
+
+            preview.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                        <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Dados extraídos com sucesso!</span>
+                        <span style="font-size:11px;color:var(--cinza);">Extraído via OCR/PDF</span>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;margin-bottom:12px;">
+                        <div class="preview-item"><span class="label">📋 Número</span><span class="valor">${dados.numero || '---'}</span></div>
+                        <div class="preview-item"><span class="label">🔑 Chave</span><span class="valor" style="font-size:11px;">${dados.chave || '---'}</span></div>
+                        <div class="preview-item"><span class="label">🏢 Emitente</span><span class="valor">${dados.emitente || '---'}</span></div>
+                        <div class="preview-item"><span class="label">📄 CNPJ</span><span class="valor">${dados.cnpj || '---'}</span></div>
+                        <div class="preview-item"><span class="label">📞 Telefone</span><span class="valor">${dados.telefone || '---'}</span></div>
+                        <div class="preview-item"><span class="label">📋 Natureza</span><span class="valor">${dados.natureza || '---'}</span></div>
+                        <div class="preview-item"><span class="label">📅 Emissão</span><span class="valor">${dataEmissao}</span></div>
+                        <div class="preview-item"><span class="label">📅 Entrada</span><span class="valor">${dataEntrada}</span></div>
+                        <div class="preview-item"><span class="label">🕐 Hora</span><span class="valor">${dados.horaEntrada || '---'}</span></div>
+                        <div class="preview-item"><span class="label">📅 Entrega</span><span class="valor">${dataEntrega}</span></div>
+                    </div>
+
+                    <div style="border-top:1px solid #E5E0D8;padding-top:8px;margin-bottom:8px;">
+                        <div style="font-weight:600;font-size:12px;color:var(--cinza);margin-bottom:4px;">💰 Cálculos</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
+                            <div class="preview-item"><span class="label">Valor Produto</span><span class="valor">R$ ${(dados.valorProduto || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="preview-item"><span class="label">Valor Frete</span><span class="valor">R$ ${(dados.valorFrete || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="preview-item"><span class="label">Valor Seguro</span><span class="valor">R$ ${(dados.valorSeguro || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="preview-item"><span class="label">Valor Desconto</span><span class="valor">R$ ${(dados.valorDesconto || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="preview-item"><span class="label" style="font-weight:700;">💰 Valor Total</span><span class="valor destaque">R$ ${(dados.valor || 0).toFixed(2).replace('.', ',')}</span></div>
+                        </div>
+                    </div>
+
+                    ${itensHtml}
+
+                    <div class="preview-acoes">
+                        <button class="btn btn-success" onclick="avancarParaVinculo()">✅ Avançar para Vinculação</button>
+                        <button class="btn btn-azul" onclick="editarDadosManual()">✏️ Editar Dados</button>
+                        <button class="btn btn-outline" onclick="voltarUpload()">🔄 Refazer Leitura</button>
+                    </div>
+                `;
+
+            document.getElementById('passoPreview').style.display = 'block';
+            document.getElementById('passoUpload').style.display = 'none';
+            document.getElementById('etapa1').classList.remove('ativo');
+            document.getElementById('etapa1').classList.add('concluido');
+            document.getElementById('etapa2').classList.add('ativo');
+            document.getElementById('formManual').classList.remove('visivel');
+            modoManual = false;
+
+            mostrarToast('📄 Nota lida com sucesso! ' + (dados.itens ? dados.itens.length : 0) + ' itens extraídos.',
+                'success');
+        }
+
+        // ============================================================
+        // 9. ABRIR FORMULÁRIO MANUAL
+        // ============================================================
+        function abrirFormManual() {
+            modoManual = true;
+            var formContainer = document.getElementById('formManual');
+
+            // Se já tem dados, preenche com os dados existentes
+            var d = dadosNota || {};
+
+            formContainer.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <span style="font-weight:700;font-size:14px;color:var(--azul);">📝 Preenchimento Manual</span>
+                        <span style="font-size:11px;color:var(--cinza);">Preencha todos os campos da nota fiscal</span>
+                    </div>
+
+                    <div class="section-title"><span class="icone">📋</span> Dados Gerais</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Número da Nota *</label>
+                            <input type="text" id="manualNumero" value="${d.numero || ''}" placeholder="Ex: 000.188.140">
+                        </div>
+                        <div class="form-group">
+                            <label>Chave de Acesso</label>
+                            <input type="text" id="manualChave" value="${d.chave || ''}" placeholder="44 dígitos">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Emitente *</label>
+                            <input type="text" id="manualEmitente" value="${d.emitente || ''}" placeholder="Nome da empresa">
+                        </div>
+                        <div class="form-group">
+                            <label>CNPJ</label>
+                            <input type="text" id="manualCnpj" value="${d.cnpj || ''}" placeholder="00.000.000/0000-00">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" id="manualTelefone" value="${d.telefone || ''}" placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label>Natureza da Operação</label>
+                            <input type="text" id="manualNatureza" value="${d.natureza || ''}" placeholder="Venda, Serviço, etc">
+                        </div>
+                    </div>
+
+                    <div class="section-title"><span class="icone">📅</span> Datas</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Data de Emissão *</label>
+                            <input type="date" id="manualDataEmissao" value="${d.dataEmissao || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Entrada</label>
+                            <input type="date" id="manualDataEntrada" value="${d.dataEntrada || ''}">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Hora de Entrada</label>
+                            <input type="time" id="manualHoraEntrada" value="${d.horaEntrada || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Entrega</label>
+                            <input type="date" id="manualDataEntrega" value="${d.dataEntrega || ''}">
+                        </div>
+                    </div>
+
+                    <div class="section-title"><span class="icone">💰</span> Cálculos</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Valor do Produto</label>
+                            <input type="number" id="manualValorProduto" step="0.01" value="${d.valorProduto || 0}" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label>Valor do Frete</label>
+                            <input type="number" id="manualValorFrete" step="0.01" value="${d.valorFrete || 0}" placeholder="0,00">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Valor do Seguro</label>
+                            <input type="number" id="manualValorSeguro" step="0.01" value="${d.valorSeguro || 0}" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label>Valor do Desconto</label>
+                            <input type="number" id="manualValorDesconto" step="0.01" value="${d.valorDesconto || 0}" placeholder="0,00">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:700;font-size:13px;color:var(--laranja);">💰 Valor Total *</label>
+                        <input type="number" id="manualValorTotal" step="0.01" value="${d.valor || 0}" placeholder="0,00" style="border-color:var(--laranja);">
+                    </div>
+
+                    <div class="section-title"><span class="icone">📦</span> Itens da Nota</div>
+                    <div id="manualItensContainer">
+                        ${gerarItensManuais(d.itens || [])}
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:8px;">
+                        <button class="btn btn-azul" onclick="adicionarItemManual()" style="font-size:12px;padding:6px 16px;">➕ Adicionar Item</button>
+                        <button class="btn btn-danger" onclick="removerUltimoItemManual()" style="font-size:12px;padding:6px 16px;">✖ Remover Último</button>
+                    </div>
+
+                    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+                        <button class="btn btn-success" onclick="salvarDadosManual()">💾 Salvar Dados</button>
+                        <button class="btn btn-outline" onclick="fecharFormManual()">❌ Cancelar</button>
+                    </div>
+                `;
+
+            formContainer.classList.add('visivel');
+            document.getElementById('previewNota').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ============================================================
+        // 10. GERAR ITENS MANUAIS
+        // ============================================================
+        function gerarItensManuais(itens) {
+            if (!itens || itens.length === 0) {
+                return '<div style="color:var(--cinza);font-size:12px;padding:8px 0;">Nenhum item adicionado.</div>';
+            }
+
+            var html = '';
+            itens.forEach(function(item, index) {
+                html += `
+                        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 0.5fr;gap:8px;padding:6px 0;border-bottom:1px solid #F0E9DF;font-size:12px;align-items:center;">
+                            <input type="text" class="item-desc" value="${item.descricao || ''}" placeholder="Descrição" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;">
+                            <input type="number" class="item-qtd" value="${item.quantidade || 1}" placeholder="Qtd" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:60px;">
+                            <input type="text" class="item-un" value="${item.unidade || 'UN'}" placeholder="Un" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:50px;">
+                            <input type="number" class="item-unit" step="0.01" value="${item.valor_unitario || 0}" placeholder="Unit" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:80px;">
+                            <input type="number" class="item-total" step="0.01" value="${item.valor_total || 0}" placeholder="Total" style="padding:4px 8px;border:1px solid #E5E0D8;border-radius:4px;font-size:12px;width:80px;">
+                            <button class="btn-remover-item" onclick="removerItemManual(${index})" style="background:none;border:none;color:var(--vermelho);cursor:pointer;font-size:16px;">✕</button>
+                        </div>
+                    `;
+            });
+            return html;
+        }
+
+        // ============================================================
+        // 11. MANIPULAR ITENS MANUAIS
+        // ============================================================
+        function adicionarItemManual() {
+            itensManuais = obterItensManuais();
+            itensManuais.push({
+                descricao: 'Novo Item',
+                quantidade: 1,
+                unidade: 'UN',
+                valor_unitario: 0,
+                valor_total: 0
+            });
+            atualizarItensManuais();
+        }
+
+        function removerItemManual(index) {
+            itensManuais = obterItensManuais();
+            itensManuais.splice(index, 1);
+            atualizarItensManuais();
+        }
+
+        function removerUltimoItemManual() {
+            itensManuais = obterItensManuais();
+            if (itensManuais.length > 0) {
+                itensManuais.pop();
+                atualizarItensManuais();
+            } else {
+                mostrarToast('⚠️ Nenhum item para remover.', 'warning');
+            }
+        }
+
+        function obterItensManuais() {
+            var itens = [];
+            var container = document.getElementById('manualItensContainer');
+            if (!container) return itensManuais;
+
+            var linhas = container.querySelectorAll('.item-desc');
+            var descs = container.querySelectorAll('.item-desc');
+            var qtds = container.querySelectorAll('.item-qtd');
+            var uns = container.querySelectorAll('.item-un');
+            var units = container.querySelectorAll('.item-unit');
+            var totals = container.querySelectorAll('.item-total');
+
+            for (var i = 0; i < descs.length; i++) {
+                itens.push({
+                    descricao: descs[i].value || 'Item',
+                    quantidade: parseFloat(qtds[i].value) || 1,
+                    unidade: uns[i].value || 'UN',
+                    valor_unitario: parseFloat(units[i].value) || 0,
+                    valor_total: parseFloat(totals[i].value) || 0
+                });
+            }
+            return itens;
+        }
+
+        function atualizarItensManuais() {
+            var container = document.getElementById('manualItensContainer');
+            if (!container) return;
+            container.innerHTML = gerarItensManuais(itensManuais);
+        }
+
+        // ============================================================
+        // 12. SALVAR DADOS MANUAIS
+        // ============================================================
+        function salvarDadosManual() {
+            var numero = document.getElementById('manualNumero').value.trim();
+            var emitente = document.getElementById('manualEmitente').value.trim();
+            var valorTotal = parseFloat(document.getElementById('manualValorTotal').value) || 0;
+            var dataEmissao = document.getElementById('manualDataEmissao').value;
+
+            if (!numero) { mostrarToast('⚠️ Número da nota é obrigatório!', 'warning'); return; }
+            if (!emitente) { mostrarToast('⚠️ Emitente é obrigatório!', 'warning'); return; }
+            if (valorTotal <= 0) { mostrarToast('⚠️ Valor total deve ser maior que zero!', 'warning'); return; }
+            if (!dataEmissao) { mostrarToast('⚠️ Data de emissão é obrigatória!', 'warning'); return; }
+
+            var itens = obterItensManuais();
+            if (itens.length === 0) {
+                itens.push({
+                    descricao: 'Produto/Serviço da NF ' + numero,
+                    quantidade: 1,
+                    unidade: 'UN',
+                    valor_unitario: valorTotal,
+                    valor_total: valorTotal
+                });
+            }
+
+            dadosNota = {
+                numero: numero,
+                chave: document.getElementById('manualChave').value.trim(),
+                emitente: emitente,
+                cnpj: document.getElementById('manualCnpj').value.trim(),
+                telefone: document.getElementById('manualTelefone').value.trim(),
+                natureza: document.getElementById('manualNatureza').value.trim(),
+                valor: valorTotal,
+                dataEmissao: dataEmissao,
+                dataEntrada: document.getElementById('manualDataEntrada').value,
+                horaEntrada: document.getElementById('manualHoraEntrada').value,
+                dataEntrega: document.getElementById('manualDataEntrega').value,
+                valorProduto: parseFloat(document.getElementById('manualValorProduto').value) || 0,
+                valorFrete: parseFloat(document.getElementById('manualValorFrete').value) || 0,
+                valorSeguro: parseFloat(document.getElementById('manualValorSeguro').value) || 0,
+                valorDesconto: parseFloat(document.getElementById('manualValorDesconto').value) || 0,
+                itens: itens
+            };
+
+            document.getElementById('formManual').classList.remove('visivel');
+            mostrarPreview(dadosNota);
+            mostrarToast('✅ Dados salvos manualmente com sucesso!', 'success');
+        }
+
+        // ============================================================
+        // 13. EDITAR DADOS MANUAL (a partir do preview)
+        // ============================================================
+        function editarDadosManual() {
+            abrirFormManual();
+        }
+
+        // ============================================================
+        // 14. FECHAR FORMULÁRIO MANUAL
+        // ============================================================
+        function fecharFormManual() {
+            document.getElementById('formManual').classList.remove('visivel');
+        }
+
+        // ============================================================
+        // 15. NAVEGAÇÃO
         // ============================================================
         function voltarUpload() {
             document.getElementById('passoPreview').style.display = 'none';
@@ -1318,6 +1769,8 @@
             document.getElementById('etapa2').classList.remove('ativo');
             dadosNota = null;
             document.getElementById('fileInput').value = '';
+            document.getElementById('formManual').classList.remove('visivel');
+            modoManual = false;
         }
 
         function avancarParaVinculo() {
@@ -1341,7 +1794,6 @@
 
             document.getElementById('notaIdVinculo').value = Date.now();
 
-            // Sugere projeto baseado no emitente
             sugerirProjeto(dadosNota.emitente);
         }
 
@@ -1392,7 +1844,7 @@
         }
 
         // ============================================================
-        // 9. ATUALIZAR SALDO
+        // 16. ATUALIZAR SALDO
         // ============================================================
         function atualizarSaldo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
@@ -1428,7 +1880,7 @@
         }
 
         // ============================================================
-        // 10. DESTINO
+        // 17. DESTINO
         // ============================================================
         function selecionarDestino(el) {
             document.querySelectorAll('.destino-card').forEach(function(c) {
@@ -1439,7 +1891,7 @@
         }
 
         // ============================================================
-        // 11. CONFIRMAR VINCULAÇÃO
+        // 18. CONFIRMAR VINCULAÇÃO
         // ============================================================
         function confirmarVinculo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
@@ -1471,8 +1923,17 @@
                 chave: dadosNota.chave || '---',
                 emitente: dadosNota.emitente || '---',
                 cnpj_emitente: dadosNota.cnpj || '---',
+                telefone_emitente: dadosNota.telefone || '---',
+                natureza: dadosNota.natureza || '---',
                 valor_total: valorNota,
-                data_emissao: dadosNota.data || new Date().toISOString().split('T')[0],
+                valor_produto: dadosNota.valorProduto || 0,
+                valor_frete: dadosNota.valorFrete || 0,
+                valor_seguro: dadosNota.valorSeguro || 0,
+                valor_desconto: dadosNota.valorDesconto || 0,
+                data_emissao: dadosNota.dataEmissao || new Date().toISOString().split('T')[0],
+                data_entrada: dadosNota.dataEntrada || '',
+                hora_entrada: dadosNota.horaEntrada || '',
+                data_entrega: dadosNota.dataEntrega || '',
                 projeto_id: projetoId,
                 categoria_orcamento: categoria,
                 destino: destinoSelecionado,
@@ -1512,11 +1973,10 @@
         }
 
         // ============================================================
-        // 12. DIRECIONAR PRODUTOS
+        // 19. DIRECIONAR PRODUTOS
         // ============================================================
         function direcionarProdutos(nota) {
             if (!nota.itens || nota.itens.length === 0) {
-                // Cria item genérico
                 nota.itens = [{
                     descricao: 'Item da NF ' + nota.numero,
                     quantidade: 1,
@@ -1534,11 +1994,11 @@
                         id: Date.now(),
                         nome: nomeProduto,
                         categoria: nota.categoria_orcamento || 'Diversos',
-                        unidade: 'Unidade',
+                        unidade: item.unidade || 'UN',
                         qtd: item.quantidade || 1,
                         qtdMinima: 0,
                         local: 'Almoxarifado',
-                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id + ' | NF: ' + nota.id
                     });
                     localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
                     mostrarToast('📦 ' + item.quantidade + 'x ' + nomeProduto + ' adicionado ao Estoque', 'info');
@@ -1556,7 +2016,7 @@
                         valor: item.valor_total || nota.valor_total,
                         status: 'Em Operação',
                         local: 'Sede AMOVIN',
-                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+                        obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id + ' | NF: ' + nota.id
                     });
                     localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
                     localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
@@ -1578,7 +2038,7 @@
         }
 
         // ============================================================
-        // 13. RENDERIZAR LISTA
+        // 20. RENDERIZAR LISTA
         // ============================================================
         function renderizarListaNotas() {
             var container = document.getElementById('listaNotas');
@@ -1626,7 +2086,7 @@
         }
 
         // ============================================================
-        // 14. NAVEGAÇÃO FINAL
+        // 21. NAVEGAÇÃO FINAL
         // ============================================================
         function novaNota() {
             document.getElementById('passoConfirmacao').style.display = 'none';
@@ -1646,6 +2106,8 @@
             document.getElementById('obsVinculo').value = '';
             document.getElementById('saldoBox').style.display = 'none';
             document.getElementById('fileInput').value = '';
+            document.getElementById('formManual').classList.remove('visivel');
+            modoManual = false;
         }
 
         function irParaRelatorio() {
@@ -1658,7 +2120,7 @@
         }
 
         // ============================================================
-        // 15. TOAST
+        // 22. TOAST
         // ============================================================
         function mostrarToast(mensagem, tipo) {
             var toast = document.createElement('div');
@@ -1676,7 +2138,7 @@
         }
 
         // ============================================================
-        // 16. DRAG AND DROP
+        // 23. DRAG AND DROP
         // ============================================================
         var dropzone = document.getElementById('dropzone');
 
@@ -1702,7 +2164,7 @@
         });
 
         // ============================================================
-        // 17. CONTROLE DE PERFIL
+        // 24. CONTROLE DE PERFIL
         // ============================================================
         var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
         var modulosPermitidos = {
@@ -1734,7 +2196,7 @@
         }
 
         // ============================================================
-        // 18. INICIALIZAÇÃO
+        // 25. INICIALIZAÇÃO
         // ============================================================
         renderizarListaNotas();
     </script>
