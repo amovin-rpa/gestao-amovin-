@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Central de IA • AMOVIN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
+    </script>
+    <style>
+        /* ============================================================
+           CSS COMPLETO - IDENTIDADE AMOVIN
+           ============================================================ */
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+            --roxo: #7C3AED;
+            --ciano: #06B6D4;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F8F4ED;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+        }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .topo-bar h1 span {
+            color: var(--roxo);
+        }
+        .topo-bar .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .card {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card h3 .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background: #F3E8FF;
+            color: var(--roxo);
+        }
+        .card h3 .badge-ia {
+            background: linear-gradient(135deg, var(--roxo), var(--ciano));
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cinza);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: border 0.2s;
+            background: #FAFAFA;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--roxo);
+            background: var(--branco);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--roxo);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #6D28D9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
+        }
+        .btn-success {
+            background: var(--verde);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(87, 194, 32, 0.25);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--cinza);
+            border: 1px solid #E5E0D8;
+        }
+        .btn-outline:hover {
+            background: #F8F4ED;
+        }
+        .btn-azul {
+            background: var(--azul);
+            color: white;
+        }
+        .btn-azul:hover {
+            background: #1565C0;
+        }
+        .btn-danger {
+            background: var(--vermelho);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #C62828;
+        }
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            justify-content: center;
+        }
+
+        /* Dropzone */
+        .dropzone {
+            border: 3px dashed #E5E0D8;
+            border-radius: 14px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #FAFAFA;
+        }
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: var(--roxo);
+            background: #F5F0FF;
+        }
+        .dropzone .icone {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .dropzone p {
+            font-size: 14px;
+            color: var(--cinza);
+        }
+        .dropzone .formatos {
+            font-size: 11px;
+            color: #B0A99F;
+            margin-top: 6px;
+        }
+        .dropzone .btn-upload {
+            margin-top: 14px;
+            padding: 10px 30px;
+            background: var(--roxo);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .dropzone .btn-upload:hover {
+            background: #6D28D9;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #F0E9DF;
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 10px 22px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--cinza);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+        .tab:hover {
+            color: var(--roxo);
+        }
+        .tab.ativo {
+            color: var(--roxo);
+            border-bottom-color: var(--roxo);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.ativo {
+            display: block;
+        }
+
+        /* Preview IA */
+        .ia-resultado {
+            background: #F5F0FF;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            border: 1px solid #E5D9F5;
+            display: none;
+        }
+        .ia-resultado.visivel {
+            display: block;
+        }
+
+        .ia-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 20px;
+        }
+        .ia-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #E5D9F5;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        .ia-item .label {
+            color: var(--cinza);
+            font-weight: 500;
+        }
+        .ia-item .valor {
+            font-weight: 600;
+            color: var(--grafite);
+        }
+        .ia-item .valor.destaque {
+            color: var(--roxo);
+            font-size: 15px;
+        }
+        .ia-item .valor.verde {
+            color: var(--verde);
+        }
+
+        .ia-itens {
+            margin-top: 12px;
+            border-top: 2px solid #E5D9F5;
+            padding-top: 12px;
+        }
+        .ia-itens .titulo {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--cinza);
+            margin-bottom: 6px;
+        }
+        .ia-itens .item-linha {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #F0E9DF;
+        }
+
+        .status-ia {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-ia.processando {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        .status-ia.sucesso {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status-ia.erro {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .integracao-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .integracao-card {
+            background: #F8F4ED;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .integracao-card:hover {
+            border-color: var(--roxo);
+            transform: translateY(-2px);
+        }
+        .integracao-card .icone {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .integracao-card .nome {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--grafite);
+        }
+        .integracao-card .desc {
+            font-size: 11px;
+            color: var(--cinza);
+        }
+        .integracao-card.selecionado {
+            border-color: var(--roxo);
+            background: #F5F0FF;
+        }
+
+        .rodape {
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo {
+            flex-shrink: 0;
+        }
+        .rodape-logo .logo-vigorre {
+            width: 50px;
+        }
+        .rodape-info {
+            flex: 1;
+        }
+        .rodape-info .copyright {
+            font-size: 8px;
+            color: #8A8F98;
+        }
+        .rodape-info .tm {
+            font-size: 6px;
+            vertical-align: super;
+        }
+        .rodape-info .contato {
+            font-size: 9px;
+            color: #8A8F98;
+        }
+        .rodape-info a {
+            color: #C65A11;
+            text-decoration: none;
+        }
+        .rodape-info .email {
+            font-size: 8px;
+            color: #aaa;
+        }
+        .logo-vigorre-fallback {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.4s ease;
+            max-width: 400px;
+        }
+        .toast-success {
+            background: var(--verde);
+        }
+        .toast-error {
+            background: var(--vermelho);
+        }
+        .toast-info {
+            background: var(--azul);
+        }
+        .toast-warning {
+            background: #E65100;
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .ia-grid {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .tab {
+                padding: 8px 14px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+        @media (max-width: 480px) {
+            .integracao-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="menu-container"></div>
+
+    <main class="main-content">
+
+        <div class="topo-bar">
+            <div>
+                <h1>🧠 Central de IA <span>AMOVIN</span></h1>
+                <span class="sub">Inteligência artificial para extração, classificação e integração de dados</span>
+            </div>
+            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+        </div>
+
+        <!-- Status da IA -->
+        <div class="card" style="background:linear-gradient(135deg, #F5F0FF, #F0F9FF);border-color:var(--roxo);">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                <div>
+                    <span style="font-size:20px;">🤖</span>
+                    <span style="font-weight:700;font-size:16px;color:var(--grafite);">Status da IA</span>
+                </div>
+                <div>
+                    <span class="status-ia" id="statusIA">⏳ Verificando...</span>
+                    <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini Pro</span>
+                </div>
+            </div>
+            <div style="font-size:12px;color:var(--cinza);margin-top:4px;">
+                🔑 Chave: <span id="statusChave">Não configurada</span>
+                <button class="btn btn-outline" onclick="configurarChave()" style="padding:4px 12px;font-size:11px;margin-left:8px;">Configurar</button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card">
+            <div class="tabs">
+                <button class="tab ativo" data-tab="nota" onclick="mudarTab('nota',this)">📄 Notas Fiscais</button>
+                <button class="tab" data-tab="documento" onclick="mudarTab('documento',this)">📝 Documentos</button>
+                <button class="tab" data-tab="classificacao" onclick="mudarTab('classificacao',this)">🏷️ Classificação</button>
+                <button class="tab" data-tab="integracao" onclick="mudarTab('integracao',this)">🔗 Integrações</button>
+                <button class="tab" data-tab="historico" onclick="mudarTab('historico',this)">📋 Histórico</button>
+            </div>
+
+            <!-- TAB NOTAS FISCAIS -->
+            <div class="tab-content ativo" id="tab-nota">
+                <h3 style="margin-bottom:16px;font-size:15px;color:var(--grafite);">
+                    📄 Leitura Inteligente de Notas Fiscais
+                    <span class="badge badge-ia">IA</span>
+                </h3>
+
+                <div class="dropzone" id="dropzoneNota" onclick="document.getElementById('fileInputNota').click()">
+                    <span class="icone">📄</span>
+                    <p><strong>Arraste o arquivo aqui</strong> ou clique para selecionar</p>
+                    <span class="formatos">Formatos: PDF, XML, JPG, PNG, DOC, TXT</span>
+                    <input type="file" id="fileInputNota" accept=".pdf,.xml,.jpg,.jpeg,.png,.doc,.docx,.txt" style="display:none;" onchange="processarNota(event)" />
+                    <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInputNota').click()">📂 Selecionar</button>
+                </div>
+
+                <!-- Tipo de documento -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;">
+                    <div class="form-group">
+                        <label>Tipo de Documento</label>
+                        <select id="tipoDocumento">
+                            <option value="nota_fiscal">📄 Nota Fiscal (NF-e)</option>
+                            <option value="nota_servico">📄 Nota de Serviço (NFS-e)</option>
+                            <option value="nota_entrada">📥 Nota de Entrada</option>
+                            <option value="nota_saida">📤 Nota de Saída</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Projeto (opcional)</label>
+                        <select id="projetoNota">
+                            <option value="">Selecionar projeto...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Resultado IA -->
+                <div class="ia-resultado" id="resultadoNota"></div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+                    <button class="btn btn-primary" onclick="processarNotaIA()" id="btnProcessarNota" disabled>
+                        🤖 Processar com IA
+                    </button>
+                    <button class="btn btn-success" onclick="enviarNotaParaModulo()" id="btnEnviarNota" style="display:none;">
+                        📤 Enviar para Módulo
+                    </button>
+                    <button class="btn btn-outline" onclick="limparResultadoNota()">🗑️ Limpar</button>
+                </div>
+            </div>
+
+            <!-- TAB DOCUMENTOS -->
+            <div class="tab-content" id="tab-documento">
+                <h3 style="margin-bottom:16px;font-size:15px;color:var(--grafite);">
+                    📝 Leitura Inteligente de Documentos
+                    <span class="badge badge-ia">IA</span>
+                </h3>
+
+                <div class="dropzone" id="dropzoneDoc" onclick="document.getElementById('fileInputDoc').click()">
+                    <span class="icone">📄</span>
+                    <p><strong>Arraste o arquivo aqui</strong> ou clique para selecionar</p>
+                    <span class="formatos">Formatos: PDF, DOC, DOCX, TXT, JPG, PNG</span>
+                    <input type="file" id="fileInputDoc" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" style="display:none;" onchange="processarDocumento(event)" />
+                    <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInputDoc').click()">📂 Selecionar</button>
+                </div>
+
+                <div class="form-group" style="margin-top:12px;">
+                    <label>Tipo de Documento</label>
+                    <select id="tipoDoc">
+                        <option value="contrato">📋 Contrato</option>
+                        <option value="oficio">📨 Ofício</option>
+                        <option value="certidao">📜 Certidão</option>
+                        <option value="ata">📋 Ata</option>
+                        <option value="termo">📑 Termo</option>
+                        <option value="relatorio">📊 Relatório</option>
+                        <option value="outro">📌 Outro</option>
+                    </select>
+                </div>
+
+                <div class="ia-resultado" id="resultadoDoc"></div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+                    <button class="btn btn-primary" onclick="processarDocumentoIA()" id="btnProcessarDoc" disabled>
+                        🤖 Processar com IA
+                    </button>
+                    <button class="btn btn-outline" onclick="limparResultadoDoc()">🗑️ Limpar</button>
+                </div>
+            </div>
+
+            <!-- TAB CLASSIFICAÇÃO -->
+            <div class="tab-content" id="tab-classificacao">
+                <h3 style="margin-bottom:16px;font-size:15px;color:var(--grafite);">
+                    🏷️ Classificação Inteligente
+                    <span class="badge badge-ia">IA</span>
+                </h3>
+
+                <div class="form-group">
+                    <label>Texto para Classificar</label>
+                    <textarea id="textoClassificacao" rows="4" placeholder="Cole o texto que deseja classificar..."></textarea>
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="classificarTexto()">🤖 Classificar</button>
+                    <button class="btn btn-outline" onclick="document.getElementById('textoClassificacao').value=''">🗑️ Limpar</button>
+                </div>
+
+                <div class="ia-resultado" id="resultadoClassificacao"></div>
+            </div>
+
+            <!-- TAB INTEGRAÇÕES -->
+            <div class="tab-content" id="tab-integracao">
+                <h3 style="margin-bottom:16px;font-size:15px;color:var(--grafite);">
+                    🔗 Módulos Integrados
+                    <span class="badge" style="background:#E8F5E9;color:#2E7D32;">Conectados</span>
+                </h3>
+
+                <p style="font-size:13px;color:var(--cinza);margin-bottom:12px;">
+                    Selecione os módulos que receberão os dados processados pela IA.
+                </p>
+
+                <div class="integracao-grid" id="integracaoGrid">
+                    <div class="integracao-card selecionado" data-modulo="notas-fiscais" onclick="toggleIntegracao(this)">
+                        <span class="icone">📄</span>
+                        <span class="nome">Notas Fiscais</span>
+                        <span class="desc">Vínculo de notas</span>
+                    </div>
+                    <div class="integracao-card selecionado" data-modulo="estoque" onclick="toggleIntegracao(this)">
+                        <span class="icone">📦</span>
+                        <span class="nome">Estoque</span>
+                        <span class="desc">Produtos</span>
+                    </div>
+                    <div class="integracao-card selecionado" data-modulo="patrimonio" onclick="toggleIntegracao(this)">
+                        <span class="icone">🏢</span>
+                        <span class="nome">Patrimônio</span>
+                        <span class="desc">Bens</span>
+                    </div>
+                    <div class="integracao-card" data-modulo="projetos" onclick="toggleIntegracao(this)">
+                        <span class="icone">📋</span>
+                        <span class="nome">Projetos</span>
+                        <span class="desc">Vínculo de custos</span>
+                    </div>
+                    <div class="integracao-card" data-modulo="pessoas" onclick="toggleIntegracao(this)">
+                        <span class="icone">👥</span>
+                        <span class="nome">Pessoas</span>
+                        <span class="desc">Beneficiários</span>
+                    </div>
+                    <div class="integracao-card" data-modulo="documentos" onclick="toggleIntegracao(this)">
+                        <span class="icone">📝</span>
+                        <span class="nome">Documentos</span>
+                        <span class="desc">Arquivos</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-success" onclick="salvarIntegracoes()">💾 Salvar Configuração</button>
+                    <button class="btn btn-outline" onclick="selecionarTodosIntegracoes()">✅ Selecionar Todos</button>
+                    <button class="btn btn-outline" onclick="desselecionarTodosIntegracoes()">❌ Desmarcar Todos</button>
+                </div>
+            </div>
+
+            <!-- TAB HISTÓRICO -->
+            <div class="tab-content" id="tab-historico">
+                <h3 style="margin-bottom:16px;font-size:15px;color:var(--grafite);">
+                    📋 Histórico de Processamentos
+                    <span class="badge" id="totalHistorico">0</span>
+                </h3>
+
+                <div id="listaHistorico">
+                    <div style="text-align:center;padding:30px;color:#9CA3AF;">Nenhum processamento realizado.</div>
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+                    <button class="btn btn-danger" onclick="limparHistorico()">🗑️ Limpar Histórico</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="menu.js"></script>
+    <script>
+        // ============================================================
+        // CONFIGURAÇÃO DO PDF.JS
+        // ============================================================
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // ============================================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================================
+        var textoExtraido = '';
+        var dadosExtraidos = {};
+        var moduloAtual = 'notas-fiscais';
+        var historico = JSON.parse(localStorage.getItem('amovin_ia_historico') || '[]');
+        var integracoes = JSON.parse(localStorage.getItem('amovin_ia_integracoes') || {
+            'notas-fiscais': true,
+            'estoque': true,
+            'patrimonio': true,
+            'projetos': false,
+            'pessoas': false,
+            'documentos': false
+        });
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧠 Central de IA - AMOVIN ERP');
+            verificarChave();
+            preencherProjetos();
+            renderizarHistorico();
+            carregarIntegracoes();
+
+            // Atualizar KPIs do menu
+            setTimeout(function() {
+                var total = historico.length;
+                document.getElementById('totalHistorico').textContent = total;
+            }, 300);
+        });
+
+        // ============================================================
+        // VERIFICAR CHAVE DA IA
+        // ============================================================
+        function verificarChave() {
+            var key = localStorage.getItem('amovin_gemini_key');
+            var statusEl = document.getElementById('statusIA');
+            var chaveEl = document.getElementById('statusChave');
+
+            if (key && key.length > 10) {
+                statusEl.textContent = '✅ Conectado';
+                statusEl.className = 'status-ia sucesso';
+                chaveEl.textContent = 'Configurada ✅';
+                document.getElementById('btnProcessarNota').disabled = false;
+                document.getElementById('btnProcessarDoc').disabled = false;
+            } else {
+                statusEl.textContent = '⚠️ Sem chave';
+                statusEl.className = 'status-ia erro';
+                chaveEl.textContent = 'Não configurada';
+                document.getElementById('btnProcessarNota').disabled = true;
+                document.getElementById('btnProcessarDoc').disabled = true;
+            }
+        }
+
+        function configurarChave() {
+            var key = prompt('Digite sua chave da API Gemini:');
+            if (key && key.length > 10) {
+                localStorage.setItem('amovin_gemini_key', key);
+                verificarChave();
+                mostrarToast('✅ Chave configurada com sucesso!', 'success');
+            } else if (key !== null) {
+                mostrarToast('⚠️ Chave inválida. Deve ter mais de 10 caracteres.', 'warning');
+            }
+        }
+
+        // ============================================================
+        // PREENCHER PROJETOS
+        // ============================================================
+        function preencherProjetos() {
+            var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
+            var select = document.getElementById('projetoNota');
+            select.innerHTML = '<option value="">Selecionar projeto...</option>';
+            projetos.forEach(function(p) {
+                if (p.status === 'ativo') {
+                    select.innerHTML += '<option value="' + p.id + '">' + p.nome + '</option>';
+                }
+            });
+        }
+
+        // ============================================================
+        // TABS
+        // ============================================================
+        function mudarTab(tab, btn) {
+            document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('ativo'); });
+            btn.classList.add('ativo');
+            document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('ativo'); });
+            document.getElementById('tab-' + tab).classList.add('ativo');
+        }
+
+        // ============================================================
+        // PROCESSAR NOTA FISCAL (OCR + IA)
+        // ============================================================
+        function processarNota(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var ext = file.name.split('.').pop().toLowerCase();
+            var preview = document.getElementById('resultadoNota');
+
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Lendo arquivo...</p></div>';
+            preview.classList.add('visivel');
+
+            if (ext === 'pdf') {
+                lerPDFNota(file);
+            } else if (ext === 'xml') {
+                lerXMLNota(file);
+            } else if (['jpg', 'jpeg', 'png'].indexOf(ext) >= 0) {
+                lerImagemNota(file);
+            } else if (['txt', 'doc', 'docx'].indexOf(ext) >= 0) {
+                lerTextoNota(file);
+            } else {
+                mostrarToast('Formato não suportado: ' + ext, 'error');
+                preview.innerHTML =
+                    '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">❌</span><p style="color:var(--vermelho);">Formato não suportado</p></div>';
+            }
+        }
+
+        function lerPDFNota(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var typedarray = new Uint8Array(e.target.result);
+                pdfjsLib.getDocument(typedarray).promise
+                    .then(function(pdf) {
+                        var promises = [];
+                        for (var i = 1; i <= Math.min(pdf.numPages, 5); i++) {
+                            promises.push(pdf.getPage(i).then(function(page) {
+                                return page.getTextContent().then(function(textContent) {
+                                    return textContent.items.map(function(item) { return item.str; })
+                                        .join(' ');
+                                });
+                            }));
+                        }
+                        return Promise.all(promises);
+                    })
+                    .then(function(paginas) {
+                        textoExtraido = paginas.join('\n');
+                        mostrarPreviewNota(textoExtraido);
+                    })
+                    .catch(function(err) {
+                        mostrarToast('Erro ao ler PDF: ' + err.message, 'error');
+                    });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function lerXMLNota(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                textoExtraido = e.target.result;
+                mostrarPreviewNota(textoExtraido);
+            };
+            reader.readAsText(file);
+        }
+
+        function lerImagemNota(file) {
+            var preview = document.getElementById('resultadoNota');
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Reconhecendo texto da imagem (OCR)...</p></div>';
+
+            Tesseract.recognize(file, 'por')
+                .then(function(result) {
+                    textoExtraido = result.data.text;
+                    mostrarPreviewNota(textoExtraido);
+                })
+                .catch(function(err) {
+                    mostrarToast('Erro no OCR: ' + err.message, 'error');
+                });
+        }
+
+        function lerTextoNota(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                textoExtraido = e.target.result;
+                mostrarPreviewNota(textoExtraido);
+            };
+            reader.readAsText(file);
+        }
+
+        function mostrarPreviewNota(texto) {
+            var preview = document.getElementById('resultadoNota');
+
+            // Mostra um resumo do texto extraído
+            var resumo = texto.substring(0, 500) + (texto.length > 500 ? '...' : '');
+
+            preview.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <span style="font-weight:700;font-size:14px;color:var(--verde);">✅ Texto extraído com sucesso!</span>
+                        <span style="font-size:11px;color:var(--cinza);">${texto.length} caracteres</span>
+                    </div>
+                    <div style="background:white;padding:12px;border-radius:8px;font-size:12px;color:var(--cinza);max-height:150px;overflow-y:auto;border:1px solid #E5E0D8;">
+                        ${resumo}
+                    </div>
+                    <div style="margin-top:12px;font-size:12px;color:var(--cinza);">
+                        💡 Clique em "Processar com IA" para extrair os dados estruturados.
+                    </div>
+                `;
+
+            document.getElementById('btnProcessarNota').disabled = false;
+            document.getElementById('btnEnviarNota').style.display = 'none';
+        }
+
+        // ============================================================
+        // PROCESSAR NOTA COM IA (GEMINI)
+        // ============================================================
+        function processarNotaIA() {
+            if (!textoExtraido || textoExtraido.length < 10) {
+                mostrarToast('⚠️ Nenhum texto extraído. Faça o upload de um arquivo primeiro.', 'warning');
+                return;
+            }
+
+            var key = localStorage.getItem('amovin_gemini_key');
+            if (!key) {
+                mostrarToast('⚠️ Chave Gemini não configurada.', 'warning');
+                configurarChave();
+                return;
+            }
+
+            var preview = document.getElementById('resultadoNota');
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">🤖</span><p style="margin-top:8px;color:var(--cinza);">Processando com IA...</p></div>';
+
+            var prompt = `
+                Extraia os seguintes campos da nota fiscal abaixo e retorne apenas um JSON válido:
+
+                Campos a extrair:
+                1. numero: Número da Nota (ex: 13213055)
+                2. chave: Chave de Acesso (44 dígitos)
+                3. emitente: Nome do Emitente/Fornecedor
+                4. cnpj: CNPJ do Emitente (formato: 00.000.000/0000-00)
+                5. telefone: Telefone do Emitente
+                6. natureza: Natureza da Operação
+                7. dataEmissao: Data de Emissão (formato: YYYY-MM-DD)
+                8. dataEntrada: Data de Entrada (formato: YYYY-MM-DD)
+                9. horaEntrada: Hora de Entrada (formato: HH:MM:SS)
+                10. valorProduto: Valor dos Produtos (número)
+                11. valorFrete: Valor do Frete (número)
+                12. valorSeguro: Valor do Seguro (número)
+                13. valorDesconto: Valor do Desconto (número)
+                14. valorTotal: Valor Total da Nota (número)
+                15. itens: Lista de itens, cada um com: descricao, quantidade, unidade, valor_unitario, valor_total
+
+                Texto da nota:
+                ${textoExtraido}
+
+                Retorne apenas o JSON, sem texto adicional.
+            `;
+
+            fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                        var resposta = data.candidates[0].content.parts[0].text;
+                        try {
+                            // Extrai o JSON da resposta
+                            var jsonMatch = resposta.match(/\{[\s\S]*\}/);
+                            if (jsonMatch) {
+                                dadosExtraidos = JSON.parse(jsonMatch[0]);
+                                mostrarResultadoNota(dadosExtraidos);
+                                adicionarHistorico('nota_fiscal', 'Sucesso', dadosExtraidos);
+                                mostrarToast('✅ Dados extraídos com sucesso!', 'success');
+                            } else {
+                                throw new Error('JSON não encontrado');
+                            }
+                        } catch (e) {
+                            mostrarToast('❌ Erro ao processar resposta da IA.', 'error');
+                            preview.innerHTML = `
+                                    <div style="text-align:center;padding:20px;">
+                                        <span style="font-size:32px;">❌</span>
+                                        <p style="color:var(--vermelho);">Erro ao processar resposta da IA.</p>
+                                        <pre style="font-size:11px;color:var(--cinza);text-align:left;max-height:200px;overflow-y:auto;">${resposta}</pre>
+                                    </div>
+                                `;
+                        }
+                    } else {
+                        mostrarToast('❌ Erro na resposta da IA.', 'error');
+                    }
+                })
+                .catch(function(err) {
+                    mostrarToast('❌ Erro ao conectar com a IA: ' + err.message, 'error');
+                });
+        }
+
+        function mostrarResultadoNota(dados) {
+            var preview = document.getElementById('resultadoNota');
+
+            var itensHtml = '';
+            if (dados.itens && dados.itens.length > 0) {
+                itensHtml = '<div class="ia-itens"><div class="titulo">📦 Itens (' + dados.itens.length + ')</div>';
+                dados.itens.forEach(function(item) {
+                    itensHtml += '<div class="item-linha">' +
+                        '<span>' + (item.descricao || '---') + '</span>' +
+                        '<span>' + (item.quantidade || 1) + ' ' + (item.unidade || 'UN') + '</span>' +
+                        '<span>R$ ' + (item.valor_unitario || 0).toFixed(2).replace('.', ',') + '</span>' +
+                        '<span>R$ ' + (item.valor_total || 0).toFixed(2).replace('.', ',') + '</span>' +
+                        '</div>';
+                });
+                itensHtml += '</div>';
+            } else {
+                itensHtml = '<div class="ia-itens"><div class="titulo">📦 Itens</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado.</p></div>';
+            }
+
+            var dataEmissao = dados.dataEmissao ? new Date(dados.dataEmissao + 'T00:00:00').toLocaleDateString(
+                'pt-BR') : '---';
+            var dataEntrada = dados.dataEntrada ? new Date(dados.dataEntrada + 'T00:00:00').toLocaleDateString(
+                'pt-BR') : '---';
+
+            preview.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                        <span style="font-weight:700;font-size:14px;color:var(--roxo);">🧠 Dados extraídos pela IA</span>
+                        <span class="status-ia sucesso">✅ Concluído</span>
+                    </div>
+
+                    <div class="ia-grid">
+                        <div class="ia-item"><span class="label">📋 Número</span><span class="valor destaque">${dados.numero || '---'}</span></div>
+                        <div class="ia-item"><span class="label">🔑 Chave</span><span class="valor" style="font-size:11px;">${dados.chave || '---'}</span></div>
+                        <div class="ia-item"><span class="label">🏢 Emitente</span><span class="valor">${dados.emitente || '---'}</span></div>
+                        <div class="ia-item"><span class="label">📄 CNPJ</span><span class="valor">${dados.cnpj || '---'}</span></div>
+                        <div class="ia-item"><span class="label">📞 Telefone</span><span class="valor">${dados.telefone || '---'}</span></div>
+                        <div class="ia-item"><span class="label">📋 Natureza</span><span class="valor">${dados.natureza || '---'}</span></div>
+                        <div class="ia-item"><span class="label">📅 Emissão</span><span class="valor">${dataEmissao}</span></div>
+                        <div class="ia-item"><span class="label">📅 Entrada</span><span class="valor">${dataEntrada}</span></div>
+                        <div class="ia-item"><span class="label">🕐 Hora</span><span class="valor">${dados.horaEntrada || '---'}</span></div>
+                    </div>
+
+                    <div style="border-top:1px solid #E5D9F5;padding-top:8px;margin:8px 0;">
+                        <div style="font-weight:600;font-size:12px;color:var(--cinza);margin-bottom:4px;">💰 Cálculos</div>
+                        <div class="ia-grid">
+                            <div class="ia-item"><span class="label">Valor Produto</span><span class="valor">R$ ${(dados.valorProduto || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label">Valor Frete</span><span class="valor">R$ ${(dados.valorFrete || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label">Valor Seguro</span><span class="valor">R$ ${(dados.valorSeguro || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label">Valor Desconto</span><span class="valor">R$ ${(dados.valorDesconto || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label" style="font-weight:700;">💰 Valor Total</span><span class="valor destaque">R$ ${(dados.valorTotal || dados.valor || 0).toFixed(2).replace('.', ',')}</span></div>
+                        </div>
+                    </div>
+
+                    ${itensHtml}
+
+                    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;padding-top:12px;border-top:2px solid #E5D9F5;">
+                        <button class="btn btn-success" onclick="enviarNotaParaModulo()">📤 Enviar para Módulo</button>
+                        <button class="btn btn-outline" onclick="editarDadosNota()">✏️ Editar</button>
+                    </div>
+                `;
+
+            document.getElementById('btnEnviarNota').style.display = 'inline-flex';
+        }
+
+        // ============================================================
+        // ENVIAR NOTA PARA MÓDULO
+        // ============================================================
+        function enviarNotaParaModulo() {
+            if (!dadosExtraidos || Object.keys(dadosExtraidos).length === 0) {
+                mostrarToast('⚠️ Nenhum dado para enviar.', 'warning');
+                return;
+            }
+
+            var projetoId = document.getElementById('projetoNota').value;
+
+            // Adiciona o projeto aos dados
+            if (projetoId) {
+                dadosExtraidos.projeto_id = parseInt(projetoId);
+            }
+
+            // Busca notas existentes
+            var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
+
+            // Gera número interno
+            var dataAtual = new Date();
+            var ano = dataAtual.getFullYear();
+            var numeroInterno = 'AMOVIN-' + ano + '-' + String(notas.length + 1).padStart(4, '0');
+
+            var novaNota = {
+                id: Date.now(),
+                numero: dadosExtraidos.numero || '---',
+                numeroInterno: numeroInterno,
+                chave: dadosExtraidos.chave || '---',
+                emitente: dadosExtraidos.emitente || '---',
+                cnpj_emitente: dadosExtraidos.cnpj || '---',
+                telefone_emitente: dadosExtraidos.telefone || '---',
+                natureza: dadosExtraidos.natureza || '---',
+                valor_total: dadosExtraidos.valorTotal || dadosExtraidos.valor || 0,
+                valor_produto: dadosExtraidos.valorProduto || 0,
+                valor_frete: dadosExtraidos.valorFrete || 0,
+                valor_seguro: dadosExtraidos.valorSeguro || 0,
+                valor_desconto: dadosExtraidos.valorDesconto || 0,
+                data_emissao: dadosExtraidos.dataEmissao || new Date().toISOString().split('T')[0],
+                data_entrada: dadosExtraidos.dataEntrada || '',
+                hora_entrada: dadosExtraidos.horaEntrada || '',
+                projeto_id: dadosExtraidos.projeto_id || null,
+                itens: dadosExtraidos.itens || [],
+                status: 'vinculado',
+                origem: 'ia',
+                data_criacao: new Date().toISOString()
+            };
+
+            notas.push(novaNota);
+            localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas));
+
+            mostrarToast('✅ Nota enviada para o módulo com sucesso! Nº Interno: ' + numeroInterno, 'success');
+
+            // Pergunta se quer ir para o módulo
+            if (confirm('Nota salva com sucesso! Deseja ir para o módulo de Notas Fiscais?')) {
+                window.location.href = 'notas-fiscais.html';
+            }
+
+            // Limpa o resultado
+            document.getElementById('btnEnviarNota').style.display = 'none';
+        }
+
+        // ============================================================
+        // PROCESSAR DOCUMENTO (IMPLANTAÇÃO FUTURA)
+        // ============================================================
+        function processarDocumento(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            mostrarToast('📄 Documento carregado. Em breve com processamento IA.', 'info');
+
+            var preview = document.getElementById('resultadoDoc');
+            preview.innerHTML = `
+                    <div style="text-align:center;padding:20px;">
+                        <span style="font-size:32px;">📄</span>
+                        <p style="margin-top:8px;color:var(--cinza);">Arquivo carregado: ${file.name}</p>
+                        <p style="font-size:12px;color:var(--cinza);">Processamento de documentos em desenvolvimento.</p>
+                    </div>
+                `;
+            preview.classList.add('visivel');
+        }
+
+        function processarDocumentoIA() {
+            mostrarToast('🧠 Processamento de documentos em desenvolvimento.', 'info');
+        }
+
+        // ============================================================
+        // CLASSIFICAÇÃO DE TEXTO
+        // ============================================================
+        function classificarTexto() {
+            var texto = document.getElementById('textoClassificacao').value.trim();
+            if (!texto || texto.length < 10) {
+                mostrarToast('⚠️ Digite um texto com pelo menos 10 caracteres.', 'warning');
+                return;
+            }
+
+            var key = localStorage.getItem('amovin_gemini_key');
+            if (!key) {
+                mostrarToast('⚠️ Chave Gemini não configurada.', 'warning');
+                configurarChave();
+                return;
+            }
+
+            var preview = document.getElementById('resultadoClassificacao');
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">🤖</span><p style="margin-top:8px;color:var(--cinza);">Classificando texto...</p></div>';
+            preview.classList.add('visivel');
+
+            var prompt = `
+                Classifique o texto abaixo em uma das seguintes categorias:
+                - Nota Fiscal
+                - Contrato
+                - Ofício
+                - Certidão
+                - Ata
+                - Termo
+                - Relatório
+                - Outro
+
+                Também identifique:
+                1. Assunto principal
+                2. Palavras-chave (máximo 5)
+                3. Entidades mencionadas (pessoas, empresas, órgãos)
+
+                Texto:
+                ${texto}
+
+                Retorne um JSON com: categoria, assunto, palavras_chave, entidades.
+            `;
+
+            fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                        var resposta = data.candidates[0].content.parts[0].text;
+                        try {
+                            var jsonMatch = resposta.match(/\{[\s\S]*\}/);
+                            if (jsonMatch) {
+                                var resultado = JSON.parse(jsonMatch[0]);
+                                preview.innerHTML = `
+                                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                                            <span style="font-weight:700;font-size:14px;color:var(--roxo);">🏷️ Classificação</span>
+                                            <span class="status-ia sucesso">✅ Concluído</span>
+                                        </div>
+                                        <div class="ia-grid">
+                                            <div class="ia-item"><span class="label">📋 Categoria</span><span class="valor destaque">${resultado.categoria || '---'}</span></div>
+                                            <div class="ia-item"><span class="label">📌 Assunto</span><span class="valor">${resultado.assunto || '---'}</span></div>
+                                            <div class="ia-item" style="grid-column:1/-1;"><span class="label">🔑 Palavras-chave</span><span class="valor">${(resultado.palavras_chave || []).join(', ') || '---'}</span></div>
+                                            <div class="ia-item" style="grid-column:1/-1;"><span class="label">🏢 Entidades</span><span class="valor">${(resultado.entidades || []).join(', ') || '---'}</span></div>
+                                        </div>
+                                    `;
+                                adicionarHistorico('classificacao', 'Sucesso', resultado);
+                                mostrarToast('✅ Texto classificado com sucesso!', 'success');
+                            } else {
+                                throw new Error('JSON não encontrado');
+                            }
+                        } catch (e) {
+                            mostrarToast('❌ Erro ao processar resposta.', 'error');
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    mostrarToast('❌ Erro: ' + err.message, 'error');
+                });
+        }
+
+        // ============================================================
+        // INTEGRAÇÕES
+        // ============================================================
+        function toggleIntegracao(el) {
+            el.classList.toggle('selecionado');
+        }
+
+        function selecionarTodosIntegracoes() {
+            document.querySelectorAll('.integracao-card').forEach(function(el) {
+                el.classList.add('selecionado');
+            });
+        }
+
+        function desselecionarTodosIntegracoes() {
+            document.querySelectorAll('.integracao-card').forEach(function(el) {
+                el.classList.remove('selecionado');
+            });
+        }
+
+        function salvarIntegracoes() {
+            var selecionados = document.querySelectorAll('.integracao-card.selecionado');
+            var integracoes = {};
+            selecionados.forEach(function(el) {
+                var modulo = el.getAttribute('data-modulo');
+                integracoes[modulo] = true;
+            });
+            localStorage.setItem('amovin_ia_integracoes', JSON.stringify(integracoes));
+            mostrarToast('✅ Configurações de integração salvas!', 'success');
+        }
+
+        function carregarIntegracoes() {
+            var integracoes = JSON.parse(localStorage.getItem('amovin_ia_integracoes') || '{}');
+            document.querySelectorAll('.integracao-card').forEach(function(el) {
+                var modulo = el.getAttribute('data-modulo');
+                if (integracoes[modulo]) {
+                    el.classList.add('selecionado');
+                } else {
+                    el.classList.remove('selecionado');
+                }
+            });
+        }
+
+        // ============================================================
+        // HISTÓRICO
+        // ============================================================
+        function adicionarHistorico(tipo, status, dados) {
+            historico.push({
+                id: Date.now(),
+                tipo: tipo,
+                status: status,
+                dados: dados,
+                data: new Date().toISOString()
+            });
+            if (historico.length > 50) {
+                historico = historico.slice(-50);
+            }
+            localStorage.setItem('amovin_ia_historico', JSON.stringify(historico));
+            renderizarHistorico();
+        }
+
+        function renderizarHistorico() {
+            var container = document.getElementById('listaHistorico');
+            document.getElementById('totalHistorico').textContent = historico.length;
+
+            if (historico.length === 0) {
+                container.innerHTML =
+                '<div style="text-align:center;padding:30px;color:#9CA3AF;">Nenhum processamento realizado.</div>';
+                return;
+            }
+
+            var lista = historico.slice().reverse().slice(0, 20);
+            container.innerHTML = lista.map(function(item) {
+                var data = new Date(item.data).toLocaleString('pt-BR');
+                var tipoLabel = {
+                    'nota_fiscal': '📄 Nota Fiscal',
+                    'documento': '📝 Documento',
+                    'classificacao': '🏷️ Classificação'
+                } [item.tipo] || item.tipo;
+                var statusClass = item.status === 'Sucesso' ? 'status-ia sucesso' : 'status-ia erro';
+
+                return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0E9DF;font-size:13px;">' +
+                    '<div><span style="font-weight:600;">' + tipoLabel + '</span> <span class="' + statusClass +
+                    '" style="font-size:10px;padding:2px 10px;">' + item.status + '</span></div>' +
+                    '<div style="color:var(--cinza);font-size:11px;">' + data + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function limparHistorico() {
+            if (confirm('Limpar todo o histórico de processamentos?')) {
+                historico = [];
+                localStorage.setItem('amovin_ia_historico', JSON.stringify(historico));
+                renderizarHistorico();
+                mostrarToast('🗑️ Histórico limpo.', 'info');
+            }
+        }
+
+        // ============================================================
+        // LIMPAR RESULTADOS
+        // ============================================================
+        function limparResultadoNota() {
+            document.getElementById('resultadoNota').classList.remove('visivel');
+            document.getElementById('resultadoNota').innerHTML = '';
+            textoExtraido = '';
+            dadosExtraidos = {};
+            document.getElementById('btnProcessarNota').disabled = true;
+            document.getElementById('btnEnviarNota').style.display = 'none';
+            document.getElementById('fileInputNota').value = '';
+        }
+
+        function limparResultadoDoc() {
+            document.getElementById('resultadoDoc').classList.remove('visivel');
+            document.getElementById('resultadoDoc').innerHTML = '';
+            document.getElementById('fileInputDoc').value = '';
+        }
+
+        function editarDadosNota() {
+            // Função simples para editar - poderia abrir um modal
+            mostrarToast('✏️ Edição manual disponível em breve.', 'info');
+        }
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function mostrarToast(mensagem, tipo) {
+            var toast = document.createElement('div');
+            var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info',
+                'warning': 'toast-warning' };
+            toast.className = 'toast ' + (classes[tipo] || 'toast-info');
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(function() { toast.remove(); }, 400);
+            }, 4000);
+        }
+
+        // ============================================================
+        // DRAG AND DROP
+        // ============================================================
+        ['dropzoneNota', 'dropzoneDoc'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+
+            el.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            el.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            el.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                var files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    var input = this.querySelector('input[type="file"]');
+                    if (input) {
+                        input.files = files;
+                        input.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+        });
+
+        // ============================================================
+        // CONTROLE DE PERFIL
+        // ============================================================
+        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
+        var modulosPermitidos = {
+            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
+                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
+                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
+                'configuracoes', 'backup'
+            ],
+            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
+            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
+            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
+            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
+        };
+
+        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
+        setTimeout(function() {
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                var href = item.getAttribute('href') || '';
+                var pagina = href.replace('.html', '');
+                pagina = pagina.split('?')[0].split('#')[0];
+                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+                    item.style.display = 'none';
+                }
+            });
+        }, 500);
+
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
