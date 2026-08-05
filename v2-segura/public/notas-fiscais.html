@@ -105,10 +105,6 @@
             background: linear-gradient(135deg, var(--roxo), var(--azul));
             color: white;
         }
-        .card h3 .badge-crm {
-            background: linear-gradient(135deg, var(--verde), var(--azul));
-            color: white;
-        }
 
         .form-group {
             margin-bottom: 14px;
@@ -258,9 +254,6 @@
             display: block;
         }
 
-        /* ============================================================
-           TODOS OS CAMPOS - GRID COMPLETO
-           ============================================================ */
         .preview-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -308,7 +301,27 @@
         .preview-itens {
             margin-top: 8px;
         }
-        .preview-itens .item-linha {
+        .item-linha-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--cinza);
+            border-bottom: 2px solid var(--cinza);
+            margin-bottom: 4px;
+        }
+        .item-linha-header span {
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.3px;
+        }
+        .item-linha-header .desc { text-align: left; }
+        .item-linha-header .qtd { text-align: center; }
+        .item-linha-header .unit { text-align: right; }
+        .item-linha-header .total { text-align: right; }
+        .item-linha {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 8px;
@@ -316,19 +329,19 @@
             font-size: 12px;
             border-bottom: 1px solid #F0E9DF;
         }
-        .preview-itens .item-linha .desc {
+        .item-linha .desc {
             font-weight: 500;
             color: var(--grafite);
         }
-        .preview-itens .item-linha .qtd {
+        .item-linha .qtd {
             text-align: center;
             color: var(--cinza);
         }
-        .preview-itens .item-linha .unit {
+        .item-linha .unit {
             text-align: right;
             color: var(--cinza);
         }
-        .preview-itens .item-linha .total {
+        .item-linha .total {
             text-align: right;
             font-weight: 600;
             color: var(--laranja);
@@ -604,9 +617,10 @@
             .preview-grid {
                 grid-template-columns: 1fr;
             }
-            .preview-itens .item-linha {
-                grid-template-columns: 1fr 1fr;
-                font-size: 11px;
+            .item-linha-header,
+            .item-linha {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                font-size: 10px;
             }
             .destinos-grid {
                 grid-template-columns: 1fr 1fr;
@@ -619,14 +633,15 @@
             .destinos-grid {
                 grid-template-columns: 1fr;
             }
-            .preview-itens .item-linha {
+            .item-linha-header,
+            .item-linha {
                 grid-template-columns: 1fr;
                 gap: 2px;
                 padding: 6px 0;
             }
-            .preview-itens .item-linha .qtd,
-            .preview-itens .item-linha .unit,
-            .preview-itens .item-linha .total {
+            .item-linha .qtd,
+            .item-linha .unit,
+            .item-linha .total {
                 text-align: left;
             }
         }
@@ -693,16 +708,15 @@
         <div class="card" id="passoPreview" style="display:none;">
             <h3>
                 🧠 PASSO 2: Dados Extraídos pela IA
-                <span class="badge badge-ia" id="statusExtraido">✅ Concluído</span>
+                <span class="badge badge-ia" id="statusExtraido">⏳ Processando...</span>
             </h3>
+
+            <div id="infoArquivoAtual" style="font-size:12px;color:var(--cinza);padding:8px;background:#F8F4ED;border-radius:8px;display:none;margin-bottom:12px;">
+                📎 <span id="nomeArquivoAtual">---</span>
+            </div>
 
             <div id="previewIA" class="preview-ia visivel">
                 <!-- Preenchido via JavaScript -->
-            </div>
-
-            <!-- Informação do arquivo atual -->
-            <div id="infoArquivoAtual" style="font-size:12px;color:var(--cinza);margin-top:8px;padding:8px;background:#F8F4ED;border-radius:8px;display:none;">
-                📎 <span id="nomeArquivoAtual">---</span>
             </div>
 
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
@@ -870,7 +884,6 @@
         var dadosNota = null;
         var destinoSelecionado = 'patrimonio';
         var textoExtraido = '';
-        var notaAtualId = null;
 
         // ============================================================
         // DADOS DO SISTEMA
@@ -885,14 +898,14 @@
         function fm(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
 
         function formatarData(data) {
-            if (!data || data === '---') return '—';
+            if (!data || data === '---' || data === 'null' || data === '') return '—';
             try {
                 return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
             } catch (e) { return data; }
         }
 
         function valorVazio(valor) {
-            if (!valor || valor === '---' || valor === '' || valor === 0) return '—';
+            if (!valor || valor === '---' || valor === 'null' || valor === '' || valor === 0) return '—';
             return valor;
         }
 
@@ -913,17 +926,53 @@
         }
 
         // ============================================================
+        // LIMPEZA COMPLETA ENTRE NOTAS
+        // ============================================================
+        function limparDadosAntigos() {
+            dadosNota = null;
+            textoExtraido = '';
+            document.getElementById('previewIA').innerHTML = '';
+            document.getElementById('previewIA').classList.remove('visivel');
+            document.getElementById('statusExtraido').textContent = '⏳ Processando...';
+            document.getElementById('statusExtraido').style.background = '#FEF3C7';
+            document.getElementById('statusExtraido').style.color = '#92400E';
+            document.getElementById('resumoNumero').textContent = '---';
+            document.getElementById('resumoEmitente').textContent = '---';
+            document.getElementById('resumoValor').textContent = 'R$ 0,00';
+            document.getElementById('saldoBox').style.display = 'none';
+            document.getElementById('infoArquivoAtual').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            // 🔥 FORÇA LIMPEZA DO CACHE
+            localStorage.removeItem('amovin_nota_atual');
+            sessionStorage.removeItem('amovin_nota_atual');
+            sessionStorage.removeItem('amovin_texto_anterior');
+
+            // Reseta as etapas
+            document.getElementById('etapa1').classList.remove('concluido');
+            document.getElementById('etapa1').classList.add('ativo');
+            document.getElementById('etapa2').classList.remove('ativo');
+            document.getElementById('etapa2').classList.remove('concluido');
+            document.getElementById('etapa3').classList.remove('ativo');
+            document.getElementById('etapa3').classList.remove('concluido');
+            document.getElementById('etapa4').classList.remove('concluido');
+        }
+
+        // ============================================================
         // 1. PROCESSAR NOTA
         // ============================================================
         function processarNota(event) {
             var file = event.target.files[0];
             if (!file) return;
 
-            // Limpa dados anteriores
+            // 🔥 LIMPA DADOS ANTERIORES COMPLETAMENTE
             limparDadosAntigos();
 
             var ext = file.name.split('.').pop().toLowerCase();
             var preview = document.getElementById('previewIA');
+
+            // Mostra o nome do arquivo
+            document.getElementById('nomeArquivoAtual').textContent = file.name;
+            document.getElementById('infoArquivoAtual').style.display = 'block';
 
             // Mostra loading
             preview.innerHTML = `
@@ -936,8 +985,6 @@
             preview.classList.add('visivel');
             document.getElementById('passoPreview').style.display = 'block';
             document.getElementById('passoUpload').style.display = 'none';
-            document.getElementById('nomeArquivoAtual').textContent = file.name;
-            document.getElementById('infoArquivoAtual').style.display = 'block';
 
             // Atualiza etapas
             document.getElementById('etapa1').classList.remove('ativo');
@@ -971,24 +1018,7 @@
         }
 
         // ============================================================
-        // 2. LIMPAR DADOS ANTIGOS
-        // ============================================================
-        function limparDadosAntigos() {
-            dadosNota = null;
-            textoExtraido = '';
-            notaAtualId = null;
-            document.getElementById('previewIA').innerHTML = '';
-            document.getElementById('statusExtraido').textContent = '⏳ Processando...';
-            document.getElementById('statusExtraido').style.background = '#FEF3C7';
-            document.getElementById('statusExtraido').style.color = '#92400E';
-            document.getElementById('resumoNumero').textContent = '---';
-            document.getElementById('resumoEmitente').textContent = '---';
-            document.getElementById('resumoValor').textContent = 'R$ 0,00';
-            document.getElementById('saldoBox').style.display = 'none';
-        }
-
-        // ============================================================
-        // 3. LEITURA DE PDF
+        // 2. LEITURA DE PDF
         // ============================================================
         function lerPDF(file) {
             var reader = new FileReader();
@@ -1022,7 +1052,7 @@
         }
 
         // ============================================================
-        // 4. LEITURA DE XML
+        // 3. LEITURA DE XML
         // ============================================================
         function lerXML(file) {
             var reader = new FileReader();
@@ -1034,7 +1064,7 @@
         }
 
         // ============================================================
-        // 5. LEITURA DE IMAGEM (OCR)
+        // 4. LEITURA DE IMAGEM (OCR)
         // ============================================================
         function lerImagem(file) {
             var preview = document.getElementById('previewIA');
@@ -1060,7 +1090,7 @@
         }
 
         // ============================================================
-        // 6. LEITURA DE TEXTO
+        // 5. LEITURA DE TEXTO
         // ============================================================
         function lerTexto(file) {
             var reader = new FileReader();
@@ -1072,14 +1102,22 @@
         }
 
         // ============================================================
-        // 7. EXTRAIR DADOS COM IA (TODOS OS CAMPOS)
+        // 6. EXTRAIR DADOS COM IA (TODOS OS CAMPOS)
         // ============================================================
         function extrairDadosComIA(texto) {
             var preview = document.getElementById('previewIA');
 
+            // 🔥 VERIFICA SE O TEXTO É DIFERENTE DO ANTERIOR
+            var textoHash = texto.substring(0, 200);
+            var textoAnterior = sessionStorage.getItem('amovin_texto_anterior');
+            if (textoAnterior === textoHash && textoAnterior) {
+                console.warn('⚠️ Texto igual ao anterior, forçando nova extração');
+                sessionStorage.removeItem('amovin_texto_anterior');
+            }
+            sessionStorage.setItem('amovin_texto_anterior', textoHash);
+
             var key = localStorage.getItem('amovin_gemini_key');
             if (key && key.length > 10) {
-                // Usa IA para extrair
                 preview.innerHTML = `
                         <div style="text-align:center;padding:20px;">
                             <span style="font-size:32px;">🧠</span>
@@ -1094,7 +1132,7 @@
                     CAMPOS A EXTRAIR:
                     1. numero: Número da Nota
                     2. chave: Chave de Acesso (44 dígitos)
-                    3. emitente: Nome do Emitente/Fornecedor
+                    3. emitente: Nome do Emitente/Fornecedor (EMPRESA)
                     4. cnpj: CNPJ do Emitente (formato: 00.000.000/0000-00)
                     5. telefone: Telefone do Emitente
                     6. endereco: Endereço do Emitente (rua, número, bairro, cidade, UF)
@@ -1103,11 +1141,11 @@
                     9. dataEntrada: Data de Entrada (formato YYYY-MM-DD)
                     10. horaEntrada: Hora de Entrada (HH:MM:SS)
                     11. dataEntrega: Data de Entrega (formato YYYY-MM-DD)
-                    12. valorProduto: Valor dos Produtos
-                    13. valorFrete: Valor do Frete
-                    14. valorSeguro: Valor do Seguro
-                    15. valorDesconto: Valor do Desconto
-                    16. valorTotal: Valor Total da Nota
+                    12. valorProduto: Valor dos Produtos (número)
+                    13. valorFrete: Valor do Frete (número)
+                    14. valorSeguro: Valor do Seguro (número)
+                    15. valorDesconto: Valor do Desconto (número)
+                    16. valorTotal: Valor Total da Nota (número)
                     17. itens: Lista de itens com: descricao, quantidade, unidade, valor_unitario, valor_total
 
                     Texto da nota:
@@ -1175,41 +1213,166 @@
         }
 
         // ============================================================
-        // 8. USAR DADOS DE EXEMPLO (FALLBACK)
+        // 7. USAR DADOS DE EXEMPLO (FALLBACK)
         // ============================================================
         function usarDadosExemplo(texto) {
+            // 🔥 TENTA EXTRAIR DO TEXTO MANUALMENTE
             var dados = {
-                numero: '13213055',
-                chave: '352603245458510001885502200025788190602449',
-                emitente: 'EBAZAR.COM.BR LTDA',
-                cnpj: '03.007.331/0122-39',
-                telefone: '(11) 8385-4178',
-                endereco: 'AVENIDA DAS NACOES UNIDAS 3000 3003 - OSASCO - SP',
-                natureza: 'Venda de mercadorias',
-                dataEmissao: '2026-03-20',
-                dataEntrada: '2026-03-20',
-                horaEntrada: '15:12:42',
+                numero: extrairCampo(texto, 'numero') || '---',
+                chave: extrairCampo(texto, 'chave') || '---',
+                emitente: extrairCampo(texto, 'emitente') || '---',
+                cnpj: extrairCampo(texto, 'cnpj') || '---',
+                telefone: extrairCampo(texto, 'telefone') || '---',
+                endereco: extrairCampo(texto, 'endereco') || '---',
+                natureza: extrairCampo(texto, 'natureza') || '---',
+                dataEmissao: extrairCampo(texto, 'dataEmissao') || '---',
+                dataEntrada: extrairCampo(texto, 'dataEntrada') || '---',
+                horaEntrada: extrairCampo(texto, 'horaEntrada') || '---',
                 dataEntrega: '---',
-                valorProduto: 67.52,
-                valorFrete: 0,
-                valorSeguro: 0,
-                valorDesconto: 0,
-                valorTotal: 74.10,
-                itens: [
-                    { descricao: 'Adesivos Vinil Jato De Tinta Transparente A4 50 Folhas Mecolour', quantidade: 1,
-                        unidade: 'UN', valor_unitario: 67.52, valor_total: 67.52 }
-                ]
+                valorProduto: parseFloat(extrairCampo(texto, 'valorProduto')) || 0,
+                valorFrete: parseFloat(extrairCampo(texto, 'valorFrete')) || 0,
+                valorSeguro: parseFloat(extrairCampo(texto, 'valorSeguro')) || 0,
+                valorDesconto: parseFloat(extrairCampo(texto, 'valorDesconto')) || 0,
+                valorTotal: parseFloat(extrairCampo(texto, 'valorTotal')) || 0,
+                itens: extrairItens(texto) || []
             };
+
             dadosNota = dados;
             mostrarPreviewIA(dados);
-            document.getElementById('statusExtraido').textContent = '✅ Concluído (exemplo)';
+            document.getElementById('statusExtraido').textContent = '✅ Concluído';
             document.getElementById('statusExtraido').style.background = '#D1FAE5';
             document.getElementById('statusExtraido').style.color = '#065F46';
             mostrarToast('📄 Dados extraídos com sucesso!', 'success');
         }
 
         // ============================================================
-        // 9. MOSTRAR PREVIEW - TODOS OS CAMPOS
+        // 8. EXTRAIR CAMPOS DO TEXTO (MANUAL)
+        // ============================================================
+        function extrairCampo(texto, campo) {
+            var padroes = {
+                'numero': [
+                    /N[°º]?\s*[:]?\s*(\d{6,9})/i,
+                    /nNF[:]?\s*(\d+)/i,
+                    /Número[:]?\s*(\d+)/i,
+                    /\b(\d{6,9})\b/
+                ],
+                'chave': [
+                    /\b(\d{44})\b/
+                ],
+                'emitente': [
+                    /Emitente[:]?\s*([^\n]+)/i,
+                    /Fornecedor[:]?\s*([^\n]+)/i,
+                    /Razão Social[:]?\s*([^\n]+)/i,
+                    /NOME\/RAZÃO SOCIAL[:]?\s*([^\n]+)/i
+                ],
+                'cnpj': [
+                    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/,
+                    /\b(\d{14})\b/
+                ],
+                'telefone': [
+                    /Fone[:]?\s*([\d()\s-]+)/i,
+                    /Telefone[:]?\s*([\d()\s-]+)/i,
+                    /TEL[:]?\s*([\d()\s-]+)/i
+                ],
+                'endereco': [
+                    /ENDEREÇO[:]?\s*([^\n]+)/i,
+                    /Endereço[:]?\s*([^\n]+)/i
+                ],
+                'natureza': [
+                    /NATUREZA DA OPERAÇÃO[:]?\s*([^\n]+)/i,
+                    /Natureza[:]?\s*([^\n]+)/i
+                ],
+                'dataEmissao': [
+                    /DATA DA EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i,
+                    /DATA DE EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i,
+                    /Emissão[:]?\s*(\d{2}\/\d{2}\/\d{4})/i
+                ],
+                'dataEntrada': [
+                    /DATA DE ENTRADA[:]?\s*(\d{2}\/\d{2}\/\d{4})/i,
+                    /DATA DE RECEBIMENTO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i
+                ],
+                'horaEntrada': [
+                    /(\d{2}:\d{2}:\d{2})/,
+                    /(\d{2}:\d{2})/
+                ],
+                'valorTotal': [
+                    /VALOR TOTAL DA NOTA[:]?\s*R?\$?\s*([\d.,]+)/i,
+                    /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i,
+                    /Total[:]?\s*R?\$?\s*([\d.,]+)/i
+                ],
+                'valorProduto': [
+                    /VALOR TOTAL DOS PRODUTOS[:]?\s*R?\$?\s*([\d.,]+)/i,
+                    /Valor dos Produtos[:]?\s*R?\$?\s*([\d.,]+)/i
+                ],
+                'valorFrete': [
+                    /VALOR DO FRETE[:]?\s*R?\$?\s*([\d.,]+)/i
+                ],
+                'valorSeguro': [
+                    /VALOR DO SEGURO[:]?\s*R?\$?\s*([\d.,]+)/i
+                ],
+                'valorDesconto': [
+                    /DESCONTO[:]?\s*R?\$?\s*([\d.,]+)/i,
+                    /Valor do Desconto[:]?\s*R?\$?\s*([\d.,]+)/i
+                ]
+            };
+
+            var pattern = padroes[campo];
+            if (!pattern) return null;
+
+            for (var i = 0; i < pattern.length; i++) {
+                var match = texto.match(pattern[i]);
+                if (match) {
+                    var valor = match[1];
+                    if (campo === 'dataEmissao' || campo === 'dataEntrada') {
+                        if (valor.indexOf('/') > 0) {
+                            var parts = valor.split('/');
+                            return parts[2] + '-' + parts[1] + '-' + parts[0];
+                        }
+                        return valor;
+                    }
+                    if (campo === 'valorTotal' || campo === 'valorProduto' || campo === 'valorFrete' ||
+                        campo === 'valorSeguro' || campo === 'valorDesconto') {
+                        return valor.replace(/\./g, '').replace(',', '.');
+                    }
+                    return valor.trim();
+                }
+            }
+            return null;
+        }
+
+        // ============================================================
+        // 9. EXTRAIR ITENS DO TEXTO (MANUAL)
+        // ============================================================
+        function extrairItens(texto) {
+            var itens = [];
+
+            // Tenta encontrar itens com padrão: descrição + quantidade + valor
+            var padraoItem = /([A-Za-zÀ-ÿ\s]{5,})\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
+            var match;
+
+            while ((match = padraoItem.exec(texto)) !== null) {
+                var desc = match[1].trim();
+                var qtd = parseInt(match[2]) || 1;
+                var unit = parseFloat(match[3].replace(/\./g, '').replace(',', '.')) || 0;
+                var total = parseFloat(match[4].replace(/\./g, '').replace(',', '.')) || 0;
+
+                if (desc.length > 5 && !desc.match(/^\d+$/)) {
+                    itens.push({
+                        descricao: desc,
+                        quantidade: qtd,
+                        unidade: 'UN',
+                        valor_unitario: unit,
+                        valor_total: total || (qtd * unit)
+                    });
+                }
+            }
+
+            // Limita a 20 itens
+            return itens.slice(0, 20);
+        }
+
+        // ============================================================
+        // 10. MOSTRAR PREVIEW - TODOS OS CAMPOS
         // ============================================================
         function mostrarPreviewIA(dados) {
             var preview = document.getElementById('previewIA');
@@ -1222,10 +1385,22 @@
             '—';
             var horaEntrada = dados.horaEntrada && dados.horaEntrada !== '---' ? dados.horaEntrada : '—';
 
-            // Itens
+            // Número interno
+            var numeroInterno = 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length + 1).padStart(4, '0');
+
+            // Itens com cabeçalhos
             var itensHtml = '';
             if (dados.itens && dados.itens.length > 0) {
                 itensHtml = '<div class="preview-itens">';
+                // 🔥 CABEÇALHOS DAS COLUNAS
+                itensHtml += `
+                        <div class="item-linha-header">
+                            <span class="desc">Descrição</span>
+                            <span class="qtd">Qtd</span>
+                            <span class="unit">Unitário</span>
+                            <span class="total">Total</span>
+                        </div>
+                    `;
                 dados.itens.forEach(function(item) {
                     itensHtml += '<div class="item-linha">' +
                         '<span class="desc">' + (item.descricao || '—') + '</span>' +
@@ -1239,9 +1414,6 @@
             } else {
                 itensHtml = '<div class="preview-itens"><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado.</p></div>';
             }
-
-            // 🔥 Número interno AMOVIN
-            var numeroInterno = 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length + 1).padStart(4, '0');
 
             preview.innerHTML = `
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -1311,15 +1483,22 @@
             document.getElementById('etapa2').classList.remove('ativo');
             document.getElementById('etapa2').classList.add('concluido');
             document.getElementById('etapa3').classList.add('ativo');
-
-            // Habilita botões
-            document.querySelectorAll('.btn-success, .btn-azul, .btn-crm, .btn-outline').forEach(function(el) {
-                el.disabled = false;
-            });
         }
 
         // ============================================================
-        // 10. ENVIAR PARA CRM
+        // 11. LIMPAR DADOS (NOVA NOTA)
+        // ============================================================
+        function limparDados() {
+            limparDadosAntigos();
+            document.getElementById('previewIA').innerHTML = '';
+            document.getElementById('previewIA').classList.remove('visivel');
+            document.getElementById('passoPreview').style.display = 'none';
+            document.getElementById('passoUpload').style.display = 'block';
+            mostrarToast('🔄 Pronto para uma nova nota!', 'info');
+        }
+
+        // ============================================================
+        // 12. ENVIAR PARA CRM
         // ============================================================
         function enviarParaCRM() {
             if (!dadosNota) {
@@ -1332,10 +1511,8 @@
                 return;
             }
 
-            // Busca contatos existentes
             var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
 
-            // Verifica se já existe
             var existe = contatos.some(function(c) {
                 return c.nome === dadosNota.emitente || c.cnpj === dadosNota.cnpj;
             });
@@ -1344,7 +1521,6 @@
                 if (!confirm('⚠️ Esta empresa já existe no CRM. Deseja atualizar os dados?')) {
                     return;
                 }
-                // Atualiza
                 contatos.forEach(function(c) {
                     if (c.nome === dadosNota.emitente || c.cnpj === dadosNota.cnpj) {
                         c.telefone = dadosNota.telefone || c.telefone;
@@ -1354,7 +1530,6 @@
                     }
                 });
             } else {
-                // Adiciona novo
                 contatos.push({
                     id: Date.now(),
                     nome: dadosNota.emitente,
@@ -1377,43 +1552,13 @@
             localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
             mostrarToast('✅ Empresa enviada para o CRM Social com sucesso!', 'success');
 
-            // Pergunta se quer ir para o CRM
             if (confirm('Dados enviados para o CRM! Deseja visualizar?')) {
                 window.location.href = 'agenda-telefonica.html';
             }
         }
 
         // ============================================================
-        // 11. LIMPAR DADOS (NOVA NOTA)
-        // ============================================================
-        function limparDados() {
-            dadosNota = null;
-            textoExtraido = '';
-            document.getElementById('previewIA').innerHTML = '';
-            document.getElementById('previewIA').classList.remove('visivel');
-            document.getElementById('passoPreview').style.display = 'none';
-            document.getElementById('passoUpload').style.display = 'block';
-            document.getElementById('infoArquivoAtual').style.display = 'none';
-            document.getElementById('fileInput').value = '';
-            document.getElementById('statusExtraido').textContent = '⏳ Processando...';
-            document.getElementById('statusExtraido').style.background = '#FEF3C7';
-            document.getElementById('statusExtraido').style.color = '#92400E';
-            document.getElementById('resumoNumero').textContent = '---';
-            document.getElementById('resumoEmitente').textContent = '---';
-            document.getElementById('resumoValor').textContent = 'R$ 0,00';
-            document.getElementById('saldoBox').style.display = 'none';
-
-            document.getElementById('etapa1').classList.remove('concluido');
-            document.getElementById('etapa1').classList.add('ativo');
-            document.getElementById('etapa2').classList.remove('ativo');
-            document.getElementById('etapa2').classList.remove('concluido');
-            document.getElementById('etapa3').classList.remove('ativo');
-
-            mostrarToast('🔄 Pronto para uma nova nota!', 'info');
-        }
-
-        // ============================================================
-        // 12. ABRIR FORMULÁRIO MANUAL
+        // 13. OUTRAS FUNÇÕES
         // ============================================================
         function abrirFormManual() {
             if (confirm('Deseja usar a Central de IA para preencher automaticamente?')) {
@@ -1427,9 +1572,6 @@
             mostrarToast('✏️ Edição manual em desenvolvimento. Use a Central de IA.', 'info');
         }
 
-        // ============================================================
-        // 13. NAVEGAÇÃO
-        // ============================================================
         function avancarParaVinculo() {
             if (!dadosNota) {
                 mostrarToast('⚠️ Nenhuma nota processada. Faça o upload primeiro.', 'warning');
@@ -1498,9 +1640,6 @@
             }
         }
 
-        // ============================================================
-        // 14. ATUALIZAR SALDO
-        // ============================================================
         function atualizarSaldo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
             var categoria = document.getElementById('categoriaVinculo').value;
@@ -1534,9 +1673,6 @@
             }
         }
 
-        // ============================================================
-        // 15. DESTINO
-        // ============================================================
         function selecionarDestino(el) {
             document.querySelectorAll('.destino-card').forEach(function(c) {
                 c.classList.remove('selecionado');
@@ -1545,9 +1681,6 @@
             destinoSelecionado = el.getAttribute('data-destino');
         }
 
-        // ============================================================
-        // 16. CONFIRMAR VINCULAÇÃO
-        // ============================================================
         function confirmarVinculo() {
             var projetoId = parseInt(document.getElementById('projetoVinculo').value);
             var categoria = document.getElementById('categoriaVinculo').value;
@@ -1637,9 +1770,6 @@
             mostrarToast('✅ Nota vinculada com sucesso! Nº Interno: ' + numeroInterno, 'success');
         }
 
-        // ============================================================
-        // 17. ENVIAR PARA CRM AUTOMÁTICO
-        // ============================================================
         function enviarParaCRMAutomatico(nota) {
             if (!nota.emitente || nota.emitente === '---') return;
 
@@ -1671,9 +1801,6 @@
             }
         }
 
-        // ============================================================
-        // 18. DIRECIONAR PRODUTOS
-        // ============================================================
         function direcionarProdutos(nota) {
             if (!nota.itens || nota.itens.length === 0) {
                 nota.itens = [{
@@ -1736,9 +1863,6 @@
             });
         }
 
-        // ============================================================
-        // 19. RENDERIZAR LISTA
-        // ============================================================
         function renderizarListaNotas() {
             var container = document.getElementById('listaNotas');
             document.getElementById('totalNotas').textContent = '(' + notas.length + ')';
@@ -1775,9 +1899,6 @@
             }).join('');
         }
 
-        // ============================================================
-        // 20. NAVEGAÇÃO FINAL
-        // ============================================================
         function novaNota() {
             document.getElementById('passoConfirmacao').style.display = 'none';
             limparDados();
@@ -1793,7 +1914,7 @@
         }
 
         // ============================================================
-        // 21. TOAST
+        // TOAST
         // ============================================================
         function mostrarToast(mensagem, tipo) {
             var toast = document.createElement('div');
@@ -1811,7 +1932,7 @@
         }
 
         // ============================================================
-        // 22. DRAG AND DROP
+        // DRAG AND DROP
         // ============================================================
         var dropzone = document.getElementById('dropzone');
 
@@ -1837,7 +1958,7 @@
         });
 
         // ============================================================
-        // 23. CONTROLE DE PERFIL
+        // CONTROLE DE PERFIL
         // ============================================================
         var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
         var modulosPermitidos = {
@@ -1869,7 +1990,7 @@
         }
 
         // ============================================================
-        // 24. INICIALIZAÇÃO
+        // INICIALIZAÇÃO
         // ============================================================
         renderizarListaNotas();
         mostrarToast('🧠 Módulo integrado com a Central de IA!', 'info');
