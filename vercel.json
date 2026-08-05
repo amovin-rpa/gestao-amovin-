@@ -1,5 +1,18 @@
 {
+  "builds": [
+    {
+      "src": "v2-segura/public/**",
+      "use": "@vercel/static"
+    }
+  ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/",
+      "destination": "/v2-segura/public/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/v2-segura/public/$1"
+    }
   ]
 }
