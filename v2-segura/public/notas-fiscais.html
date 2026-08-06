@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
     </script>
     <style>
-        /* ===== CSS COMPLETO MANTIDO ===== */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -225,7 +224,6 @@
             </div>
 
             <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
-                <button class="btn btn-primary" onclick="window.location.href='central-ia.html'">🧠 Central de IA</button>
                 <button class="btn btn-outline" onclick="abrirFormManual()">📝 Preencher Manualmente</button>
             </div>
         </div>
@@ -429,23 +427,33 @@
         var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
         var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
 
+        // ============================================================
+        // FUNÇÕES AUXILIARES
+        // ============================================================
         function fm(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
+
         function formatarData(data) {
             if (!data || data === '---' || data === 'null' || data === '') return '—';
             try { return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR'); } catch (e) { return data; }
         }
+
         function getStatusLabel(s) {
             var map = { 'pendente': '⏳ Pendente', 'vinculado': '✅ Vinculado', 'aprovado': '📋 Aprovado',
                 'reprovado': '❌ Reprovado', 'aprovacao': '⏳ Aguardando Aprovação' };
             return map[s] || s;
         }
+
         function getStatusBadge(s) {
             var map = { 'pendente': 'status-pendente', 'vinculado': 'status-vinculado', 'aprovado': 'status-aprovado',
                 'reprovado': 'status-reprovado', 'aprovacao': 'status-aprovacao' };
             return map[s] || 'status-pendente';
         }
+
         function salvarNotas() { localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas)); }
 
+        // ============================================================
+        // LIMPEZA
+        // ============================================================
         function limparDadosAntigos() {
             dadosNota = null;
             textoExtraido = '';
@@ -478,100 +486,55 @@
             document.getElementById('etapa4').classList.remove('concluido');
         }
 
-        function extrairFornecedorCorreto(texto) {
+        // ============================================================
+        // EXTRAIR FORNECEDOR
+        // ============================================================
+        function extrairFornecedor(texto) {
             var ebazar = texto.match(/EBAZAR\.COM\.BR LTDA/i);
             if (ebazar) {
                 var cnpj = texto.substring(texto.indexOf('EBAZAR'), texto.indexOf('EBAZAR') + 300).match(/\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
                 var telefone = texto.substring(texto.indexOf('EBAZAR'), texto.indexOf('EBAZAR') + 300).match(/(\d{10,11})/);
-                return { nome: 'EBAZAR.COM.BR LTDA', cnpj: cnpj ? cnpj[1] : '---', telefone: telefone ? telefone[1] : '---',
-                    endereco: '---' };
+                return { nome: 'EBAZAR.COM.BR LTDA', cnpj: cnpj ? cnpj[1] : '---', telefone: telefone ? telefone[1] : '---' };
             }
             var hgz = texto.match(/HGZ MUSIC STORE LTDA/i);
             if (hgz) {
                 var cnpj2 = texto.substring(texto.indexOf('HGZ'), texto.indexOf('HGZ') + 300).match(/\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
                 var telefone2 = texto.substring(texto.indexOf('HGZ'), texto.indexOf('HGZ') + 300).match(/(\d{10,11})/);
-                return { nome: 'HGZ MUSIC STORE LTDA', cnpj: cnpj2 ? cnpj2[1] : '---', telefone: telefone2 ? telefone2[1] :
-                        '---', endereco: '---' };
+                return { nome: 'HGZ MUSIC STORE LTDA', cnpj: cnpj2 ? cnpj2[1] : '---', telefone: telefone2 ? telefone2[1] : '---' };
             }
             var master = texto.match(/MASTER/i);
             if (master) {
                 var cnpj3 = texto.substring(texto.indexOf('MASTER'), texto.indexOf('MASTER') + 400).match(/\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
                 var telefone3 = texto.substring(texto.indexOf('MASTER'), texto.indexOf('MASTER') + 400).match(/(\d{10,11})/);
-                return { nome: 'MASTER - Móveis e Equipamentos', cnpj: cnpj3 ? cnpj3[1] : '---', telefone: telefone3 ?
-                        telefone3[1] : '---', endereco: '---' };
+                return { nome: 'MASTER - Móveis e Equipamentos', cnpj: cnpj3 ? cnpj3[1] : '---', telefone: telefone3 ? telefone3[1] : '---' };
             }
-            var transportador = texto.match(/TRANSPORTADOR\/VOLUME[\s\S]*?RAZÃO SOCIAL[:]?\s*([^\n]+)/i);
-            if (transportador) {
-                var nome = transportador[1].trim();
-                if (nome && nome.length > 3 && !nome.toUpperCase().includes('AMOVIN')) {
-                    var cnpj4 = texto.substring(texto.indexOf(nome), texto.indexOf(nome) + 200).match(/\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/);
-                    return { nome: nome, cnpj: cnpj4 ? cnpj4[1] : '---', telefone: '---', endereco: '---' };
-                }
-            }
-            return { nome: 'Fornecedor não identificado', cnpj: '---', telefone: '---', endereco: '---' };
+            return { nome: 'Fornecedor não identificado', cnpj: '---', telefone: '---' };
         }
 
+        // ============================================================
+        // EXTRAIR CAMPO
+        // ============================================================
         function extrairCampo(texto, campo) {
             var padroes = {
-                'numero': [
-                    /N[°º]?\s*[:]?\s*(\d{6,9})/i, /nNF[:]?\s*(\d+)/i, /Número[:]?\s*(\d+)/i, /\b(\d{6,9})\b/
-                ],
-                'chave': [
-                    /\b(\d{44})\b/
-                ],
-                'cnpj': [
-                    /\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/, /\b(\d{14})\b/
-                ],
-                'telefone': [
-                    /Fone[:]?\s*([\d()\s-]+)/i, /Telefone[:]?\s*([\d()\s-]+)/i, /TEL[:]?\s*([\d()\s-]+)/i
-                ],
-                'endereco': [
-                    /ENDEREÇO[:]?\s*([^\n]+)/i, /Endereço[:]?\s*([^\n]+)/i
-                ],
-                'natureza': [
-                    /NATUREZA DA OPERAÇÃO[:]?\s*([^\n]+)/i, /Natureza[:]?\s*([^\n]+)/i
-                ],
-                'dataEmissao': [
-                    /DATA DA EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i, /DATA DE EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i,
-                    /Emissão[:]?\s*(\d{2}\/\d{2}\/\d{4})/i
-                ],
-                'dataEntrada': [
-                    /DATA DE ENTRADA[:]?\s*(\d{2}\/\d{2}\/\d{4})/i, /DATA DE RECEBIMENTO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i
-                ],
-                'horaEntrada': [
-                    /(\d{2}:\d{2}:\d{2})/, /(\d{2}:\d{2})/
-                ],
-                'valorTotal': [
-                    /VALOR TOTAL DA NOTA[:]?\s*R?\$?\s*([\d.,]+)/i, /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i,
-                    /Total[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                'valorProduto': [
-                    /VALOR TOTAL DOS PRODUTOS[:]?\s*R?\$?\s*([\d.,]+)/i, /Valor dos Produtos[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                'valorFrete': [
-                    /VALOR DO FRETE[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                'valorSeguro': [
-                    /VALOR DO SEGURO[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                'valorDesconto': [
-                    /DESCONTO[:]?\s*R?\$?\s*([\d.,]+)/i, /Valor do Desconto[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                'valorIPI': [
-                    /VALOR DO IPI[:]?\s*R?\$?\s*([\d.,]+)/i, /IPI[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                'valorICMS': [
-                    /VALOR DO ICMS[:]?\s*R?\$?\s*([\d.,]+)/i, /ICMS[:]?\s*R?\$?\s*([\d.,]+)/i
-                ],
-                'serie': [
-                    /SÉRIE[:]?\s*(\d+)/i, /Serie[:]?\s*(\d+)/i
-                ],
-                'modelo': [
-                    /MODELO[:]?\s*(\d+)/i, /Modelo[:]?\s*(\d+)/i
-                ],
-                'protocolo': [
-                    /PROTOCOLO DE AUTORIZAÇÃO[:]?\s*(\d+)/i, /Protocolo[:]?\s*(\d+)/i
-                ]
+                'numero': [/N[°º]?\s*[:]?\s*(\d{6,9})/i, /nNF[:]?\s*(\d+)/i, /Número[:]?\s*(\d+)/i, /\b(\d{6,9})\b/],
+                'chave': [/\b(\d{44})\b/],
+                'cnpj': [/\b(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\b/, /\b(\d{14})\b/],
+                'telefone': [/Fone[:]?\s*([\d()\s-]+)/i, /Telefone[:]?\s*([\d()\s-]+)/i, /TEL[:]?\s*([\d()\s-]+)/i],
+                'endereco': [/ENDEREÇO[:]?\s*([^\n]+)/i, /Endereço[:]?\s*([^\n]+)/i],
+                'natureza': [/NATUREZA DA OPERAÇÃO[:]?\s*([^\n]+)/i, /Natureza[:]?\s*([^\n]+)/i],
+                'dataEmissao': [/DATA DA EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i, /DATA DE EMISSÃO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i, /Emissão[:]?\s*(\d{2}\/\d{2}\/\d{4})/i],
+                'dataEntrada': [/DATA DE ENTRADA[:]?\s*(\d{2}\/\d{2}\/\d{4})/i, /DATA DE RECEBIMENTO[:]?\s*(\d{2}\/\d{2}\/\d{4})/i],
+                'horaEntrada': [/(\d{2}:\d{2}:\d{2})/, /(\d{2}:\d{2})/],
+                'valorTotal': [/VALOR TOTAL DA NOTA[:]?\s*R?\$?\s*([\d.,]+)/i, /Valor Total[:]?\s*R?\$?\s*([\d.,]+)/i, /Total[:]?\s*R?\$?\s*([\d.,]+)/i],
+                'valorProduto': [/VALOR TOTAL DOS PRODUTOS[:]?\s*R?\$?\s*([\d.,]+)/i, /Valor dos Produtos[:]?\s*R?\$?\s*([\d.,]+)/i],
+                'valorFrete': [/VALOR DO FRETE[:]?\s*R?\$?\s*([\d.,]+)/i],
+                'valorSeguro': [/VALOR DO SEGURO[:]?\s*R?\$?\s*([\d.,]+)/i],
+                'valorDesconto': [/DESCONTO[:]?\s*R?\$?\s*([\d.,]+)/i, /Valor do Desconto[:]?\s*R?\$?\s*([\d.,]+)/i],
+                'valorIPI': [/VALOR DO IPI[:]?\s*R?\$?\s*([\d.,]+)/i, /IPI[:]?\s*R?\$?\s*([\d.,]+)/i],
+                'valorICMS': [/VALOR DO ICMS[:]?\s*R?\$?\s*([\d.,]+)/i, /ICMS[:]?\s*R?\$?\s*([\d.,]+)/i],
+                'serie': [/SÉRIE[:]?\s*(\d+)/i, /Serie[:]?\s*(\d+)/i],
+                'modelo': [/MODELO[:]?\s*(\d+)/i, /Modelo[:]?\s*(\d+)/i],
+                'protocolo': [/PROTOCOLO DE AUTORIZAÇÃO[:]?\s*(\d+)/i, /Protocolo[:]?\s*(\d+)/i]
             };
 
             var pattern = padroes[campo];
@@ -601,6 +564,9 @@
             return null;
         }
 
+        // ============================================================
+        // EXTRAIR ITENS
+        // ============================================================
         function extrairItens(texto) {
             var itens = [];
             var padraoProduto = /([A-Za-zÀ-ÿ\s\-]{10,}?)\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)/gi;
@@ -613,61 +579,40 @@
                 var total = parseFloat(match[4].replace(/\./g, '').replace(',', '.')) || 0;
 
                 if (desc.length > 8 && !desc.match(/^\d+$/)) {
-                    var codigo = '';
-                    var matchCodigo = texto.substring(texto.indexOf(desc) - 20, texto.indexOf(desc) + 50).match(/([A-Z0-9\-]{4,})/);
-                    if (matchCodigo) codigo = matchCodigo[1];
-
                     itens.push({
-                        codigo: codigo || '*',
                         descricao: desc,
                         quantidade: qtd,
                         unidade: 'UN',
                         valorUnitario: unit,
-                        desconto: 0,
-                        valorTotal: total || (qtd * unit),
-                        ncm: '*',
-                        cfop: '*',
-                        cest: '*',
-                        ean: '*',
-                        marca: '*',
-                        lote: '*',
-                        validade: '*'
+                        valorTotal: total || (qtd * unit)
                     });
                 }
             }
 
             if (itens.length === 0) {
-                var matchProdutoEspecifico = texto.match(/DESCRIÇAO DOS PRODUTOS[\s\S]*?([A-Z]{2,}\s*[-]\s*[A-Z]{2,})/i);
-                if (matchProdutoEspecifico) {
-                    var descProd = matchProdutoEspecifico[1].trim();
+                var matchProduto = texto.match(/DESCRIÇAO DOS PRODUTOS[\s\S]*?([A-Z]{2,}\s*[-]\s*[A-Z]{2,})/i);
+                if (matchProduto) {
+                    var descProd = matchProduto[1].trim();
                     var valorTotal = parseFloat(extrairCampo(texto, 'valorTotal')) || 0;
                     itens.push({
-                        codigo: '*',
                         descricao: descProd || 'Produto não identificado',
                         quantidade: 1,
                         unidade: 'UN',
                         valorUnitario: valorTotal,
-                        desconto: 0,
-                        valorTotal: valorTotal,
-                        ncm: '*',
-                        cfop: '*',
-                        cest: '*',
-                        ean: '*',
-                        marca: '*',
-                        lote: '*',
-                        validade: '*'
+                        valorTotal: valorTotal
                     });
                 }
             }
-
             return itens.slice(0, 10);
         }
 
+        // ============================================================
+        // CALCULAR CONFIABILIDADE
+        // ============================================================
         function calcularConfianca(dados) {
             camposConfianca = {};
             var pontos = 0;
             var total = 0;
-
             var campos = ['numero', 'emitente', 'cnpj', 'telefone', 'dataEmissao', 'valorTotal'];
 
             campos.forEach(function(campo) {
@@ -738,9 +683,7 @@
             var criticos = ['emitente', 'cnpj', 'numero', 'valorTotal'];
             var temErro = false;
             criticos.forEach(function(c) {
-                if (camposConfianca[c] === 'baixa' || camposConfianca[c] === 'media') {
-                    temErro = true;
-                }
+                if (camposConfianca[c] === 'baixa' || camposConfianca[c] === 'media') { temErro = true; }
             });
 
             var aviso = document.getElementById('avisoQualidade');
@@ -756,7 +699,7 @@
         }
 
         // ============================================================
-        // PROCESSAR NOTA - FUNÇÃO PRINCIPAL
+        // PROCESSAR NOTA
         // ============================================================
         function processarNota(event) {
             var file = event.target.files[0];
@@ -864,7 +807,7 @@
         function extrairDadosComIA(texto) {
             var preview = document.getElementById('previewIA');
 
-            var fornecedor = extrairFornecedorCorreto(texto);
+            var fornecedor = extrairFornecedor(texto);
 
             var dados = {
                 numero: extrairCampo(texto, 'numero') || '*',
@@ -877,43 +820,25 @@
                 protocolo: extrairCampo(texto, 'protocolo') || '*',
                 emitente: {
                     razaoSocial: fornecedor.nome || 'Fornecedor não identificado',
-                    nomeFantasia: fornecedor.nome || '*',
                     cnpj: fornecedor.cnpj || extrairCampo(texto, 'cnpj') || '*',
-                    inscricaoEstadual: '*',
-                    endereco: fornecedor.endereco || extrairCampo(texto, 'endereco') || '*',
-                    numero: '*',
-                    complemento: '*',
-                    bairro: '*',
-                    cidade: '*',
-                    estado: '*',
-                    cep: '*',
                     telefone: fornecedor.telefone || extrairCampo(texto, 'telefone') || '*',
-                    email: '*',
-                    site: '*'
+                    endereco: extrairCampo(texto, 'endereco') || '*'
                 },
                 destinatario: {
                     razaoSocial: 'AMOVIN - Associação e Movimento pela Inclusão',
                     cnpj: '55.880.046/0001-34',
-                    endereco: 'Francisco De Paula Moura Neto, 180',
-                    cidade: 'Rio Paranaiba',
-                    estado: 'MG',
-                    cep: '38810000'
+                    endereco: 'Francisco De Paula Moura Neto, 180'
                 },
                 valores: {
                     valorProdutos: parseFloat(extrairCampo(texto, 'valorProduto')) || 0,
                     valorDesconto: parseFloat(extrairCampo(texto, 'valorDesconto')) || 0,
                     valorFrete: parseFloat(extrairCampo(texto, 'valorFrete')) || 0,
                     valorSeguro: parseFloat(extrairCampo(texto, 'valorSeguro')) || 0,
-                    outrasDespesas: 0,
                     valorIPI: parseFloat(extrairCampo(texto, 'valorIPI')) || 0,
                     valorICMS: parseFloat(extrairCampo(texto, 'valorICMS')) || 0,
-                    valorICMSST: 0,
-                    valorPIS: 0,
-                    valorCOFINS: 0,
                     valorTotal: parseFloat(extrairCampo(texto, 'valorTotal')) || 0
                 },
                 itens: extrairItens(texto) || [],
-                confianca: {},
                 status: 'APROVACAO',
                 projetoId: null,
                 dataEntrega: '',
@@ -964,8 +889,7 @@
             var itensHtml = '';
             if (dados.itens && dados.itens.length > 0) {
                 itensHtml = '<div class="preview-itens">';
-                itensHtml +=
-                    '<div class="item-linha-header"><span class="desc">Descrição</span><span class="qtd">Qtd</span><span class="unit">Unitário</span><span class="total">Total</span></div>';
+                itensHtml += '<div class="item-linha-header"><span class="desc">Descrição</span><span class="qtd">Qtd</span><span class="unit">Unitário</span><span class="total">Total</span></div>';
                 dados.itens.forEach(function(item) {
                     itensHtml += '<div class="item-linha">' +
                         '<span class="desc">' + (item.descricao || '—') + '</span>' +
@@ -1010,7 +934,6 @@
                         <div class="titulo">🏢 EMPRESA (EMITENTE)</div>
                         <div class="preview-grid">
                             <div class="preview-item"><span class="label">🏢 Razão Social ${getConfiancaIcon('emitente')}</span><span class="valor" style="color:var(--roxo);font-weight:700;">${dados.emitente.razaoSocial}</span></div>
-                            <div class="preview-item"><span class="label">🏢 Nome Fantasia</span><span class="valor">${dados.emitente.nomeFantasia}</span></div>
                             <div class="preview-item"><span class="label">📄 CNPJ ${getConfiancaIcon('cnpj')}</span><span class="valor">${dados.emitente.cnpj}</span></div>
                             <div class="preview-item"><span class="label">📞 Telefone ${getConfiancaIcon('telefone')}</span><span class="valor">${dados.emitente.telefone}</span></div>
                             <div class="preview-item"><span class="label">📍 Endereço</span><span class="valor" style="font-size:12px;">${dados.emitente.endereco}</span></div>
@@ -1047,7 +970,7 @@
                     </div>
 
                     <div style="margin-top:12px;font-size:11px;color:var(--cinza);padding:8px;background:white;border-radius:8px;border:1px solid #E5E0D8;">
-                        🤖 Processado pela Central de IA em ${new Date().toLocaleString('pt-BR')} • Confiança: ${nivelConfiancaGeral}%
+                        🤖 Processado pela IA em ${new Date().toLocaleString('pt-BR')} • Confiança: ${nivelConfiancaGeral}%
                     </div>
                 `;
 
@@ -1063,37 +986,33 @@
         }
 
         // ============================================================
-        // DEMAIS FUNÇÕES
+        // DEMAIS FUNÇÕES (REVISÃO, VINCULAÇÃO, CRM, ETC)
         // ============================================================
         function abrirModalRevisao() {
             if (!dadosNota) { mostrarToast('⚠️ Nenhum dado para revisar.', 'warning'); return; }
-
             var modal = document.getElementById('modalRevisao');
             var container = document.getElementById('camposRevisao');
 
             var campos = [
                 { id: 'numero', label: '📋 Número da Nota', tipo: 'text', valor: dadosNota.numero },
-                { id: 'emitente', label: '🏢 Razão Social (Emitente)', tipo: 'text', valor: dadosNota.emitente
-                    .razaoSocial },
+                { id: 'emitente', label: '🏢 Razão Social (Emitente)', tipo: 'text', valor: dadosNota.emitente.razaoSocial },
                 { id: 'cnpj', label: '📄 CNPJ do Emitente', tipo: 'text', valor: dadosNota.emitente.cnpj },
                 { id: 'telefone', label: '📞 Telefone', tipo: 'text', valor: dadosNota.emitente.telefone },
                 { id: 'endereco', label: '📍 Endereço', tipo: 'text', valor: dadosNota.emitente.endereco },
                 { id: 'natureza', label: '📋 Natureza da Operação', tipo: 'text', valor: dadosNota.natureza },
                 { id: 'dataEmissao', label: '📅 Data de Emissão', tipo: 'date', valor: dadosNota.dataEmissao },
-                { id: 'valorProdutos', label: '💰 Valor dos Produtos', tipo: 'number', valor: dadosNota.valores
-                        .valorProdutos },
-                { id: 'valorFrete', label: '🚛 Valor do Frete', tipo: 'number', valor: dadosNota.valores
-                    .valorFrete },
+                { id: 'valorProdutos', label: '💰 Valor dos Produtos', tipo: 'number', valor: dadosNota.valores.valorProdutos },
+                { id: 'valorFrete', label: '🚛 Valor do Frete', tipo: 'number', valor: dadosNota.valores.valorFrete },
                 { id: 'valorTotal', label: '💰 Valor Total', tipo: 'number', valor: dadosNota.valores.valorTotal }
             ];
 
             var html = '';
             campos.forEach(function(campo) {
                 var confianca = camposConfianca[campo.id] || 'baixa';
-                var cor = confianca === 'muito-alta' ? '🟢' : (confianca === 'alta' ? '🟢' : (confianca ===
-                    'media' ? '🟡' : '🔴'));
-                var labelConfianca = confianca === 'muito-alta' ? 'Muito Alta' : (confianca === 'alta' ? 'Alta' :
-                    (confianca === 'media' ? 'Média' : 'Baixa'));
+                var cor = confianca === 'muito-alta' ? '🟢' : (confianca === 'alta' ? '🟢' : (confianca === 'media' ? '🟡' :
+                    '🔴'));
+                var labelConfianca = confianca === 'muito-alta' ? 'Muito Alta' : (confianca === 'alta' ? 'Alta' : (
+                    confianca === 'media' ? 'Média' : 'Baixa'));
 
                 html += `
                         <div class="campo-revisao">
@@ -1123,8 +1042,7 @@
                         else if (campo === 'cnpj') dadosNota.emitente.cnpj = valor || '*';
                         else if (campo === 'telefone') dadosNota.emitente.telefone = valor || '*';
                         else if (campo === 'endereco') dadosNota.emitente.endereco = valor || '*';
-                        else if (campo === 'valorProdutos') dadosNota.valores.valorProdutos = parseFloat(valor) ||
-                        0;
+                        else if (campo === 'valorProdutos') dadosNota.valores.valorProdutos = parseFloat(valor) || 0;
                         else if (campo === 'valorFrete') dadosNota.valores.valorFrete = parseFloat(valor) || 0;
                         else if (campo === 'valorTotal') dadosNota.valores.valorTotal = parseFloat(valor) || 0;
                         else dadosNota[campo] = valor || '*';
@@ -1175,8 +1093,8 @@
             select.innerHTML = '<option value="">Selecione um projeto...</option>';
             projetos.forEach(function(p) {
                 if (p.status === 'ativo') {
-                    select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + p.orcamento_total
-                        .toFixed(2).replace('.', ',') + ')</option>';
+                    select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + p.orcamento_total.toFixed(2)
+                        .replace('.', ',') + ')</option>';
                 }
             });
         }
@@ -1223,8 +1141,8 @@
             document.getElementById('saldoDisponivel').textContent = fm(disponivel);
             if (valorNota > disponivel && disponivel > 0) {
                 document.getElementById('saldoDisponivel').style.color = 'var(--vermelho)';
-                mostrarToast('⚠️ O valor da nota (' + fm(valorNota) + ') excede o disponível (' + fm(disponivel) +
-                    ')', 'warning');
+                mostrarToast('⚠️ O valor da nota (' + fm(valorNota) + ') excede o disponível (' + fm(disponivel) + ')',
+                    'warning');
             } else { document.getElementById('saldoDisponivel').style.color = ''; }
         }
 
@@ -1352,8 +1270,8 @@
 
         function direcionarProdutos(nota) {
             if (!nota.itens || nota.itens.length === 0) {
-                nota.itens = [{ descricao: 'Item da NF ' + nota.numero, quantidade: 1, valorUnitario: nota.valores
-                        .valorTotal, valorTotal: nota.valores.valorTotal }];
+                nota.itens = [{ descricao: 'Item da NF ' + nota.numero, quantidade: 1, valorUnitario: nota.valores.valorTotal,
+                    valorTotal: nota.valores.valorTotal }];
             }
 
             nota.itens.forEach(function(item) {
@@ -1405,22 +1323,12 @@
             });
         }
 
-        // ============================================================
-        // RENDERIZAR LISTA DE NOTAS - CORRIGIDO
-        // ============================================================
         function renderizarListaNotas() {
             var container = document.getElementById('listaNotas');
             document.getElementById('totalNotas').textContent = '(' + notas.length + ')';
-
-            if (notas.length === 0) {
-                container.innerHTML = '<div class="sem-dados">Nenhuma nota fiscal vinculada.</div>';
-                return;
-            }
-
-            var lista = notas.slice().sort(function(a, b) {
-                return new Date(b.data_criacao) - new Date(a.data_criacao);
-            });
-
+            if (notas.length === 0) { container.innerHTML =
+                '<div class="sem-dados">Nenhuma nota fiscal vinculada.</div>'; return; }
+            var lista = notas.slice().sort(function(a, b) { return new Date(b.data_criacao) - new Date(a.data_criacao); });
             container.innerHTML = lista.map(function(n) {
                 var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
                 var projetoNome = projeto ? projeto.nome : '---';
@@ -1431,7 +1339,6 @@
                 var statusBadge = getStatusBadge(n.status);
                 var confianca = n.confianca ? ' | 🔍 ' + n.confianca + '%' : '';
 
-                // 🔥 CORREÇÃO: Verifica se a nota tem a estrutura correta
                 var valorTotal = 0;
                 if (n.valores && n.valores.valorTotal !== undefined) {
                     valorTotal = n.valores.valorTotal || 0;
@@ -1441,7 +1348,6 @@
                     valorTotal = n.valorTotal || 0;
                 }
 
-                // 🔥 CORREÇÃO: Verifica o emitente
                 var emitente = '';
                 if (n.emitente && n.emitente.razaoSocial) {
                     emitente = n.emitente.razaoSocial;
@@ -1512,8 +1418,9 @@
         }
 
         function abrirFormManual() {
-            if (confirm('Deseja usar a Central de IA para preencher automaticamente?')) { window.location.href =
-                    'central-ia.html'; } else { mostrarToast('📝 Formulário manual em desenvolvimento.', 'info'); }
+            if (confirm('Deseja preencher manualmente?')) {
+                mostrarToast('📝 Formulário manual em desenvolvimento.', 'info');
+            }
         }
 
         // ============================================================
@@ -1583,7 +1490,7 @@
         // INICIALIZAÇÃO
         // ============================================================
         renderizarListaNotas();
-        mostrarToast('🧠 Módulo integrado com a Central de IA!', 'info');
+        mostrarToast('📄 Notas Fiscais carregadas!', 'info');
     </script>
 </body>
 </html>
