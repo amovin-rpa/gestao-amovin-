@@ -10,9 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
     </script>
     <style>
-        /* ============================================================
-           CSS COMPLETO - IDENTIDADE AMOVIN
-           ============================================================ */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -203,7 +200,6 @@
             justify-content: center;
         }
 
-        /* Dropzone */
         .dropzone {
             border: 3px dashed #E5E0D8;
             border-radius: 14px;
@@ -247,7 +243,6 @@
             background: #6D28D9;
         }
 
-        /* Tabs */
         .tabs {
             display: flex;
             gap: 4px;
@@ -281,7 +276,6 @@
             display: block;
         }
 
-        /* Preview IA */
         .ia-resultado {
             background: #F5F0FF;
             border-radius: 10px;
@@ -474,6 +468,7 @@
         .toast-warning {
             background: #E65100;
         }
+
         @keyframes slideInRight {
             from {
                 transform: translateX(100%);
@@ -532,7 +527,7 @@
                 </div>
                 <div>
                     <span class="status-ia" id="statusIA">⏳ Verificando...</span>
-                    <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini Pro</span>
+                    <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini 2.0 Flash</span>
                 </div>
             </div>
             <div style="font-size:12px;color:var(--cinza);margin-top:4px;">
@@ -566,7 +561,6 @@
                     <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInputNota').click()">📂 Selecionar</button>
                 </div>
 
-                <!-- Tipo de documento -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;">
                     <div class="form-group">
                         <label>Tipo de Documento</label>
@@ -585,7 +579,6 @@
                     </div>
                 </div>
 
-                <!-- Resultado IA -->
                 <div class="ia-resultado" id="resultadoNota"></div>
 
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
@@ -743,25 +736,12 @@
     <script src="menu.js"></script>
     <script>
         // ============================================================
-        // CONFIGURAÇÃO DO PDF.JS
+        // CONFIGURAÇÕES DA IA
         // ============================================================
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-        // ============================================================
-        // VARIÁVEIS GLOBAIS
-        // ============================================================
-        var textoExtraido = '';
-        var dadosExtraidos = {};
-        var moduloAtual = 'notas-fiscais';
-        var historico = JSON.parse(localStorage.getItem('amovin_ia_historico') || '[]');
-        var integracoes = JSON.parse(localStorage.getItem('amovin_ia_integracoes') || {
-            'notas-fiscais': true,
-            'estoque': true,
-            'patrimonio': true,
-            'projetos': false,
-            'pessoas': false,
-            'documentos': false
-        });
+        var IA_CONFIG = {
+            model: 'gemini-2.0-flash',
+            url: 'https://generativelanguage.googleapis.com/v1beta/models/'
+        };
 
         // ============================================================
         // INICIALIZAÇÃO
@@ -773,11 +753,25 @@
             renderizarHistorico();
             carregarIntegracoes();
 
-            // Atualizar KPIs do menu
             setTimeout(function() {
                 var total = historico.length;
                 document.getElementById('totalHistorico').textContent = total;
             }, 300);
+        });
+
+        // ============================================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================================
+        var textoExtraido = '';
+        var dadosExtraidos = {};
+        var historico = JSON.parse(localStorage.getItem('amovin_ia_historico') || '[]');
+        var integracoes = JSON.parse(localStorage.getItem('amovin_ia_integracoes') || {
+            'notas-fiscais': true,
+            'estoque': true,
+            'patrimonio': true,
+            'projetos': false,
+            'pessoas': false,
+            'documentos': false
         });
 
         // ============================================================
@@ -804,9 +798,11 @@
         }
 
         function configurarChave() {
-            var key = prompt('Digite sua chave da API Gemini:');
+            var key = prompt('Digite sua chave da API Gemini (formato: AIzaSy...):');
             if (key && key.length > 10) {
                 localStorage.setItem('amovin_gemini_key', key);
+                // Configura o modelo correto
+                localStorage.setItem('amovin_gemini_model', 'gemini-2.0-flash');
                 verificarChave();
                 mostrarToast('✅ Chave configurada com sucesso!', 'success');
             } else if (key !== null) {
@@ -930,8 +926,6 @@
 
         function mostrarPreviewNota(texto) {
             var preview = document.getElementById('resultadoNota');
-
-            // Mostra um resumo do texto extraído
             var resumo = texto.substring(0, 500) + (texto.length > 500 ? '...' : '');
 
             preview.innerHTML = `
@@ -952,7 +946,7 @@
         }
 
         // ============================================================
-        // PROCESSAR NOTA COM IA (GEMINI)
+        // PROCESSAR NOTA COM IA - CORRIGIDO
         // ============================================================
         function processarNotaIA() {
             if (!textoExtraido || textoExtraido.length < 10) {
@@ -971,13 +965,16 @@
             preview.innerHTML =
                 '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">🤖</span><p style="margin-top:8px;color:var(--cinza);">Processando com IA...</p></div>';
 
+            // 🔥 MODELO CORRETO
+            var model = localStorage.getItem('amovin_gemini_model') || 'gemini-2.0-flash';
+
             var prompt = `
                 Extraia os seguintes campos da nota fiscal abaixo e retorne apenas um JSON válido:
 
                 Campos a extrair:
                 1. numero: Número da Nota (ex: 13213055)
                 2. chave: Chave de Acesso (44 dígitos)
-                3. emitente: Nome do Emitente/Fornecedor
+                3. emitente: Nome do Emitente/Fornecedor (NUNCA AMOVIN - AMOVIN é o destinatário)
                 4. cnpj: CNPJ do Emitente (formato: 00.000.000/0000-00)
                 5. telefone: Telefone do Emitente
                 6. natureza: Natureza da Operação
@@ -997,7 +994,10 @@
                 Retorne apenas o JSON, sem texto adicional.
             `;
 
-            fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+            // 🔥 URL CORRETA COM O MODELO
+            var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
+
+            fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1008,8 +1008,9 @@
                 .then(function(data) {
                     if (data.candidates && data.candidates[0] && data.candidates[0].content) {
                         var resposta = data.candidates[0].content.parts[0].text;
+
+                        // 🔥 CORREÇÃO: EXTRAI O JSON DA RESPOSTA
                         try {
-                            // Extrai o JSON da resposta
                             var jsonMatch = resposta.match(/\{[\s\S]*\}/);
                             if (jsonMatch) {
                                 dadosExtraidos = JSON.parse(jsonMatch[0]);
@@ -1017,27 +1018,38 @@
                                 adicionarHistorico('nota_fiscal', 'Sucesso', dadosExtraidos);
                                 mostrarToast('✅ Dados extraídos com sucesso!', 'success');
                             } else {
-                                throw new Error('JSON não encontrado');
+                                // Tenta parsear diretamente
+                                dadosExtraidos = JSON.parse(resposta);
+                                mostrarResultadoNota(dadosExtraidos);
+                                adicionarHistorico('nota_fiscal', 'Sucesso', dadosExtraidos);
+                                mostrarToast('✅ Dados extraídos com sucesso!', 'success');
                             }
                         } catch (e) {
+                            console.error('❌ Erro ao parsear JSON:', e);
+                            console.log('📄 Resposta bruta:', resposta);
                             mostrarToast('❌ Erro ao processar resposta da IA.', 'error');
                             preview.innerHTML = `
                                     <div style="text-align:center;padding:20px;">
                                         <span style="font-size:32px;">❌</span>
                                         <p style="color:var(--vermelho);">Erro ao processar resposta da IA.</p>
-                                        <pre style="font-size:11px;color:var(--cinza);text-align:left;max-height:200px;overflow-y:auto;">${resposta}</pre>
+                                        <pre style="font-size:11px;color:var(--cinza);text-align:left;max-height:200px;overflow-y:auto;background:#F8F4ED;padding:12px;border-radius:8px;">${resposta.substring(0, 500)}</pre>
                                     </div>
                                 `;
                         }
                     } else {
                         mostrarToast('❌ Erro na resposta da IA.', 'error');
+                        console.error('❌ Resposta da IA:', data);
                     }
                 })
                 .catch(function(err) {
                     mostrarToast('❌ Erro ao conectar com a IA: ' + err.message, 'error');
+                    console.error('❌ Erro de conexão:', err);
                 });
         }
 
+        // ============================================================
+        // MOSTRAR RESULTADO DA NOTA
+        // ============================================================
         function mostrarResultadoNota(dados) {
             var preview = document.getElementById('resultadoNota');
 
@@ -1112,16 +1124,9 @@
             }
 
             var projetoId = document.getElementById('projetoNota').value;
+            if (projetoId) { dadosExtraidos.projeto_id = parseInt(projetoId); }
 
-            // Adiciona o projeto aos dados
-            if (projetoId) {
-                dadosExtraidos.projeto_id = parseInt(projetoId);
-            }
-
-            // Busca notas existentes
             var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
-
-            // Gera número interno
             var dataAtual = new Date();
             var ano = dataAtual.getFullYear();
             var numeroInterno = 'AMOVIN-' + ano + '-' + String(notas.length + 1).padStart(4, '0');
@@ -1155,32 +1160,24 @@
 
             mostrarToast('✅ Nota enviada para o módulo com sucesso! Nº Interno: ' + numeroInterno, 'success');
 
-            // Pergunta se quer ir para o módulo
             if (confirm('Nota salva com sucesso! Deseja ir para o módulo de Notas Fiscais?')) {
                 window.location.href = 'notas-fiscais.html';
             }
 
-            // Limpa o resultado
             document.getElementById('btnEnviarNota').style.display = 'none';
         }
 
         // ============================================================
-        // PROCESSAR DOCUMENTO (IMPLANTAÇÃO FUTURA)
+        // PROCESSAR DOCUMENTO
         // ============================================================
         function processarDocumento(event) {
             var file = event.target.files[0];
             if (!file) return;
-
-            mostrarToast('📄 Documento carregado. Em breve com processamento IA.', 'info');
-
+            mostrarToast('📄 Documento carregado. Processamento em desenvolvimento.', 'info');
             var preview = document.getElementById('resultadoDoc');
-            preview.innerHTML = `
-                    <div style="text-align:center;padding:20px;">
-                        <span style="font-size:32px;">📄</span>
-                        <p style="margin-top:8px;color:var(--cinza);">Arquivo carregado: ${file.name}</p>
-                        <p style="font-size:12px;color:var(--cinza);">Processamento de documentos em desenvolvimento.</p>
-                    </div>
-                `;
+            preview.innerHTML =
+                '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">📄</span><p style="margin-top:8px;color:var(--cinza);">Arquivo carregado: ' +
+                file.name + '</p></div>';
             preview.classList.add('visivel');
         }
 
@@ -1210,6 +1207,9 @@
                 '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">🤖</span><p style="margin-top:8px;color:var(--cinza);">Classificando texto...</p></div>';
             preview.classList.add('visivel');
 
+            var model = localStorage.getItem('amovin_gemini_model') || 'gemini-2.0-flash';
+            var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
+
             var prompt = `
                 Classifique o texto abaixo em uma das seguintes categorias:
                 - Nota Fiscal
@@ -1232,7 +1232,7 @@
                 Retorne um JSON com: categoria, assunto, palavras_chave, entidades.
             `;
 
-            fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+            fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1266,31 +1266,27 @@
                             }
                         } catch (e) {
                             mostrarToast('❌ Erro ao processar resposta.', 'error');
+                            console.error('❌ Erro:', e);
                         }
                     }
                 })
                 .catch(function(err) {
                     mostrarToast('❌ Erro: ' + err.message, 'error');
+                    console.error('❌ Erro de conexão:', err);
                 });
         }
 
         // ============================================================
         // INTEGRAÇÕES
         // ============================================================
-        function toggleIntegracao(el) {
-            el.classList.toggle('selecionado');
-        }
+        function toggleIntegracao(el) { el.classList.toggle('selecionado'); }
 
         function selecionarTodosIntegracoes() {
-            document.querySelectorAll('.integracao-card').forEach(function(el) {
-                el.classList.add('selecionado');
-            });
+            document.querySelectorAll('.integracao-card').forEach(function(el) { el.classList.add('selecionado'); });
         }
 
         function desselecionarTodosIntegracoes() {
-            document.querySelectorAll('.integracao-card').forEach(function(el) {
-                el.classList.remove('selecionado');
-            });
+            document.querySelectorAll('.integracao-card').forEach(function(el) { el.classList.remove('selecionado'); });
         }
 
         function salvarIntegracoes() {
@@ -1308,11 +1304,8 @@
             var integracoes = JSON.parse(localStorage.getItem('amovin_ia_integracoes') || '{}');
             document.querySelectorAll('.integracao-card').forEach(function(el) {
                 var modulo = el.getAttribute('data-modulo');
-                if (integracoes[modulo]) {
-                    el.classList.add('selecionado');
-                } else {
-                    el.classList.remove('selecionado');
-                }
+                if (integracoes[modulo]) { el.classList.add('selecionado'); } else { el.classList.remove(
+                    'selecionado'); }
             });
         }
 
@@ -1320,16 +1313,9 @@
         // HISTÓRICO
         // ============================================================
         function adicionarHistorico(tipo, status, dados) {
-            historico.push({
-                id: Date.now(),
-                tipo: tipo,
-                status: status,
-                dados: dados,
-                data: new Date().toISOString()
-            });
-            if (historico.length > 50) {
-                historico = historico.slice(-50);
-            }
+            historico.push({ id: Date.now(), tipo: tipo, status: status, dados: dados, data: new Date()
+                    .toISOString() });
+            if (historico.length > 50) { historico = historico.slice(-50); }
             localStorage.setItem('amovin_ia_historico', JSON.stringify(historico));
             renderizarHistorico();
         }
@@ -1337,23 +1323,17 @@
         function renderizarHistorico() {
             var container = document.getElementById('listaHistorico');
             document.getElementById('totalHistorico').textContent = historico.length;
-
             if (historico.length === 0) {
                 container.innerHTML =
-                '<div style="text-align:center;padding:30px;color:#9CA3AF;">Nenhum processamento realizado.</div>';
+                    '<div style="text-align:center;padding:30px;color:#9CA3AF;">Nenhum processamento realizado.</div>';
                 return;
             }
-
             var lista = historico.slice().reverse().slice(0, 20);
             container.innerHTML = lista.map(function(item) {
                 var data = new Date(item.data).toLocaleString('pt-BR');
-                var tipoLabel = {
-                    'nota_fiscal': '📄 Nota Fiscal',
-                    'documento': '📝 Documento',
-                    'classificacao': '🏷️ Classificação'
-                } [item.tipo] || item.tipo;
+                var tipoLabel = { 'nota_fiscal': '📄 Nota Fiscal', 'documento': '📝 Documento',
+                    'classificacao': '🏷️ Classificação' } [item.tipo] || item.tipo;
                 var statusClass = item.status === 'Sucesso' ? 'status-ia sucesso' : 'status-ia erro';
-
                 return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0E9DF;font-size:13px;">' +
                     '<div><span style="font-weight:600;">' + tipoLabel + '</span> <span class="' + statusClass +
                     '" style="font-size:10px;padding:2px 10px;">' + item.status + '</span></div>' +
@@ -1390,10 +1370,7 @@
             document.getElementById('fileInputDoc').value = '';
         }
 
-        function editarDadosNota() {
-            // Função simples para editar - poderia abrir um modal
-            mostrarToast('✏️ Edição manual disponível em breve.', 'info');
-        }
+        function editarDadosNota() { mostrarToast('✏️ Edição manual disponível em breve.', 'info'); }
 
         // ============================================================
         // TOAST
@@ -1419,27 +1396,18 @@
         ['dropzoneNota', 'dropzoneDoc'].forEach(function(id) {
             var el = document.getElementById(id);
             if (!el) return;
-
-            el.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('dragover');
-            });
-
-            el.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-            });
-
+            el.addEventListener('dragover', function(e) { e.preventDefault();
+                this.classList.add('dragover'); });
+            el.addEventListener('dragleave', function(e) { e.preventDefault();
+                this.classList.remove('dragover'); });
             el.addEventListener('drop', function(e) {
                 e.preventDefault();
                 this.classList.remove('dragover');
                 var files = e.dataTransfer.files;
                 if (files.length > 0) {
                     var input = this.querySelector('input[type="file"]');
-                    if (input) {
-                        input.files = files;
-                        input.dispatchEvent(new Event('change'));
-                    }
+                    if (input) { input.files = files;
+                        input.dispatchEvent(new Event('change')); }
                 }
             });
         });
