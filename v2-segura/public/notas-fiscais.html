@@ -10,9 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
     </script>
     <style>
-        /* ============================================================
-           CSS COMPLETO - IDENTIDADE AMOVIN (MANTIDO)
-           ============================================================ */
+        /* ===== CSS COMPLETO MANTIDO ===== */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -861,15 +859,13 @@
         }
 
         // ============================================================
-        // EXTRAIR DADOS COM IA - CORRIGIDO
+        // EXTRAIR DADOS COM IA
         // ============================================================
         function extrairDadosComIA(texto) {
             var preview = document.getElementById('previewIA');
 
-            // 🔥 Extrai fornecedor (NUNCA AMOVIN)
             var fornecedor = extrairFornecedorCorreto(texto);
 
-            // 🔥 Extrai campos
             var dados = {
                 numero: extrairCampo(texto, 'numero') || '*',
                 serie: extrairCampo(texto, 'serie') || '*',
@@ -1409,12 +1405,22 @@
             });
         }
 
+        // ============================================================
+        // RENDERIZAR LISTA DE NOTAS - CORRIGIDO
+        // ============================================================
         function renderizarListaNotas() {
             var container = document.getElementById('listaNotas');
             document.getElementById('totalNotas').textContent = '(' + notas.length + ')';
-            if (notas.length === 0) { container.innerHTML =
-                '<div class="sem-dados">Nenhuma nota fiscal vinculada.</div>'; return; }
-            var lista = notas.slice().sort(function(a, b) { return new Date(b.data_criacao) - new Date(a.data_criacao); });
+
+            if (notas.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhuma nota fiscal vinculada.</div>';
+                return;
+            }
+
+            var lista = notas.slice().sort(function(a, b) {
+                return new Date(b.data_criacao) - new Date(a.data_criacao);
+            });
+
             container.innerHTML = lista.map(function(n) {
                 var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
                 var projetoNome = projeto ? projeto.nome : '---';
@@ -1425,14 +1431,32 @@
                 var statusBadge = getStatusBadge(n.status);
                 var confianca = n.confianca ? ' | 🔍 ' + n.confianca + '%' : '';
 
+                // 🔥 CORREÇÃO: Verifica se a nota tem a estrutura correta
+                var valorTotal = 0;
+                if (n.valores && n.valores.valorTotal !== undefined) {
+                    valorTotal = n.valores.valorTotal || 0;
+                } else if (n.valor_total !== undefined) {
+                    valorTotal = n.valor_total || 0;
+                } else if (n.valorTotal !== undefined) {
+                    valorTotal = n.valorTotal || 0;
+                }
+
+                // 🔥 CORREÇÃO: Verifica o emitente
+                var emitente = '';
+                if (n.emitente && n.emitente.razaoSocial) {
+                    emitente = n.emitente.razaoSocial;
+                } else if (n.emitente) {
+                    emitente = typeof n.emitente === 'string' ? n.emitente : n.emitente.nome || '---';
+                } else {
+                    emitente = '---';
+                }
+
                 return '<div class="nota-item">' +
                     '<div class="info">' +
-                    '<div class="num">' + (n.numeroInterno || n.numero) + origemLabel + confianca +
-                    ' <span style="font-size:11px;color:var(--cinza);font-weight:400;">(' + qtdItens +
-                    ' itens)</span></div>' +
-                    '<div class="detalhe">🏢 ' + n.emitente.razaoSocial + ' | 📅 ' + data + ' | 💰 ' + fm(n.valores
-                        .valorTotal || 0) + '</div>' +
-                    '<div class="projeto">📋 ' + projetoNome + ' | ' + n.categoria_orcamento + '</div>' +
+                    '<div class="num">' + (n.numeroInterno || n.numero || '---') + origemLabel + confianca +
+                    ' <span style="font-size:11px;color:var(--cinza);font-weight:400;">(' + qtdItens + ' itens)</span></div>' +
+                    '<div class="detalhe">🏢 ' + emitente + ' | 📅 ' + data + ' | 💰 ' + fm(valorTotal) + '</div>' +
+                    '<div class="projeto">📋 ' + projetoNome + ' | ' + (n.categoria_orcamento || '---') + '</div>' +
                     '</div>' +
                     '<div><span class="status-badge ' + statusBadge + '">' + statusLabel + '</span></div>' +
                     '</div>';
