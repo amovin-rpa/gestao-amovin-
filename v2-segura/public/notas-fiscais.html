@@ -224,6 +224,7 @@
             </div>
 
             <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="window.location.href='central-ia.html'">🧠 Central de IA</button>
                 <button class="btn btn-outline" onclick="abrirFormManual()">📝 Preencher Manualmente</button>
             </div>
         </div>
@@ -802,71 +803,219 @@
         }
 
         // ============================================================
-        // EXTRAIR DADOS COM IA
+        // EXTRAIR DADOS COM IA - ACEITA CHAVES AQ
         // ============================================================
         function extrairDadosComIA(texto) {
             var preview = document.getElementById('previewIA');
 
-            var fornecedor = extrairFornecedor(texto);
-
-            var dados = {
-                numero: extrairCampo(texto, 'numero') || '*',
-                serie: extrairCampo(texto, 'serie') || '*',
-                modelo: extrairCampo(texto, 'modelo') || '*',
-                natureza: extrairCampo(texto, 'natureza') || '*',
-                dataEmissao: extrairCampo(texto, 'dataEmissao') || '',
-                dataSaida: extrairCampo(texto, 'dataEntrada') || '',
-                chave: extrairCampo(texto, 'chave') || '*',
-                protocolo: extrairCampo(texto, 'protocolo') || '*',
-                emitente: {
-                    razaoSocial: fornecedor.nome || 'Fornecedor não identificado',
-                    cnpj: fornecedor.cnpj || extrairCampo(texto, 'cnpj') || '*',
-                    telefone: fornecedor.telefone || extrairCampo(texto, 'telefone') || '*',
-                    endereco: extrairCampo(texto, 'endereco') || '*'
-                },
-                destinatario: {
-                    razaoSocial: 'AMOVIN - Associação e Movimento pela Inclusão',
-                    cnpj: '55.880.046/0001-34',
-                    endereco: 'Francisco De Paula Moura Neto, 180'
-                },
-                valores: {
-                    valorProdutos: parseFloat(extrairCampo(texto, 'valorProduto')) || 0,
-                    valorDesconto: parseFloat(extrairCampo(texto, 'valorDesconto')) || 0,
-                    valorFrete: parseFloat(extrairCampo(texto, 'valorFrete')) || 0,
-                    valorSeguro: parseFloat(extrairCampo(texto, 'valorSeguro')) || 0,
-                    valorIPI: parseFloat(extrairCampo(texto, 'valorIPI')) || 0,
-                    valorICMS: parseFloat(extrairCampo(texto, 'valorICMS')) || 0,
-                    valorTotal: parseFloat(extrairCampo(texto, 'valorTotal')) || 0
-                },
-                itens: extrairItens(texto) || [],
-                status: 'APROVACAO',
-                projetoId: null,
-                dataEntrega: '',
-                origem: 'ia'
-            };
-
-            if (dados.emitente.razaoSocial && dados.emitente.razaoSocial.toUpperCase().includes('AMOVIN')) {
-                dados.emitente.razaoSocial = fornecedor.nome || 'Fornecedor não identificado';
-                dados.emitente.cnpj = fornecedor.cnpj || dados.emitente.cnpj;
-            }
-
-            dadosNota = dados;
-
-            var valido = calcularConfianca(dados);
-
-            if (!valido) {
-                document.getElementById('statusExtraido').textContent = '❌ Cancelado';
-                document.getElementById('statusExtraido').style.background = '#FEE2E2';
-                document.getElementById('statusExtraido').style.color = '#991B1B';
+            // 🔥 VERIFICA A CHAVE (ACEITA AIzaSy E AQ)
+            var key = localStorage.getItem('amovin_gemini_key');
+            if (!key || key.length < 10) {
+                mostrarToast('⚠️ Chave Gemini não configurada.', 'warning');
+                preview.innerHTML = `
+                    <div style="text-align:center;padding:20px;">
+                        <span style="font-size:32px;">⚠️</span>
+                        <p style="color:var(--dourado);">Chave não configurada</p>
+                        <p style="font-size:12px;color:var(--cinza);">Configure a chave da API Gemini.</p>
+                        <button class="btn btn-primary" onclick="configurarChave()" style="margin-top:12px;padding:8px 20px;">🔑 Configurar Chave</button>
+                    </div>
+                `;
                 return;
             }
 
-            document.getElementById('statusExtraido').textContent = '✅ Concluído';
-            document.getElementById('statusExtraido').style.background = '#D1FAE5';
-            document.getElementById('statusExtraido').style.color = '#065F46';
+            var fornecedor = extrairFornecedor(texto);
 
-            mostrarPreviewIA(dados);
-            mostrarToast('📄 Dados extraídos com sucesso! Confiança: ' + nivelConfiancaGeral + '%', 'success');
+            // 🔥 USA O MODELO QUE FUNCIONA
+            var model = 'gemini-pro';
+            var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
+
+            // 🔥 PREPARA O PROMPT
+            var prompt = `
+                Extraia os seguintes campos da nota fiscal abaixo e retorne apenas um JSON válido:
+
+                Campos:
+                1. numero: Número da Nota
+                2. chave: Chave de Acesso
+                3. emitente: Nome do Emitente (NUNCA AMOVIN - AMOVIN é o destinatário)
+                4. cnpj: CNPJ do Emitente
+                5. telefone: Telefone do Emitente
+                6. endereco: Endereço do Emitente
+                7. natureza: Natureza da Operação
+                8. dataEmissao: Data de Emissão (YYYY-MM-DD)
+                9. dataEntrada: Data de Entrada (YYYY-MM-DD)
+                10. horaEntrada: Hora
+                11. valorProduto: Valor dos Produtos
+                12. valorFrete: Valor do Frete
+                13. valorTotal: Valor Total
+                14. itens: Lista de itens (descricao, quantidade, unidade, valor_unitario, valor_total)
+
+                Texto da nota:
+                ${texto.substring(0, 4000)}
+
+                Retorne apenas o JSON, sem texto adicional.
+            `;
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.error) {
+                        console.error('❌ Erro da API:', data.error);
+                        document.getElementById('statusExtraido').textContent = '❌ Erro';
+                        document.getElementById('statusExtraido').style.background = '#FEE2E2';
+                        document.getElementById('statusExtraido').style.color = '#991B1B';
+                        preview.innerHTML = `
+                            <div style="text-align:center;padding:20px;">
+                                <span style="font-size:32px;">❌</span>
+                                <p style="color:var(--vermelho);font-weight:600;">Erro na API</p>
+                                <p style="font-size:12px;color:var(--cinza);">${data.error.message || 'Erro desconhecido'}</p>
+                                <p style="font-size:11px;color:var(--cinza);margin-top:4px;">Status: ${data.error.status || '---'}</p>
+                                <button class="btn btn-dourado" onclick="abrirFormManual()" style="margin-top:12px;padding:8px 20px;">📝 Lançamento Manual</button>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                        var resposta = data.candidates[0].content.parts[0].text;
+
+                        try {
+                            var jsonMatch = resposta.match(/\{[\s\S]*\}/);
+                            var dados = null;
+
+                            if (jsonMatch) {
+                                dados = JSON.parse(jsonMatch[0]);
+                            } else {
+                                dados = JSON.parse(resposta);
+                            }
+
+                            if (dados && typeof dados === 'object' && dados !== null) {
+                                // 🔥 USA OS DADOS EXTRAÍDOS PELA IA
+                                var resultado = {
+                                    numero: dados.numero || '*',
+                                    chave: dados.chave || '*',
+                                    serie: dados.serie || '*',
+                                    modelo: dados.modelo || '*',
+                                    natureza: dados.natureza || '*',
+                                    dataEmissao: dados.dataEmissao || '',
+                                    dataSaida: dados.dataEntrada || '',
+                                    protocolo: dados.protocolo || '*',
+                                    emitente: {
+                                        razaoSocial: dados.emitente || fornecedor.nome || 'Fornecedor não identificado',
+                                        cnpj: dados.cnpj || fornecedor.cnpj || '*',
+                                        telefone: dados.telefone || fornecedor.telefone || '*',
+                                        endereco: dados.endereco || '*'
+                                    },
+                                    destinatario: {
+                                        razaoSocial: 'AMOVIN - Associação e Movimento pela Inclusão',
+                                        cnpj: '55.880.046/0001-34',
+                                        endereco: 'Francisco De Paula Moura Neto, 180'
+                                    },
+                                    valores: {
+                                        valorProdutos: parseFloat(dados.valorProduto || 0) || 0,
+                                        valorDesconto: parseFloat(dados.valorDesconto || 0) || 0,
+                                        valorFrete: parseFloat(dados.valorFrete || 0) || 0,
+                                        valorSeguro: parseFloat(dados.valorSeguro || 0) || 0,
+                                        valorIPI: parseFloat(dados.valorIPI || 0) || 0,
+                                        valorICMS: parseFloat(dados.valorICMS || 0) || 0,
+                                        valorTotal: parseFloat(dados.valorTotal || 0) || 0
+                                    },
+                                    itens: dados.itens || [],
+                                    status: 'APROVACAO',
+                                    origem: 'ia'
+                                };
+
+                                // 🔥 CORRIGE EMITENTE SE FOR AMOVIN
+                                if (resultado.emitente.razaoSocial && resultado.emitente.razaoSocial.toUpperCase().includes('AMOVIN')) {
+                                    resultado.emitente.razaoSocial = fornecedor.nome || 'Fornecedor não identificado';
+                                    resultado.emitente.cnpj = fornecedor.cnpj || resultado.emitente.cnpj;
+                                }
+
+                                dadosNota = resultado;
+                                var valido = calcularConfianca(resultado);
+
+                                if (!valido) {
+                                    document.getElementById('statusExtraido').textContent = '❌ Cancelado';
+                                    document.getElementById('statusExtraido').style.background = '#FEE2E2';
+                                    document.getElementById('statusExtraido').style.color = '#991B1B';
+                                    return;
+                                }
+
+                                document.getElementById('statusExtraido').textContent = '✅ Concluído';
+                                document.getElementById('statusExtraido').style.background = '#D1FAE5';
+                                document.getElementById('statusExtraido').style.color = '#065F46';
+
+                                mostrarPreviewIA(resultado);
+                                mostrarToast('📄 Dados extraídos com sucesso! Confiança: ' + nivelConfiancaGeral + '%', 'success');
+                            } else {
+                                throw new Error('Dados inválidos');
+                            }
+
+                        } catch (e) {
+                            console.error('❌ Erro ao processar resposta:', e);
+                            document.getElementById('statusExtraido').textContent = '⚠️ Erro';
+                            document.getElementById('statusExtraido').style.background = '#FEF3C7';
+                            document.getElementById('statusExtraido').style.color = '#92400E';
+                            preview.innerHTML = `
+                                <div style="text-align:center;padding:20px;">
+                                    <span style="font-size:32px;">⚠️</span>
+                                    <p style="color:var(--dourado);font-weight:600;">Erro ao processar a resposta da IA</p>
+                                    <p style="font-size:12px;color:var(--cinza);">Tente novamente ou use o lançamento manual.</p>
+                                    <button class="btn btn-dourado" onclick="abrirFormManual()" style="margin-top:12px;padding:8px 20px;">📝 Lançamento Manual</button>
+                                    <button class="btn btn-primary" onclick="processarNota(event)" style="margin-top:12px;padding:8px 20px;">🔄 Tentar Novamente</button>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        console.error('❌ Resposta da IA:', data);
+                        document.getElementById('statusExtraido').textContent = '❌ Erro';
+                        document.getElementById('statusExtraido').style.background = '#FEE2E2';
+                        document.getElementById('statusExtraido').style.color = '#991B1B';
+                        preview.innerHTML = `
+                            <div style="text-align:center;padding:20px;">
+                                <span style="font-size:32px;">❌</span>
+                                <p style="color:var(--vermelho);">Erro na resposta da IA</p>
+                                <p style="font-size:12px;color:var(--cinza);">A IA não retornou uma resposta válida.</p>
+                                <button class="btn btn-dourado" onclick="abrirFormManual()" style="margin-top:12px;padding:8px 20px;">📝 Lançamento Manual</button>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(function(err) {
+                    console.error('❌ Erro de conexão:', err);
+                    document.getElementById('statusExtraido').textContent = '❌ Erro';
+                    document.getElementById('statusExtraido').style.background = '#FEE2E2';
+                    document.getElementById('statusExtraido').style.color = '#991B1B';
+                    preview.innerHTML = `
+                        <div style="text-align:center;padding:20px;">
+                            <span style="font-size:32px;">❌</span>
+                            <p style="color:var(--vermelho);">Erro de conexão</p>
+                            <p style="font-size:12px;color:var(--cinza);">${err.message}</p>
+                            <button class="btn btn-dourado" onclick="abrirFormManual()" style="margin-top:12px;padding:8px 20px;">📝 Lançamento Manual</button>
+                        </div>
+                    `;
+                });
+        }
+
+        // ============================================================
+        // CONFIGURAR CHAVE (ACEITA AIzaSy E AQ)
+        // ============================================================
+        function configurarChave() {
+            var key = prompt('Digite sua chave da API Gemini (AIzaSy... ou AQ...):');
+            if (key && key.length > 10) {
+                localStorage.setItem('amovin_gemini_key', key);
+                localStorage.setItem('amovin_gemini_model', 'gemini-pro');
+                mostrarToast('✅ Chave configurada com sucesso!', 'success');
+                // 🔥 RECARREGA A PÁGINA
+                location.reload();
+            } else if (key !== null) {
+                mostrarToast('⚠️ Chave inválida. Deve ter mais de 10 caracteres.', 'warning');
+            }
         }
 
         // ============================================================
@@ -986,74 +1135,90 @@
         }
 
         // ============================================================
-        // DEMAIS FUNÇÕES (REVISÃO, VINCULAÇÃO, CRM, ETC)
+        // ABRIR FORMULÁRIO MANUAL
         // ============================================================
-        function abrirModalRevisao() {
-            if (!dadosNota) { mostrarToast('⚠️ Nenhum dado para revisar.', 'warning'); return; }
+        function abrirFormManual() {
             var modal = document.getElementById('modalRevisao');
             var container = document.getElementById('camposRevisao');
 
+            var d = dadosNota || {};
+
             var campos = [
-                { id: 'numero', label: '📋 Número da Nota', tipo: 'text', valor: dadosNota.numero },
-                { id: 'emitente', label: '🏢 Razão Social (Emitente)', tipo: 'text', valor: dadosNota.emitente.razaoSocial },
-                { id: 'cnpj', label: '📄 CNPJ do Emitente', tipo: 'text', valor: dadosNota.emitente.cnpj },
-                { id: 'telefone', label: '📞 Telefone', tipo: 'text', valor: dadosNota.emitente.telefone },
-                { id: 'endereco', label: '📍 Endereço', tipo: 'text', valor: dadosNota.emitente.endereco },
-                { id: 'natureza', label: '📋 Natureza da Operação', tipo: 'text', valor: dadosNota.natureza },
-                { id: 'dataEmissao', label: '📅 Data de Emissão', tipo: 'date', valor: dadosNota.dataEmissao },
-                { id: 'valorProdutos', label: '💰 Valor dos Produtos', tipo: 'number', valor: dadosNota.valores.valorProdutos },
-                { id: 'valorFrete', label: '🚛 Valor do Frete', tipo: 'number', valor: dadosNota.valores.valorFrete },
-                { id: 'valorTotal', label: '💰 Valor Total', tipo: 'number', valor: dadosNota.valores.valorTotal }
+                { id: 'numero', label: '📋 Número da Nota', tipo: 'text', valor: d.numero || '' },
+                { id: 'emitente', label: '🏢 Razão Social (Emitente)', tipo: 'text', valor: d.emitente?.razaoSocial || '' },
+                { id: 'cnpj', label: '📄 CNPJ do Emitente', tipo: 'text', valor: d.emitente?.cnpj || '' },
+                { id: 'telefone', label: '📞 Telefone', tipo: 'text', valor: d.emitente?.telefone || '' },
+                { id: 'endereco', label: '📍 Endereço', tipo: 'text', valor: d.emitente?.endereco || '' },
+                { id: 'natureza', label: '📋 Natureza da Operação', tipo: 'text', valor: d.natureza || '' },
+                { id: 'dataEmissao', label: '📅 Data de Emissão', tipo: 'date', valor: d.dataEmissao || '' },
+                { id: 'valorProdutos', label: '💰 Valor dos Produtos', tipo: 'number', valor: d.valores?.valorProdutos || 0 },
+                { id: 'valorFrete', label: '🚛 Valor do Frete', tipo: 'number', valor: d.valores?.valorFrete || 0 },
+                { id: 'valorTotal', label: '💰 Valor Total', tipo: 'number', valor: d.valores?.valorTotal || 0 }
             ];
 
-            var html = '';
-            campos.forEach(function(campo) {
-                var confianca = camposConfianca[campo.id] || 'baixa';
-                var cor = confianca === 'muito-alta' ? '🟢' : (confianca === 'alta' ? '🟢' : (confianca === 'media' ? '🟡' :
-                    '🔴'));
-                var labelConfianca = confianca === 'muito-alta' ? 'Muito Alta' : (confianca === 'alta' ? 'Alta' : (
-                    confianca === 'media' ? 'Média' : 'Baixa'));
+            var html = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span style="font-weight:700;font-size:14px;color:var(--azul);">📝 Preenchimento Manual</span>
+                    <span style="font-size:11px;color:var(--cinza);">Preencha os campos da nota fiscal</span>
+                </div>
+            `;
 
+            campos.forEach(function(campo) {
                 html += `
-                        <div class="campo-revisao">
-                            <label>${campo.label} <span class="confianca-label">${cor} ${labelConfianca}</span></label>
-                            <input type="${campo.tipo}" id="rev_${campo.id}" value="${campo.valor || ''}" step="0.01">
-                        </div>
-                    `;
+                    <div class="campo-revisao">
+                        <label>${campo.label}</label>
+                        <input type="${campo.tipo}" id="rev_${campo.id}" value="${campo.valor || ''}" step="0.01">
+                    </div>
+                `;
             });
+
+            html += `
+                <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+                    <button class="btn btn-success" onclick="salvarManual()">💾 Salvar Nota</button>
+                    <button class="btn btn-outline" onclick="fecharModalRevisao()">❌ Cancelar</button>
+                </div>
+            `;
 
             container.innerHTML = html;
             modal.classList.add('visivel');
         }
 
-        function fecharModalRevisao() { document.getElementById('modalRevisao').classList.remove('visivel'); }
+        // ============================================================
+        // SALVAR MANUAL
+        // ============================================================
+        function salvarManual() {
+            var dados = {
+                numero: document.getElementById('rev_numero').value.trim() || '*',
+                emitente: {
+                    razaoSocial: document.getElementById('rev_emitente').value.trim() || 'Fornecedor não informado',
+                    cnpj: document.getElementById('rev_cnpj').value.trim() || '*',
+                    telefone: document.getElementById('rev_telefone').value.trim() || '*',
+                    endereco: document.getElementById('rev_endereco').value.trim() || '*'
+                },
+                natureza: document.getElementById('rev_natureza').value.trim() || '*',
+                dataEmissao: document.getElementById('rev_dataEmissao').value || new Date().toISOString().split('T')[0],
+                valores: {
+                    valorProdutos: parseFloat(document.getElementById('rev_valorProdutos').value) || 0,
+                    valorFrete: parseFloat(document.getElementById('rev_valorFrete').value) || 0,
+                    valorTotal: parseFloat(document.getElementById('rev_valorTotal').value) || 0
+                },
+                itens: [],
+                status: 'APROVACAO',
+                origem: 'manual'
+            };
 
-        function salvarRevisao() {
-            var campos = ['numero', 'emitente', 'cnpj', 'telefone', 'endereco', 'natureza', 'dataEmissao',
-                'valorProdutos', 'valorFrete', 'valorTotal'
-            ];
-
-            campos.forEach(function(campo) {
-                var el = document.getElementById('rev_' + campo);
-                if (el) {
-                    var valor = el.value;
-                    if (campo === 'valorProdutos' || campo === 'valorFrete' || campo === 'valorTotal') {
-                        if (campo === 'emitente') dadosNota.emitente.razaoSocial = valor || '*';
-                        else if (campo === 'cnpj') dadosNota.emitente.cnpj = valor || '*';
-                        else if (campo === 'telefone') dadosNota.emitente.telefone = valor || '*';
-                        else if (campo === 'endereco') dadosNota.emitente.endereco = valor || '*';
-                        else if (campo === 'valorProdutos') dadosNota.valores.valorProdutos = parseFloat(valor) || 0;
-                        else if (campo === 'valorFrete') dadosNota.valores.valorFrete = parseFloat(valor) || 0;
-                        else if (campo === 'valorTotal') dadosNota.valores.valorTotal = parseFloat(valor) || 0;
-                        else dadosNota[campo] = valor || '*';
-                    }
-                }
-            });
-
-            calcularConfianca(dadosNota);
-            mostrarPreviewIA(dadosNota);
+            dadosNota = dados;
+            calcularConfianca(dados);
+            mostrarPreviewIA(dados);
             fecharModalRevisao();
-            mostrarToast('✅ Dados revisados e salvos!', 'success');
+            mostrarToast('✅ Nota preenchida manualmente com sucesso!', 'success');
+        }
+
+        // ============================================================
+        // DEMAIS FUNÇÕES
+        // ============================================================
+        function fecharModalRevisao() {
+            document.getElementById('modalRevisao').classList.remove('visivel');
         }
 
         function limparDados() {
@@ -1415,12 +1580,6 @@
             localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
             mostrarToast('✅ Empresa enviada para o CRM Social!', 'success');
             if (confirm('Dados enviados para o CRM! Deseja visualizar?')) { window.location.href = 'agenda-telefonica.html'; }
-        }
-
-        function abrirFormManual() {
-            if (confirm('Deseja preencher manualmente?')) {
-                mostrarToast('📝 Formulário manual em desenvolvimento.', 'info');
-            }
         }
 
         // ============================================================
