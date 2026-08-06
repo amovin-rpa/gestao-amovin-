@@ -23,6 +23,7 @@
             --vermelho: #E53935;
             --roxo: #7C3AED;
             --ciano: #06B6D4;
+            --dourado: #D97706;
         }
         * {
             margin: 0;
@@ -466,7 +467,7 @@
             background: var(--azul);
         }
         .toast-warning {
-            background: #E65100;
+            background: var(--dourado);
         }
 
         @keyframes slideInRight {
@@ -782,12 +783,18 @@
             var statusEl = document.getElementById('statusIA');
             var chaveEl = document.getElementById('statusChave');
 
-            if (key && key.length > 10) {
+            if (key && key.length > 10 && key.startsWith('AIzaSy')) {
                 statusEl.textContent = '✅ Conectado';
                 statusEl.className = 'status-ia sucesso';
                 chaveEl.textContent = 'Configurada ✅';
                 document.getElementById('btnProcessarNota').disabled = false;
                 document.getElementById('btnProcessarDoc').disabled = false;
+            } else if (key && key.length > 10) {
+                statusEl.textContent = '⚠️ Chave inválida';
+                statusEl.className = 'status-ia erro';
+                chaveEl.textContent = 'Formato incorreto (use AIzaSy...)';
+                document.getElementById('btnProcessarNota').disabled = true;
+                document.getElementById('btnProcessarDoc').disabled = true;
             } else {
                 statusEl.textContent = '⚠️ Sem chave';
                 statusEl.className = 'status-ia erro';
@@ -800,8 +807,11 @@
         function configurarChave() {
             var key = prompt('Digite sua chave da API Gemini (formato: AIzaSy...):');
             if (key && key.length > 10) {
+                if (!key.startsWith('AIzaSy')) {
+                    alert('⚠️ Chave inválida! A chave deve começar com "AIzaSy".');
+                    return;
+                }
                 localStorage.setItem('amovin_gemini_key', key);
-                // Configura o modelo correto
                 localStorage.setItem('amovin_gemini_model', 'gemini-2.0-flash');
                 verificarChave();
                 mostrarToast('✅ Chave configurada com sucesso!', 'success');
@@ -946,7 +956,7 @@
         }
 
         // ============================================================
-        // PROCESSAR NOTA COM IA - CORRIGIDO
+        // PROCESSAR NOTA COM IA - VERSÃO CORRIGIDA
         // ============================================================
         function processarNotaIA() {
             if (!textoExtraido || textoExtraido.length < 10) {
@@ -961,40 +971,42 @@
                 return;
             }
 
+            if (!key.startsWith('AIzaSy')) {
+                mostrarToast('⚠️ Chave inválida. Deve começar com AIzaSy.', 'warning');
+                configurarChave();
+                return;
+            }
+
             var preview = document.getElementById('resultadoNota');
             preview.innerHTML =
                 '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">🤖</span><p style="margin-top:8px;color:var(--cinza);">Processando com IA...</p></div>';
 
-            // 🔥 MODELO CORRETO
             var model = localStorage.getItem('amovin_gemini_model') || 'gemini-2.0-flash';
 
             var prompt = `
                 Extraia os seguintes campos da nota fiscal abaixo e retorne apenas um JSON válido:
 
-                Campos a extrair:
-                1. numero: Número da Nota (ex: 13213055)
-                2. chave: Chave de Acesso (44 dígitos)
-                3. emitente: Nome do Emitente/Fornecedor (NUNCA AMOVIN - AMOVIN é o destinatário)
-                4. cnpj: CNPJ do Emitente (formato: 00.000.000/0000-00)
-                5. telefone: Telefone do Emitente
+                Campos:
+                1. numero: Número da Nota
+                2. chave: Chave de Acesso
+                3. emitente: Nome do Emitente (NUNCA AMOVIN)
+                4. cnpj: CNPJ do Emitente
+                5. telefone: Telefone
                 6. natureza: Natureza da Operação
-                7. dataEmissao: Data de Emissão (formato: YYYY-MM-DD)
-                8. dataEntrada: Data de Entrada (formato: YYYY-MM-DD)
-                9. horaEntrada: Hora de Entrada (formato: HH:MM:SS)
-                10. valorProduto: Valor dos Produtos (número)
-                11. valorFrete: Valor do Frete (número)
-                12. valorSeguro: Valor do Seguro (número)
-                13. valorDesconto: Valor do Desconto (número)
-                14. valorTotal: Valor Total da Nota (número)
-                15. itens: Lista de itens, cada um com: descricao, quantidade, unidade, valor_unitario, valor_total
+                7. dataEmissao: Data de Emissão (YYYY-MM-DD)
+                8. dataEntrada: Data de Entrada (YYYY-MM-DD)
+                9. horaEntrada: Hora
+                10. valorProduto: Valor dos Produtos
+                11. valorFrete: Valor do Frete
+                12. valorTotal: Valor Total
+                13. itens: Lista de itens (descricao, quantidade, unidade, valor_unitario, valor_total)
 
                 Texto da nota:
-                ${textoExtraido}
+                ${textoExtraido.substring(0, 4000)}
 
                 Retorne apenas o JSON, sem texto adicional.
             `;
 
-            // 🔥 URL CORRETA COM O MODELO
             var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
 
             fetch(url, {
@@ -1006,44 +1018,76 @@
                 })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
+                    if (data.error) {
+                        console.error('❌ Erro da API:', data.error);
+                        mostrarToast('❌ Erro da API: ' + (data.error.message || 'Erro desconhecido'), 'error');
+                        preview.innerHTML = `
+                                <div style="text-align:center;padding:20px;">
+                                    <span style="font-size:32px;">❌</span>
+                                    <p style="color:var(--vermelho);font-weight:600;">Erro na API</p>
+                                    <p style="font-size:12px;color:var(--cinza);">${data.error.message || 'Erro desconhecido'}</p>
+                                    <p style="font-size:11px;color:var(--cinza);margin-top:4px;">Status: ${data.error.status || '---'}</p>
+                                    <button class="btn btn-primary" onclick="processarNotaIA()" style="margin-top:12px;padding:8px 20px;">🔄 Tentar Novamente</button>
+                                </div>
+                            `;
+                        return;
+                    }
+
                     if (data.candidates && data.candidates[0] && data.candidates[0].content) {
                         var resposta = data.candidates[0].content.parts[0].text;
 
-                        // 🔥 CORREÇÃO: EXTRAI O JSON DA RESPOSTA
                         try {
                             var jsonMatch = resposta.match(/\{[\s\S]*\}/);
                             if (jsonMatch) {
                                 dadosExtraidos = JSON.parse(jsonMatch[0]);
-                                mostrarResultadoNota(dadosExtraidos);
-                                adicionarHistorico('nota_fiscal', 'Sucesso', dadosExtraidos);
-                                mostrarToast('✅ Dados extraídos com sucesso!', 'success');
                             } else {
-                                // Tenta parsear diretamente
                                 dadosExtraidos = JSON.parse(resposta);
-                                mostrarResultadoNota(dadosExtraidos);
-                                adicionarHistorico('nota_fiscal', 'Sucesso', dadosExtraidos);
-                                mostrarToast('✅ Dados extraídos com sucesso!', 'success');
                             }
+
+                            mostrarResultadoNota(dadosExtraidos);
+                            adicionarHistorico('nota_fiscal', 'Sucesso', dadosExtraidos);
+                            mostrarToast('✅ Dados extraídos com sucesso!', 'success');
+
                         } catch (e) {
                             console.error('❌ Erro ao parsear JSON:', e);
                             console.log('📄 Resposta bruta:', resposta);
-                            mostrarToast('❌ Erro ao processar resposta da IA.', 'error');
+
                             preview.innerHTML = `
                                     <div style="text-align:center;padding:20px;">
-                                        <span style="font-size:32px;">❌</span>
-                                        <p style="color:var(--vermelho);">Erro ao processar resposta da IA.</p>
-                                        <pre style="font-size:11px;color:var(--cinza);text-align:left;max-height:200px;overflow-y:auto;background:#F8F4ED;padding:12px;border-radius:8px;">${resposta.substring(0, 500)}</pre>
+                                        <span style="font-size:32px;">⚠️</span>
+                                        <p style="color:var(--dourado);font-weight:600;">Resposta da IA não é um JSON válido</p>
+                                        <p style="font-size:12px;color:var(--cinza);">A IA retornou texto, não JSON.</p>
+                                        <div style="background:white;padding:12px;border-radius:8px;text-align:left;max-height:200px;overflow-y:auto;font-size:11px;color:var(--cinza);border:1px solid #E5E0D8;margin-top:8px;">
+                                            ${resposta.substring(0, 500)}${resposta.length > 500 ? '...' : ''}
+                                        </div>
+                                        <button class="btn btn-primary" onclick="processarNotaIA()" style="margin-top:12px;padding:8px 20px;">🔄 Tentar Novamente</button>
+                                        <button class="btn btn-outline" onclick="limparResultadoNota()" style="margin-top:12px;">❌ Cancelar</button>
                                     </div>
                                 `;
                         }
                     } else {
-                        mostrarToast('❌ Erro na resposta da IA.', 'error');
                         console.error('❌ Resposta da IA:', data);
+                        mostrarToast('❌ Erro na resposta da IA.', 'error');
+                        preview.innerHTML = `
+                                <div style="text-align:center;padding:20px;">
+                                    <span style="font-size:32px;">❌</span>
+                                    <p style="color:var(--vermelho);">Erro na resposta da IA</p>
+                                    <p style="font-size:12px;color:var(--cinza);">A IA não retornou uma resposta válida.</p>
+                                </div>
+                            `;
                     }
                 })
                 .catch(function(err) {
-                    mostrarToast('❌ Erro ao conectar com a IA: ' + err.message, 'error');
                     console.error('❌ Erro de conexão:', err);
+                    mostrarToast('❌ Erro ao conectar com a IA: ' + err.message, 'error');
+                    preview.innerHTML = `
+                            <div style="text-align:center;padding:20px;">
+                                <span style="font-size:32px;">❌</span>
+                                <p style="color:var(--vermelho);">Erro de conexão</p>
+                                <p style="font-size:12px;color:var(--cinza);">${err.message}</p>
+                                <button class="btn btn-primary" onclick="processarNotaIA()" style="margin-top:12px;padding:8px 20px;">🔄 Tentar Novamente</button>
+                            </div>
+                        `;
                 });
         }
 
@@ -1066,7 +1110,8 @@
                 });
                 itensHtml += '</div>';
             } else {
-                itensHtml = '<div class="ia-itens"><div class="titulo">📦 Itens</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado.</p></div>';
+                itensHtml =
+                    '<div class="ia-itens"><div class="titulo">📦 Itens</div><p style="font-size:12px;color:var(--cinza);padding:8px 0;">Nenhum item identificado.</p></div>';
             }
 
             var dataEmissao = dados.dataEmissao ? new Date(dados.dataEmissao + 'T00:00:00').toLocaleDateString(
@@ -1168,7 +1213,7 @@
         }
 
         // ============================================================
-        // PROCESSAR DOCUMENTO
+        // PROCESSAR DOCUMENTO (IMPLANTAÇÃO FUTURA)
         // ============================================================
         function processarDocumento(event) {
             var file = event.target.files[0];
@@ -1443,6 +1488,9 @@
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
+
+        console.log('🧠 Central de IA carregada com sucesso!');
+        console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? '✅ Configurada' : '❌ Não configurada');
     </script>
 </body>
 </html>
