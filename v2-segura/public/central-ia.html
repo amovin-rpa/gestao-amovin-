@@ -745,6 +745,21 @@
         };
 
         // ============================================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================================
+        var textoExtraido = '';
+        var dadosExtraidos = {};
+        var historico = JSON.parse(localStorage.getItem('amovin_ia_historico') || '[]');
+        var integracoes = JSON.parse(localStorage.getItem('amovin_ia_integracoes') || {
+            'notas-fiscais': true,
+            'estoque': true,
+            'patrimonio': true,
+            'projetos': false,
+            'pessoas': false,
+            'documentos': false
+        });
+
+        // ============================================================
         // INICIALIZAÇÃO
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
@@ -758,21 +773,6 @@
                 var total = historico.length;
                 document.getElementById('totalHistorico').textContent = total;
             }, 300);
-        });
-
-        // ============================================================
-        // VARIÁVEIS GLOBAIS
-        // ============================================================
-        var textoExtraido = '';
-        var dadosExtraidos = {};
-        var historico = JSON.parse(localStorage.getItem('amovin_ia_historico') || '[]');
-        var integracoes = JSON.parse(localStorage.getItem('amovin_ia_integracoes') || {
-            'notas-fiscais': true,
-            'estoque': true,
-            'patrimonio': true,
-            'projetos': false,
-            'pessoas': false,
-            'documentos': false
         });
 
         // ============================================================
@@ -845,7 +845,7 @@
         }
 
         // ============================================================
-        // PROCESSAR NOTA FISCAL (OCR + IA)
+        // PROCESSAR NOTA FISCAL
         // ============================================================
         function processarNota(event) {
             var file = event.target.files[0];
@@ -956,7 +956,7 @@
         }
 
         // ============================================================
-        // PROCESSAR NOTA COM IA - VERSÃO CORRIGIDA
+        // PROCESSAR NOTA COM IA - CORRIGIDO (SEM JSON.parse DUPLICADO)
         // ============================================================
         function processarNotaIA() {
             if (!textoExtraido || textoExtraido.length < 10) {
@@ -1036,29 +1036,40 @@
                     if (data.candidates && data.candidates[0] && data.candidates[0].content) {
                         var resposta = data.candidates[0].content.parts[0].text;
 
+                        // 🔥 CORREÇÃO: TRATA A RESPOSTA SEM DUPLICAR JSON.parse
                         try {
                             var jsonMatch = resposta.match(/\{[\s\S]*\}/);
+                            var dados = null;
+
                             if (jsonMatch) {
-                                dadosExtraidos = JSON.parse(jsonMatch[0]);
+                                dados = JSON.parse(jsonMatch[0]);
                             } else {
-                                dadosExtraidos = JSON.parse(resposta);
+                                // Tenta parsear diretamente
+                                dados = JSON.parse(resposta);
                             }
 
-                            mostrarResultadoNota(dadosExtraidos);
-                            adicionarHistorico('nota_fiscal', 'Sucesso', dadosExtraidos);
-                            mostrarToast('✅ Dados extraídos com sucesso!', 'success');
+                            // 🔥 VERIFICA SE É UM OBJETO VÁLIDO
+                            if (dados && typeof dados === 'object') {
+                                dadosExtraidos = dados;
+                                mostrarResultadoNota(dados);
+                                adicionarHistorico('nota_fiscal', 'Sucesso', dados);
+                                mostrarToast('✅ Dados extraídos com sucesso!', 'success');
+                            } else {
+                                throw new Error('Dados inválidos');
+                            }
 
                         } catch (e) {
-                            console.error('❌ Erro ao parsear JSON:', e);
+                            console.error('❌ Erro ao processar resposta:', e);
                             console.log('📄 Resposta bruta:', resposta);
 
+                            // 🔥 MOSTRA O ERRO DE FORMA CLARA
                             preview.innerHTML = `
                                     <div style="text-align:center;padding:20px;">
                                         <span style="font-size:32px;">⚠️</span>
-                                        <p style="color:var(--dourado);font-weight:600;">Resposta da IA não é um JSON válido</p>
-                                        <p style="font-size:12px;color:var(--cinza);">A IA retornou texto, não JSON.</p>
-                                        <div style="background:white;padding:12px;border-radius:8px;text-align:left;max-height:200px;overflow-y:auto;font-size:11px;color:var(--cinza);border:1px solid #E5E0D8;margin-top:8px;">
-                                            ${resposta.substring(0, 500)}${resposta.length > 500 ? '...' : ''}
+                                        <p style="color:var(--dourado);font-weight:600;">Erro ao processar a resposta da IA</p>
+                                        <p style="font-size:12px;color:var(--cinza);">A IA retornou: ${e.message}</p>
+                                        <div style="background:white;padding:12px;border-radius:8px;text-align:left;max-height:150px;overflow-y:auto;font-size:11px;color:var(--cinza);border:1px solid #E5E0D8;margin-top:8px;">
+                                            ${resposta.substring(0, 400)}${resposta.length > 400 ? '...' : ''}
                                         </div>
                                         <button class="btn btn-primary" onclick="processarNotaIA()" style="margin-top:12px;padding:8px 20px;">🔄 Tentar Novamente</button>
                                         <button class="btn btn-outline" onclick="limparResultadoNota()" style="margin-top:12px;">❌ Cancelar</button>
@@ -1092,13 +1103,25 @@
         }
 
         // ============================================================
-        // MOSTRAR RESULTADO DA NOTA
+        // MOSTRAR RESULTADO DA NOTA - SEM JSON.parse DUPLICADO
         // ============================================================
         function mostrarResultadoNota(dados) {
             var preview = document.getElementById('resultadoNota');
 
+            // 🔥 VERIFICA SE dados É UM OBJETO VÁLIDO
+            if (!dados || typeof dados !== 'object') {
+                preview.innerHTML = `
+                        <div style="text-align:center;padding:20px;">
+                            <span style="font-size:32px;">❌</span>
+                            <p style="color:var(--vermelho);">Dados inválidos</p>
+                            <p style="font-size:12px;color:var(--cinza);">A IA não retornou dados estruturados.</p>
+                        </div>
+                    `;
+                return;
+            }
+
             var itensHtml = '';
-            if (dados.itens && dados.itens.length > 0) {
+            if (dados.itens && dados.itens.length > 0 && Array.isArray(dados.itens)) {
                 itensHtml = '<div class="ia-itens"><div class="titulo">📦 Itens (' + dados.itens.length + ')</div>';
                 dados.itens.forEach(function(item) {
                     itensHtml += '<div class="item-linha">' +
@@ -1118,6 +1141,13 @@
                 'pt-BR') : '---';
             var dataEntrada = dados.dataEntrada ? new Date(dados.dataEntrada + 'T00:00:00').toLocaleDateString(
                 'pt-BR') : '---';
+
+            // 🔥 GARANTE QUE OS VALORES SÃO NÚMEROS
+            var valorTotal = parseFloat(dados.valorTotal || dados.valor || 0) || 0;
+            var valorProduto = parseFloat(dados.valorProduto || 0) || 0;
+            var valorFrete = parseFloat(dados.valorFrete || 0) || 0;
+            var valorSeguro = parseFloat(dados.valorSeguro || 0) || 0;
+            var valorDesconto = parseFloat(dados.valorDesconto || 0) || 0;
 
             preview.innerHTML = `
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -1140,11 +1170,11 @@
                     <div style="border-top:1px solid #E5D9F5;padding-top:8px;margin:8px 0;">
                         <div style="font-weight:600;font-size:12px;color:var(--cinza);margin-bottom:4px;">💰 Cálculos</div>
                         <div class="ia-grid">
-                            <div class="ia-item"><span class="label">Valor Produto</span><span class="valor">R$ ${(dados.valorProduto || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="ia-item"><span class="label">Valor Frete</span><span class="valor">R$ ${(dados.valorFrete || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="ia-item"><span class="label">Valor Seguro</span><span class="valor">R$ ${(dados.valorSeguro || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="ia-item"><span class="label">Valor Desconto</span><span class="valor">R$ ${(dados.valorDesconto || 0).toFixed(2).replace('.', ',')}</span></div>
-                            <div class="ia-item"><span class="label" style="font-weight:700;">💰 Valor Total</span><span class="valor destaque">R$ ${(dados.valorTotal || dados.valor || 0).toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label">Valor Produto</span><span class="valor">R$ ${valorProduto.toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label">Valor Frete</span><span class="valor">R$ ${valorFrete.toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label">Valor Seguro</span><span class="valor">R$ ${valorSeguro.toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label">Valor Desconto</span><span class="valor">R$ ${valorDesconto.toFixed(2).replace('.', ',')}</span></div>
+                            <div class="ia-item"><span class="label" style="font-weight:700;">💰 Valor Total</span><span class="valor destaque">R$ ${valorTotal.toFixed(2).replace('.', ',')}</span></div>
                         </div>
                     </div>
 
@@ -1163,7 +1193,7 @@
         // ENVIAR NOTA PARA MÓDULO
         // ============================================================
         function enviarNotaParaModulo() {
-            if (!dadosExtraidos || Object.keys(dadosExtraidos).length === 0) {
+            if (!dadosExtraidos || typeof dadosExtraidos !== 'object' || Object.keys(dadosExtraidos).length === 0) {
                 mostrarToast('⚠️ Nenhum dado para enviar.', 'warning');
                 return;
             }
@@ -1185,11 +1215,11 @@
                 cnpj_emitente: dadosExtraidos.cnpj || '---',
                 telefone_emitente: dadosExtraidos.telefone || '---',
                 natureza: dadosExtraidos.natureza || '---',
-                valor_total: dadosExtraidos.valorTotal || dadosExtraidos.valor || 0,
-                valor_produto: dadosExtraidos.valorProduto || 0,
-                valor_frete: dadosExtraidos.valorFrete || 0,
-                valor_seguro: dadosExtraidos.valorSeguro || 0,
-                valor_desconto: dadosExtraidos.valorDesconto || 0,
+                valor_total: parseFloat(dadosExtraidos.valorTotal || dadosExtraidos.valor || 0) || 0,
+                valor_produto: parseFloat(dadosExtraidos.valorProduto || 0) || 0,
+                valor_frete: parseFloat(dadosExtraidos.valorFrete || 0) || 0,
+                valor_seguro: parseFloat(dadosExtraidos.valorSeguro || 0) || 0,
+                valor_desconto: parseFloat(dadosExtraidos.valorDesconto || 0) || 0,
                 data_emissao: dadosExtraidos.dataEmissao || new Date().toISOString().split('T')[0],
                 data_entrada: dadosExtraidos.dataEntrada || '',
                 hora_entrada: dadosExtraidos.horaEntrada || '',
