@@ -68,7 +68,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
   <div style="font-size:12px;color:var(--cinza);margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;">
     <span>🔑 Chave: <span id="statusChave">Não configurada</span></span>
-    <span>📌 Modelo: <span id="statusModelo">Gemini 2.0 Flash</span></span>
+    <span>📌 Modelo: <span id="statusModelo">Gemini 2.5 Flash</span></span>
     <button class="btn btn-outline" onclick="configurarChave()" style="padding:2px 12px;font-size:11px;border:1px solid #E5E0D8;border-radius:6px;cursor:pointer;background:transparent;">🔑 Configurar</button>
   </div>
 
@@ -93,7 +93,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         <button onclick="enviarMensagem()">Enviar</button>
       </div>
       <div class="ia-status" id="iaStatus">
-        ⚡ <span class="modelo">Gemini 2.0 Flash</span> - Pronto para usar
+        ⚡ <span class="modelo">Gemini 2.5 Flash</span> - Pronto para usar
       </div>
     </div>
   </div>
@@ -115,10 +115,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 
 <script src="menu.js"></script>
 <script>
-// ============================================================
-// FUNÇÕES DO CHAT
-// ============================================================
-
 function adicionarMensagem(t, tipo) {
     var container = document.getElementById('chatMensagens');
     var d = document.createElement('div');
@@ -133,9 +129,6 @@ window.perguntar = function(t) {
     enviarMensagem();
 };
 
-// ============================================================
-// CONFIGURAR CHAVE - OPENROUTER
-// ============================================================
 function configurarChave() {
     var key = prompt('🔑 Digite sua chave do OpenRouter (sk-or-v1-...):\n\nObtenha gratuitamente em: https://openrouter.ai/keys');
     if (key && key.length > 10) {
@@ -147,9 +140,6 @@ function configurarChave() {
     }
 }
 
-// ============================================================
-// ATUALIZAR STATUS
-// ============================================================
 function atualizarStatus() {
     var key = localStorage.getItem('amovin_gemini_key');
     var chaveEl = document.getElementById('statusChave');
@@ -159,8 +149,8 @@ function atualizarStatus() {
     if (key && key.length > 10) {
         chaveEl.textContent = 'Configurada ✅';
         chaveEl.style.color = '#2E7D32';
-        modeloEl.textContent = 'Gemini 2.0 Flash';
-        statusIa.innerHTML = '⚡ <span class="modelo">Gemini 2.0 Flash</span> - Pronto para usar';
+        modeloEl.textContent = 'Gemini 2.5 Flash';
+        statusIa.innerHTML = '⚡ <span class="modelo">Gemini 2.5 Flash</span> - Pronto para usar';
     } else {
         chaveEl.textContent = 'Não configurada';
         chaveEl.style.color = '#C62828';
@@ -168,9 +158,6 @@ function atualizarStatus() {
     }
 }
 
-// ============================================================
-// MOSTRAR TOAST
-// ============================================================
 function mostrarToast(mensagem, tipo) {
     var toast = document.createElement('div');
     toast.textContent = mensagem;
@@ -188,9 +175,6 @@ function mostrarToast(mensagem, tipo) {
     }, 4000);
 }
 
-// ============================================================
-// ENVIAR MENSAGEM - OPENROUTER
-// ============================================================
 window.enviarMensagem = function() {
     var t = document.getElementById('inputMsg').value.trim();
     if (!t) return;
@@ -203,7 +187,7 @@ window.enviarMensagem = function() {
         return;
     }
 
-    document.getElementById('iaStatus').innerHTML = '⏳ Processando... <span class="modelo">Gemini 2.0 Flash</span>';
+    document.getElementById('iaStatus').innerHTML = '⏳ Processando... <span class="modelo">Gemini 2.5 Flash</span>';
     document.getElementById('iaStatus').style.color = '#E65100';
 
     var prompt = `Você é o assistente virtual da AMOVIN (Associação e Movimento pela Inclusão). 
@@ -221,13 +205,14 @@ Pergunta: ` + t;
             'X-Title': 'AMOVIN ERP'
         },
         body: JSON.stringify({
-            model: 'google/gemini-2.0-flash-exp:free',
+            model: 'google/gemini-2.5-flash',
+            max_tokens: 4000,
             messages: [{ role: 'user', content: prompt }]
         })
     })
     .then(function(r) { return r.json(); })
     .then(function(d) {
-        document.getElementById('iaStatus').innerHTML = '✅ Resposta recebida <span class="modelo">Gemini 2.0 Flash</span>';
+        document.getElementById('iaStatus').innerHTML = '✅ Resposta recebida <span class="modelo">Gemini 2.5 Flash</span>';
         document.getElementById('iaStatus').style.color = '#2E7D32';
         
         if (d.choices && d.choices[0] && d.choices[0].message) {
@@ -246,10 +231,6 @@ Pergunta: ` + t;
         adicionarMensagem('❌ Erro ao processar. Verifique sua conexão.', 'ia');
     });
 };
-
-// ============================================================
-// PERFIL E SEGURANÇA
-// ============================================================
 
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = {
@@ -273,16 +254,12 @@ setTimeout(function() {
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
 
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🤖 Assistente IA - AMOVIN ERP (OpenRouter)');
     atualizarStatus();
     console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? 'Configurada ✅' : 'Não configurada ❌');
 });
 
-// Adicionar estilo do toast dinamicamente
 var styleToast = document.createElement('style');
 styleToast.textContent = `@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
 document.head.appendChild(styleToast);
