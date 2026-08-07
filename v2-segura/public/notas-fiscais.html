@@ -137,7 +137,7 @@
             </div>
             <div>
                 <span class="status-ia" id="statusIA">⏳ Verificando...</span>
-                <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini 2.0 Flash</span>
+                <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini 2.5 Flash</span>
             </div>
         </div>
         <div style="font-size:12px;color:var(--cinza);margin-top:4px;">
@@ -189,17 +189,11 @@
 
 <script src="menu.js"></script>
 <script>
-// ============================================================
-// CONFIGURAÇÕES
-// ============================================================
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 var dadosNota = null;
 var textoExtraido = '';
 
-// ============================================================
-// VERIFICAR CHAVE
-// ============================================================
 function verificarChave() {
     var key = localStorage.getItem('amovin_gemini_key');
     var statusEl = document.getElementById('statusIA');
@@ -216,9 +210,6 @@ function verificarChave() {
     }
 }
 
-// ============================================================
-// CONFIGURAR CHAVE - OPENROUTER
-// ============================================================
 function configurarChave() {
     var key = prompt('🔑 Digite sua chave do OpenRouter (sk-or-v1-...):\n\nObtenha gratuitamente em: https://openrouter.ai/keys');
     if (key && key.length > 10) {
@@ -230,9 +221,6 @@ function configurarChave() {
     }
 }
 
-// ============================================================
-// TESTAR CONEXÃO - OPENROUTER
-// ============================================================
 async function testarConexao() {
     var key = localStorage.getItem('amovin_gemini_key');
     if (!key || key.length < 10) {
@@ -252,7 +240,8 @@ async function testarConexao() {
                 'X-Title': 'AMOVIN ERP'
             },
             body: JSON.stringify({
-                model: 'google/gemini-2.0-flash-exp:free',
+                model: 'google/gemini-2.5-flash',
+                max_tokens: 4000,
                 messages: [{ role: 'user', content: 'Diga "olá" em português' }]
             })
         });
@@ -269,9 +258,6 @@ async function testarConexao() {
     }
 }
 
-// ============================================================
-// PROCESSAR NOTA
-// ============================================================
 function processarNota(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -297,9 +283,6 @@ function processarNota(event) {
     reader.readAsText(file);
 }
 
-// ============================================================
-// EXTRAIR DADOS COM IA - OPENROUTER
-// ============================================================
 async function extrairDadosComIA(texto) {
     var preview = document.getElementById('previewIA');
 
@@ -341,7 +324,8 @@ Retorne APENAS o JSON, sem texto adicional.`;
                 'X-Title': 'AMOVIN ERP'
             },
             body: JSON.stringify({
-                model: 'google/gemini-2.0-flash-exp:free',
+                model: 'google/gemini-2.5-flash',
+                max_tokens: 4000,
                 messages: [{ role: 'user', content: prompt }]
             })
         });
@@ -415,9 +399,6 @@ Retorne APENAS o JSON, sem texto adicional.`;
     }
 }
 
-// ============================================================
-// MOSTRAR PREVIEW
-// ============================================================
 function mostrarPreview(dados) {
     var preview = document.getElementById('previewIA');
 
@@ -451,21 +432,17 @@ function mostrarPreview(dados) {
         </div>
         ${itensHtml}
         <div style="margin-top:12px;font-size:11px;color:var(--cinza);padding:8px;background:white;border-radius:8px;border:1px solid #E5E0D8;">
-            🤖 Processado com Gemini 2.0 Flash (via OpenRouter) em ${new Date().toLocaleString('pt-BR')}
+            🤖 Processado com Gemini 2.5 Flash (via OpenRouter) em ${new Date().toLocaleString('pt-BR')}
         </div>
     `;
 }
 
-// ============================================================
-// CONFIRMAR VÍNCULO
-// ============================================================
 function confirmarVinculo() {
     if (!dadosNota) {
         mostrarToast('⚠️ Nenhum dado para confirmar.', 'warning');
         return;
     }
 
-    // Salva a nota
     var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
     notas.push({
         id: Date.now(),
@@ -484,9 +461,6 @@ function confirmarVinculo() {
     limparDados();
 }
 
-// ============================================================
-// LIMPAR
-// ============================================================
 function limparDados() {
     dadosNota = null;
     textoExtraido = '';
@@ -498,9 +472,6 @@ function limparDados() {
     document.getElementById('fileInput').value = '';
 }
 
-// ============================================================
-// TOAST
-// ============================================================
 function mostrarToast(mensagem, tipo) {
     var toast = document.createElement('div');
     var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info', 'warning': 'toast-warning' };
@@ -515,9 +486,6 @@ function mostrarToast(mensagem, tipo) {
     }, 4000);
 }
 
-// ============================================================
-// DRAG AND DROP
-// ============================================================
 var dz = document.getElementById('dropzone');
 dz.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
 dz.addEventListener('dragleave', function(e) { e.preventDefault(); this.classList.remove('dragover'); });
@@ -532,9 +500,6 @@ dz.addEventListener('drop', function(e) {
     }
 });
 
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 Notas Fiscais - AMOVIN ERP (OpenRouter)');
     verificarChave();
