@@ -22,15 +22,18 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
         .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+        
         .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
         .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
         .topo-bar h1 span { color: var(--roxo); }
         .topo-bar .sub { font-size: 12px; color: var(--cinza); font-weight: 400; display: block; }
         .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
         .card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 20px; }
         .card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         .card h3 .badge { font-size: 10px; font-weight: 600; padding: 3px 12px; border-radius: 20px; background: #F3E8FF; color: var(--roxo); }
         .card h3 .badge-ia { background: linear-gradient(135deg, var(--roxo), var(--ciano)); color: white; }
+
         .btn { padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--roxo); color: white; }
         .btn-primary:hover { background: #6D28D9; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25); }
@@ -40,6 +43,7 @@
         .btn-outline:hover { background: #F8F4ED; }
         .btn-danger { background: var(--vermelho); color: white; }
         .btn-danger:hover { background: #C62828; }
+
         .dropzone { border: 3px dashed #E5E0D8; border-radius: 14px; padding: 40px 20px; text-align: center; transition: all 0.3s; cursor: pointer; background: #FAFAFA; }
         .dropzone:hover, .dropzone.dragover { border-color: var(--roxo); background: #F5F0FF; }
         .dropzone .icone { font-size: 48px; display: block; margin-bottom: 12px; }
@@ -47,6 +51,7 @@
         .dropzone .formatos { font-size: 11px; color: #B0A99F; margin-top: 6px; }
         .dropzone .btn-upload { margin-top: 14px; padding: 10px 30px; background: var(--roxo); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
         .dropzone .btn-upload:hover { background: #6D28D9; }
+
         .ia-resultado { background: #F5F0FF; border-radius: 10px; padding: 16px 20px; margin-top: 16px; border: 1px solid #E5D9F5; display: none; }
         .ia-resultado.visivel { display: block; }
         .ia-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
@@ -54,10 +59,12 @@
         .ia-item .label { color: var(--cinza); font-weight: 500; }
         .ia-item .valor { font-weight: 600; color: var(--grafite); }
         .ia-item .valor.destaque { color: var(--roxo); font-size: 15px; }
+
         .status-ia { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .status-ia.processando { background: #FEF3C7; color: #92400E; }
         .status-ia.sucesso { background: #D1FAE5; color: #065F46; }
         .status-ia.erro { background: #FEE2E2; color: #991B1B; }
+
         .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
         .rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .rodape-logo { flex-shrink: 0; }
@@ -66,11 +73,13 @@
         .rodape-info .copyright { font-size: 8px; color: #8A8F98; }
         .rodape-info .contato { font-size: 9px; color: #8A8F98; }
         .rodape-info a { color: #C65A11; text-decoration: none; }
+
         .toast { position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: 600; font-size: 14px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.15); animation: slideInRight 0.4s ease; max-width: 400px; }
         .toast-success { background: var(--verde); }
         .toast-error { background: var(--vermelho); }
-        .toast-info { background: var(--azul); }
+        .toast-info { background: var(--ciano); }
         .toast-warning { background: var(--dourado); }
+
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width: 900px) { .main-content { margin-left: 0; } .ia-grid { grid-template-columns: 1fr; } }
     </style>
@@ -88,6 +97,7 @@
         <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
     </div>
 
+    <!-- Status da IA -->
     <div class="card" style="background:linear-gradient(135deg, #F5F0FF, #F0F9FF);border-color:var(--roxo);">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
             <div>
@@ -96,7 +106,7 @@
             </div>
             <div>
                 <span class="status-ia" id="statusIA">⏳ Verificando...</span>
-                <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini 1.5 Flash</span>
+                <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini 2.0 Flash</span>
             </div>
         </div>
         <div style="font-size:12px;color:var(--cinza);margin-top:4px;">
@@ -106,6 +116,7 @@
         </div>
     </div>
 
+    <!-- Leitura de Notas Fiscais -->
     <div class="card">
         <h3>📄 Leitura Inteligente de Notas Fiscais <span class="badge badge-ia">IA</span></h3>
 
@@ -124,7 +135,9 @@
         <div class="ia-resultado" id="resultadoNota"></div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-            <button class="btn btn-primary" onclick="processarNotaIA()" id="btnProcessarNota" disabled>🤖 Processar com IA</button>
+            <button class="btn btn-primary" onclick="processarNotaIA()" id="btnProcessarNota" disabled>
+                🤖 Processar com IA
+            </button>
             <button class="btn btn-outline" onclick="limparResultado()">🗑️ Limpar</button>
         </div>
     </div>
@@ -144,9 +157,19 @@
 
 <script src="menu.js"></script>
 <script>
+// ============================================================
+// 🔥 SEGURO - CHAVE CONFIGURADA VIA OPENROUTER
+// ============================================================
+
+// ============================================================
+// VARIÁVEIS GLOBAIS
+// ============================================================
 var textoExtraido = '';
 var dadosExtraidos = {};
 
+// ============================================================
+// VERIFICAR CHAVE
+// ============================================================
 function verificarChave() {
     var key = localStorage.getItem('amovin_gemini_key');
     var statusEl = document.getElementById('statusIA');
@@ -165,19 +188,23 @@ function verificarChave() {
     }
 }
 
+// ============================================================
+// CONFIGURAR CHAVE - OPENROUTER
+// ============================================================
 function configurarChave() {
-    var key = prompt('🔑 Digite sua chave da API Gemini (AQ... ou AIzaSy...):');
+    var key = prompt('🔑 Digite sua chave do OpenRouter (sk-or-v1-...):\n\nObtenha gratuitamente em: https://openrouter.ai/keys');
     if (key && key.length > 10) {
         localStorage.setItem('amovin_gemini_key', key);
-        localStorage.setItem('amovin_gemini_model', 'gemini-1.5-flash');
         verificarChave();
-        mostrarToast('✅ Chave configurada com sucesso!', 'success');
-        console.log('✅ Chave configurada (primeiros 4 caracteres):', key.substring(0, 4) + '...');
+        mostrarToast('✅ Chave OpenRouter configurada com sucesso!', 'success');
     } else if (key !== null) {
         mostrarToast('⚠️ Chave inválida. Deve ter mais de 10 caracteres.', 'warning');
     }
 }
 
+// ============================================================
+// TESTAR CONEXÃO - OPENROUTER
+// ============================================================
 async function testarConexao() {
     var key = localStorage.getItem('amovin_gemini_key');
     if (!key || key.length < 10) {
@@ -185,23 +212,26 @@ async function testarConexao() {
         return;
     }
 
-    var model = localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash';
-    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
-
     mostrarToast('🧪 Testando conexão...', 'info');
 
     try {
-        var response = await fetch(url, {
+        var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': 'Bearer ' + key,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': window.location.origin,
+                'X-Title': 'AMOVIN ERP'
+            },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: 'Diga "olá" em português' }] }]
+                model: 'google/gemini-2.0-flash-exp:free',
+                messages: [{ role: 'user', content: 'Diga "olá" em português' }]
             })
         });
         var data = await response.json();
 
-        if (data.candidates && data.candidates[0]) {
-            mostrarToast('✅ Conexão OK! Resposta: ' + data.candidates[0].content.parts[0].text, 'success');
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+            mostrarToast('✅ Conexão OK! Resposta: ' + data.choices[0].message.content, 'success');
             verificarChave();
         } else if (data.error) {
             mostrarToast('❌ Erro: ' + data.error.message, 'error');
@@ -212,6 +242,9 @@ async function testarConexao() {
     }
 }
 
+// ============================================================
+// PROCESSAR NOTA (UPLOAD)
+// ============================================================
 function processarNota(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -236,6 +269,9 @@ function processarNota(event) {
     reader.readAsText(file);
 }
 
+// ============================================================
+// PROCESSAR NOTA COM IA - OPENROUTER
+// ============================================================
 async function processarNotaIA() {
     var preview = document.getElementById('resultadoNota');
 
@@ -246,15 +282,12 @@ async function processarNotaIA() {
 
     var key = localStorage.getItem('amovin_gemini_key');
     if (!key || key.length < 10) {
-        mostrarToast('⚠️ Chave Gemini não configurada.', 'warning');
+        mostrarToast('⚠️ Chave OpenRouter não configurada.', 'warning');
         return;
     }
 
     preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando com IA...</p></div>';
     preview.classList.add('visivel');
-
-    var model = localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash';
-    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
 
     var prompt = `Extraia os campos da nota fiscal abaixo e retorne APENAS UM JSON VÁLIDO.
 
@@ -272,11 +305,17 @@ ${textoExtraido.substring(0, 4000)}
 Retorne APENAS o JSON, sem texto adicional.`;
 
     try {
-        var response = await fetch(url, {
+        var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': 'Bearer ' + key,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': window.location.origin,
+                'X-Title': 'AMOVIN ERP'
+            },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
+                model: 'google/gemini-2.0-flash-exp:free',
+                messages: [{ role: 'user', content: prompt }]
             })
         });
 
@@ -294,7 +333,7 @@ Retorne APENAS o JSON, sem texto adicional.`;
             return;
         }
 
-        if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
             preview.innerHTML = `
                 <div style="text-align:center;padding:20px;">
                     <span style="font-size:32px;">❌</span>
@@ -305,7 +344,9 @@ Retorne APENAS o JSON, sem texto adicional.`;
             return;
         }
 
-        var resposta = data.candidates[0].content.parts[0].text;
+        var resposta = data.choices[0].message.content;
+
+        // Extrai o JSON
         var match = resposta.match(/\{[\s\S]*\}/);
         if (!match) {
             preview.innerHTML = `
@@ -340,6 +381,9 @@ Retorne APENAS o JSON, sem texto adicional.`;
     }
 }
 
+// ============================================================
+// MOSTRAR RESULTADO
+// ============================================================
 function mostrarResultado(dados) {
     var preview = document.getElementById('resultadoNota');
 
@@ -378,6 +422,9 @@ function mostrarResultado(dados) {
     `;
 }
 
+// ============================================================
+// LIMPAR
+// ============================================================
 function limparResultado() {
     document.getElementById('resultadoNota').classList.remove('visivel');
     document.getElementById('resultadoNota').innerHTML = '';
@@ -388,6 +435,9 @@ function limparResultado() {
     document.getElementById('fileInputNota').value = '';
 }
 
+// ============================================================
+// TOAST
+// ============================================================
 function mostrarToast(mensagem, tipo) {
     var toast = document.createElement('div');
     var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info', 'warning': 'toast-warning' };
@@ -402,6 +452,9 @@ function mostrarToast(mensagem, tipo) {
     }, 4000);
 }
 
+// ============================================================
+// DRAG AND DROP
+// ============================================================
 var dz = document.getElementById('dropzoneNota');
 dz.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
 dz.addEventListener('dragleave', function(e) { e.preventDefault(); this.classList.remove('dragover'); });
@@ -416,11 +469,13 @@ dz.addEventListener('drop', function(e) {
     }
 });
 
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🧠 Central de IA - AMOVIN ERP');
+    console.log('🧠 Central de IA - AMOVIN ERP (OpenRouter)');
     verificarChave();
     console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? 'Configurada ✅' : 'Não configurada ❌');
-    console.log('📌 Modelo:', localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash');
 });
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
