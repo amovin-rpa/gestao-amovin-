@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Central de IA • AMOVIN</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root {
             --roxo: #7C3AED;
@@ -19,27 +17,20 @@
             --verde: #57C220;
             --dourado: #D97706;
             --ciano: #06B6D4;
+            --laranja: #C65A11;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
         .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-        
         .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
         .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
         .topo-bar h1 span { color: var(--roxo); }
         .topo-bar .sub { font-size: 12px; color: var(--cinza); font-weight: 400; display: block; }
         .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-
         .card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 20px; }
         .card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         .card h3 .badge { font-size: 10px; font-weight: 600; padding: 3px 12px; border-radius: 20px; background: #F3E8FF; color: var(--roxo); }
         .card h3 .badge-ia { background: linear-gradient(135deg, var(--roxo), var(--ciano)); color: white; }
-
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; transition: border 0.2s; background: #FAFAFA; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--roxo); background: var(--branco); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08); }
-
         .btn { padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--roxo); color: white; }
         .btn-primary:hover { background: #6D28D9; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25); }
@@ -49,7 +40,6 @@
         .btn-outline:hover { background: #F8F4ED; }
         .btn-danger { background: var(--vermelho); color: white; }
         .btn-danger:hover { background: #C62828; }
-
         .dropzone { border: 3px dashed #E5E0D8; border-radius: 14px; padding: 40px 20px; text-align: center; transition: all 0.3s; cursor: pointer; background: #FAFAFA; }
         .dropzone:hover, .dropzone.dragover { border-color: var(--roxo); background: #F5F0FF; }
         .dropzone .icone { font-size: 48px; display: block; margin-bottom: 12px; }
@@ -57,7 +47,6 @@
         .dropzone .formatos { font-size: 11px; color: #B0A99F; margin-top: 6px; }
         .dropzone .btn-upload { margin-top: 14px; padding: 10px 30px; background: var(--roxo); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
         .dropzone .btn-upload:hover { background: #6D28D9; }
-
         .ia-resultado { background: #F5F0FF; border-radius: 10px; padding: 16px 20px; margin-top: 16px; border: 1px solid #E5D9F5; display: none; }
         .ia-resultado.visivel { display: block; }
         .ia-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
@@ -65,12 +54,10 @@
         .ia-item .label { color: var(--cinza); font-weight: 500; }
         .ia-item .valor { font-weight: 600; color: var(--grafite); }
         .ia-item .valor.destaque { color: var(--roxo); font-size: 15px; }
-
         .status-ia { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .status-ia.processando { background: #FEF3C7; color: #92400E; }
         .status-ia.sucesso { background: #D1FAE5; color: #065F46; }
         .status-ia.erro { background: #FEE2E2; color: #991B1B; }
-
         .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
         .rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .rodape-logo { flex-shrink: 0; }
@@ -79,13 +66,11 @@
         .rodape-info .copyright { font-size: 8px; color: #8A8F98; }
         .rodape-info .contato { font-size: 9px; color: #8A8F98; }
         .rodape-info a { color: #C65A11; text-decoration: none; }
-
         .toast { position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: 600; font-size: 14px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.15); animation: slideInRight 0.4s ease; max-width: 400px; }
         .toast-success { background: var(--verde); }
         .toast-error { background: var(--vermelho); }
         .toast-info { background: var(--azul); }
         .toast-warning { background: var(--dourado); }
-
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width: 900px) { .main-content { margin-left: 0; } .ia-grid { grid-template-columns: 1fr; } }
     </style>
@@ -103,7 +88,6 @@
         <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
     </div>
 
-    <!-- Status da IA -->
     <div class="card" style="background:linear-gradient(135deg, #F5F0FF, #F0F9FF);border-color:var(--roxo);">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
             <div>
@@ -112,7 +96,7 @@
             </div>
             <div>
                 <span class="status-ia" id="statusIA">⏳ Verificando...</span>
-                <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini 2.5 Flash</span>
+                <span style="font-size:12px;color:var(--cinza);margin-left:12px;" id="modeloIA">Gemini 1.5 Flash</span>
             </div>
         </div>
         <div style="font-size:12px;color:var(--cinza);margin-top:4px;">
@@ -122,7 +106,6 @@
         </div>
     </div>
 
-    <!-- Leitura de Notas Fiscais -->
     <div class="card">
         <h3>📄 Leitura Inteligente de Notas Fiscais <span class="badge badge-ia">IA</span></h3>
 
@@ -141,9 +124,7 @@
         <div class="ia-resultado" id="resultadoNota"></div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-            <button class="btn btn-primary" onclick="processarNotaIA()" id="btnProcessarNota" disabled>
-                🤖 Processar com IA
-            </button>
+            <button class="btn btn-primary" onclick="processarNotaIA()" id="btnProcessarNota" disabled>🤖 Processar com IA</button>
             <button class="btn btn-outline" onclick="limparResultado()">🗑️ Limpar</button>
         </div>
     </div>
@@ -163,20 +144,9 @@
 
 <script src="menu.js"></script>
 <script>
-// ============================================================
-// 🔥 SEGURO - NENHUMA CHAVE HARDCODED!
-// A chave é configurada pelo usuário via interface
-// ============================================================
-
-// ============================================================
-// VARIÁVEIS GLOBAIS
-// ============================================================
 var textoExtraido = '';
 var dadosExtraidos = {};
 
-// ============================================================
-// VERIFICAR CHAVE - ACEITA AIzaSy E AQ
-// ============================================================
 function verificarChave() {
     var key = localStorage.getItem('amovin_gemini_key');
     var statusEl = document.getElementById('statusIA');
@@ -195,14 +165,11 @@ function verificarChave() {
     }
 }
 
-// ============================================================
-// CONFIGURAR CHAVE - USUÁRIO INSERE A CHAVE
-// ============================================================
 function configurarChave() {
     var key = prompt('🔑 Digite sua chave da API Gemini (AQ... ou AIzaSy...):');
     if (key && key.length > 10) {
         localStorage.setItem('amovin_gemini_key', key);
-        localStorage.setItem('amovin_gemini_model', 'gemini-2.5-flash');
+        localStorage.setItem('amovin_gemini_model', 'gemini-1.5-flash');
         verificarChave();
         mostrarToast('✅ Chave configurada com sucesso!', 'success');
         console.log('✅ Chave configurada (primeiros 4 caracteres):', key.substring(0, 4) + '...');
@@ -211,9 +178,6 @@ function configurarChave() {
     }
 }
 
-// ============================================================
-// TESTAR CONEXÃO
-// ============================================================
 async function testarConexao() {
     var key = localStorage.getItem('amovin_gemini_key');
     if (!key || key.length < 10) {
@@ -221,7 +185,7 @@ async function testarConexao() {
         return;
     }
 
-    var model = localStorage.getItem('amovin_gemini_model') || 'gemini-2.5-flash';
+    var model = localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash';
     var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
 
     mostrarToast('🧪 Testando conexão...', 'info');
@@ -237,7 +201,7 @@ async function testarConexao() {
         var data = await response.json();
 
         if (data.candidates && data.candidates[0]) {
-            mostrarToast('✅ Conexão OK!', 'success');
+            mostrarToast('✅ Conexão OK! Resposta: ' + data.candidates[0].content.parts[0].text, 'success');
             verificarChave();
         } else if (data.error) {
             mostrarToast('❌ Erro: ' + data.error.message, 'error');
@@ -248,9 +212,6 @@ async function testarConexao() {
     }
 }
 
-// ============================================================
-// PROCESSAR NOTA (UPLOAD)
-// ============================================================
 function processarNota(event) {
     var file = event.target.files[0];
     if (!file) return;
@@ -275,9 +236,6 @@ function processarNota(event) {
     reader.readAsText(file);
 }
 
-// ============================================================
-// PROCESSAR NOTA COM IA
-// ============================================================
 async function processarNotaIA() {
     var preview = document.getElementById('resultadoNota');
 
@@ -295,7 +253,7 @@ async function processarNotaIA() {
     preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Processando com IA...</p></div>';
     preview.classList.add('visivel');
 
-    var model = localStorage.getItem('amovin_gemini_model') || 'gemini-2.5-flash';
+    var model = localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash';
     var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
 
     var prompt = `Extraia os campos da nota fiscal abaixo e retorne APENAS UM JSON VÁLIDO.
@@ -348,8 +306,6 @@ Retorne APENAS o JSON, sem texto adicional.`;
         }
 
         var resposta = data.candidates[0].content.parts[0].text;
-
-        // Extrai o JSON
         var match = resposta.match(/\{[\s\S]*\}/);
         if (!match) {
             preview.innerHTML = `
@@ -384,9 +340,6 @@ Retorne APENAS o JSON, sem texto adicional.`;
     }
 }
 
-// ============================================================
-// MOSTRAR RESULTADO
-// ============================================================
 function mostrarResultado(dados) {
     var preview = document.getElementById('resultadoNota');
 
@@ -425,9 +378,6 @@ function mostrarResultado(dados) {
     `;
 }
 
-// ============================================================
-// LIMPAR
-// ============================================================
 function limparResultado() {
     document.getElementById('resultadoNota').classList.remove('visivel');
     document.getElementById('resultadoNota').innerHTML = '';
@@ -438,9 +388,6 @@ function limparResultado() {
     document.getElementById('fileInputNota').value = '';
 }
 
-// ============================================================
-// TOAST
-// ============================================================
 function mostrarToast(mensagem, tipo) {
     var toast = document.createElement('div');
     var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info', 'warning': 'toast-warning' };
@@ -455,9 +402,6 @@ function mostrarToast(mensagem, tipo) {
     }, 4000);
 }
 
-// ============================================================
-// DRAG AND DROP
-// ============================================================
 var dz = document.getElementById('dropzoneNota');
 dz.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
 dz.addEventListener('dragleave', function(e) { e.preventDefault(); this.classList.remove('dragover'); });
@@ -472,14 +416,11 @@ dz.addEventListener('drop', function(e) {
     }
 });
 
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🧠 Central de IA - AMOVIN ERP');
     verificarChave();
     console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? 'Configurada ✅' : 'Não configurada ❌');
-    console.log('📌 Modelo:', localStorage.getItem('amovin_gemini_model') || 'gemini-2.5-flash');
+    console.log('📌 Modelo:', localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash');
 });
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
