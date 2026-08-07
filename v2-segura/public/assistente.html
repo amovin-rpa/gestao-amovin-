@@ -16,6 +16,7 @@
   --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
   --vermelho: #E53935;
+  --roxo: #7C3AED;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
@@ -23,6 +24,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.topo-bar h1 span { color: var(--roxo); }
 .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
 .grid-ia { display: grid; grid-template-columns: 260px 1fr; gap: 20px; min-height: 500px; }
@@ -42,6 +44,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .chat-input button { padding: 12px 22px; background: var(--laranja); color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 700; transition: background 0.2s; }
 .chat-input button:hover { background: #A04A0E; }
 .ia-status { font-size: 11px; color: var(--cinza); margin-top: 8px; text-align: center; }
+.ia-status .modelo { font-weight: 600; color: var(--roxo); }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
 .rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -58,11 +61,20 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>🤖 Assistente IA</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar">
+    <h1>🤖 Assistente IA <span>AMOVIN</span></h1>
+    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+  </div>
+
+  <div style="font-size:12px;color:var(--cinza);margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;">
+    <span>🔑 Chave: <span id="statusChave">Não configurada</span></span>
+    <span>📌 Modelo: <span id="statusModelo">Gemini 1.5 Flash</span></span>
+    <button class="btn btn-outline" onclick="configurarChave()" style="padding:2px 12px;font-size:11px;border:1px solid #E5E0D8;border-radius:6px;cursor:pointer;background:transparent;">🔑 Configurar</button>
+  </div>
 
   <div class="grid-ia">
     <div class="card">
-      <h3>Comandos Rápidos</h3>
+      <h3>📋 Comandos Rápidos</h3>
       <button class="comando" onclick="perguntar('Criar um ofício para a Prefeitura solicitando apoio para projeto social')">📄 Criar Ofício</button>
       <button class="comando" onclick="perguntar('Gerar um projeto social para jovens em situação de vulnerabilidade')">📋 Criar Projeto</button>
       <button class="comando" onclick="perguntar('Sugerir estratégias de captação de recursos para ONG')">💰 Captação</button>
@@ -73,13 +85,32 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
     </div>
     <div class="card">
       <h3>💬 Chat com IA</h3>
-      <div class="chat-mensagens" id="chatMensagens"><div class="msg ia"><div class="bolha">Olá! Sou o assistente virtual da AMOVIN. Como posso ajudar?</div></div></div>
-      <div class="chat-input"><input type="text" id="inputMsg" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter')enviarMensagem()"><button onclick="enviarMensagem()">Enviar</button></div>
-      <div class="ia-status" id="iaStatus">⚡ Gemini IA - Pronto para usar</div>
+      <div class="chat-mensagens" id="chatMensagens">
+        <div class="msg ia"><div class="bolha">Olá! Sou o assistente virtual da AMOVIN. Como posso ajudar?</div></div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="inputMsg" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter')enviarMensagem()">
+        <button onclick="enviarMensagem()">Enviar</button>
+      </div>
+      <div class="ia-status" id="iaStatus">
+        ⚡ <span class="modelo">Gemini 1.5 Flash</span> - Pronto para usar
+      </div>
     </div>
   </div>
 
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script src="menu.js"></script>
@@ -88,7 +119,7 @@ function adicionarMensagem(t, tipo) {
     var container = document.getElementById('chatMensagens');
     var d = document.createElement('div');
     d.className = 'msg ' + tipo;
-    d.innerHTML = '<div class="bolha">' + t + '</div>';
+    d.innerHTML = '<div class="bolha">' + t.replace(/\n/g, '<br>') + '</div>';
     container.appendChild(d);
     container.scrollTop = container.scrollHeight;
 }
@@ -98,6 +129,55 @@ window.perguntar = function(t) {
     enviarMensagem();
 };
 
+function configurarChave() {
+    var key = prompt('🔑 Digite sua chave da API Gemini (AQ... ou AIzaSy...):');
+    if (key && key.length > 10) {
+        localStorage.setItem('amovin_gemini_key', key);
+        localStorage.setItem('amovin_gemini_model', 'gemini-1.5-flash');
+        atualizarStatus();
+        mostrarToast('✅ Chave configurada com sucesso!', 'success');
+    } else if (key !== null) {
+        mostrarToast('⚠️ Chave inválida. Deve ter mais de 10 caracteres.', 'warning');
+    }
+}
+
+function atualizarStatus() {
+    var key = localStorage.getItem('amovin_gemini_key');
+    var chaveEl = document.getElementById('statusChave');
+    var modeloEl = document.getElementById('statusModelo');
+    var statusIa = document.getElementById('iaStatus');
+
+    if (key && key.length > 10) {
+        chaveEl.textContent = 'Configurada ✅';
+        chaveEl.style.color = '#2E7D32';
+        modeloEl.textContent = 'Gemini 1.5 Flash';
+        statusIa.innerHTML = '⚡ <span class="modelo">Gemini 1.5 Flash</span> - Pronto para usar';
+    } else {
+        chaveEl.textContent = 'Não configurada';
+        chaveEl.style.color = '#C62828';
+        statusIa.innerHTML = '⚠️ <span class="modelo">Sem chave</span> - Configure a chave primeiro';
+    }
+}
+
+function mostrarToast(mensagem, tipo) {
+    var toast = document.createElement('div');
+    var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info', 'warning': 'toast-warning' };
+    toast.className = 'toast ' + (classes[tipo] || 'toast-info');
+    toast.textContent = mensagem;
+    toast.style.cssText = 'position:fixed;top:20px;right:20px;padding:16px 24px;border-radius:12px;color:white;font-weight:600;font-size:14px;z-index:10000;box-shadow:0 8px 32px rgba(0,0,0,0.15);animation:slideInRight 0.4s ease;max-width:400px;';
+    if (tipo === 'success') toast.style.background = '#57C220';
+    else if (tipo === 'error') toast.style.background = '#E53935';
+    else if (tipo === 'warning') toast.style.background = '#D97706';
+    else toast.style.background = '#1E88E5';
+    document.body.appendChild(toast);
+    setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.4s ease';
+        setTimeout(function() { toast.remove(); }, 400);
+    }, 4000);
+}
+
 window.enviarMensagem = function() {
     var t = document.getElementById('inputMsg').value.trim();
     if (!t) return;
@@ -106,40 +186,54 @@ window.enviarMensagem = function() {
 
     var key = localStorage.getItem('amovin_gemini_key') || '';
     if (!key) {
-        adicionarMensagem('⚠️ Chave Gemini não configurada. Acesse Configurações para configurar.', 'ia');
+        adicionarMensagem('⚠️ Chave Gemini não configurada. Clique em "Configurar" acima.', 'ia');
         return;
     }
 
-    document.getElementById('iaStatus').textContent = '⏳ Processando...';
+    var model = localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash';
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + key;
+
+    document.getElementById('iaStatus').innerHTML = '⏳ Processando... <span class="modelo">' + model + '</span>';
     document.getElementById('iaStatus').style.color = '#E65100';
 
-    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + key, {
+    var prompt = `Você é o assistente virtual da AMOVIN (Associação e Movimento pela Inclusão). 
+Responda de forma profissional, educada e prática. 
+Se for um pedido de criação de documento, forneça um modelo completo e bem estruturado.
+
+Pergunta: ` + t;
+
+    fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            contents: [{ parts: [{ text: 'Você é o assistente virtual da AMOVIN (Associação e Movimento pela Inclusão). Responda de forma profissional, educada e prática. Pergunta: ' + t }] }]
+            contents: [{ parts: [{ text: prompt }] }]
         })
     })
     .then(function(r) { return r.json(); })
     .then(function(d) {
-        document.getElementById('iaStatus').textContent = '✅ Resposta recebida';
+        document.getElementById('iaStatus').innerHTML = '✅ Resposta recebida <span class="modelo">' + model + '</span>';
         document.getElementById('iaStatus').style.color = '#2E7D32';
+        
         if (d.candidates && d.candidates[0] && d.candidates[0].content) {
             adicionarMensagem(d.candidates[0].content.parts[0].text, 'ia');
+        } else if (d.error) {
+            console.log('❌ Erro da API:', d.error);
+            adicionarMensagem('❌ Erro: ' + (d.error.message || 'Erro desconhecido'), 'ia');
         } else {
             adicionarMensagem('Desculpe, não consegui processar sua pergunta.', 'ia');
         }
     })
-    .catch(function() {
-        document.getElementById('iaStatus').textContent = '❌ Erro ao conectar';
+    .catch(function(err) {
+        console.log('❌ Erro de conexão:', err);
+        document.getElementById('iaStatus').innerHTML = '❌ Erro ao conectar';
         document.getElementById('iaStatus').style.color = '#C62828';
-        adicionarMensagem('Erro ao processar. Verifique sua conexão.', 'ia');
+        adicionarMensagem('❌ Erro ao processar. Verifique sua conexão.', 'ia');
     });
 };
 
 var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
 var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
+    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup','central-ia'],
     recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
     consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
     financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
@@ -147,16 +241,28 @@ var modulosPermitidos = {
 };
 
 var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
+setTimeout(function() {
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+        var href = item.getAttribute('href') || '';
+        var pagina = href.replace('.html', '').split('?')[0].split('#')[0];
+        if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
+            item.style.display = 'none';
+        }
+    });
+}, 300);
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🤖 Assistente IA - AMOVIN ERP');
+    atualizarStatus();
+    console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? 'Configurada ✅' : 'Não configurada ❌');
+    console.log('📌 Modelo:', localStorage.getItem('amovin_gemini_model') || 'gemini-1.5-flash');
+});
+
+var styleToast = document.createElement('style');
+styleToast.textContent = `@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
+document.head.appendChild(styleToast);
 </script>
 </body>
 </html>
