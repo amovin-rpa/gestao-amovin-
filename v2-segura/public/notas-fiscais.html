@@ -35,6 +35,7 @@
         .btn-primary { background: var(--roxo); color: white; }
         .btn-primary:hover { background: #6D28D9; }
         .btn-success { background: var(--verde); color: white; }
+        .btn-success:hover { background: #388E3C; }
         .btn-outline { background: transparent; color: var(--cinza); border: 1px solid #E5E0D8; }
         .btn-outline:hover { background: #F8F4ED; }
         .dropzone { border: 3px dashed #E5E0D8; border-radius: 14px; padding: 40px 20px; text-align: center; transition: all 0.3s; cursor: pointer; background: #FAFAFA; }
@@ -62,6 +63,32 @@
         .toast-info { background: var(--azul); }
         .toast-warning { background: var(--dourado); }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-group select, .form-group input { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; transition: border 0.2s; background: #FAFAFA; }
+        .form-group select:focus, .form-group input:focus { outline: none; border-color: var(--roxo); background: var(--branco); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08); }
+
+        .destinos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+        .destino-card { padding: 14px; border-radius: 10px; border: 2px solid #E5E0D8; text-align: center; cursor: pointer; transition: all 0.3s; background: white; }
+        .destino-card:hover { border-color: var(--cinza); }
+        .destino-card.selecionado { border-color: var(--roxo); background: #F5F0FF; box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
+        .destino-card .icone { font-size: 28px; display: block; margin-bottom: 4px; }
+        .destino-card .nome { font-weight: 600; font-size: 13px; color: var(--grafite); }
+        .destino-card .desc { font-size: 11px; color: var(--cinza); }
+
+        .modulos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 12px 0; }
+        .modulo-card { padding: 12px; border-radius: 10px; border: 2px solid #E5E0D8; text-align: center; cursor: pointer; transition: all 0.3s; background: white; }
+        .modulo-card:hover { border-color: var(--cinza); }
+        .modulo-card.selecionado { border-color: var(--roxo); background: #F5F0FF; }
+        .modulo-card .icone { font-size: 24px; display: block; margin-bottom: 2px; }
+        .modulo-card .nome { font-weight: 600; font-size: 12px; color: var(--grafite); }
+
+        .saldo-box { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 12px 0; }
+        .saldo-item { padding: 14px; border-radius: 10px; text-align: center; background: #F8F4ED; }
+        .saldo-item .valor { font-size: 20px; font-weight: 800; }
+        .saldo-item .label { font-size: 11px; color: var(--cinza); }
+
         .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
         .rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .rodape-logo .logo-vigorre { width: 50px; }
@@ -69,7 +96,8 @@
         .rodape-info .copyright { font-size: 8px; color: #8A8F98; }
         .rodape-info .contato { font-size: 9px; color: #8A8F98; }
         .rodape-info a { color: #C65A11; text-decoration: none; }
-        @media (max-width: 900px) { .main-content { margin-left: 0; } .preview-grid { grid-template-columns: 1fr; } }
+        
+        @media (max-width: 900px) { .main-content { margin-left: 0; } .preview-grid { grid-template-columns: 1fr; } .destinos-grid { grid-template-columns: 1fr; } .modulos-grid { grid-template-columns: 1fr 1fr; } .saldo-box { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -85,6 +113,7 @@
         <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
     </div>
 
+    <!-- Status da IA -->
     <div class="card" style="background:linear-gradient(135deg, #F5F0FF, #F0F9FF);border-color:var(--roxo);">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
             <div>
@@ -103,6 +132,7 @@
         </div>
     </div>
 
+    <!-- PASSO 1: UPLOAD -->
     <div class="card" id="passoUpload">
         <h3>📤 Envie a Nota Fiscal <span class="badge badge-ia">🤖 IA</span></h3>
         <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
@@ -117,20 +147,113 @@
         </div>
     </div>
 
+    <!-- PASSO 2: PREVIEW -->
     <div class="card" id="passoPreview" style="display:none;">
         <h3>🧠 Dados Extraídos pela IA <span class="badge badge-ia" id="statusExtraido">⏳ Processando...</span></h3>
         <div id="previewIA" class="preview-ia visivel"></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
-            <button class="btn btn-success" onclick="confirmarVinculo()" id="btnConfirmar" disabled>✅ Confirmar</button>
+            <button class="btn btn-success" onclick="avancarParaVinculo()" id="btnAvancar" disabled>✅ Avançar para Vinculação</button>
             <button class="btn btn-outline" onclick="limparDados()">🔄 Nova Nota</button>
+        </div>
+    </div>
+
+    <!-- PASSO 3: VINCULAÇÃO -->
+    <div class="card" id="passoVinculo" style="display:none;">
+        <h3>🔗 Vincular Nota ao Projeto <span class="badge">Defina o destino</span></h3>
+
+        <div class="form-group">
+            <label>📋 Projeto *</label>
+            <select id="projetoVinculo" onchange="atualizarSaldo()">
+                <option value="">Selecione um projeto...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>📂 Categoria do Orçamento *</label>
+            <select id="categoriaVinculo" onchange="atualizarSaldo()">
+                <option value="">Selecione...</option>
+                <option value="Equipamentos">🖥️ Equipamentos</option>
+                <option value="Materiais">📦 Materiais</option>
+                <option value="Serviços">🛠️ Serviços</option>
+                <option value="Capacitação">📚 Capacitação</option>
+                <option value="Infraestrutura">🏗️ Infraestrutura</option>
+                <option value="Outros">📌 Outros</option>
+            </select>
+        </div>
+
+        <div class="saldo-box" id="saldoBox" style="display:none;">
+            <div class="saldo-item"><div class="label">💰 Previsto</div><div class="valor" style="color:var(--roxo);" id="saldoPrevisto">R$ 0,00</div></div>
+            <div class="saldo-item"><div class="label">💳 Realizado</div><div class="valor" style="color:var(--laranja);" id="saldoRealizado">R$ 0,00</div></div>
+            <div class="saldo-item"><div class="label">📊 Disponível</div><div class="valor" style="color:var(--verde);" id="saldoDisponivel">R$ 0,00</div></div>
+        </div>
+
+        <div style="margin:16px 0;">
+            <label style="font-size:11px;font-weight:600;color:var(--cinza);text-transform:uppercase;display:block;margin-bottom:8px;">🏷️ Destino dos Produtos</label>
+            <div class="destinos-grid">
+                <div class="destino-card" data-destino="estoque" onclick="selecionarDestino(this)"><span class="icone">📦</span><span class="nome">Estoque</span><span class="desc">Consumíveis</span></div>
+                <div class="destino-card selecionado" data-destino="patrimonio" onclick="selecionarDestino(this)"><span class="icone">🏢</span><span class="nome">Patrimônio</span><span class="desc">Bens duráveis</span></div>
+                <div class="destino-card" data-destino="servico" onclick="selecionarDestino(this)"><span class="icone">🛠️</span><span class="nome">Serviço</span><span class="desc">Contratação</span></div>
+            </div>
+        </div>
+
+        <div style="margin:16px 0;">
+            <label style="font-size:11px;font-weight:600;color:var(--cinza);text-transform:uppercase;display:block;margin-bottom:8px;">📤 Módulos para encaminhar</label>
+            <div class="modulos-grid">
+                <div class="modulo-card selecionado" data-modulo="financeiro" onclick="toggleModulo(this)"><span class="icone">💰</span><span class="nome">Financeiro</span></div>
+                <div class="modulo-card selecionado" data-modulo="prestacao" onclick="toggleModulo(this)"><span class="icone">📋</span><span class="nome">Prest. Contas</span></div>
+                <div class="modulo-card selecionado" data-modulo="orcamento" onclick="toggleModulo(this)"><span class="icone">📊</span><span class="nome">Orçamento</span></div>
+                <div class="modulo-card" data-modulo="crm" onclick="toggleModulo(this)"><span class="icone">☎️</span><span class="nome">CRM</span></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>📅 Data de Entrega *</label>
+            <input type="date" id="dataEntrega" required>
+        </div>
+
+        <div class="form-group">
+            <label>📝 Observações</label>
+            <textarea id="obsVinculo" rows="2" placeholder="Ex: Compra para o projeto..." style="width:100%;padding:10px 12px;border:1px solid #E5E0D8;border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;"></textarea>
+        </div>
+
+        <div style="background:#F8F4ED;border-radius:10px;padding:16px;margin:12px 0;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <span><strong>Nota:</strong> <span id="resumoNumero">---</span></span>
+                <span><strong>Emitente:</strong> <span id="resumoEmitente">---</span></span>
+                <span><strong>Valor:</strong> <span id="resumoValor" style="color:var(--roxo);font-weight:700;">R$ 0,00</span></span>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn btn-success" onclick="confirmarVinculo()" style="flex:2;">✅ Confirmar Vinculação</button>
+            <button class="btn btn-outline" onclick="voltarPreview()" style="flex:1;">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- PASSO 4: CONFIRMAÇÃO -->
+    <div class="card" id="passoConfirmacao" style="display:none;border:2px solid var(--verde);">
+        <h3>✅ Vinculação Concluída! <span class="badge" style="background:#E8F5E9;color:#2E7D32;">Sucesso</span></h3>
+        <div style="text-align:center;padding:20px 0;">
+            <span style="font-size:64px;">🎉</span>
+            <h2 style="margin:12px 0 4px;color:var(--verde);">Nota vinculada com sucesso!</h2>
+            <p style="color:var(--cinza);">A nota foi vinculada ao projeto e os produtos foram direcionados.</p>
+        </div>
+        <div style="background:#F8F4ED;border-radius:10px;padding:16px;margin:12px 0;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;">
+                <div><strong>📋 Projeto:</strong> <span id="confProjeto">---</span></div>
+                <div><strong>📂 Categoria:</strong> <span id="confCategoria">---</span></div>
+                <div><strong>🏷️ Destino:</strong> <span id="confDestino">---</span></div>
+                <div><strong>💰 Valor:</strong> <span id="confValor" style="color:var(--roxo);font-weight:700;">R$ 0,00</span></div>
+            </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+            <button class="btn btn-primary" onclick="novaNota()">📄 Nova Nota</button>
+            <button class="btn btn-outline" onclick="verNotaVinculada()">📋 Ver Nota</button>
         </div>
     </div>
 
     <div class="rodape">
         <div class="rodape-grid">
-            <div class="rodape-logo">
-                <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';" />
-            </div>
+            <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';"></div>
             <div class="rodape-info">
                 <div class="copyright">© 2026 VIGORRE DESIGNER™</div>
                 <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
@@ -142,52 +265,46 @@
 <script src="menu.js"></script>
 <script>
 // ============================================================
-// CONFIGURAÇÃO DO PDF.JS
+// CONFIGURAÇÕES
 // ============================================================
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 var dadosNota = null;
 var textoExtraido = '';
+var destinoSelecionado = 'patrimonio';
+var modulosSelecionados = ['financeiro', 'prestacao', 'orcamento'];
+var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
+var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
+var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
 
 // ============================================================
-// 🔥 FUNÇÃO PRINCIPAL: Extrair texto de QUALQUER formato
+// FUNÇÕES AUXILIARES
+// ============================================================
+function fm(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
+function salvarNotas() { localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas)); }
+
+// ============================================================
+// EXTRAIR TEXTO DO ARQUIVO (PDF, IMAGEM, TXT, XML, DOC)
 // ============================================================
 async function extrairTextoDoArquivo(file) {
-    // 1. PDF - Usar PDF.js
+    // 1. PDF - PDF.js
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-        console.log('📄 Detectado PDF, extraindo texto...');
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let textoCompleto = '';
-        
         for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
-            const textoPagina = textContent.items.map(item => item.str).join(' ');
-            textoCompleto += textoPagina + '\n';
+            textoCompleto += textContent.items.map(item => item.str).join(' ') + '\n';
         }
-        
-        console.log('✅ Texto extraído do PDF:', textoCompleto.length, 'caracteres');
         return textoCompleto;
     }
-    
-    // 2. Imagens (JPG, PNG) - Usar Tesseract.js para OCR
+    // 2. Imagens - Tesseract OCR
     if (file.type.startsWith('image/')) {
-        console.log('🖼️ Detectada imagem, aplicando OCR...');
-        const resultado = await Tesseract.recognize(file, 'por+eng', {
-            logger: m => {
-                if (m.status === 'recognizing text') {
-                    document.getElementById('infoArquivo').innerHTML = 
-                        `🔍 OCR em progresso: ${Math.round(m.progress * 100)}%`;
-                }
-            }
-        });
-        console.log('✅ OCR concluído:', resultado.data.text.length, 'caracteres');
+        const resultado = await Tesseract.recognize(file, 'por+eng');
         return resultado.data.text;
     }
-    
-    // 3. Texto, XML, DOC - FileReader simples
-    console.log('📝 Detectado texto, lendo diretamente...');
+    // 3. Outros - FileReader
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => resolve(e.target.result);
@@ -196,6 +313,9 @@ async function extrairTextoDoArquivo(file) {
     });
 }
 
+// ============================================================
+// VERIFICAR CHAVE
+// ============================================================
 function verificarChave() {
     var key = localStorage.getItem('amovin_gemini_key');
     var statusEl = document.getElementById('statusIA');
@@ -213,21 +333,17 @@ function verificarChave() {
 }
 
 function configurarChave() {
-    var key = prompt('🔑 Digite sua chave do OpenRouter (sk-or-v1-...):\n\nObtenha gratuitamente em: https://openrouter.ai/keys');
+    var key = prompt('🔑 Digite sua chave do OpenRouter (sk-or-v1-...):\n\nObtenha em: https://openrouter.ai/keys');
     if (key && key.length > 10) {
         localStorage.setItem('amovin_gemini_key', key);
         verificarChave();
-        mostrarToast('✅ Chave OpenRouter configurada com sucesso!', 'success');
+        mostrarToast('✅ Chave OpenRouter configurada!', 'success');
     }
 }
 
 async function testarConexao() {
     var key = localStorage.getItem('amovin_gemini_key');
-    if (!key || key.length < 10) {
-        mostrarToast('⚠️ Configure a chave primeiro!', 'warning');
-        return;
-    }
-    mostrarToast('🧪 Testando conexão...', 'info');
+    if (!key) { mostrarToast('⚠️ Configure a chave primeiro!', 'warning'); return; }
     try {
         var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
@@ -239,8 +355,8 @@ async function testarConexao() {
             },
             body: JSON.stringify({
                 model: 'google/gemini-2.5-flash',
-                max_tokens: 4000,
-                messages: [{ role: 'user', content: 'Diga "olá" em português' }]
+                max_tokens: 200,
+                messages: [{ role: 'user', content: 'Diga "olá"' }]
             })
         });
         var data = await response.json();
@@ -255,7 +371,7 @@ async function testarConexao() {
 }
 
 // ============================================================
-// PROCESSAR NOTA - AGORA COM PDF.JS E OCR
+// PROCESSAR NOTA
 // ============================================================
 async function processarNota(event) {
     var file = event.target.files[0];
@@ -270,30 +386,29 @@ async function processarNota(event) {
     document.getElementById('passoPreview').style.display = 'block';
 
     try {
-        // 🔥 USA A NOVA FUNÇÃO INTELIGENTE
         textoExtraido = await extrairTextoDoArquivo(file);
-        
         if (!textoExtraido || textoExtraido.trim().length < 10) {
-            info.innerHTML = '⚠️ Não foi possível extrair texto deste arquivo';
+            info.innerHTML = '⚠️ Não foi possível extrair texto';
             mostrarToast('⚠️ Arquivo sem texto legível.', 'warning');
             preview.classList.remove('visivel');
             document.getElementById('passoPreview').style.display = 'none';
             return;
         }
-        
         info.innerHTML = '📎 Arquivo lido: ' + file.name + ' (' + textoExtraido.length + ' caracteres)';
-        document.getElementById('statusExtraido').textContent = '📄 Extraindo dados com IA...';
+        document.getElementById('statusExtraido').textContent = '📄 Extraindo com IA...';
         extrairDadosComIA(textoExtraido);
-        
     } catch (error) {
         console.error('❌ Erro:', error);
-        info.innerHTML = '❌ Erro ao processar arquivo';
+        info.innerHTML = '❌ Erro ao processar';
         mostrarToast('❌ Erro: ' + error.message, 'error');
         preview.classList.remove('visivel');
         document.getElementById('passoPreview').style.display = 'none';
     }
 }
 
+// ============================================================
+// EXTRAIR DADOS COM IA (OpenRouter)
+// ============================================================
 async function extrairDadosComIA(texto) {
     var preview = document.getElementById('previewIA');
     var key = localStorage.getItem('amovin_gemini_key');
@@ -338,7 +453,7 @@ Retorne APENAS o JSON, sem texto adicional.`;
 
         if (data.error) {
             document.getElementById('statusExtraido').textContent = '❌ Erro';
-            preview.innerHTML = `<div style="text-align:center;padding:20px;"><span style="font-size:32px;">❌</span><p style="color:var(--vermelho);font-weight:600;">Erro: ${data.error.message}</p></div>`;
+            preview.innerHTML = `<div style="text-align:center;padding:20px;"><span style="font-size:32px;">❌</span><p style="color:var(--vermelho);">${data.error.message}</p></div>`;
             return;
         }
 
@@ -361,7 +476,7 @@ Retorne APENAS o JSON, sem texto adicional.`;
 
         dadosNota = dados;
         document.getElementById('statusExtraido').textContent = '✅ Concluído';
-        document.getElementById('btnConfirmar').disabled = false;
+        document.getElementById('btnAvancar').disabled = false;
         mostrarPreview(dados);
         mostrarToast('✅ Dados extraídos com sucesso!', 'success');
 
@@ -372,9 +487,11 @@ Retorne APENAS o JSON, sem texto adicional.`;
     }
 }
 
+// ============================================================
+// MOSTRAR PREVIEW
+// ============================================================
 function mostrarPreview(dados) {
     var preview = document.getElementById('previewIA');
-    function fm(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
 
     var itensHtml = '';
     if (dados.itens && dados.itens.length > 0) {
@@ -398,37 +515,245 @@ function mostrarPreview(dados) {
             <div class="preview-item"><span class="label">💰 Valor Total</span><span class="valor destaque">${fm(dados.valorTotal)}</span></div>
         </div>
         ${itensHtml}
+        <div style="margin-top:12px;font-size:11px;color:var(--cinza);padding:8px;background:white;border-radius:8px;border:1px solid #E5E0D8;">
+            🤖 Processado com Gemini 2.5 Flash via OpenRouter
+        </div>
     `;
+
+    document.getElementById('resumoNumero').textContent = dados.numero || '---';
+    document.getElementById('resumoEmitente').textContent = dados.emitente || '---';
+    document.getElementById('resumoValor').textContent = fm(dados.valorTotal || 0);
 }
 
+// ============================================================
+// AVANÇAR PARA VÍNCULO
+// ============================================================
+function avancarParaVinculo() {
+    if (!dadosNota) { mostrarToast('⚠️ Nenhuma nota processada.', 'warning'); return; }
+    document.getElementById('passoPreview').style.display = 'none';
+    document.getElementById('passoVinculo').style.display = 'block';
+    preencherProjetos();
+    sugerirProjeto(dadosNota.emitente);
+    document.getElementById('dataEntrega').value = new Date().toISOString().split('T')[0];
+}
+
+function voltarPreview() {
+    document.getElementById('passoVinculo').style.display = 'none';
+    document.getElementById('passoPreview').style.display = 'block';
+}
+
+// ============================================================
+// PREENCHER PROJETOS
+// ============================================================
+function preencherProjetos() {
+    var select = document.getElementById('projetoVinculo');
+    select.innerHTML = '<option value="">Selecione um projeto...</option>';
+    projetos.forEach(function(p) {
+        if (p.status === 'ativo') {
+            select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + p.orcamento_total.toFixed(2).replace('.', ',') + ')</option>';
+        }
+    });
+}
+
+function sugerirProjeto(emitente) {
+    if (!emitente || emitente === '---') return;
+    var keywords = {
+        'informática': 'Inclusão Digital',
+        'computador': 'Inclusão Digital',
+        'notebook': 'Inclusão Digital',
+        'esporte': 'Esporte para Todos',
+        'bola': 'Esporte para Todos'
+    };
+    var texto = emitente.toLowerCase();
+    for (var key in keywords) {
+        if (texto.indexOf(key) >= 0) {
+            var projeto = projetos.find(function(p) { return p.nome === keywords[key]; });
+            if (projeto) { document.getElementById('projetoVinculo').value = projeto.id; atualizarSaldo(); return; }
+        }
+    }
+}
+
+function atualizarSaldo() {
+    var projetoId = parseInt(document.getElementById('projetoVinculo').value);
+    var categoria = document.getElementById('categoriaVinculo').value;
+    if (!projetoId || !categoria) { document.getElementById('saldoBox').style.display = 'none'; return; }
+    document.getElementById('saldoBox').style.display = 'grid';
+    var orc = orcamentos.find(function(o) { return o.projeto_id === projetoId && o.categoria === categoria; });
+    var previsto = orc ? orc.previsto : 0;
+    var realizado = orc ? orc.realizado : 0;
+    document.getElementById('saldoPrevisto').textContent = fm(previsto);
+    document.getElementById('saldoRealizado').textContent = fm(realizado);
+    document.getElementById('saldoDisponivel').textContent = fm(previsto - realizado);
+}
+
+// ============================================================
+// SELECIONAR DESTINO E MÓDULOS
+// ============================================================
+function selecionarDestino(el) {
+    document.querySelectorAll('.destino-card').forEach(function(c) { c.classList.remove('selecionado'); });
+    el.classList.add('selecionado');
+    destinoSelecionado = el.getAttribute('data-destino');
+}
+
+function toggleModulo(el) {
+    el.classList.toggle('selecionado');
+    var modulo = el.getAttribute('data-modulo');
+    var index = modulosSelecionados.indexOf(modulo);
+    if (index >= 0) { modulosSelecionados.splice(index, 1); } else { modulosSelecionados.push(modulo); }
+}
+
+// ============================================================
+// CONFIRMAR VÍNCULO
+// ============================================================
 function confirmarVinculo() {
-    if (!dadosNota) return;
-    var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
-    notas.push({
+    var projetoId = parseInt(document.getElementById('projetoVinculo').value);
+    var categoria = document.getElementById('categoriaVinculo').value;
+    var dataEntrega = document.getElementById('dataEntrega').value;
+    var obs = document.getElementById('obsVinculo').value.trim();
+
+    if (!projetoId) { mostrarToast('⚠️ Selecione um projeto!', 'warning'); return; }
+    if (!categoria) { mostrarToast('⚠️ Selecione uma categoria!', 'warning'); return; }
+    if (!dataEntrega) { mostrarToast('⚠️ Data de entrega é obrigatória!', 'warning'); return; }
+
+    var valorNota = dadosNota ? dadosNota.valorTotal || 0 : 0;
+    var numeroInterno = 'AMOVIN-' + new Date().getFullYear() + '-' + String(notas.length + 1).padStart(4, '0');
+
+    var novaNota = {
         id: Date.now(),
         numero: dadosNota.numero || '*',
+        numeroInterno: numeroInterno,
         emitente: { razaoSocial: dadosNota.emitente || 'Fornecedor', cnpj: dadosNota.cnpj || '*' },
-        valores: { valorTotal: dadosNota.valorTotal || 0 },
+        valores: { valorTotal: valorNota },
         dataEmissao: dadosNota.dataEmissao || '',
+        dataEntrega: dataEntrega,
         itens: dadosNota.itens || [],
+        projeto_id: projetoId,
+        categoria_orcamento: categoria,
+        destino: destinoSelecionado,
+        modulos: modulosSelecionados,
         status: 'vinculado',
-        origem: 'ia',
-        data_criacao: new Date().toISOString()
-    });
-    localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas));
-    mostrarToast('✅ Nota vinculada com sucesso!', 'success');
-    limparDados();
+        observacao: obs,
+        data_criacao: new Date().toISOString(),
+        origem: 'ia'
+    };
+
+    notas.push(novaNota);
+    salvarNotas();
+
+    // Atualiza orçamento
+    var orc = orcamentos.find(function(o) { return o.projeto_id === projetoId && o.categoria === categoria; });
+    if (orc) { orc.realizado += valorNota; localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos)); }
+
+    // 🔥 Envia para os módulos selecionados
+    direcionarParaModulos(novaNota);
+
+    document.getElementById('passoVinculo').style.display = 'none';
+    document.getElementById('passoConfirmacao').style.display = 'block';
+
+    var projeto = projetos.find(function(p) { return p.id === projetoId; });
+    document.getElementById('confProjeto').textContent = projeto ? projeto.nome : '---';
+    document.getElementById('confCategoria').textContent = categoria;
+    var destinos = { 'estoque': '📦 Estoque', 'patrimonio': '🏢 Patrimônio', 'servico': '🛠️ Serviço' };
+    document.getElementById('confDestino').textContent = destinos[destinoSelecionado] || destinoSelecionado;
+    document.getElementById('confValor').textContent = fm(valorNota);
+
+    dadosNota = null;
+    mostrarToast('✅ Nota vinculada com sucesso! Nº: ' + numeroInterno, 'success');
 }
 
+// ============================================================
+// DIRECIONAR PARA MÓDULOS (CRM, ESTOQUE, PATRIMÔNIO)
+// ============================================================
+function direcionarParaModulos(nota) {
+    // 1. CRM - Cadastra o emitente como contato
+    if (modulosSelecionados.indexOf('crm') >= 0 && nota.emitente && nota.emitente.razaoSocial && nota.emitente.razaoSocial !== '---') {
+        var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
+        var existe = contatos.some(function(c) { return c.nome === nota.emitente.razaoSocial || c.cnpj === nota.emitente.cnpj; });
+        if (!existe) {
+            contatos.push({
+                id: Date.now(),
+                nome: nota.emitente.razaoSocial,
+                cargo: 'Fornecedor',
+                categoria: 'Fornecedor',
+                tel1: nota.emitente.telefone || '',
+                cnpj: nota.emitente.cnpj || '',
+                origem: 'nota_fiscal',
+                obs: 'Cadastrado via NF ' + nota.numero
+            });
+            localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
+            mostrarToast('✅ Fornecedor enviado para CRM!', 'success');
+        }
+    }
+
+    // 2. Estoque ou Patrimônio - Adiciona os itens
+    if (!nota.itens || nota.itens.length === 0) {
+        nota.itens = [{ descricao: 'Item da NF ' + nota.numero, quantidade: 1, valorUnitario: nota.valores.valorTotal, valorTotal: nota.valores.valorTotal }];
+    }
+
+    nota.itens.forEach(function(item) {
+        var nomeProduto = item.descricao || 'Item da NF ' + nota.numero;
+        var valorItem = item.valor_total || item.valorTotal || nota.valores.valorTotal || 0;
+
+        // Estoque
+        if (nota.destino === 'estoque' || modulosSelecionados.indexOf('estoque') >= 0) {
+            var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+            estoque.push({
+                id: Date.now(),
+                nome: nomeProduto,
+                categoria: nota.categoria_orcamento || 'Diversos',
+                unidade: item.unidade || 'UN',
+                qtd: item.quantidade || 1,
+                local: 'Almoxarifado',
+                obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+            });
+            localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
+        }
+
+        // Patrimônio
+        if (nota.destino === 'patrimonio' || modulosSelecionados.indexOf('patrimonio') >= 0) {
+            var patrimonio = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
+            var ultimoNumero = parseInt(localStorage.getItem('amovin_patrimonio_num') || '0');
+            ultimoNumero++;
+            patrimonio.push({
+                id: Date.now(),
+                nome: nomeProduto,
+                numero: 'AMOVIN-' + String(ultimoNumero).padStart(4, '0'),
+                categoria: nota.categoria_orcamento || 'Equipamento',
+                valor: valorItem,
+                status: 'Em Operação',
+                local: 'Sede AMOVIN',
+                obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
+            });
+            localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
+            localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
+        }
+    });
+}
+
+// ============================================================
+// FUNÇÕES DE NAVEGAÇÃO
+// ============================================================
 function limparDados() {
     dadosNota = null;
     textoExtraido = '';
     document.getElementById('previewIA').innerHTML = '';
     document.getElementById('previewIA').classList.remove('visivel');
     document.getElementById('passoPreview').style.display = 'none';
+    document.getElementById('passoVinculo').style.display = 'none';
+    document.getElementById('passoConfirmacao').style.display = 'none';
     document.getElementById('infoArquivo').innerHTML = '📎 Nenhum arquivo selecionado';
-    document.getElementById('btnConfirmar').disabled = true;
+    document.getElementById('btnAvancar').disabled = true;
     document.getElementById('fileInput').value = '';
+    document.getElementById('passoUpload').style.display = 'block';
+}
+
+function novaNota() {
+    document.getElementById('passoConfirmacao').style.display = 'none';
+    limparDados();
+}
+
+function verNotaVinculada() {
+    mostrarToast('📋 Nota salva com sucesso!', 'info');
 }
 
 function mostrarToast(mensagem, tipo) {
@@ -445,6 +770,9 @@ function mostrarToast(mensagem, tipo) {
     }, 4000);
 }
 
+// ============================================================
+// DRAG AND DROP
+// ============================================================
 var dz = document.getElementById('dropzone');
 dz.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
 dz.addEventListener('dragleave', function(e) { e.preventDefault(); this.classList.remove('dragover'); });
@@ -459,8 +787,13 @@ dz.addEventListener('drop', function(e) {
     }
 });
 
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     verificarChave();
+    console.log('📄 Notas Fiscais - AMOVIN ERP');
+    console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? 'Configurada ✅' : 'Não configurada ❌');
 });
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
