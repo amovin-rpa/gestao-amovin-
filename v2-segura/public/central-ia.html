@@ -22,36 +22,28 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
         .main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
-        
         .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
         .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
         .topo-bar h1 span { color: var(--roxo); }
         .topo-bar .sub { font-size: 12px; color: var(--cinza); font-weight: 400; display: block; }
         .btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-
         .card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 20px; }
         .card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         .card h3 .badge { font-size: 10px; font-weight: 600; padding: 3px 12px; border-radius: 20px; background: #F3E8FF; color: var(--roxo); }
         .card h3 .badge-ia { background: linear-gradient(135deg, var(--roxo), var(--ciano)); color: white; }
-
         .btn { padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--roxo); color: white; }
         .btn-primary:hover { background: #6D28D9; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25); }
         .btn-success { background: var(--verde); color: white; }
-        .btn-success:hover { background: #388E3C; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(87, 194, 32, 0.25); }
+        .btn-success:hover { background: #388E3C; }
         .btn-outline { background: transparent; color: var(--cinza); border: 1px solid #E5E0D8; }
         .btn-outline:hover { background: #F8F4ED; }
-        .btn-danger { background: var(--vermelho); color: white; }
-        .btn-danger:hover { background: #C62828; }
-
         .dropzone { border: 3px dashed #E5E0D8; border-radius: 14px; padding: 40px 20px; text-align: center; transition: all 0.3s; cursor: pointer; background: #FAFAFA; }
         .dropzone:hover, .dropzone.dragover { border-color: var(--roxo); background: #F5F0FF; }
         .dropzone .icone { font-size: 48px; display: block; margin-bottom: 12px; }
         .dropzone p { font-size: 14px; color: var(--cinza); }
         .dropzone .formatos { font-size: 11px; color: #B0A99F; margin-top: 6px; }
         .dropzone .btn-upload { margin-top: 14px; padding: 10px 30px; background: var(--roxo); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
-        .dropzone .btn-upload:hover { background: #6D28D9; }
-
         .ia-resultado { background: #F5F0FF; border-radius: 10px; padding: 16px 20px; margin-top: 16px; border: 1px solid #E5D9F5; display: none; }
         .ia-resultado.visivel { display: block; }
         .ia-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
@@ -59,12 +51,9 @@
         .ia-item .label { color: var(--cinza); font-weight: 500; }
         .ia-item .valor { font-weight: 600; color: var(--grafite); }
         .ia-item .valor.destaque { color: var(--roxo); font-size: 15px; }
-
         .status-ia { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .status-ia.processando { background: #FEF3C7; color: #92400E; }
         .status-ia.sucesso { background: #D1FAE5; color: #065F46; }
         .status-ia.erro { background: #FEE2E2; color: #991B1B; }
-
         .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
         .rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .rodape-logo { flex-shrink: 0; }
@@ -73,13 +62,11 @@
         .rodape-info .copyright { font-size: 8px; color: #8A8F98; }
         .rodape-info .contato { font-size: 9px; color: #8A8F98; }
         .rodape-info a { color: #C65A11; text-decoration: none; }
-
         .toast { position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: 600; font-size: 14px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.15); animation: slideInRight 0.4s ease; max-width: 400px; }
         .toast-success { background: var(--verde); }
         .toast-error { background: var(--vermelho); }
         .toast-info { background: var(--ciano); }
         .toast-warning { background: var(--dourado); }
-
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width: 900px) { .main-content { margin-left: 0; } .ia-grid { grid-template-columns: 1fr; } }
     </style>
@@ -97,7 +84,6 @@
         <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
     </div>
 
-    <!-- Status da IA -->
     <div class="card" style="background:linear-gradient(135deg, #F5F0FF, #F0F9FF);border-color:var(--roxo);">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
             <div>
@@ -116,7 +102,6 @@
         </div>
     </div>
 
-    <!-- Leitura de Notas Fiscais -->
     <div class="card">
         <h3>📄 Leitura Inteligente de Notas Fiscais <span class="badge badge-ia">IA</span></h3>
 
@@ -157,9 +142,64 @@
 
 <script src="menu.js"></script>
 <script>
+// ============================================================
+// CONFIGURAÇÃO DO PDF.JS
+// ============================================================
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 var textoExtraido = '';
 var dadosExtraidos = {};
 
+// ============================================================
+// 🔥 FUNÇÃO PRINCIPAL: Extrair texto de QUALQUER formato
+// ============================================================
+async function extrairTextoDoArquivo(file) {
+    // 1. PDF - Usar PDF.js
+    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        console.log('📄 Detectado PDF, extraindo texto...');
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let textoCompleto = '';
+        
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const textoPagina = textContent.items.map(item => item.str).join(' ');
+            textoCompleto += textoPagina + '\n';
+        }
+        
+        console.log('✅ Texto extraído do PDF:', textoCompleto.length, 'caracteres');
+        return textoCompleto;
+    }
+    
+    // 2. Imagens (JPG, PNG) - Usar Tesseract.js para OCR
+    if (file.type.startsWith('image/')) {
+        console.log('🖼️ Detectada imagem, aplicando OCR...');
+        const resultado = await Tesseract.recognize(file, 'por+eng', {
+            logger: m => {
+                if (m.status === 'recognizing text') {
+                    document.getElementById('infoArquivo').innerHTML = 
+                        `🔍 OCR em progresso: ${Math.round(m.progress * 100)}%`;
+                }
+            }
+        });
+        console.log('✅ OCR concluído:', resultado.data.text.length, 'caracteres');
+        return resultado.data.text;
+    }
+    
+    // 3. Texto, XML, DOC - FileReader simples
+    console.log('📝 Detectado texto, lendo diretamente...');
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsText(file);
+    });
+}
+
+// ============================================================
+// VERIFICAR CHAVE
+// ============================================================
 function verificarChave() {
     var key = localStorage.getItem('amovin_gemini_key');
     var statusEl = document.getElementById('statusIA');
@@ -220,35 +260,47 @@ async function testarConexao() {
             verificarChave();
         } else if (data.error) {
             mostrarToast('❌ Erro: ' + data.error.message, 'error');
-            console.log('❌ Erro detalhado:', data.error);
         }
     } catch (e) {
         mostrarToast('❌ Erro de conexão: ' + e.message, 'error');
     }
 }
 
-function processarNota(event) {
+// ============================================================
+// PROCESSAR NOTA (UPLOAD) - AGORA COM PDF.JS E OCR
+// ============================================================
+async function processarNota(event) {
     var file = event.target.files[0];
     if (!file) return;
 
     var preview = document.getElementById('resultadoNota');
     var info = document.getElementById('infoArquivo');
 
-    info.innerHTML = '📎 Processando: ' + file.name + '...';
-    preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Lendo arquivo...</p></div>';
+    info.innerHTML = '⏳ Processando: ' + file.name + '...';
+    preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Extraindo texto do arquivo...</p></div>';
     preview.classList.add('visivel');
 
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        textoExtraido = e.target.result;
+    try {
+        // 🔥 USA A NOVA FUNÇÃO INTELIGENTE
+        textoExtraido = await extrairTextoDoArquivo(file);
+        
+        if (!textoExtraido || textoExtraido.trim().length < 10) {
+            info.innerHTML = '⚠️ Não foi possível extrair texto deste arquivo';
+            mostrarToast('⚠️ Arquivo sem texto legível.', 'warning');
+            preview.classList.remove('visivel');
+            return;
+        }
+        
         info.innerHTML = '📎 Arquivo lido: ' + file.name + ' (' + textoExtraido.length + ' caracteres)';
         document.getElementById('btnProcessarNota').disabled = false;
-        mostrarToast('✅ Arquivo lido! Clique em "Processar com IA".', 'success');
-    };
-    reader.onerror = function() {
-        mostrarToast('❌ Erro ao ler o arquivo.', 'error');
-    };
-    reader.readAsText(file);
+        mostrarToast('✅ Texto extraído! Clique em "Processar com IA".', 'success');
+        
+    } catch (error) {
+        console.error('❌ Erro ao processar arquivo:', error);
+        info.innerHTML = '❌ Erro ao processar: ' + file.name;
+        mostrarToast('❌ Erro: ' + error.message, 'error');
+        preview.classList.remove('visivel');
+    }
 }
 
 async function processarNotaIA() {
@@ -338,10 +390,7 @@ Retorne APENAS o JSON, sem texto adicional.`;
         }
 
         var dados = JSON.parse(match[0]);
-
-        if (!dados || typeof dados !== 'object') {
-            throw new Error('Dados inválidos');
-        }
+        if (!dados || typeof dados !== 'object') throw new Error('Dados inválidos');
 
         dadosExtraidos = dados;
         mostrarResultado(dados);
@@ -361,7 +410,6 @@ Retorne APENAS o JSON, sem texto adicional.`;
 
 function mostrarResultado(dados) {
     var preview = document.getElementById('resultadoNota');
-
     function fm(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
 
     var itensHtml = '';
@@ -391,9 +439,6 @@ function mostrarResultado(dados) {
             <div class="ia-item"><span class="label">💰 Valor Total</span><span class="valor destaque">${fm(dados.valorTotal)}</span></div>
         </div>
         ${itensHtml}
-        <div style="margin-top:12px;font-size:11px;color:var(--cinza);padding:8px;background:white;border-radius:8px;border:1px solid #E5D9F5;">
-            🤖 Processado em ${new Date().toLocaleString('pt-BR')}
-        </div>
     `;
 }
 
@@ -436,9 +481,7 @@ dz.addEventListener('drop', function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🧠 Central de IA - AMOVIN ERP (OpenRouter)');
     verificarChave();
-    console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? 'Configurada ✅' : 'Não configurada ❌');
 });
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
