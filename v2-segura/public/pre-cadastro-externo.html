@@ -196,6 +196,21 @@
             display: none;
         }
 
+        .voltar-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--cinza);
+        }
+        .voltar-link a {
+            color: var(--laranja);
+            text-decoration: none;
+        }
+        .voltar-link a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 24px 18px;
@@ -243,8 +258,9 @@
             </div>
 
             <div class="form-group">
-                <label>Qual seu interesse?</label>
-                <select id="interesse">
+                <label>Qual seu interesse? *</label>
+                <select id="interesse" required>
+                    <option value="">Selecione...</option>
                     <option value="Voluntário">💪 Ser Voluntário</option>
                     <option value="Beneficiário">👥 Ser Beneficiário</option>
                     <option value="Profissional">👨‍⚕️ Atuar como Profissional</option>
@@ -282,6 +298,10 @@
             </button>
         </form>
 
+        <div class="voltar-link">
+            <a href="index.html">← Voltar para o site</a>
+        </div>
+
         <div class="footer">
             © 2026 <a href="https://www.vigorre.com.br">VIGORRE DESIGNER™</a> • v2.0
         </div>
@@ -296,6 +316,7 @@
 
             var nome = document.getElementById('nome').value.trim();
             var email = document.getElementById('email').value.trim();
+            var interesse = document.getElementById('interesse').value;
             var lgpd = document.getElementById('lgpd').checked;
             var mensagem = document.getElementById('mensagem');
 
@@ -311,6 +332,10 @@
                 mostrarMensagem('⚠️ Digite um email válido.', 'erro');
                 return;
             }
+            if (!interesse) {
+                mostrarMensagem('⚠️ Selecione seu interesse.', 'erro');
+                return;
+            }
             if (!lgpd) {
                 mostrarMensagem('⚠️ Você precisa concordar com a Política de Privacidade.', 'erro');
                 return;
@@ -321,7 +346,7 @@
                 email: email,
                 telefone: document.getElementById('telefone').value.trim(),
                 nascimento: document.getElementById('nascimento').value,
-                interesse: document.getElementById('interesse').value,
+                interesse: interesse,
                 origem: document.getElementById('origem').value,
                 obs: document.getElementById('obs').value.trim(),
                 dataEnvio: new Date().toISOString(),
@@ -341,6 +366,7 @@
 
             setTimeout(function() {
                 try {
+                    // Salva no localStorage
                     var preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
 
                     var existe = preCadastros.some(function(p) {
@@ -359,10 +385,18 @@
                     preCadastros.push(dados);
                     localStorage.setItem('amovin_pre_cadastros', JSON.stringify(preCadastros));
 
+                    // Tenta salvar no Supabase (se disponível)
                     tentarSalvarSupabase(dados);
 
                     mostrarMensagem('✅ Pré-cadastro enviado com sucesso! Em breve entraremos em contato.', 'sucesso');
                     document.getElementById('formPreCadastro').reset();
+
+                    // Limpa a mensagem após 5 segundos
+                    setTimeout(function() {
+                        var msg = document.getElementById('mensagem');
+                        msg.className = 'mensagem';
+                        msg.textContent = '';
+                    }, 5000);
 
                 } catch (err) {
                     mostrarMensagem('❌ Erro ao enviar. Tente novamente mais tarde.', 'erro');
@@ -382,8 +416,9 @@
 
         function tentarSalvarSupabase(dados) {
             try {
-                if (typeof supabase !== 'undefined' && supabase) {
-                    supabase
+                // Verifica se o Supabase está disponível
+                if (typeof window.supabase !== 'undefined' && window.supabase) {
+                    window.supabase
                         .from('pre_cadastros')
                         .insert([{
                             nome: dados.nome,
@@ -393,7 +428,8 @@
                             interesse: dados.interesse,
                             origem: dados.origem,
                             obs: dados.obs,
-                            status: 'pendente'
+                            status: 'pendente',
+                            origem_cadastro: 'externo'
                         }])
                         .then(function(result) {
                             console.log('✅ Salvo no Supabase:', result);
@@ -405,6 +441,13 @@
             } catch (e) {
                 console.warn('⚠️ Supabase não disponível:', e);
             }
+        }
+
+        // Verifica se o usuário está logado para redirecionar
+        // Se estiver logado, vai para o painel interno
+        if (sessionStorage.getItem('amovin_logado') === 'true') {
+            // Mostra um aviso sutil
+            console.log('ℹ️ Você está logado. Use o menu interno para gerenciar pré-cadastros.');
         }
     </script>
 
