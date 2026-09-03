@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amovin ERP • IDP</title>
+    <title>Amovin ERP • Gestão de Pessoas</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,6 +17,7 @@
             --cinza-claro: #F8F4ED;
             --branco: #FFFFFF;
             --vermelho: #E53935;
+            --roxo: #7B1FA2;
         }
         * {
             margin: 0;
@@ -129,6 +130,12 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
+        .form-group label .opcional {
+            font-weight: 400;
+            color: var(--cinza);
+            font-size: 10px;
+            text-transform: none;
+        }
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -157,6 +164,9 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+        }
+        .form-full {
+            grid-column: 1 / -1;
         }
 
         .btn {
@@ -213,6 +223,13 @@
         }
         .btn-azul:hover {
             background: #1565C0;
+        }
+        .btn-roxo {
+            background: var(--roxo);
+            color: white;
+        }
+        .btn-roxo:hover {
+            background: #5D0F7A;
         }
 
         .pessoa-item {
@@ -275,6 +292,14 @@
             background: #FFF3E0;
             color: #E65100;
         }
+        .status-formado {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+        .status-trancado {
+            background: #FFEBEE;
+            color: #C62828;
+        }
 
         .sem-dados {
             text-align: center;
@@ -303,6 +328,53 @@
         .kpi-card .kpi-label {
             font-size: 11px;
             color: var(--cinza);
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--grafite);
+            border-bottom: 1px solid #F0E9DF;
+            padding-bottom: 8px;
+            grid-column: 1 / -1;
+            margin-bottom: 6px;
+            background: #FFF8E7;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .foto-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+        .foto-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #F0E9DF;
+            display: none;
+        }
+        .foto-preview.visible {
+            display: block;
+        }
+        .foto-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #F0E9DF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--cinza);
+            border: 4px dashed #E5E0D8;
+        }
+        .foto-placeholder.hidden {
+            display: none;
         }
 
         .rodape {
@@ -383,7 +455,7 @@
 
     <main class="main-content">
         <div class="topo-bar">
-            <h1>🔑 IDP <span>AMOVIN</span></h1>
+            <h1>👥 Gestão de Pessoas <span>IDP</span></h1>
             <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
 
@@ -405,6 +477,10 @@
                 <div class="kpi-valor" style="color:#E65100;" id="kpiVoluntarios">0</div>
                 <div class="kpi-label">💪 Voluntários</div>
             </div>
+            <div class="kpi-card">
+                <div class="kpi-valor" style="color:var(--roxo);" id="kpiUniversitarios">0</div>
+                <div class="kpi-label">🎓 Universitários</div>
+            </div>
         </div>
 
         <!-- TABS -->
@@ -413,6 +489,7 @@
                 <button class="tab ativo" data-tab="beneficiario" onclick="mudarTab('beneficiario',this)">👤 Beneficiários</button>
                 <button class="tab" data-tab="profissional" onclick="mudarTab('profissional',this)">👨‍⚕️ Profissionais</button>
                 <button class="tab" data-tab="voluntario" onclick="mudarTab('voluntario',this)">💪 Voluntários</button>
+                <button class="tab" data-tab="universitario" onclick="mudarTab('universitario',this)">🎓 Universitários</button>
             </div>
 
             <!-- TAB BENEFICIÁRIO -->
@@ -452,6 +529,10 @@
                         <div class="form-group">
                             <label>Endereço</label>
                             <input type="text" id="benefEndereco" placeholder="Rua, número, bairro">
+                        </div>
+                        <div class="form-group">
+                            <label>Responsável</label>
+                            <input type="text" id="benefResponsavel" placeholder="Nome do responsável">
                         </div>
                         <div class="form-row">
                             <div class="form-group">
@@ -632,6 +713,203 @@
                     </div>
                 </div>
             </div>
+
+            <!-- TAB UNIVERSITÁRIO (NOVO) -->
+            <div class="tab-content" id="tab-universitario">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                    <div>
+                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📝 Cadastrar Universitário</h4>
+                        <input type="hidden" id="universitarioId">
+                        
+                        <!-- DADOS PESSOAIS -->
+                        <div class="section-title">📋 DADOS PESSOAIS</div>
+                        
+                        <div class="form-group">
+                            <label>Nome Completo *</label>
+                            <input type="text" id="uniNome" placeholder="Nome completo">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Matrícula *</label>
+                                <input type="text" id="uniMatricula" placeholder="Nº de matrícula da UFV">
+                            </div>
+                            <div class="form-group">
+                                <label>CPF *</label>
+                                <input type="text" id="uniCpf" placeholder="000.000.000-00">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>RG</label>
+                                <input type="text" id="uniRg" placeholder="RG">
+                            </div>
+                            <div class="form-group">
+                                <label>Data Nascimento *</label>
+                                <input type="date" id="uniNascimento">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Sexo *</label>
+                            <select id="uniSexo">
+                                <option value="">Selecione...</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+
+                        <!-- CONTATO -->
+                        <div class="section-title">📞 CONTATO</div>
+
+                        <div class="form-group">
+                            <label>Telefone *</label>
+                            <input type="text" id="uniTelefone" placeholder="(34) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp</label>
+                            <input type="text" id="uniWhatsapp" placeholder="(34) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="uniEmail" placeholder="email@ufv.br">
+                        </div>
+
+                        <!-- ENDEREÇO -->
+                        <div class="section-title">📍 ENDEREÇO <span class="opcional">(opcional)</span></div>
+
+                        <div class="form-group">
+                            <label>Endereço</label>
+                            <input type="text" id="uniEndereco" placeholder="Rua, número, bairro">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Cidade</label>
+                                <input type="text" id="uniCidade" placeholder="Cidade">
+                            </div>
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <select id="uniEstado">
+                                    <option value="">Selecione...</option>
+                                    <option value="AC">AC</option><option value="AL">AL</option>
+                                    <option value="AP">AP</option><option value="AM">AM</option>
+                                    <option value="BA">BA</option><option value="CE">CE</option>
+                                    <option value="DF">DF</option><option value="ES">ES</option>
+                                    <option value="GO">GO</option><option value="MA">MA</option>
+                                    <option value="MT">MT</option><option value="MS">MS</option>
+                                    <option value="MG">MG</option><option value="PA">PA</option>
+                                    <option value="PB">PB</option><option value="PR">PR</option>
+                                    <option value="PE">PE</option><option value="PI">PI</option>
+                                    <option value="RJ">RJ</option><option value="RN">RN</option>
+                                    <option value="RS">RS</option><option value="RO">RO</option>
+                                    <option value="RR">RR</option><option value="SC">SC</option>
+                                    <option value="SP">SP</option><option value="SE">SE</option>
+                                    <option value="TO">TO</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- DADOS ACADÊMICOS -->
+                        <div class="section-title">🎓 DADOS ACADÊMICOS</div>
+
+                        <div class="form-group">
+                            <label>Instituição *</label>
+                            <select id="uniInstituicao">
+                                <option value="UFV - Viçosa">UFV - Viçosa</option>
+                                <option value="UFV - Florestal">UFV - Florestal</option>
+                                <option value="UFV - Rio Paranaíba">UFV - Rio Paranaíba</option>
+                                <option value="UFV - Outro">UFV - Outro</option>
+                                <option value="Outra Instituição">Outra Instituição</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Curso *</label>
+                            <input type="text" id="uniCurso" placeholder="Ex: Administração, Engenharia">
+                        </div>
+                        <div class="form-group">
+                            <label>Período *</label>
+                            <select id="uniPeriodo">
+                                <option value="">Selecione...</option>
+                                <option value="1º Período">1º Período</option>
+                                <option value="2º Período">2º Período</option>
+                                <option value="3º Período">3º Período</option>
+                                <option value="4º Período">4º Período</option>
+                                <option value="5º Período">5º Período</option>
+                                <option value="6º Período">6º Período</option>
+                                <option value="7º Período">7º Período</option>
+                                <option value="8º Período">8º Período</option>
+                                <option value="9º Período">9º Período</option>
+                                <option value="10º Período">10º Período</option>
+                                <option value="Período Especial">Período Especial</option>
+                                <option value="Pós-graduação">Pós-graduação</option>
+                                <option value="Mestrado">Mestrado</option>
+                                <option value="Doutorado">Doutorado</option>
+                            </select>
+                        </div>
+
+                        <!-- RESPONSÁVEL (OPCIONAL) -->
+                        <div class="section-title">👨‍👩‍👦 RESPONSÁVEL <span class="opcional">(opcional)</span></div>
+
+                        <div class="form-group">
+                            <label>Nome do Responsável</label>
+                            <input type="text" id="uniResponsavel" placeholder="Nome do responsável (opcional)">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Telefone do Responsável</label>
+                                <input type="text" id="uniTelefoneResponsavel" placeholder="(34) 99999-9999">
+                            </div>
+                            <div class="form-group">
+                                <label>Vínculo</label>
+                                <select id="uniVinculoResponsavel">
+                                    <option value="">Selecione...</option>
+                                    <option value="Pai">Pai</option>
+                                    <option value="Mãe">Mãe</option>
+                                    <option value="Avô">Avô</option>
+                                    <option value="Avó">Avó</option>
+                                    <option value="Tio">Tio</option>
+                                    <option value="Tia">Tia</option>
+                                    <option value="Irmão">Irmão</option>
+                                    <option value="Irmã">Irmã</option>
+                                    <option value="Cônjuge">Cônjuge</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- OBSERVAÇÕES -->
+                        <div class="section-title">📝 OBSERVAÇÕES</div>
+
+                        <div class="form-group">
+                            <label>Observações</label>
+                            <textarea id="uniObs" rows="2" placeholder="Informações adicionais..."></textarea>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="section-title">📌 STATUS</div>
+
+                        <div class="form-group">
+                            <label>Status *</label>
+                            <select id="uniStatus">
+                                <option value="Ativo">✅ Ativo</option>
+                                <option value="Inativo">⚠️ Inativo</option>
+                                <option value="Formado">🎓 Formado</option>
+                                <option value="Trancado">⏸️ Trancado</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-roxo btn-full" onclick="salvarPessoa('universitario')">💾 Salvar Universitário</button>
+                    </div>
+                    <div>
+                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📋 Lista de Universitários</h4>
+                        <div id="listaUniversitarios">
+                            <div class="sem-dados">Nenhum universitário cadastrado.</div>
+                        </div>
+                        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--cinza);">
+                            🎓 Universitários da UFV e outras instituições
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="rodape">
@@ -649,7 +927,7 @@
         </div>
     </main>
 
-    <script src="menu.js"></script>
+    <script src="menu.js?v=20261007"></script>
     <script>
         // ============================================================
         // DADOS
@@ -661,11 +939,17 @@
             pessoas = [
                 { id: 1, nome: 'Maria Silva', tipo: 'beneficiario', cpf: '123.456.789-00', nascimento: '1985-06-15',
                     email: 'maria@email.com', telefone: '(34) 99999-0001', whatsapp: '(34) 99999-0001',
-                    endereco: 'Rua A, 123', status: 'ativo', projeto_id: 1, obs: '' },
+                    endereco: 'Rua A, 123', status: 'ativo', projeto_id: 1, obs: '', responsavel: 'João Silva' },
                 { id: 2, nome: 'Dr. Carlos Mendes', tipo: 'profissional', cpf: '987.654.321-00', nascimento: '1975-03-10',
                     email: 'carlos@email.com', telefone: '(34) 99999-0002', whatsapp: '(34) 99999-0002',
                     endereco: 'Rua B, 456', status: 'ativo', especialidade: 'Psicologia', registro: 'CRP 12345',
-                    projeto_id: 1, obs: '' }
+                    projeto_id: 1, obs: '' },
+                { id: 3, nome: 'Ana Beatriz Silva', tipo: 'universitario', matricula: '2024001234', cpf: '123.456.789-00',
+                    rg: 'MG-12.345.678', nascimento: '2000-05-15', sexo: 'Feminino', telefone: '(34) 99999-1111',
+                    whatsapp: '(34) 99999-1111', email: 'ana.silva@ufv.br', endereco: 'Rua das Flores, 123',
+                    cidade: 'Viçosa', estado: 'MG', instituicao: 'UFV - Viçosa', curso: 'Administração',
+                    periodo: '6º Período', responsavel: 'Maria Silva', telefoneResponsavel: '(34) 99999-0001',
+                    vinculoResponsavel: 'Mãe', status: 'Ativo', obs: 'Bolsista do programa de extensão' }
             ];
             localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
         }
@@ -710,7 +994,8 @@
             var prefix = {
                 'beneficiario': 'benef',
                 'profissional': 'prof',
-                'voluntario': 'vol'
+                'voluntario': 'vol',
+                'universitario': 'uni'
             } [tipo];
 
             var nome = document.getElementById(prefix + 'Nome').value.trim();
@@ -725,20 +1010,42 @@
                 telefone: document.getElementById(prefix + 'Telefone').value.trim(),
                 whatsapp: document.getElementById(prefix + 'Whatsapp').value.trim(),
                 status: document.getElementById(prefix + 'Status').value,
-                projeto_id: parseInt(document.getElementById(prefix + 'Projeto').value) || null,
                 obs: document.getElementById(prefix + 'Obs').value.trim()
             };
 
             // Campos específicos
+            if (tipo === 'beneficiario') {
+                dados.endereco = document.getElementById('benefEndereco').value.trim();
+                dados.responsavel = document.getElementById('benefResponsavel').value.trim();
+                dados.projeto_id = parseInt(document.getElementById('benefProjeto').value) || null;
+            }
             if (tipo === 'profissional') {
                 dados.especialidade = document.getElementById('profEspecialidade').value.trim();
                 dados.registro = document.getElementById('profRegistro').value.trim();
+                dados.projeto_id = parseInt(document.getElementById('profProjeto').value) || null;
             }
             if (tipo === 'voluntario') {
                 dados.area = document.getElementById('volArea').value;
+                dados.projeto_id = parseInt(document.getElementById('volProjeto').value) || null;
             }
-            if (tipo === 'beneficiario') {
-                dados.endereco = document.getElementById('benefEndereco').value.trim();
+            if (tipo === 'universitario') {
+                dados.matricula = document.getElementById('uniMatricula').value.trim();
+                dados.rg = document.getElementById('uniRg').value.trim();
+                dados.sexo = document.getElementById('uniSexo').value;
+                dados.endereco = document.getElementById('uniEndereco').value.trim();
+                dados.cidade = document.getElementById('uniCidade').value.trim();
+                dados.estado = document.getElementById('uniEstado').value;
+                dados.instituicao = document.getElementById('uniInstituicao').value;
+                dados.curso = document.getElementById('uniCurso').value.trim();
+                dados.periodo = document.getElementById('uniPeriodo').value;
+                dados.responsavel = document.getElementById('uniResponsavel').value.trim();
+                dados.telefoneResponsavel = document.getElementById('uniTelefoneResponsavel').value.trim();
+                dados.vinculoResponsavel = document.getElementById('uniVinculoResponsavel').value;
+
+                // Validações específicas
+                if (!dados.matricula) { alert('⚠️ Matrícula é obrigatória!'); return; }
+                if (!dados.curso) { alert('⚠️ Curso é obrigatório!'); return; }
+                if (!dados.periodo) { alert('⚠️ Período é obrigatório!'); return; }
             }
 
             var editandoId = document.getElementById(prefix + 'Id').value;
@@ -758,8 +1065,10 @@
             limparForm(tipo);
             renderizarListas();
             atualizarKPIs();
-            alert('✅ ' + (tipo === 'beneficiario' ? 'Beneficiário' : tipo === 'profissional' ? 'Profissional' :
-                'Voluntário') + ' salvo com sucesso!');
+
+            var label = tipo === 'beneficiario' ? 'Beneficiário' : tipo === 'profissional' ? 'Profissional' :
+                tipo === 'voluntario' ? 'Voluntário' : 'Universitário';
+            alert('✅ ' + label + ' salvo com sucesso!');
         }
 
         // ============================================================
@@ -772,33 +1081,56 @@
             var prefix = {
                 'beneficiario': 'benef',
                 'profissional': 'prof',
-                'voluntario': 'vol'
+                'voluntario': 'vol',
+                'universitario': 'uni'
             } [p.tipo];
 
             document.getElementById(prefix + 'Id').value = p.id;
-            document.getElementById(prefix + 'Nome').value = p.nome;
+            document.getElementById(prefix + 'Nome').value = p.nome || '';
             document.getElementById(prefix + 'Cpf').value = p.cpf || '';
             document.getElementById(prefix + 'Nascimento').value = p.nascimento || '';
             document.getElementById(prefix + 'Email').value = p.email || '';
             document.getElementById(prefix + 'Telefone').value = p.telefone || '';
             document.getElementById(prefix + 'Whatsapp').value = p.whatsapp || '';
             document.getElementById(prefix + 'Status').value = p.status || 'ativo';
-            document.getElementById(prefix + 'Projeto').value = p.projeto_id || '';
             document.getElementById(prefix + 'Obs').value = p.obs || '';
 
             if (p.tipo === 'beneficiario') {
                 document.getElementById('benefEndereco').value = p.endereco || '';
+                document.getElementById('benefResponsavel').value = p.responsavel || '';
+                document.getElementById('benefProjeto').value = p.projeto_id || '';
             }
             if (p.tipo === 'profissional') {
                 document.getElementById('profEspecialidade').value = p.especialidade || '';
                 document.getElementById('profRegistro').value = p.registro || '';
+                document.getElementById('profProjeto').value = p.projeto_id || '';
             }
             if (p.tipo === 'voluntario') {
                 document.getElementById('volArea').value = p.area || 'Educação';
+                document.getElementById('volProjeto').value = p.projeto_id || '';
+            }
+            if (p.tipo === 'universitario') {
+                document.getElementById('uniMatricula').value = p.matricula || '';
+                document.getElementById('uniRg').value = p.rg || '';
+                document.getElementById('uniSexo').value = p.sexo || '';
+                document.getElementById('uniEndereco').value = p.endereco || '';
+                document.getElementById('uniCidade').value = p.cidade || '';
+                document.getElementById('uniEstado').value = p.estado || '';
+                document.getElementById('uniInstituicao').value = p.instituicao || 'UFV - Viçosa';
+                document.getElementById('uniCurso').value = p.curso || '';
+                document.getElementById('uniPeriodo').value = p.periodo || '';
+                document.getElementById('uniResponsavel').value = p.responsavel || '';
+                document.getElementById('uniTelefoneResponsavel').value = p.telefoneResponsavel || '';
+                document.getElementById('uniVinculoResponsavel').value = p.vinculoResponsavel || '';
             }
 
             // Muda para a tab correta
-            var tabMap = { 'beneficiario': 'beneficiario', 'profissional': 'profissional', 'voluntario': 'voluntario' };
+            var tabMap = {
+                'beneficiario': 'beneficiario',
+                'profissional': 'profissional',
+                'voluntario': 'voluntario',
+                'universitario': 'universitario'
+            };
             var tabBtn = document.querySelector('.tab[data-tab="' + tabMap[p.tipo] + '"]');
             if (tabBtn) tabBtn.click();
         }
@@ -821,7 +1153,8 @@
             var prefix = {
                 'beneficiario': 'benef',
                 'profissional': 'prof',
-                'voluntario': 'vol'
+                'voluntario': 'vol',
+                'universitario': 'uni'
             } [tipo];
 
             document.getElementById(prefix + 'Id').value = '';
@@ -831,19 +1164,36 @@
             document.getElementById(prefix + 'Email').value = '';
             document.getElementById(prefix + 'Telefone').value = '';
             document.getElementById(prefix + 'Whatsapp').value = '';
-            document.getElementById(prefix + 'Status').value = 'ativo';
-            document.getElementById(prefix + 'Projeto').value = '';
+            document.getElementById(prefix + 'Status').value = tipo === 'universitario' ? 'Ativo' : 'ativo';
             document.getElementById(prefix + 'Obs').value = '';
 
             if (tipo === 'beneficiario') {
                 document.getElementById('benefEndereco').value = '';
+                document.getElementById('benefResponsavel').value = '';
+                document.getElementById('benefProjeto').value = '';
             }
             if (tipo === 'profissional') {
                 document.getElementById('profEspecialidade').value = '';
                 document.getElementById('profRegistro').value = '';
+                document.getElementById('profProjeto').value = '';
             }
             if (tipo === 'voluntario') {
                 document.getElementById('volArea').value = 'Educação';
+                document.getElementById('volProjeto').value = '';
+            }
+            if (tipo === 'universitario') {
+                document.getElementById('uniMatricula').value = '';
+                document.getElementById('uniRg').value = '';
+                document.getElementById('uniSexo').value = '';
+                document.getElementById('uniEndereco').value = '';
+                document.getElementById('uniCidade').value = '';
+                document.getElementById('uniEstado').value = '';
+                document.getElementById('uniInstituicao').value = 'UFV - Viçosa';
+                document.getElementById('uniCurso').value = '';
+                document.getElementById('uniPeriodo').value = '';
+                document.getElementById('uniResponsavel').value = '';
+                document.getElementById('uniTelefoneResponsavel').value = '';
+                document.getElementById('uniVinculoResponsavel').value = '';
             }
         }
 
@@ -854,6 +1204,7 @@
             renderizarLista('beneficiario');
             renderizarLista('profissional');
             renderizarLista('voluntario');
+            renderizarLista('universitario');
             atualizarKPIs();
         }
 
@@ -861,32 +1212,64 @@
             var containerId = {
                 'beneficiario': 'listaBeneficiarios',
                 'profissional': 'listaProfissionais',
-                'voluntario': 'listaVoluntarios'
+                'voluntario': 'listaVoluntarios',
+                'universitario': 'listaUniversitarios'
             } [tipo];
 
             var container = document.getElementById(containerId);
             var lista = pessoas.filter(function(p) { return p.tipo === tipo; });
 
             if (lista.length === 0) {
-                container.innerHTML = '<div class="sem-dados">Nenhum ' + (tipo === 'beneficiario' ? 'beneficiário' :
-                    tipo === 'profissional' ? 'profissional' : 'voluntário') + ' cadastrado.</div>';
+                var label = tipo === 'beneficiario' ? 'beneficiário' :
+                    tipo === 'profissional' ? 'profissional' :
+                    tipo === 'voluntario' ? 'voluntário' : 'universitário';
+                container.innerHTML = '<div class="sem-dados">Nenhum ' + label + ' cadastrado.</div>';
                 return;
             }
 
             container.innerHTML = lista.map(function(p) {
-                var statusMap = { 'ativo': 'status-ativo', 'pendente': 'status-pendente', 'inativo': 'status-inativo' };
-                var statusLabel = { 'ativo': '✅ Ativo', 'pendente': '⏳ Pendente', 'inativo': '❌ Inativo' };
+                var statusMap = {
+                    'ativo': 'status-ativo',
+                    'pendente': 'status-pendente',
+                    'inativo': 'status-inativo',
+                    'Ativo': 'status-ativo',
+                    'Inativo': 'status-inativo',
+                    'Formado': 'status-formado',
+                    'Trancado': 'status-trancado'
+                };
+                var statusLabel = {
+                    'ativo': '✅ Ativo',
+                    'pendente': '⏳ Pendente',
+                    'inativo': '❌ Inativo',
+                    'Ativo': '✅ Ativo',
+                    'Inativo': '⚠️ Inativo',
+                    'Formado': '🎓 Formado',
+                    'Trancado': '⏸️ Trancado'
+                };
+
+                var detalhe = '';
+                if (tipo === 'beneficiario') {
+                    detalhe = '📧 ' + (p.email || '-') + ' | 📞 ' + (p.telefone || '-');
+                    if (p.responsavel) detalhe += ' | 👤 ' + p.responsavel;
+                }
+                if (tipo === 'profissional') {
+                    detalhe = '🔬 ' + (p.especialidade || '-') + ' | ' + (p.registro || '-');
+                }
+                if (tipo === 'voluntario') {
+                    detalhe = '📌 ' + (p.area || '-');
+                }
+                if (tipo === 'universitario') {
+                    detalhe = '🎓 ' + (p.curso || '-') + ' | ' + (p.periodo || '-') + ' | ' + (p.matricula || '-');
+                    if (p.instituicao) detalhe += ' | 🏫 ' + p.instituicao;
+                    if (p.responsavel) detalhe += ' | 👤 ' + p.responsavel;
+                }
+
                 var projeto = projetos.find(function(pr) { return pr.id === p.projeto_id; });
                 var projetoNome = projeto ? '📋 ' + projeto.nome : '';
 
-                var detalhe = '';
-                if (tipo === 'beneficiario') detalhe = '📧 ' + (p.email || '-') + ' | 📞 ' + (p.telefone || '-');
-                if (tipo === 'profissional') detalhe = '🔬 ' + (p.especialidade || '-') + ' | ' + (p.registro || '-');
-                if (tipo === 'voluntario') detalhe = '📌 ' + (p.area || '-');
-
                 return '<div class="pessoa-item">' +
                     '<div class="info">' +
-                    '<div class="nome">' + p.nome + '</div>' +
+                    '<div class="nome">' + p.nome + (tipo === 'universitario' ? ' 🎓' : '') + '</div>' +
                     '<div class="detalhe">' + detalhe + '</div>' +
                     (projetoNome ? '<div class="projetos">' + projetoNome + '</div>' : '') +
                     '<div><span class="status-badge ' + (statusMap[p.status] || 'status-pendente') + '">' +
@@ -908,41 +1291,18 @@
             var beneficiarios = pessoas.filter(function(p) { return p.tipo === 'beneficiario'; }).length;
             var profissionais = pessoas.filter(function(p) { return p.tipo === 'profissional'; }).length;
             var voluntarios = pessoas.filter(function(p) { return p.tipo === 'voluntario'; }).length;
+            var universitarios = pessoas.filter(function(p) { return p.tipo === 'universitario'; }).length;
 
             document.getElementById('kpiTotal').textContent = total;
             document.getElementById('kpiBeneficiarios').textContent = beneficiarios;
             document.getElementById('kpiProfissionais').textContent = profissionais;
             document.getElementById('kpiVoluntarios').textContent = voluntarios;
+            document.getElementById('kpiUniversitarios').textContent = universitarios;
         }
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // VERIFICAÇÃO DE SESSÃO
         // ============================================================
-        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-        var modulosPermitidos = {
-            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
-                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
-                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
-                'configuracoes', 'backup'
-            ],
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
-
-        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-        setTimeout(function() {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                var pagina = href.replace('.html', '');
-                pagina = pagina.split('?')[0].split('#')[0];
-                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-                    item.style.display = 'none';
-                }
-            });
-        }, 500);
-
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
