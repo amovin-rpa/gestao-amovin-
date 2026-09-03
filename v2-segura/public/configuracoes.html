@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amovin ERP • Configurações</title>
+    <title>Amovin ERP • Configurações SAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============================================================
+           ESTILOS COMPLETOS (mesmo do arquivo anterior)
+           ============================================================ */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -19,12 +22,12 @@
             --vermelho: #E53935;
             --sap-blue: #003366;
             --sap-light-blue: #E6F0FA;
+            --sombra: 0 2px 12px rgba(0,0,0,0.06);
+            --sombra-hover: 0 4px 24px rgba(0,0,0,0.10);
+            --border-radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background: #F8F4ED;
@@ -36,6 +39,8 @@
             flex: 1;
             margin-left: 270px;
             padding: 24px 30px;
+            min-height: 100vh;
+            width: calc(100% - 270px);
         }
         .topo-bar {
             display: flex;
@@ -68,17 +73,20 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-sair-topo:hover {
+            background: #F0E9DF;
         }
 
-        /* ============================================
-           TABS - ESTILO SAP/INTERNATIONAL
-           ============================================ */
+        /* TABS */
         .tabs-container {
             background: #FFFFFF;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             border: 1px solid #F0E9DF;
             overflow: hidden;
             margin-bottom: 20px;
+            box-shadow: var(--sombra);
         }
         .tabs-header {
             display: flex;
@@ -95,7 +103,7 @@
             font-weight: 600;
             font-size: 13px;
             color: var(--cinza);
-            transition: all 0.2s;
+            transition: var(--transition);
             font-family: 'Inter', sans-serif;
             white-space: nowrap;
             border-bottom: 3px solid transparent;
@@ -117,9 +125,7 @@
             display: block;
         }
 
-        /* ============================================
-           CARDS E FORMULÁRIOS
-           ============================================ */
+        /* CARDS */
         .config-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -128,8 +134,12 @@
         .config-card {
             background: #FFFFFF;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             border: 1px solid #F0E9DF;
+            transition: var(--transition);
+        }
+        .config-card:hover {
+            box-shadow: var(--sombra-hover);
         }
         .config-card h4 {
             font-size: 14px;
@@ -151,6 +161,7 @@
             font-weight: 600;
         }
 
+        /* FORMULÁRIO */
         .form-group {
             margin-bottom: 14px;
         }
@@ -168,17 +179,19 @@
         .form-group textarea {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #E5E0D8;
+            border: 1.5px solid #E5E0D8;
             border-radius: 8px;
             font-size: 13px;
             font-family: 'Inter', sans-serif;
-            transition: border 0.2s;
+            transition: var(--transition);
+            background: #FAFAFA;
         }
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--laranja);
             box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.08);
+            background: var(--branco);
         }
         .form-row {
             display: grid;
@@ -186,6 +199,7 @@
             gap: 12px;
         }
 
+        /* BOTÕES */
         .btn {
             padding: 10px 24px;
             border-radius: 8px;
@@ -194,52 +208,29 @@
             font-weight: 600;
             font-size: 13px;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        .btn-primary {
-            background: var(--laranja);
-            color: white;
-        }
-        .btn-primary:hover {
-            background: var(--laranja-escuro);
-        }
-        .btn-success {
-            background: var(--verde);
-            color: white;
-        }
-        .btn-success:hover {
-            background: #388E3C;
-        }
-        .btn-danger {
-            background: var(--vermelho);
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #C62828;
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--cinza);
-            border: 1px solid #E5E0D8;
-        }
-        .btn-outline:hover {
-            background: #F8F4ED;
-        }
-        .btn-full {
-            width: 100%;
-            padding: 12px;
-        }
+        .btn-primary { background: var(--laranja); color: white; }
+        .btn-primary:hover { background: var(--laranja-escuro); transform: translateY(-1px); box-shadow: var(--sombra-hover); }
+        .btn-success { background: var(--verde); color: white; }
+        .btn-success:hover { background: #388E3C; }
+        .btn-danger { background: var(--vermelho); color: white; }
+        .btn-danger:hover { background: #C62828; }
+        .btn-outline { background: transparent; color: var(--cinza); border: 1.5px solid #E5E0D8; }
+        .btn-outline:hover { background: #F8F4ED; border-color: var(--cinza); }
+        .btn-full { width: 100%; padding: 12px; justify-content: center; }
 
+        /* TOGGLE */
         .toggle-wrapper {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 8px 0;
         }
-        .toggle-wrapper .toggle-label {
-            font-size: 13px;
-            color: var(--grafite);
-        }
+        .toggle-wrapper .toggle-label { font-size: 13px; color: var(--grafite); }
         .toggle {
             position: relative;
             width: 44px;
@@ -250,9 +241,7 @@
             transition: background 0.3s;
             flex-shrink: 0;
         }
-        .toggle.ativo {
-            background: var(--verde);
-        }
+        .toggle.ativo { background: var(--verde); }
         .toggle .toggle-slider {
             position: absolute;
             top: 2px;
@@ -262,15 +251,11 @@
             background: white;
             border-radius: 50%;
             transition: transform 0.3s;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
         }
-        .toggle.ativo .toggle-slider {
-            transform: translateX(20px);
-        }
+        .toggle.ativo .toggle-slider { transform: translateX(20px); }
 
-        /* ============================================
-           ACESSOS POR MÓDULO
-           ============================================ */
+        /* ACESSOS POR MÓDULO */
         .modulos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -286,26 +271,23 @@
             border-radius: 8px;
             font-size: 12px;
             color: var(--grafite);
+            transition: var(--transition);
         }
-        .modulo-item .modulo-nome {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .modulo-item:hover { background: #FFF8E7; }
+        .modulo-item .modulo-nome { display: flex; align-items: center; gap: 6px; }
         .modulo-item .modulo-status {
             font-size: 10px;
             padding: 2px 10px;
             border-radius: 12px;
             font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
         }
-        .modulo-status.ativo {
-            background: #E8F5E9;
-            color: #2E7D32;
-        }
-        .modulo-status.inativo {
-            background: #FFEBEE;
-            color: #C62828;
-        }
+        .modulo-status.ativo { background: #E8F5E9; color: #2E7D32; }
+        .modulo-status.ativo:hover { background: #C8E6C9; }
+        .modulo-status.inativo { background: #FFEBEE; color: #C62828; }
+        .modulo-status.inativo:hover { background: #FFCDD2; }
 
         .perfil-selector {
             display: flex;
@@ -316,30 +298,37 @@
         .perfil-pill {
             padding: 6px 16px;
             border-radius: 20px;
-            border: 1px solid #E5E0D8;
+            border: 1.5px solid #E5E0D8;
             cursor: pointer;
             font-size: 12px;
             font-weight: 600;
-            transition: all 0.2s;
+            transition: var(--transition);
             background: white;
             color: var(--cinza);
+            font-family: 'Inter', sans-serif;
         }
-        .perfil-pill:hover {
-            border-color: var(--laranja);
-            color: var(--laranja);
-        }
-        .perfil-pill.ativo {
-            background: var(--laranja);
-            color: white;
-            border-color: var(--laranja);
-        }
+        .perfil-pill:hover { border-color: var(--laranja); color: var(--laranja); }
+        .perfil-pill.ativo { background: var(--laranja); color: white; border-color: var(--laranja); }
 
+        /* STATUS INDICATOR */
+        .status-indicator {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-indicator.configurado { background: #E8F5E9; color: #2E7D32; }
+        .status-indicator.nao-configurado { background: #FFEBEE; color: #C62828; }
+
+        /* RODAPÉ */
         .rodape {
             background: #FFFFFF;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             padding: 12px 18px;
             border: 1px solid #F0E9DF;
             margin-top: 20px;
+            box-shadow: var(--sombra);
         }
         .rodape-grid {
             display: flex;
@@ -347,68 +336,25 @@
             gap: 12px;
             flex-wrap: wrap;
         }
-        .rodape-logo {
-            flex-shrink: 0;
-        }
-        .rodape-logo .logo-vigorre {
-            width: 50px;
-        }
-        .rodape-info {
-            flex: 1;
-        }
-        .rodape-info .copyright {
-            font-size: 8px;
-            color: #8A8F98;
-        }
-        .rodape-info .tm {
-            font-size: 6px;
-            vertical-align: super;
-        }
-        .rodape-info .contato {
-            font-size: 9px;
-            color: #8A8F98;
-        }
-        .rodape-info a {
-            color: #C65A11;
-            text-decoration: none;
-        }
-        .rodape-info .email {
-            font-size: 8px;
-            color: #aaa;
-        }
-        .logo-vigorre-fallback {
-            font-size: 12px;
-            font-weight: 700;
-            display: none;
-        }
+        .rodape-logo { flex-shrink: 0; }
+        .rodape-logo .logo-vigorre { width: 50px; }
+        .rodape-info { flex: 1; }
+        .rodape-info .copyright { font-size: 8px; color: #8A8F98; }
+        .rodape-info .tm { font-size: 6px; vertical-align: super; }
+        .rodape-info .contato { font-size: 9px; color: #8A8F98; }
+        .rodape-info a { color: #C65A11; text-decoration: none; }
+        .rodape-info .email { font-size: 8px; color: #aaa; }
+        .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
         @media (max-width: 900px) {
-            .main-content {
-                margin-left: 0;
-            }
-            .config-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .tabs-header {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-            .tab-btn {
-                padding: 12px 16px;
-                font-size: 12px;
-            }
-            .modulos-grid {
-                grid-template-columns: 1fr 1fr;
-            }
+            .main-content { margin-left: 0; padding: 16px; width: 100%; padding-top: 60px; }
+            .config-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .tabs-header { flex-wrap: nowrap; overflow-x: auto; }
+            .tab-btn { padding: 12px 16px; font-size: 12px; }
+            .modulos-grid { grid-template-columns: 1fr 1fr; }
         }
-        @media (max-width: 480px) {
-            .modulos-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 480px) { .modulos-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -422,7 +368,7 @@
                 <h1>⚙️ Configurações <span>SAP</span></h1>
                 <span class="subtitle">AMOVIN ERP Social • Sistema Integrado de Gestão</span>
             </div>
-            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+            <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
         <!-- TABS -->
@@ -518,22 +464,25 @@
                 </div>
             </div>
 
-            <!-- TAB INTEGRAÇÃO -->
+            <!-- TAB INTEGRAÇÃO - COM CHAVE GEMINI -->
             <div class="tab-content" id="tab-integracao">
                 <div class="config-grid">
+                    <!-- 🤖 GEMINI -->
                     <div class="config-card">
-                        <h4>🤖 Gemini IA</h4>
+                        <h4>🤖 Gemini IA <span class="badge">API Key</span></h4>
                         <div class="form-group">
                             <label>Chave da API</label>
                             <input type="password" id="geminiKey" placeholder="Digite sua chave da API Gemini">
                         </div>
                         <button class="btn btn-success" onclick="salvarGemini()">🔑 Salvar Chave</button>
                         <div style="margin-top:10px;font-size:11px;color:var(--cinza);">
-                            Status: <span id="geminiStatus">⏳ Não configurado</span>
+                            Status: <span id="geminiStatus" class="status-indicator nao-configurado">⏳ Não configurado</span>
                         </div>
                     </div>
+
+                    <!-- 📧 SMTP -->
                     <div class="config-card">
-                        <h4>📧 Email (SMTP)</h4>
+                        <h4>📧 Email (SMTP) <span class="badge">Envio</span></h4>
                         <div class="form-group">
                             <label>Servidor SMTP</label>
                             <input type="text" id="smtpServer" placeholder="smtp.gmail.com">
@@ -553,6 +502,64 @@
                             <input type="password" id="smtpPassword" placeholder="••••••••">
                         </div>
                         <button class="btn btn-primary" onclick="salvarSMTP()">💾 Salvar</button>
+                    </div>
+
+                    <!-- 🔥 FIREBASE -->
+                    <div class="config-card">
+                        <h4>🔥 Firebase <span class="badge">Banco de Dados</span></h4>
+                        <div class="form-group">
+                            <label>API Key</label>
+                            <input type="password" id="firebaseApiKey" placeholder="AIzaSy...">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Auth Domain</label>
+                                <input type="text" id="firebaseAuthDomain" placeholder="projeto.firebaseapp.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Project ID</label>
+                                <input type="text" id="firebaseProjectId" placeholder="projeto-id">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Storage Bucket</label>
+                                <input type="text" id="firebaseStorageBucket" placeholder="projeto.appspot.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Messaging Sender ID</label>
+                                <input type="text" id="firebaseMessagingSenderId" placeholder="123456789">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>App ID</label>
+                            <input type="text" id="firebaseAppId" placeholder="1:123456789:web:abcdef">
+                        </div>
+                        <button class="btn btn-primary" onclick="salvarFirebase()">💾 Salvar Firebase</button>
+                        <div style="margin-top:8px;font-size:11px;color:var(--cinza);">
+                            Status: <span id="firebaseStatus" class="status-indicator nao-configurado">⏳ Não configurado</span>
+                        </div>
+                    </div>
+
+                    <!-- 🔌 SUPABASE -->
+                    <div class="config-card">
+                        <h4>🔌 Supabase <span class="badge">Backup + Captação</span></h4>
+                        <div class="form-group">
+                            <label>URL do Projeto</label>
+                            <input type="text" id="supabaseUrl" placeholder="https://projeto.supabase.co">
+                        </div>
+                        <div class="form-group">
+                            <label>Anon Key (Pública)</label>
+                            <input type="password" id="supabaseAnonKey" placeholder="eyJhbGciOiJ...">
+                        </div>
+                        <div class="form-group">
+                            <label>Service Key (Privada)</label>
+                            <input type="password" id="supabaseServiceKey" placeholder="eyJhbGciOiJ... (NUNCA compartilhar)">
+                        </div>
+                        <button class="btn btn-primary" onclick="salvarSupabase()">💾 Salvar Supabase</button>
+                        <div style="margin-top:8px;font-size:11px;color:var(--cinza);">
+                            Status: <span id="supabaseStatus" class="status-indicator nao-configurado">⏳ Não configurado</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -657,7 +664,9 @@
         </div>
     </main>
 
-    <script src="menu.js"></script>
+    <!-- CARREGAR CONFIGURAÇÕES E MENU -->
+    <script src="config.js"></script>
+    <script src="menu.js?v=20261007"></script>
     <script>
         // ============================================================
         // TABS
@@ -666,7 +675,6 @@
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('ativo'); });
                 this.classList.add('ativo');
-
                 var tabId = this.getAttribute('data-tab');
                 document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('ativo'); });
                 document.getElementById('tab-' + tabId).classList.add('ativo');
@@ -681,6 +689,168 @@
         }
 
         // ============================================================
+        // CARREGAR CONFIGURAÇÕES INICIAIS
+        // ============================================================
+        function carregarConfiguracoes() {
+            // Gemini
+            var geminiKey = AMOVIN_CONFIG.getGeminiKey();
+            if (geminiKey) {
+                document.getElementById('geminiKey').value = geminiKey;
+                document.getElementById('geminiStatus').textContent = '✅ Configurado';
+                document.getElementById('geminiStatus').className = 'status-indicator configurado';
+            }
+
+            // Firebase
+            var firebase = AMOVIN_CONFIG.getFirebaseConfig();
+            if (firebase.apiKey) {
+                document.getElementById('firebaseApiKey').value = firebase.apiKey;
+                document.getElementById('firebaseAuthDomain').value = firebase.authDomain;
+                document.getElementById('firebaseProjectId').value = firebase.projectId;
+                document.getElementById('firebaseStorageBucket').value = firebase.storageBucket;
+                document.getElementById('firebaseMessagingSenderId').value = firebase.messagingSenderId;
+                document.getElementById('firebaseAppId').value = firebase.appId;
+                document.getElementById('firebaseStatus').textContent = '✅ Configurado';
+                document.getElementById('firebaseStatus').className = 'status-indicator configurado';
+            }
+
+            // Supabase
+            var supabase = AMOVIN_CONFIG.getSupabaseConfig();
+            if (supabase.url) {
+                document.getElementById('supabaseUrl').value = supabase.url;
+                document.getElementById('supabaseAnonKey').value = supabase.anonKey;
+                document.getElementById('supabaseServiceKey').value = supabase.serviceKey;
+                document.getElementById('supabaseStatus').textContent = '✅ Configurado';
+                document.getElementById('supabaseStatus').className = 'status-indicator configurado';
+            }
+
+            // Organização
+            var org = AMOVIN_CONFIG.getOrganization();
+            document.getElementById('orgNome').value = org.name;
+            document.getElementById('orgCnpj').value = org.cnpj;
+            document.getElementById('orgCidade').value = org.cidade;
+            document.getElementById('orgEndereco').value = org.endereco;
+
+            // Aparência
+            var aparencia = AMOVIN_CONFIG.getAparencia();
+            document.getElementById('tema').value = aparencia.tema;
+            document.getElementById('corPrimaria').value = aparencia.corPrimaria;
+            var sidebar = document.getElementById('toggleSidebar');
+            var animacoes = document.getElementById('toggleAnimacoes');
+            if (aparencia.sidebarFixa) sidebar.classList.add('ativo');
+            else sidebar.classList.remove('ativo');
+            if (aparencia.animacoes) animacoes.classList.add('ativo');
+            else animacoes.classList.remove('ativo');
+
+            // Segurança
+            var seg = AMOVIN_CONFIG.getSeguranca();
+            document.getElementById('minSenha').value = seg.minSenha;
+            document.getElementById('tempoSessao').value = seg.tempoSessao;
+            document.getElementById('tentativas').value = seg.tentativas;
+            toggleSet(document.querySelector('#tab-seguranca .toggle:first-child'), seg.especiais);
+            toggleSet(document.querySelectorAll('#tab-seguranca .toggle')[1], seg.maiusculas);
+            toggleSet(document.querySelectorAll('#tab-seguranca .toggle')[2], seg.bloquearTentativas);
+        }
+
+        function toggleSet(el, valor) {
+            if (el) {
+                if (valor) el.classList.add('ativo');
+                else el.classList.remove('ativo');
+            }
+        }
+
+        // ============================================================
+        // FUNÇÕES DE SALVAR
+        // ============================================================
+        function salvarConfigGeral() {
+            var data = {
+                name: document.getElementById('orgNome').value,
+                cnpj: document.getElementById('orgCnpj').value,
+                cidade: document.getElementById('orgCidade').value,
+                endereco: document.getElementById('orgEndereco').value
+            };
+            AMOVIN_CONFIG.setOrganization(data);
+            alert('✅ Configurações gerais salvas!');
+        }
+
+        function salvarConfigAparencia() {
+            var data = {
+                tema: document.getElementById('tema').value,
+                corPrimaria: document.getElementById('corPrimaria').value,
+                sidebarFixa: document.getElementById('toggleSidebar').classList.contains('ativo'),
+                animacoes: document.getElementById('toggleAnimacoes').classList.contains('ativo')
+            };
+            AMOVIN_CONFIG.setAparencia(data);
+            alert('✅ Configurações de aparência salvas!');
+        }
+
+        function salvarGemini() {
+            var key = document.getElementById('geminiKey').value.trim();
+            if (key) {
+                AMOVIN_CONFIG.setGeminiKey(key);
+                document.getElementById('geminiStatus').textContent = '✅ Configurado';
+                document.getElementById('geminiStatus').className = 'status-indicator configurado';
+                alert('✅ Chave Gemini salva com sucesso!');
+            } else {
+                alert('⚠️ Digite uma chave válida.');
+            }
+        }
+
+        function salvarFirebase() {
+            var config = {
+                apiKey: document.getElementById('firebaseApiKey').value.trim(),
+                authDomain: document.getElementById('firebaseAuthDomain').value.trim(),
+                projectId: document.getElementById('firebaseProjectId').value.trim(),
+                storageBucket: document.getElementById('firebaseStorageBucket').value.trim(),
+                messagingSenderId: document.getElementById('firebaseMessagingSenderId').value.trim(),
+                appId: document.getElementById('firebaseAppId').value.trim()
+            };
+            AMOVIN_CONFIG.setFirebaseConfig(config);
+            document.getElementById('firebaseStatus').textContent = '✅ Configurado';
+            document.getElementById('firebaseStatus').className = 'status-indicator configurado';
+            alert('✅ Firebase configurado com sucesso!');
+        }
+
+        function salvarSupabase() {
+            var config = {
+                url: document.getElementById('supabaseUrl').value.trim(),
+                anonKey: document.getElementById('supabaseAnonKey').value.trim(),
+                serviceKey: document.getElementById('supabaseServiceKey').value.trim()
+            };
+            AMOVIN_CONFIG.setSupabaseConfig(config);
+            document.getElementById('supabaseStatus').textContent = '✅ Configurado';
+            document.getElementById('supabaseStatus').className = 'status-indicator configurado';
+            alert('✅ Supabase configurado com sucesso!');
+        }
+
+        function salvarSMTP() {
+            var data = {
+                server: document.getElementById('smtpServer').value.trim(),
+                port: document.getElementById('smtpPort').value.trim() || '587',
+                email: document.getElementById('smtpEmail').value.trim(),
+                password: document.getElementById('smtpPassword').value
+            };
+            AMOVIN_CONFIG.setSMTP(data);
+            alert('✅ Configurações SMTP salvas!');
+        }
+
+        function salvarSeguranca() {
+            var data = {
+                minSenha: parseInt(document.getElementById('minSenha').value) || 8,
+                especiais: document.querySelector('#tab-seguranca .toggle:first-child').classList.contains('ativo'),
+                maiusculas: document.querySelectorAll('#tab-seguranca .toggle')[1].classList.contains('ativo'),
+                tempoSessao: parseInt(document.getElementById('tempoSessao').value) || 30,
+                bloquearTentativas: document.querySelectorAll('#tab-seguranca .toggle')[2].classList.contains('ativo'),
+                tentativas: parseInt(document.getElementById('tentativas').value) || 5
+            };
+            AMOVIN_CONFIG.setSeguranca(data);
+            alert('✅ Configurações de segurança salvas!');
+        }
+
+        function salvarSessao() {
+            alert('✅ Configurações de sessão salvas!');
+        }
+
+        // ============================================================
         // PERFIS E ACESSOS
         // ============================================================
         var perfilAtual = 'admin';
@@ -689,11 +859,14 @@
             { id: 'bi', nome: '📈 BI Executivo', grupo: 'Principal' },
             { id: 'sala-espera', nome: '📋 Sala de Espera', grupo: 'Captação' },
             { id: 'pre-cadastro', nome: '📝 Pré-Cadastro', grupo: 'Captação' },
+            { id: 'pre-cadastro-externo', nome: '📝 Pré-Cadastro Externo', grupo: 'Captação' },
+            { id: 'projetos-convenios', nome: '📋 Projetos e Convênios', grupo: 'Captação' },
             { id: 'financeiro', nome: '💰 Financeiro', grupo: 'Financeiro' },
             { id: 'orcamentos', nome: '📊 Orçamentos', grupo: 'Financeiro' },
             { id: 'prestacao-contas', nome: '📋 Prest. Contas', grupo: 'Financeiro' },
             { id: 'notas-fiscais', nome: '📄 Notas Fiscais', grupo: 'Financeiro' },
             { id: 'pessoas', nome: '👥 Beneficiários', grupo: 'Pessoas' },
+            { id: 'universitarios', nome: '🎓 Universitários', grupo: 'Pessoas' },
             { id: 'profissionais', nome: '👨‍⚕️ Profissionais', grupo: 'Pessoas' },
             { id: 'voluntarios', nome: '💪 Voluntários', grupo: 'Pessoas' },
             { id: 'agenda-telefonica', nome: '☎️ CRM Social', grupo: 'Pessoas' },
@@ -704,22 +877,15 @@
             { id: 'qrcodes', nome: '📱 QR Codes', grupo: 'Documentos' },
             { id: 'estoque', nome: '📦 Estoque', grupo: 'Documentos' },
             { id: 'patrimonio', nome: '🏢 Patrimônio', grupo: 'Documentos' },
+            { id: 'idp', nome: '🔑 IDP - Gestão', grupo: 'Documentos' },
+            { id: 'idp-local', nome: '📄 IDP - Leitor', grupo: 'Documentos' },
             { id: 'biblioteca', nome: '📚 Biblioteca', grupo: 'Educação' },
             { id: 'certificados', nome: '🎓 Certificados', grupo: 'Educação' },
             { id: 'assistente', nome: '🤖 Assistente IA', grupo: 'Comunicação' },
             { id: 'relatorios', nome: '📈 Relatórios', grupo: 'Relatórios' },
             { id: 'configuracoes', nome: '⚙️ Configurações', grupo: 'Sistema' },
-            { id: 'backup', nome: '💾 Backup', grupo: 'Sistema' },
-            { id: 'idp', nome: '🔑 IDP', grupo: 'Sistema' }
+            { id: 'backup', nome: '💾 Backup', grupo: 'Sistema' }
         ];
-
-        var acessosPorPerfil = {
-            admin: modulos.map(function(m) { return m.id; }),
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'prontuario', 'assistente', 'chat'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'notas-fiscais', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
 
         function selecionarPerfil(perfil, btn) {
             perfilAtual = perfil;
@@ -731,7 +897,7 @@
 
         function renderizarModulos() {
             var container = document.getElementById('modulosAcessos');
-            var acessos = acessosPorPerfil[perfilAtual] || [];
+            var acessos = AMOVIN_CONFIG.getModulosPorPerfil(perfilAtual);
 
             var grupos = {};
             modulos.forEach(function(m) {
@@ -755,7 +921,7 @@
         }
 
         function toggleAcesso(moduloId, el) {
-            var acessos = acessosPorPerfil[perfilAtual] || [];
+            var acessos = AMOVIN_CONFIG.getModulosPorPerfil(perfilAtual);
             var idx = acessos.indexOf(moduloId);
             if (idx >= 0) {
                 acessos.splice(idx, 1);
@@ -766,52 +932,23 @@
                 el.textContent = '✅';
                 el.className = 'modulo-status ativo';
             }
-            acessosPorPerfil[perfilAtual] = acessos;
+            var todosAcessos = AMOVIN_CONFIG.getAcessos();
+            todosAcessos[perfilAtual] = acessos;
+            AMOVIN_CONFIG.setAcessos(todosAcessos);
         }
 
         function salvarAcessos() {
-            localStorage.setItem('amovin_acessos', JSON.stringify(acessosPorPerfil));
             alert('✅ Acessos salvos com sucesso!');
         }
 
         // ============================================================
-        // FUNÇÕES DAS CONFIGURAÇÕES
+        // BACKUP E RESTAURAR
         // ============================================================
-        function salvarConfigGeral() {
-            alert('✅ Configurações gerais salvas!');
-        }
-
-        function salvarConfigAparencia() {
-            alert('✅ Configurações de aparência salvas!');
-        }
-
-        function salvarGemini() {
-            var key = document.getElementById('geminiKey').value;
-            if (key) {
-                localStorage.setItem('amovin_gemini_key', key);
-                document.getElementById('geminiStatus').textContent = '✅ Configurado';
-                document.getElementById('geminiStatus').style.color = '#2E7D32';
-                alert('✅ Chave Gemini salva com sucesso!');
-            } else {
-                alert('⚠️ Digite uma chave válida.');
-            }
-        }
-
-        function salvarSMTP() {
-            alert('✅ Configurações SMTP salvas!');
-        }
-
-        function salvarSeguranca() {
-            alert('✅ Configurações de segurança salvas!');
-        }
-
-        function salvarSessao() {
-            alert('✅ Configurações de sessão salvas!');
-        }
-
         function realizarBackup() {
             var dados = {
                 pessoas: localStorage.getItem('amovin_pessoas'),
+                prontuarios: localStorage.getItem('amovin_prontuarios'),
+                consultas: localStorage.getItem('amovin_consultas'),
                 agendamentos: localStorage.getItem('amovin_agendamentos'),
                 notas: localStorage.getItem('amovin_notas_fiscais'),
                 preCadastros: localStorage.getItem('amovin_pre_cadastros'),
@@ -821,6 +958,16 @@
                 certificados: localStorage.getItem('amovin_certificados'),
                 biblioteca: localStorage.getItem('amovin_biblioteca'),
                 qrCodes: localStorage.getItem('amovin_qrcodes'),
+                config: {
+                    gemini: AMOVIN_CONFIG.getGeminiKey(),
+                    firebase: AMOVIN_CONFIG.getFirebaseConfig(),
+                    supabase: AMOVIN_CONFIG.getSupabaseConfig(),
+                    organization: AMOVIN_CONFIG.getOrganization(),
+                    aparencia: AMOVIN_CONFIG.getAparencia(),
+                    seguranca: AMOVIN_CONFIG.getSeguranca(),
+                    smtp: AMOVIN_CONFIG.getSMTP(),
+                    acessos: AMOVIN_CONFIG.getAcessos()
+                },
                 data: new Date().toISOString()
             };
             var blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
@@ -844,9 +991,19 @@
                     try {
                         var dados = JSON.parse(ev.target.result);
                         for (var key in dados) {
-                            if (key !== 'data' && dados[key] !== null) {
+                            if (key !== 'data' && key !== 'config' && dados[key] !== null) {
                                 localStorage.setItem('amovin_' + key, dados[key]);
                             }
+                        }
+                        if (dados.config) {
+                            if (dados.config.gemini) AMOVIN_CONFIG.setGeminiKey(dados.config.gemini);
+                            if (dados.config.firebase) AMOVIN_CONFIG.setFirebaseConfig(dados.config.firebase);
+                            if (dados.config.supabase) AMOVIN_CONFIG.setSupabaseConfig(dados.config.supabase);
+                            if (dados.config.organization) AMOVIN_CONFIG.setOrganization(dados.config.organization);
+                            if (dados.config.aparencia) AMOVIN_CONFIG.setAparencia(dados.config.aparencia);
+                            if (dados.config.seguranca) AMOVIN_CONFIG.setSeguranca(dados.config.seguranca);
+                            if (dados.config.smtp) AMOVIN_CONFIG.setSMTP(dados.config.smtp);
+                            if (dados.config.acessos) AMOVIN_CONFIG.setAcessos(dados.config.acessos);
                         }
                         alert('✅ Backup restaurado com sucesso! A página será recarregada.');
                         location.reload();
@@ -860,7 +1017,8 @@
         }
 
         function limparDados() {
-            if (!confirm('⚠️ Tem certeza que deseja limpar TODOS os dados locais? Esta ação não pode ser desfeita!')) return;
+            if (!confirm('⚠️ Tem certeza que deseja limpar TODOS os dados locais? Esta ação não pode ser desfeita!'))
+            return;
             if (!confirm('🔴 ÚLTIMA CHANCE: Confirmar exclusão de todos os dados?')) return;
             localStorage.clear();
             alert('🗑️ Todos os dados foram removidos. A página será recarregada.');
@@ -868,33 +1026,8 @@
         }
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // VERIFICAÇÃO DE SESSÃO
         // ============================================================
-        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-        var modulosPermitidos = {
-            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
-                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
-                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
-                'configuracoes', 'backup'
-            ],
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
-
-        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-        setTimeout(function() {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                var pagina = href.replace('.html', '');
-                pagina = pagina.split('?')[0].split('#')[0];
-                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-                    item.style.display = 'none';
-                }
-            });
-        }, 500);
-
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
@@ -902,14 +1035,13 @@
         // ============================================================
         // INICIALIZAÇÃO
         // ============================================================
+        carregarConfiguracoes();
         renderizarModulos();
 
-        // Carregar chave Gemini
-        var geminiKey = localStorage.getItem('amovin_gemini_key');
-        if (geminiKey) {
-            document.getElementById('geminiStatus').textContent = '✅ Configurado';
-            document.getElementById('geminiStatus').style.color = '#2E7D32';
-        }
+        console.log('✅ Configurações carregadas!');
+        console.log('🤖 Gemini:', AMOVIN_CONFIG.hasGeminiKey() ? '✅ Configurada' : '⏳ Não configurada');
+        console.log('🔥 Firebase:', AMOVIN_CONFIG.hasFirebaseConfig() ? '✅ Configurado' : '⏳ Não configurado');
+        console.log('🔌 Supabase:', AMOVIN_CONFIG.hasSupabaseConfig() ? '✅ Configurado' : '⏳ Não configurado');
     </script>
 </body>
 </html>
