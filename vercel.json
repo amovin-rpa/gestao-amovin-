@@ -11,6 +11,10 @@
       "destination": "/v2-segura/public/index.html"
     },
     {
+      "source": "/pre-cadastro-externo.html",
+      "destination": "/v2-segura/public/pre-cadastro-externo.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/v2-segura/public/$1"
     }
