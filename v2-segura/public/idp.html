@@ -6,6 +6,9 @@
     <title>Amovin ERP • Gestão de Pessoas</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============================================================
+           VARIÁVEIS E RESET - SAP ENTERPRISE
+           ============================================================ */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -18,6 +21,11 @@
             --branco: #FFFFFF;
             --vermelho: #E53935;
             --roxo: #7B1FA2;
+            --teal: #00897B;
+            --sombra: 0 2px 12px rgba(0,0,0,0.06);
+            --sombra-hover: 0 4px 24px rgba(0,0,0,0.10);
+            --border-radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * {
             margin: 0;
@@ -31,10 +39,15 @@
             min-height: 100vh;
         }
 
+        /* ============================================================
+           CONTEÚDO PRINCIPAL
+           ============================================================ */
         .main-content {
             flex: 1;
             margin-left: 270px;
             padding: 24px 30px;
+            min-height: 100vh;
+            width: calc(100% - 270px);
         }
         .topo-bar {
             display: flex;
@@ -52,6 +65,12 @@
         .topo-bar h1 span {
             color: var(--laranja);
         }
+        .topo-bar .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
+        }
         .btn-sair-topo {
             background: #F8F4ED;
             color: #1A1A1A;
@@ -61,14 +80,26 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-sair-topo:hover {
+            background: #F0E9DF;
         }
 
+        /* ============================================================
+           CARDS
+           ============================================================ */
         .card {
             background: #FFFFFF;
             padding: 24px;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             border: 1px solid #F0E9DF;
             margin-bottom: 20px;
+            box-shadow: var(--sombra);
+            transition: var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--sombra-hover);
         }
         .card h3 {
             font-size: 16px;
@@ -84,6 +115,9 @@
             gap: 8px;
         }
 
+        /* ============================================================
+           TABS - SAP ENTERPRISE
+           ============================================================ */
         .tabs {
             display: flex;
             gap: 4px;
@@ -100,17 +134,19 @@
             font-size: 13px;
             color: var(--cinza);
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            transition: var(--transition);
             border-bottom: 3px solid transparent;
+            border-radius: 0;
         }
         .tab:hover {
             color: var(--laranja);
+            background: #FFF8E7;
         }
         .tab.ativo {
             color: var(--laranja);
             border-bottom-color: var(--laranja);
+            background: #FFF8E7;
         }
-
         .tab-content {
             display: none;
         }
@@ -118,6 +154,9 @@
             display: block;
         }
 
+        /* ============================================================
+           FORMULÁRIO - SAP ENTERPRISE
+           ============================================================ */
         .form-group {
             margin-bottom: 14px;
         }
@@ -136,16 +175,20 @@
             font-size: 10px;
             text-transform: none;
         }
+        .form-group label .obrigatorio {
+            color: var(--vermelho);
+            font-weight: 700;
+        }
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #E5E0D8;
+            padding: 10px 14px;
+            border: 1.5px solid #E5E0D8;
             border-radius: 8px;
             font-size: 13px;
             font-family: 'Inter', sans-serif;
-            transition: border 0.2s;
+            transition: var(--transition);
             background: #FAFAFA;
         }
         .form-group input:focus,
@@ -169,18 +212,22 @@
             grid-column: 1 / -1;
         }
 
+        /* ============================================================
+           BOTÕES - SAP ENTERPRISE
+           ============================================================ */
         .btn {
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
         .btn-primary {
             background: var(--laranja);
@@ -188,6 +235,8 @@
         }
         .btn-primary:hover {
             background: var(--laranja-escuro);
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-hover);
         }
         .btn-success {
             background: var(--verde);
@@ -206,15 +255,16 @@
         .btn-outline {
             background: transparent;
             color: var(--cinza);
-            border: 1px solid #E5E0D8;
+            border: 1.5px solid #E5E0D8;
         }
         .btn-outline:hover {
             background: #F8F4ED;
+            border-color: var(--cinza);
         }
         .btn-full {
             width: 100%;
             padding: 14px;
-            font-size: 15px;
+            font-size: 14px;
             justify-content: center;
         }
         .btn-azul {
@@ -231,7 +281,21 @@
         .btn-roxo:hover {
             background: #5D0F7A;
         }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
+        .btn-teal {
+            background: var(--teal);
+            color: white;
+        }
+        .btn-teal:hover {
+            background: #00695C;
+        }
 
+        /* ============================================================
+           LISTA DE PESSOAS - SAP ENTERPRISE
+           ============================================================ */
         .pessoa-item {
             padding: 12px 16px;
             border-bottom: 1px solid #F0E9DF;
@@ -240,7 +304,7 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
-            transition: background 0.2s;
+            transition: var(--transition);
         }
         .pessoa-item:hover {
             background: #FFF8E7;
@@ -268,11 +332,14 @@
             gap: 4px;
             flex-wrap: wrap;
         }
-        .pessoa-item .btn {
+        .pessoa-item .acoes .btn {
             padding: 4px 10px;
             font-size: 10px;
         }
 
+        /* ============================================================
+           STATUS BADGE
+           ============================================================ */
         .status-badge {
             display: inline-block;
             padding: 2px 12px;
@@ -301,12 +368,9 @@
             color: #C62828;
         }
 
-        .sem-dados {
-            text-align: center;
-            padding: 30px;
-            color: #9CA3AF;
-        }
-
+        /* ============================================================
+           KPI CARDS
+           ============================================================ */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -316,9 +380,15 @@
         .kpi-card {
             background: #FFFFFF;
             padding: 18px;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             border: 1px solid #F0E9DF;
             text-align: center;
+            box-shadow: var(--sombra);
+            transition: var(--transition);
+        }
+        .kpi-card:hover {
+            box-shadow: var(--sombra-hover);
+            transform: translateY(-2px);
         }
         .kpi-card .kpi-valor {
             font-size: 28px;
@@ -330,19 +400,9 @@
             color: var(--cinza);
         }
 
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--grafite);
-            border-bottom: 1px solid #F0E9DF;
-            padding-bottom: 8px;
-            grid-column: 1 / -1;
-            margin-bottom: 6px;
-            background: #FFF8E7;
-            padding: 8px 12px;
-            border-radius: 6px;
-        }
-
+        /* ============================================================
+           FOTO UPLOAD - SAP ENTERPRISE
+           ============================================================ */
         .foto-container {
             display: flex;
             flex-direction: column;
@@ -377,12 +437,45 @@
             display: none;
         }
 
+        /* ============================================================
+           SEÇÃO TÍTULO
+           ============================================================ */
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--grafite);
+            border-bottom: 1px solid #F0E9DF;
+            padding-bottom: 8px;
+            grid-column: 1 / -1;
+            margin-bottom: 6px;
+            background: #FFF8E7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ============================================================
+           SEM DADOS
+           ============================================================ */
+        .sem-dados {
+            text-align: center;
+            padding: 30px;
+            color: #9CA3AF;
+            font-size: 13px;
+        }
+
+        /* ============================================================
+           RODAPÉ
+           ============================================================ */
         .rodape {
             background: #FFFFFF;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             padding: 12px 18px;
             border: 1px solid #F0E9DF;
             margin-top: 20px;
+            box-shadow: var(--sombra);
         }
         .rodape-grid {
             display: flex;
@@ -425,9 +518,15 @@
             display: none;
         }
 
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
         @media (max-width: 900px) {
             .main-content {
                 margin-left: 0;
+                padding: 16px;
+                width: 100%;
+                padding-top: 60px;
             }
             .form-row {
                 grid-template-columns: 1fr;
@@ -446,6 +545,114 @@
             .kpi-grid {
                 grid-template-columns: 1fr 1fr;
             }
+            .pessoa-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .pessoa-item .acoes {
+                justify-content: flex-end;
+            }
+        }
+
+        /* ============================================================
+           MODAL DE IMPRESSÃO - SAP ENTERPRISE
+           ============================================================ */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-area,
+            #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                background: white;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* ============================================================
+           PRINT STYLES - SAP ENTERPRISE A4
+           ============================================================ */
+        .print-container {
+            display: none;
+            background: white;
+            padding: 30px;
+            max-width: 210mm;
+            margin: 0 auto;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #1A1A1A;
+        }
+        .print-container .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #1A1A1A;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .print-container .brand-logo {
+            height: 60px;
+            width: auto;
+        }
+        .print-container .org {
+            text-align: right;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+        .print-container .title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .print-container .subtitle {
+            font-weight: 700;
+            font-size: 13px;
+            margin: 10px 0 4px;
+            text-decoration: underline;
+        }
+        .print-container .field-row {
+            display: flex;
+            gap: 10px;
+            margin: 3px 0;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+        .print-container .field-label {
+            font-weight: 700;
+            min-width: 140px;
+            font-size: 11px;
+            color: #444;
+        }
+        .print-container .field-value {
+            font-size: 12px;
+            border-bottom: 1px solid #ddd;
+            padding: 0 4px;
+            min-width: 100px;
+        }
+        .print-container .signature {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .print-container .line {
+            width: 380px;
+            border-top: 1px solid #1A1A1A;
+            margin: 20px auto 4px;
+        }
+        .print-container .page-break {
+            page-break-before: always;
         }
     </style>
 </head>
@@ -454,12 +661,22 @@
     <div id="menu-container"></div>
 
     <main class="main-content">
+        <!-- ============================================================
+        TOPO
+        ============================================================ -->
         <div class="topo-bar">
-            <h1>👥 Gestão de Pessoas <span>IDP</span></h1>
-            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+            <div>
+                <h1>👥 Gestão de Pessoas <span>IDP</span></h1>
+                <span class="sub">Cadastro completo de beneficiários, profissionais, voluntários e universitários</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
+            </div>
         </div>
 
-        <!-- KPIs -->
+        <!-- ============================================================
+        KPIs
+        ============================================================ -->
         <div class="kpi-grid" id="kpiContainer">
             <div class="kpi-card">
                 <div class="kpi-valor" id="kpiTotal">0</div>
@@ -483,7 +700,9 @@
             </div>
         </div>
 
-        <!-- TABS -->
+        <!-- ============================================================
+        TABS - SAP ENTERPRISE
+        ============================================================ -->
         <div class="card">
             <div class="tabs">
                 <button class="tab ativo" data-tab="beneficiario" onclick="mudarTab('beneficiario',this)">👤 Beneficiários</button>
@@ -492,186 +711,547 @@
                 <button class="tab" data-tab="universitario" onclick="mudarTab('universitario',this)">🎓 Universitários</button>
             </div>
 
-            <!-- TAB BENEFICIÁRIO -->
+            <!-- ============================================================
+            TAB BENEFICIÁRIO - VERSÃO COMPLETA (FRBForm)
+            ============================================================ -->
             <div class="tab-content ativo" id="tab-beneficiario">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                    <!-- FORMULÁRIO BENEFICIÁRIO -->
                     <div>
                         <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📝 Cadastrar Beneficiário</h4>
                         <input type="hidden" id="beneficiarioId">
-                        <div class="form-group">
-                            <label>Nome Completo *</label>
-                            <input type="text" id="benefNome" placeholder="Nome do beneficiário">
+
+                        <!-- FOTO -->
+                        <div class="section-title">📸 Foto <span class="opcional">(opcional)</span></div>
+                        <div class="form-group" style="text-align:center;">
+                            <div class="foto-container">
+                                <div id="benefFotoPlaceholder" class="foto-placeholder">📷</div>
+                                <img id="benefFotoPreview" class="foto-preview" alt="Pré-visualização">
+                                <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                                    <input type="file" id="benefFoto" accept="image/*" onchange="previewFoto('benef', event)" style="display:none;">
+                                    <button type="button" class="btn btn-azul btn-sm" onclick="document.getElementById('benefFoto').click()">📁 Escolher</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removerFoto('benef')">🗑️ Remover</button>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- DADOS PESSOAIS -->
+                        <div class="section-title">📋 DADOS PESSOAIS</div>
+
+                        <div class="form-group">
+                            <label>Nome Completo <span class="obrigatorio">*</span></label>
+                            <input type="text" id="benefNome" placeholder="Nome completo do beneficiário">
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>CPF</label>
-                                <input type="text" id="benefCpf" placeholder="000.000.000-00">
+                                <label>Matrícula <span class="opcional">(automática)</span></label>
+                                <input type="text" id="benefMatricula" placeholder="Gerada do CPF" readonly style="background:#F0E9DF;">
                             </div>
                             <div class="form-group">
-                                <label>Data Nascimento</label>
+                                <label>Data de Nascimento <span class="obrigatorio">*</span></label>
                                 <input type="date" id="benefNascimento">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="benefEmail" placeholder="email@exemplo.com">
-                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Telefone</label>
-                                <input type="text" id="benefTelefone" placeholder="(34) 99999-9999">
+                                <label>Sexo <span class="obrigatorio">*</span></label>
+                                <select id="benefSexo">
+                                    <option value="">Selecione...</option>
+                                    <option value="Feminino">Feminino</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Não-Binário">Não-Binário</option>
+                                    <option value="Prefiro não responder">Prefiro não responder</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label>WhatsApp</label>
-                                <input type="text" id="benefWhatsapp" placeholder="(34) 99999-9999">
+                                <label>RG</label>
+                                <input type="text" id="benefRg" placeholder="RG">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Endereço</label>
-                            <input type="text" id="benefEndereco" placeholder="Rua, número, bairro">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>CPF <span class="obrigatorio">*</span></label>
+                                <input type="text" id="benefCpf" placeholder="000.000.000-00" oninput="gerarMatricula(this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Idade</label>
+                                <input type="text" id="benefIdade" readonly style="background:#F0E9DF;" placeholder="Calculada automática">
+                            </div>
                         </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Diagnóstico/Condição</label>
+                                <input type="text" id="benefDiagnostico" placeholder="Diagnóstico clínico">
+                            </div>
+                            <div class="form-group">
+                                <label>CID</label>
+                                <input type="text" id="benefCid" placeholder="Código CID">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nível de Suporte</label>
+                                <select id="benefSuporte">
+                                    <option value="">Selecione...</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Qual nível de suporte?</label>
+                                <input type="text" id="benefSuporteDetalhes" placeholder="Nível 1, 2 ou 3">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Comorbidades</label>
+                                <select id="benefComorbidades">
+                                    <option value="">Selecione...</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Quais comorbidades?</label>
+                                <input type="text" id="benefComorbidadesDetalhes" placeholder="Descreva as comorbidades">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Estudante?</label>
+                                <select id="benefEstudante">
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Escola</label>
+                                <input type="text" id="benefEscola" placeholder="Nome da escola">
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label>Responsável</label>
+                            <label>Série</label>
+                            <input type="text" id="benefSerie" placeholder="Série/ano">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Alergia/Restrição alimentar</label>
+                                <select id="benefAlergia">
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Qual alergia?</label>
+                                <input type="text" id="benefAlergiaDetalhes" placeholder="Descreva a alergia">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Medicação contínua</label>
+                                <select id="benefMedicacao">
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Qual medicação?</label>
+                                <input type="text" id="benefMedicacaoDetalhes" placeholder="Descreva a medicação">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Atividades buscadas na associação</label>
+                            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                                    <input type="checkbox" class="benefAtividade" value="Apoio Informativo Jurídico/Direitos"> Apoio Jurídico
+                                </label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                                    <input type="checkbox" class="benefAtividade" value="Oficinas Pedagógicas"> Oficinas
+                                </label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                                    <input type="checkbox" class="benefAtividade" value="Terapias"> Terapias
+                                </label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                                    <input type="checkbox" class="benefAtividade" value="Lazer/Socialização"> Lazer
+                                </label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                                    <input type="checkbox" class="benefAtividade" value="Acolhimento Familiar"> Acolhimento
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- DADOS DO RESPONSÁVEL -->
+                        <div class="section-title">👨‍👩‍👦 DADOS DO RESPONSÁVEL</div>
+
+                        <div class="form-group">
+                            <label>Nome do Responsável <span class="obrigatorio">*</span></label>
                             <input type="text" id="benefResponsavel" placeholder="Nome do responsável">
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Status</label>
-                                <select id="benefStatus">
-                                    <option value="ativo">✅ Ativo</option>
-                                    <option value="pendente">⏳ Pendente</option>
-                                    <option value="inativo">❌ Inativo</option>
-                                </select>
+                                <label>Telefone/Whatsapp <span class="obrigatorio">*</span></label>
+                                <input type="text" id="benefTelResponsavel" placeholder="(34) 99999-9999">
                             </div>
                             <div class="form-group">
-                                <label>📋 Projeto</label>
-                                <select id="benefProjeto">
-                                    <option value="">Nenhum</option>
+                                <label>Vínculo</label>
+                                <select id="benefVinculo">
+                                    <option value="">Selecione...</option>
+                                    <option value="Mãe">Mãe</option>
+                                    <option value="Pai">Pai</option>
+                                    <option value="Avó">Avó</option>
+                                    <option value="Avô">Avô</option>
+                                    <option value="Tutor Legal">Tutor Legal</option>
+                                    <option value="Outros">Outros</option>
                                 </select>
                             </div>
                         </div>
+
+                        <div class="form-group" id="benefVinculoOutroGroup" style="display:none;">
+                            <label>Qual vínculo?</label>
+                            <input type="text" id="benefVinculoOutro" placeholder="Especifique o vínculo">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>RG do Responsável</label>
+                                <input type="text" id="benefRgResponsavel" placeholder="RG">
+                            </div>
+                            <div class="form-group">
+                                <label>CPF do Responsável</label>
+                                <input type="text" id="benefCpfResponsavel" placeholder="000.000.000-00">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Endereço completo</label>
+                            <input type="text" id="benefEndereco" placeholder="Rua, número, bairro, cidade, UF">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Renda familiar</label>
+                                <select id="benefRenda">
+                                    <option value="">Selecione...</option>
+                                    <option value="Até 2.000">Até 2.000</option>
+                                    <option value="2.001 a 5.000">2.001 a 5.000</option>
+                                    <option value="5.001 a 10.000">5.001 a 10.000</option>
+                                    <option value="Acima de 10.001">Acima de 10.001</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Incluída como dependente no IRPF?</label>
+                                <select id="benefIrpf">
+                                    <option value="">Selecione...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Não tenho certeza">Não tenho certeza</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="section-title">📌 STATUS</div>
+
+                        <div class="form-group">
+                            <label>Status <span class="obrigatorio">*</span></label>
+                            <select id="benefStatus">
+                                <option value="Ativo">✅ Ativo</option>
+                                <option value="Pendente">⏳ Pendente</option>
+                                <option value="Inativo">❌ Inativo</option>
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label>Observações</label>
                             <textarea id="benefObs" rows="2" placeholder="Informações adicionais..."></textarea>
                         </div>
-                        <button class="btn btn-primary btn-full" onclick="salvarPessoa('beneficiario')">💾 Salvar Beneficiário</button>
+
+                        <!-- BOTÕES -->
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="salvarPessoa('beneficiario')">💾 Salvar</button>
+                            <button class="btn btn-outline" onclick="limparForm('beneficiario')">🔄 Novo</button>
+                            <button class="btn btn-azul" onclick="imprimirFRB('beneficiario')">🖨️ Imprimir</button>
+                            <button class="btn btn-roxo" onclick="gerarTermo('beneficiario', 'adesao')">📄 Termos</button>
+                        </div>
+                        <div id="benefStatusMsg" style="margin-top:8px;font-size:12px;color:var(--verde);"></div>
                     </div>
+
+                    <!-- LISTA BENEFICIÁRIOS -->
                     <div>
-                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📋 Lista de Beneficiários</h4>
-                        <div id="listaBeneficiarios">
+                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                            📋 Lista de Beneficiários
+                            <span id="benefTotal" style="font-size:12px;color:var(--cinza);">(0)</span>
+                        </h4>
+                        <div style="margin-bottom:12px;">
+                            <input type="text" id="buscaBenef" placeholder="🔍 Buscar por nome, CPF, matrícula..." oninput="filtrarLista('benef')" style="width:100%;padding:8px 12px;border:1px solid #E5E0D8;border-radius:8px;font-size:13px;">
+                        </div>
+                        <div id="listaBeneficiarios" style="max-height:500px;overflow-y:auto;">
                             <div class="sem-dados">Nenhum beneficiário cadastrado.</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB PROFISSIONAL -->
+            <!-- ============================================================
+            TAB PROFISSIONAL - VERSÃO COMPLETA
+            ============================================================ -->
             <div class="tab-content" id="tab-profissional">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div>
                         <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📝 Cadastrar Profissional</h4>
                         <input type="hidden" id="profissionalId">
+
+                        <!-- FOTO -->
+                        <div class="section-title">📸 Foto <span class="opcional">(opcional)</span></div>
+                        <div class="form-group" style="text-align:center;">
+                            <div class="foto-container">
+                                <div id="profFotoPlaceholder" class="foto-placeholder">📷</div>
+                                <img id="profFotoPreview" class="foto-preview" alt="Pré-visualização">
+                                <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                                    <input type="file" id="profFoto" accept="image/*" onchange="previewFoto('prof', event)" style="display:none;">
+                                    <button type="button" class="btn btn-azul btn-sm" onclick="document.getElementById('profFoto').click()">📁 Escolher</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removerFoto('prof')">🗑️ Remover</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DADOS DO PROFISSIONAL -->
+                        <div class="section-title">📋 DADOS DO PROFISSIONAL</div>
+
                         <div class="form-group">
-                            <label>Nome Completo *</label>
+                            <label>Nome Completo <span class="obrigatorio">*</span></label>
                             <input type="text" id="profNome" placeholder="Nome do profissional">
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>CPF</label>
+                                <label>CPF <span class="obrigatorio">*</span></label>
                                 <input type="text" id="profCpf" placeholder="000.000.000-00">
                             </div>
                             <div class="form-group">
-                                <label>Data Nascimento</label>
+                                <label>Data de Nascimento</label>
                                 <input type="date" id="profNascimento">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="profEmail" placeholder="email@exemplo.com">
-                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Telefone</label>
+                                <label>Especialidade <span class="obrigatorio">*</span></label>
+                                <select id="profEspecialidade">
+                                    <option value="">Selecione...</option>
+                                    <option value="Administrador">Administrador</option>
+                                    <option value="Advogado">Advogado</option>
+                                    <option value="Assistente Administrativo">Assistente Administrativo</option>
+                                    <option value="Assistente Social">Assistente Social</option>
+                                    <option value="Educador Físico">Educador Físico</option>
+                                    <option value="Fisioterapeuta">Fisioterapeuta</option>
+                                    <option value="Fonoaudiólogo">Fonoaudiólogo</option>
+                                    <option value="Musicoterapeuta">Musicoterapeuta</option>
+                                    <option value="Neuropediatra">Neuropediatra</option>
+                                    <option value="Neuropsicólogo">Neuropsicólogo</option>
+                                    <option value="Nutricionista">Nutricionista</option>
+                                    <option value="Pediatra">Pediatra</option>
+                                    <option value="Psicólogo">Psicólogo</option>
+                                    <option value="Psicomotricista">Psicomotricista</option>
+                                    <option value="Psicopedagogo">Psicopedagogo</option>
+                                    <option value="Psiquiatria Infantil">Psiquiatria Infantil</option>
+                                    <option value="Terapeuta Ocupacional">Terapeuta Ocupacional</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone <span class="obrigatorio">*</span></label>
                                 <input type="text" id="profTelefone" placeholder="(34) 99999-9999">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="profEmail" placeholder="email@exemplo.com">
                             </div>
                             <div class="form-group">
                                 <label>WhatsApp</label>
                                 <input type="text" id="profWhatsapp" placeholder="(34) 99999-9999">
                             </div>
                         </div>
+
+                        <!-- REGISTRO PROFISSIONAL -->
+                        <div class="section-title">📜 REGISTRO PROFISSIONAL</div>
+
                         <div class="form-group">
-                            <label>Especialidade</label>
-                            <input type="text" id="profEspecialidade" placeholder="Ex: Psicólogo, Assistente Social">
+                            <label>Tem registro profissional?</label>
+                            <select id="profTemRegistro" onchange="toggleRegistroProf()">
+                                <option value="Não">Não</option>
+                                <option value="Sim">Sim</option>
+                            </select>
                         </div>
+
+                        <div id="profRegistroFields" style="display:none;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Conselho/Órgão</label>
+                                    <input type="text" id="profConselho" placeholder="Ex: CREFITO-4, CRM-MG, OAB">
+                                </div>
+                                <div class="form-group">
+                                    <label>Número do Registro</label>
+                                    <input type="text" id="profRegistroNum" placeholder="Ex: 123456-F">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label>Registro Profissional</label>
-                            <input type="text" id="profRegistro" placeholder="CRP, CRAS, etc">
+                            <label>Tipo de Vínculo <span class="obrigatorio">*</span></label>
+                            <select id="profVinculo">
+                                <option value="">Selecione...</option>
+                                <option value="Contratado">Contratado</option>
+                                <option value="Parceiro Social">Parceiro Social</option>
+                                <option value="Voluntario">Voluntário</option>
+                                <option value="Diretoria">Diretoria</option>
+                            </select>
                         </div>
+
+                        <!-- CREDENCIAIS -->
+                        <div class="section-title">🔐 CREDENCIAIS DE ACESSO</div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Status</label>
-                                <select id="profStatus">
-                                    <option value="ativo">✅ Ativo</option>
-                                    <option value="pendente">⏳ Pendente</option>
-                                    <option value="inativo">❌ Inativo</option>
+                                <label>Ambiente de Acesso <span class="obrigatorio">*</span></label>
+                                <select id="profAcesso">
+                                    <option value="consulta">Consulta</option>
+                                    <option value="recepcao">Recepção</option>
+                                    <option value="admin">Administrador</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>📋 Projeto</label>
-                                <select id="profProjeto">
-                                    <option value="">Nenhum</option>
-                                </select>
+                                <label>Usuário <span class="obrigatorio">*</span></label>
+                                <input type="text" id="profUsuario" placeholder="Usuário de acesso">
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label>Senha <span class="obrigatorio">*</span></label>
+                            <div style="display:flex;gap:8px;">
+                                <input type="password" id="profSenha" placeholder="Senha de acesso" style="flex:1;">
+                                <button type="button" class="btn btn-outline" onclick="toggleSenha('profSenha', this)">👁️</button>
+                            </div>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="section-title">📌 STATUS</div>
+
+                        <div class="form-group">
+                            <label>Status <span class="obrigatorio">*</span></label>
+                            <select id="profStatus">
+                                <option value="Ativo">✅ Ativo</option>
+                                <option value="Pendente">⏳ Pendente</option>
+                                <option value="Inativo">❌ Inativo</option>
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label>Observações</label>
                             <textarea id="profObs" rows="2" placeholder="Informações adicionais..."></textarea>
                         </div>
-                        <button class="btn btn-primary btn-full" onclick="salvarPessoa('profissional')">💾 Salvar Profissional</button>
+
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="salvarPessoa('profissional')">💾 Salvar</button>
+                            <button class="btn btn-outline" onclick="limparForm('profissional')">🔄 Novo</button>
+                            <button class="btn btn-teal" onclick="gerarTermoProfissional()">📄 Termos</button>
+                        </div>
+                        <div id="profStatusMsg" style="margin-top:8px;font-size:12px;color:var(--verde);"></div>
                     </div>
+
                     <div>
-                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📋 Lista de Profissionais</h4>
-                        <div id="listaProfissionais">
+                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                            📋 Lista de Profissionais
+                            <span id="profTotal" style="font-size:12px;color:var(--cinza);">(0)</span>
+                        </h4>
+                        <div style="margin-bottom:12px;">
+                            <input type="text" id="buscaProf" placeholder="🔍 Buscar por nome, especialidade..." oninput="filtrarLista('prof')" style="width:100%;padding:8px 12px;border:1px solid #E5E0D8;border-radius:8px;font-size:13px;">
+                        </div>
+                        <div id="listaProfissionais" style="max-height:500px;overflow-y:auto;">
                             <div class="sem-dados">Nenhum profissional cadastrado.</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB VOLUNTÁRIO -->
+            <!-- ============================================================
+            TAB VOLUNTÁRIO - VERSÃO COMPLETA
+            ============================================================ -->
             <div class="tab-content" id="tab-voluntario">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div>
                         <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📝 Cadastrar Voluntário</h4>
                         <input type="hidden" id="voluntarioId">
+
+                        <!-- FOTO -->
+                        <div class="section-title">📸 Foto <span class="opcional">(opcional)</span></div>
+                        <div class="form-group" style="text-align:center;">
+                            <div class="foto-container">
+                                <div id="volFotoPlaceholder" class="foto-placeholder">📷</div>
+                                <img id="volFotoPreview" class="foto-preview" alt="Pré-visualização">
+                                <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                                    <input type="file" id="volFoto" accept="image/*" onchange="previewFoto('vol', event)" style="display:none;">
+                                    <button type="button" class="btn btn-azul btn-sm" onclick="document.getElementById('volFoto').click()">📁 Escolher</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removerFoto('vol')">🗑️ Remover</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">📋 DADOS DO VOLUNTÁRIO</div>
+
                         <div class="form-group">
-                            <label>Nome Completo *</label>
+                            <label>Nome Completo <span class="obrigatorio">*</span></label>
                             <input type="text" id="volNome" placeholder="Nome do voluntário">
                         </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Função <span class="obrigatorio">*</span></label>
+                                <input type="text" id="volFuncao" placeholder="Ex: Monitor, Auxiliar, Coordenador">
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone <span class="obrigatorio">*</span></label>
+                                <input type="text" id="volTelefone" placeholder="(34) 99999-9999">
+                            </div>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label>CPF</label>
                                 <input type="text" id="volCpf" placeholder="000.000.000-00">
                             </div>
                             <div class="form-group">
-                                <label>Data Nascimento</label>
-                                <input type="date" id="volNascimento">
+                                <label>Email</label>
+                                <input type="email" id="volEmail" placeholder="email@exemplo.com">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="volEmail" placeholder="email@exemplo.com">
-                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Telefone</label>
-                                <input type="text" id="volTelefone" placeholder="(34) 99999-9999">
+                                <label>Data de Nascimento</label>
+                                <input type="date" id="volNascimento">
                             </div>
                             <div class="form-group">
                                 <label>WhatsApp</label>
                                 <input type="text" id="volWhatsapp" placeholder="(34) 99999-9999">
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label>Área de Interesse</label>
                             <select id="volArea">
@@ -683,73 +1263,99 @@
                                 <option value="Outro">📌 Outro</option>
                             </select>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Status</label>
-                                <select id="volStatus">
-                                    <option value="ativo">✅ Ativo</option>
-                                    <option value="pendente">⏳ Pendente</option>
-                                    <option value="inativo">❌ Inativo</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>📋 Projeto</label>
-                                <select id="volProjeto">
-                                    <option value="">Nenhum</option>
-                                </select>
-                            </div>
+
+                        <div class="section-title">📌 STATUS</div>
+
+                        <div class="form-group">
+                            <label>Status <span class="obrigatorio">*</span></label>
+                            <select id="volStatus">
+                                <option value="Ativo">✅ Ativo</option>
+                                <option value="Pendente">⏳ Pendente</option>
+                                <option value="Inativo">❌ Inativo</option>
+                            </select>
                         </div>
+
                         <div class="form-group">
                             <label>Observações</label>
                             <textarea id="volObs" rows="2" placeholder="Informações adicionais..."></textarea>
                         </div>
-                        <button class="btn btn-primary btn-full" onclick="salvarPessoa('voluntario')">💾 Salvar Voluntário</button>
+
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="salvarPessoa('voluntario')">💾 Salvar</button>
+                            <button class="btn btn-outline" onclick="limparForm('voluntario')">🔄 Novo</button>
+                        </div>
+                        <div id="volStatusMsg" style="margin-top:8px;font-size:12px;color:var(--verde);"></div>
                     </div>
+
                     <div>
-                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📋 Lista de Voluntários</h4>
-                        <div id="listaVoluntarios">
+                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                            📋 Lista de Voluntários
+                            <span id="volTotal" style="font-size:12px;color:var(--cinza);">(0)</span>
+                        </h4>
+                        <div style="margin-bottom:12px;">
+                            <input type="text" id="buscaVol" placeholder="🔍 Buscar por nome, função..." oninput="filtrarLista('vol')" style="width:100%;padding:8px 12px;border:1px solid #E5E0D8;border-radius:8px;font-size:13px;">
+                        </div>
+                        <div id="listaVoluntarios" style="max-height:500px;overflow-y:auto;">
                             <div class="sem-dados">Nenhum voluntário cadastrado.</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB UNIVERSITÁRIO (NOVO) -->
+            <!-- ============================================================
+            TAB UNIVERSITÁRIO - VERSÃO COMPLETA
+            ============================================================ -->
             <div class="tab-content" id="tab-universitario">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                     <div>
                         <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📝 Cadastrar Universitário</h4>
                         <input type="hidden" id="universitarioId">
-                        
-                        <!-- DADOS PESSOAIS -->
+
+                        <!-- FOTO -->
+                        <div class="section-title">📸 Foto <span class="opcional">(opcional)</span></div>
+                        <div class="form-group" style="text-align:center;">
+                            <div class="foto-container">
+                                <div id="uniFotoPlaceholder" class="foto-placeholder">📷</div>
+                                <img id="uniFotoPreview" class="foto-preview" alt="Pré-visualização">
+                                <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                                    <input type="file" id="uniFoto" accept="image/*" onchange="previewFoto('uni', event)" style="display:none;">
+                                    <button type="button" class="btn btn-azul btn-sm" onclick="document.getElementById('uniFoto').click()">📁 Escolher</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removerFoto('uni')">🗑️ Remover</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="section-title">📋 DADOS PESSOAIS</div>
-                        
+
                         <div class="form-group">
-                            <label>Nome Completo *</label>
+                            <label>Nome Completo <span class="obrigatorio">*</span></label>
                             <input type="text" id="uniNome" placeholder="Nome completo">
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Matrícula *</label>
+                                <label>Matrícula <span class="obrigatorio">*</span></label>
                                 <input type="text" id="uniMatricula" placeholder="Nº de matrícula da UFV">
                             </div>
                             <div class="form-group">
-                                <label>CPF *</label>
+                                <label>CPF <span class="obrigatorio">*</span></label>
                                 <input type="text" id="uniCpf" placeholder="000.000.000-00">
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label>RG</label>
                                 <input type="text" id="uniRg" placeholder="RG">
                             </div>
                             <div class="form-group">
-                                <label>Data Nascimento *</label>
+                                <label>Data de Nascimento <span class="obrigatorio">*</span></label>
                                 <input type="date" id="uniNascimento">
                             </div>
                         </div>
+
                         <div class="form-group">
-                            <label>Sexo *</label>
+                            <label>Sexo <span class="obrigatorio">*</span></label>
                             <select id="uniSexo">
                                 <option value="">Selecione...</option>
                                 <option value="Masculino">Masculino</option>
@@ -758,29 +1364,31 @@
                             </select>
                         </div>
 
-                        <!-- CONTATO -->
                         <div class="section-title">📞 CONTATO</div>
 
                         <div class="form-group">
-                            <label>Telefone *</label>
+                            <label>Telefone <span class="obrigatorio">*</span></label>
                             <input type="text" id="uniTelefone" placeholder="(34) 99999-9999">
                         </div>
-                        <div class="form-group">
-                            <label>WhatsApp</label>
-                            <input type="text" id="uniWhatsapp" placeholder="(34) 99999-9999">
-                        </div>
-                        <div class="form-group">
-                            <label>E-mail</label>
-                            <input type="email" id="uniEmail" placeholder="email@ufv.br">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>WhatsApp</label>
+                                <input type="text" id="uniWhatsapp" placeholder="(34) 99999-9999">
+                            </div>
+                            <div class="form-group">
+                                <label>E-mail</label>
+                                <input type="email" id="uniEmail" placeholder="email@ufv.br">
+                            </div>
                         </div>
 
-                        <!-- ENDEREÇO -->
                         <div class="section-title">📍 ENDEREÇO <span class="opcional">(opcional)</span></div>
 
                         <div class="form-group">
                             <label>Endereço</label>
                             <input type="text" id="uniEndereco" placeholder="Rua, número, bairro">
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Cidade</label>
@@ -808,11 +1416,10 @@
                             </div>
                         </div>
 
-                        <!-- DADOS ACADÊMICOS -->
                         <div class="section-title">🎓 DADOS ACADÊMICOS</div>
 
                         <div class="form-group">
-                            <label>Instituição *</label>
+                            <label>Instituição <span class="obrigatorio">*</span></label>
                             <select id="uniInstituicao">
                                 <option value="UFV - Viçosa">UFV - Viçosa</option>
                                 <option value="UFV - Florestal">UFV - Florestal</option>
@@ -821,12 +1428,14 @@
                                 <option value="Outra Instituição">Outra Instituição</option>
                             </select>
                         </div>
+
                         <div class="form-group">
-                            <label>Curso *</label>
+                            <label>Curso <span class="obrigatorio">*</span></label>
                             <input type="text" id="uniCurso" placeholder="Ex: Administração, Engenharia">
                         </div>
+
                         <div class="form-group">
-                            <label>Período *</label>
+                            <label>Período <span class="obrigatorio">*</span></label>
                             <select id="uniPeriodo">
                                 <option value="">Selecione...</option>
                                 <option value="1º Período">1º Período</option>
@@ -846,21 +1455,21 @@
                             </select>
                         </div>
 
-                        <!-- RESPONSÁVEL (OPCIONAL) -->
                         <div class="section-title">👨‍👩‍👦 RESPONSÁVEL <span class="opcional">(opcional)</span></div>
 
                         <div class="form-group">
                             <label>Nome do Responsável</label>
                             <input type="text" id="uniResponsavel" placeholder="Nome do responsável (opcional)">
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Telefone do Responsável</label>
-                                <input type="text" id="uniTelefoneResponsavel" placeholder="(34) 99999-9999">
+                                <input type="text" id="uniTelResponsavel" placeholder="(34) 99999-9999">
                             </div>
                             <div class="form-group">
                                 <label>Vínculo</label>
-                                <select id="uniVinculoResponsavel">
+                                <select id="uniVinculo">
                                     <option value="">Selecione...</option>
                                     <option value="Pai">Pai</option>
                                     <option value="Mãe">Mãe</option>
@@ -876,7 +1485,6 @@
                             </div>
                         </div>
 
-                        <!-- OBSERVAÇÕES -->
                         <div class="section-title">📝 OBSERVAÇÕES</div>
 
                         <div class="form-group">
@@ -884,11 +1492,10 @@
                             <textarea id="uniObs" rows="2" placeholder="Informações adicionais..."></textarea>
                         </div>
 
-                        <!-- STATUS -->
                         <div class="section-title">📌 STATUS</div>
 
                         <div class="form-group">
-                            <label>Status *</label>
+                            <label>Status <span class="obrigatorio">*</span></label>
                             <select id="uniStatus">
                                 <option value="Ativo">✅ Ativo</option>
                                 <option value="Inativo">⚠️ Inativo</option>
@@ -897,21 +1504,32 @@
                             </select>
                         </div>
 
-                        <button class="btn btn-roxo btn-full" onclick="salvarPessoa('universitario')">💾 Salvar Universitário</button>
-                    </div>
-                    <div>
-                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;">📋 Lista de Universitários</h4>
-                        <div id="listaUniversitarios">
-                            <div class="sem-dados">Nenhum universitário cadastrado.</div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-roxo" onclick="salvarPessoa('universitario')">💾 Salvar</button>
+                            <button class="btn btn-outline" onclick="limparForm('universitario')">🔄 Novo</button>
                         </div>
-                        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--cinza);">
-                            🎓 Universitários da UFV e outras instituições
+                        <div id="uniStatusMsg" style="margin-top:8px;font-size:12px;color:var(--verde);"></div>
+                    </div>
+
+                    <div>
+                        <h4 style="font-size:14px;color:var(--cinza);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                            📋 Lista de Universitários
+                            <span id="uniTotal" style="font-size:12px;color:var(--cinza);">(0)</span>
+                        </h4>
+                        <div style="margin-bottom:12px;">
+                            <input type="text" id="buscaUni" placeholder="🔍 Buscar por nome, matrícula, curso..." oninput="filtrarLista('uni')" style="width:100%;padding:8px 12px;border:1px solid #E5E0D8;border-radius:8px;font-size:13px;">
+                        </div>
+                        <div id="listaUniversitarios" style="max-height:500px;overflow-y:auto;">
+                            <div class="sem-dados">Nenhum universitário cadastrado.</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- ============================================================
+        RODAPÉ
+        ============================================================ -->
         <div class="rodape">
             <div class="rodape-grid">
                 <div class="rodape-logo">
@@ -919,7 +1537,7 @@
                     <span class="logo-vigorre-fallback">Vigorre</span>
                 </div>
                 <div class="rodape-info">
-                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | SAP Enterprise</div>
                     <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
                     <div class="email">contato@vigorre.com.br</div>
                 </div>
@@ -927,29 +1545,43 @@
         </div>
     </main>
 
+    <!-- ============================================================
+    ÁREA DE IMPRESSÃO (OCULTA)
+    ============================================================ -->
+    <div id="print-area" style="display:none;"></div>
+
     <script src="menu.js?v=20261007"></script>
     <script>
         // ============================================================
-        // DADOS
+        // BANCO DE DADOS LOCAL
         // ============================================================
         var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
-        var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
 
+        // Dados iniciais
         if (pessoas.length === 0) {
             pessoas = [
                 { id: 1, nome: 'Maria Silva', tipo: 'beneficiario', cpf: '123.456.789-00', nascimento: '1985-06-15',
-                    email: 'maria@email.com', telefone: '(34) 99999-0001', whatsapp: '(34) 99999-0001',
-                    endereco: 'Rua A, 123', status: 'ativo', projeto_id: 1, obs: '', responsavel: 'João Silva' },
-                { id: 2, nome: 'Dr. Carlos Mendes', tipo: 'profissional', cpf: '987.654.321-00', nascimento: '1975-03-10',
-                    email: 'carlos@email.com', telefone: '(34) 99999-0002', whatsapp: '(34) 99999-0002',
-                    endereco: 'Rua B, 456', status: 'ativo', especialidade: 'Psicologia', registro: 'CRP 12345',
-                    projeto_id: 1, obs: '' },
-                { id: 3, nome: 'Ana Beatriz Silva', tipo: 'universitario', matricula: '2024001234', cpf: '123.456.789-00',
-                    rg: 'MG-12.345.678', nascimento: '2000-05-15', sexo: 'Feminino', telefone: '(34) 99999-1111',
-                    whatsapp: '(34) 99999-1111', email: 'ana.silva@ufv.br', endereco: 'Rua das Flores, 123',
-                    cidade: 'Viçosa', estado: 'MG', instituicao: 'UFV - Viçosa', curso: 'Administração',
-                    periodo: '6º Período', responsavel: 'Maria Silva', telefoneResponsavel: '(34) 99999-0001',
-                    vinculoResponsavel: 'Mãe', status: 'Ativo', obs: 'Bolsista do programa de extensão' }
+                    sexo: 'Feminino', rg: 'MG-12.345.678', email: 'maria@email.com', telefone: '(34) 99999-0001',
+                    whatsapp: '(34) 99999-0001', endereco: 'Rua A, 123, Viçosa-MG', status: 'Ativo',
+                    responsavel: 'João Silva', telResponsavel: '(34) 99999-0002', vinculo: 'Cônjuge',
+                    rgResponsavel: 'MG-98.765.432', cpfResponsavel: '987.654.321-00', renda: '2.001 a 5.000',
+                    irpf: 'Não', diagnostico: 'TEA', cid: 'F84.0', suporte: 'Sim', suporteDetalhes: 'Nível 2',
+                    comorbidades: 'Não', comorbidadesDetalhes: '', estudante: 'Não', escola: '', serie: '',
+                    alergia: 'Não', alergiaDetalhes: '', medicacao: 'Não', medicacaoDetalhes: '', atividades: [
+                        'Terapias'
+                    ], obs: '' },
+                { id: 2, nome: 'Dr. Carlos Mendes', tipo: 'profissional', cpf: '987.654.321-00',
+                    nascimento: '1975-03-10', sexo: 'Masculino', email: 'carlos@email.com',
+                    telefone: '(34) 99999-0002', whatsapp: '(34) 99999-0002', especialidade: 'Psicologia',
+                    temRegistro: 'Sim', conselho: 'CRP-MG', registroNum: '12345', vinculo: 'Parceiro Social',
+                    usuario: 'carlos.mendes', senha: '123456', acesso: 'admin', status: 'Ativo', obs: '' },
+                { id: 3, nome: 'Ana Beatriz Silva', tipo: 'universitario', matricula: '2024001234',
+                    cpf: '123.456.789-00', rg: 'MG-12.345.678', nascimento: '2000-05-15', sexo: 'Feminino',
+                    telefone: '(34) 99999-1111', whatsapp: '(34) 99999-1111', email: 'ana.silva@ufv.br',
+                    endereco: 'Rua das Flores, 123', cidade: 'Viçosa', estado: 'MG',
+                    instituicao: 'UFV - Viçosa', curso: 'Administração', periodo: '6º Período',
+                    responsavel: 'Maria Silva', telResponsavel: '(34) 99999-0001', vinculo: 'Mãe',
+                    status: 'Ativo', obs: 'Bolsista do programa de extensão' }
             ];
             localStorage.setItem('amovin_pessoas', JSON.stringify(pessoas));
         }
@@ -959,22 +1591,99 @@
         }
 
         // ============================================================
-        // PREENCHER PROJETOS
+        // FUNÇÕES AUXILIARES
         // ============================================================
-        function preencherProjetos() {
-            var selects = ['benefProjeto', 'profProjeto', 'volProjeto'];
-            selects.forEach(function(id) {
-                var select = document.getElementById(id);
-                if (!select) return;
-                select.innerHTML = '<option value="">Nenhum</option>';
-                projetos.filter(function(p) { return p.status === 'ativo'; }).forEach(function(p) {
-                    var option = document.createElement('option');
-                    option.value = p.id;
-                    option.textContent = p.nome;
-                    select.appendChild(option);
-                });
-            });
+        function formatarDataBR(dataISO) {
+            if (!dataISO) return '-';
+            var partes = dataISO.split('-');
+            return partes[2] + '/' + partes[1] + '/' + partes[0];
         }
+
+        function calcularIdade(dataNasc) {
+            if (!dataNasc) return '';
+            var hoje = new Date();
+            var nasc = new Date(dataNasc + 'T00:00:00');
+            var idade = hoje.getFullYear() - nasc.getFullYear();
+            var mes = hoje.getMonth() - nasc.getMonth();
+            if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) {
+                idade--;
+            }
+            return idade >= 0 ? idade + ' anos' : '';
+        }
+
+        function gerarMatricula(cpf) {
+            if (!cpf) return '';
+            var cpfLimpo = cpf.replace(/\D/g, '');
+            if (cpfLimpo.length >= 6) {
+                return 'MAT-' + cpfLimpo.substring(0, 6);
+            }
+            return '';
+        }
+
+        // ============================================================
+        // FOTO
+        // ============================================================
+        var fotos = {};
+
+        function previewFoto(prefix, event) {
+            var file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                alert('⚠️ A foto não pode ter mais que 5MB.');
+                event.target.value = '';
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                fotos[prefix] = e.target.result;
+                var preview = document.getElementById(prefix + 'FotoPreview');
+                preview.src = fotos[prefix];
+                preview.className = 'foto-preview visible';
+                document.getElementById(prefix + 'FotoPlaceholder').className = 'foto-placeholder hidden';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removerFoto(prefix) {
+            fotos[prefix] = null;
+            document.getElementById(prefix + 'Foto').value = '';
+            document.getElementById(prefix + 'FotoPreview').className = 'foto-preview';
+            document.getElementById(prefix + 'FotoPreview').src = '';
+            document.getElementById(prefix + 'FotoPlaceholder').className = 'foto-placeholder';
+        }
+
+        // ============================================================
+        // SENHA TOGGLE
+        // ============================================================
+        function toggleSenha(id, btn) {
+            var input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
+        // ============================================================
+        // REGISTRO PROFISSIONAL TOGGLE
+        // ============================================================
+        function toggleRegistroProf() {
+            var select = document.getElementById('profTemRegistro');
+            var fields = document.getElementById('profRegistroFields');
+            fields.style.display = select.value === 'Sim' ? 'block' : 'none';
+        }
+
+        // ============================================================
+        // VÍNCULO OUTRO
+        // ============================================================
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'benefVinculo') {
+                var group = document.getElementById('benefVinculoOutroGroup');
+                group.style.display = e.target.value === 'Outros' ? 'block' : 'none';
+            }
+        });
 
         // ============================================================
         // TAB
@@ -1006,32 +1715,83 @@
                 tipo: tipo,
                 cpf: document.getElementById(prefix + 'Cpf').value.trim(),
                 nascimento: document.getElementById(prefix + 'Nascimento').value,
-                email: document.getElementById(prefix + 'Email').value.trim(),
+                sexo: document.getElementById(prefix + 'Sexo') ? document.getElementById(prefix + 'Sexo').value : '',
+                email: document.getElementById(prefix + 'Email') ? document.getElementById(prefix + 'Email').value
+                .trim() : '',
                 telefone: document.getElementById(prefix + 'Telefone').value.trim(),
-                whatsapp: document.getElementById(prefix + 'Whatsapp').value.trim(),
+                whatsapp: document.getElementById(prefix + 'Whatsapp') ? document.getElementById(prefix + 'Whatsapp')
+                    .value.trim() : '',
                 status: document.getElementById(prefix + 'Status').value,
                 obs: document.getElementById(prefix + 'Obs').value.trim()
             };
 
-            // Campos específicos
+            // Foto
+            if (fotos[prefix]) {
+                dados.foto = fotos[prefix];
+            }
+
+            // Beneficiário
             if (tipo === 'beneficiario') {
-                dados.endereco = document.getElementById('benefEndereco').value.trim();
+                dados.rg = document.getElementById('benefRg').value.trim();
+                dados.matricula = document.getElementById('benefMatricula').value.trim();
+                dados.diagnostico = document.getElementById('benefDiagnostico').value.trim();
+                dados.cid = document.getElementById('benefCid').value.trim();
+                dados.suporte = document.getElementById('benefSuporte').value;
+                dados.suporteDetalhes = document.getElementById('benefSuporteDetalhes').value.trim();
+                dados.comorbidades = document.getElementById('benefComorbidades').value;
+                dados.comorbidadesDetalhes = document.getElementById('benefComorbidadesDetalhes').value.trim();
+                dados.estudante = document.getElementById('benefEstudante').value;
+                dados.escola = document.getElementById('benefEscola').value.trim();
+                dados.serie = document.getElementById('benefSerie').value.trim();
+                dados.alergia = document.getElementById('benefAlergia').value;
+                dados.alergiaDetalhes = document.getElementById('benefAlergiaDetalhes').value.trim();
+                dados.medicacao = document.getElementById('benefMedicacao').value;
+                dados.medicacaoDetalhes = document.getElementById('benefMedicacaoDetalhes').value.trim();
                 dados.responsavel = document.getElementById('benefResponsavel').value.trim();
-                dados.projeto_id = parseInt(document.getElementById('benefProjeto').value) || null;
+                dados.telResponsavel = document.getElementById('benefTelResponsavel').value.trim();
+                dados.vinculo = document.getElementById('benefVinculo').value;
+                if (dados.vinculo === 'Outros') {
+                    dados.vinculoOutro = document.getElementById('benefVinculoOutro').value.trim();
+                }
+                dados.rgResponsavel = document.getElementById('benefRgResponsavel').value.trim();
+                dados.cpfResponsavel = document.getElementById('benefCpfResponsavel').value.trim();
+                dados.endereco = document.getElementById('benefEndereco').value.trim();
+                dados.renda = document.getElementById('benefRenda').value;
+                dados.irpf = document.getElementById('benefIrpf').value;
+                var atividades = [];
+                document.querySelectorAll('.benefAtividade:checked').forEach(function(el) {
+                    atividades.push(el.value);
+                });
+                dados.atividades = atividades;
             }
+
+            // Profissional
             if (tipo === 'profissional') {
-                dados.especialidade = document.getElementById('profEspecialidade').value.trim();
-                dados.registro = document.getElementById('profRegistro').value.trim();
-                dados.projeto_id = parseInt(document.getElementById('profProjeto').value) || null;
+                dados.especialidade = document.getElementById('profEspecialidade').value;
+                dados.temRegistro = document.getElementById('profTemRegistro').value;
+                if (dados.temRegistro === 'Sim') {
+                    dados.conselho = document.getElementById('profConselho').value.trim();
+                    dados.registroNum = document.getElementById('profRegistroNum').value.trim();
+                }
+                dados.vinculo = document.getElementById('profVinculo').value;
+                dados.usuario = document.getElementById('profUsuario').value.trim();
+                dados.senha = document.getElementById('profSenha').value;
+                dados.acesso = document.getElementById('profAcesso').value;
+                if (!dados.usuario) { alert('⚠️ Usuário é obrigatório!'); return; }
+                if (!dados.senha) { alert('⚠️ Senha é obrigatória!'); return; }
             }
+
+            // Voluntário
             if (tipo === 'voluntario') {
+                dados.funcao = document.getElementById('volFuncao').value.trim();
                 dados.area = document.getElementById('volArea').value;
-                dados.projeto_id = parseInt(document.getElementById('volProjeto').value) || null;
+                if (!dados.funcao) { alert('⚠️ Função é obrigatória!'); return; }
             }
+
+            // Universitário
             if (tipo === 'universitario') {
                 dados.matricula = document.getElementById('uniMatricula').value.trim();
                 dados.rg = document.getElementById('uniRg').value.trim();
-                dados.sexo = document.getElementById('uniSexo').value;
                 dados.endereco = document.getElementById('uniEndereco').value.trim();
                 dados.cidade = document.getElementById('uniCidade').value.trim();
                 dados.estado = document.getElementById('uniEstado').value;
@@ -1039,10 +1799,8 @@
                 dados.curso = document.getElementById('uniCurso').value.trim();
                 dados.periodo = document.getElementById('uniPeriodo').value;
                 dados.responsavel = document.getElementById('uniResponsavel').value.trim();
-                dados.telefoneResponsavel = document.getElementById('uniTelefoneResponsavel').value.trim();
-                dados.vinculoResponsavel = document.getElementById('uniVinculoResponsavel').value;
-
-                // Validações específicas
+                dados.telResponsavel = document.getElementById('uniTelResponsavel').value.trim();
+                dados.vinculo = document.getElementById('uniVinculo').value;
                 if (!dados.matricula) { alert('⚠️ Matrícula é obrigatória!'); return; }
                 if (!dados.curso) { alert('⚠️ Curso é obrigatório!'); return; }
                 if (!dados.periodo) { alert('⚠️ Período é obrigatório!'); return; }
@@ -1068,7 +1826,10 @@
 
             var label = tipo === 'beneficiario' ? 'Beneficiário' : tipo === 'profissional' ? 'Profissional' :
                 tipo === 'voluntario' ? 'Voluntário' : 'Universitário';
-            alert('✅ ' + label + ' salvo com sucesso!');
+            document.getElementById(prefix + 'StatusMsg').textContent = '✅ ' + label + ' salvo com sucesso!';
+            setTimeout(function() {
+                document.getElementById(prefix + 'StatusMsg').textContent = '';
+            }, 4000);
         }
 
         // ============================================================
@@ -1089,30 +1850,87 @@
             document.getElementById(prefix + 'Nome').value = p.nome || '';
             document.getElementById(prefix + 'Cpf').value = p.cpf || '';
             document.getElementById(prefix + 'Nascimento').value = p.nascimento || '';
-            document.getElementById(prefix + 'Email').value = p.email || '';
+            if (document.getElementById(prefix + 'Sexo')) {
+                document.getElementById(prefix + 'Sexo').value = p.sexo || '';
+            }
+            if (document.getElementById(prefix + 'Email')) {
+                document.getElementById(prefix + 'Email').value = p.email || '';
+            }
             document.getElementById(prefix + 'Telefone').value = p.telefone || '';
-            document.getElementById(prefix + 'Whatsapp').value = p.whatsapp || '';
-            document.getElementById(prefix + 'Status').value = p.status || 'ativo';
+            if (document.getElementById(prefix + 'Whatsapp')) {
+                document.getElementById(prefix + 'Whatsapp').value = p.whatsapp || '';
+            }
+            document.getElementById(prefix + 'Status').value = p.status || 'Ativo';
             document.getElementById(prefix + 'Obs').value = p.obs || '';
 
-            if (p.tipo === 'beneficiario') {
-                document.getElementById('benefEndereco').value = p.endereco || '';
-                document.getElementById('benefResponsavel').value = p.responsavel || '';
-                document.getElementById('benefProjeto').value = p.projeto_id || '';
+            // Foto
+            if (p.foto) {
+                fotos[prefix] = p.foto;
+                var preview = document.getElementById(prefix + 'FotoPreview');
+                preview.src = p.foto;
+                preview.className = 'foto-preview visible';
+                document.getElementById(prefix + 'FotoPlaceholder').className = 'foto-placeholder hidden';
+            } else {
+                removerFoto(prefix);
             }
+
+            // Beneficiário
+            if (p.tipo === 'beneficiario') {
+                document.getElementById('benefRg').value = p.rg || '';
+                document.getElementById('benefMatricula').value = p.matricula || '';
+                document.getElementById('benefDiagnostico').value = p.diagnostico || '';
+                document.getElementById('benefCid').value = p.cid || '';
+                document.getElementById('benefSuporte').value = p.suporte || '';
+                document.getElementById('benefSuporteDetalhes').value = p.suporteDetalhes || '';
+                document.getElementById('benefComorbidades').value = p.comorbidades || '';
+                document.getElementById('benefComorbidadesDetalhes').value = p.comorbidadesDetalhes || '';
+                document.getElementById('benefEstudante').value = p.estudante || 'Não';
+                document.getElementById('benefEscola').value = p.escola || '';
+                document.getElementById('benefSerie').value = p.serie || '';
+                document.getElementById('benefAlergia').value = p.alergia || 'Não';
+                document.getElementById('benefAlergiaDetalhes').value = p.alergiaDetalhes || '';
+                document.getElementById('benefMedicacao').value = p.medicacao || 'Não';
+                document.getElementById('benefMedicacaoDetalhes').value = p.medicacaoDetalhes || '';
+                document.getElementById('benefResponsavel').value = p.responsavel || '';
+                document.getElementById('benefTelResponsavel').value = p.telResponsavel || '';
+                document.getElementById('benefVinculo').value = p.vinculo || '';
+                if (p.vinculo === 'Outros') {
+                    document.getElementById('benefVinculoOutroGroup').style.display = 'block';
+                    document.getElementById('benefVinculoOutro').value = p.vinculoOutro || '';
+                }
+                document.getElementById('benefRgResponsavel').value = p.rgResponsavel || '';
+                document.getElementById('benefCpfResponsavel').value = p.cpfResponsavel || '';
+                document.getElementById('benefEndereco').value = p.endereco || '';
+                document.getElementById('benefRenda').value = p.renda || '';
+                document.getElementById('benefIrpf').value = p.irpf || '';
+                document.querySelectorAll('.benefAtividade').forEach(function(el) {
+                    el.checked = p.atividades && p.atividades.indexOf(el.value) >= 0;
+                });
+            }
+
+            // Profissional
             if (p.tipo === 'profissional') {
                 document.getElementById('profEspecialidade').value = p.especialidade || '';
-                document.getElementById('profRegistro').value = p.registro || '';
-                document.getElementById('profProjeto').value = p.projeto_id || '';
+                document.getElementById('profTemRegistro').value = p.temRegistro || 'Não';
+                toggleRegistroProf();
+                document.getElementById('profConselho').value = p.conselho || '';
+                document.getElementById('profRegistroNum').value = p.registroNum || '';
+                document.getElementById('profVinculo').value = p.vinculo || '';
+                document.getElementById('profUsuario').value = p.usuario || '';
+                document.getElementById('profSenha').value = p.senha || '';
+                document.getElementById('profAcesso').value = p.acesso || 'consulta';
             }
+
+            // Voluntário
             if (p.tipo === 'voluntario') {
+                document.getElementById('volFuncao').value = p.funcao || '';
                 document.getElementById('volArea').value = p.area || 'Educação';
-                document.getElementById('volProjeto').value = p.projeto_id || '';
             }
+
+            // Universitário
             if (p.tipo === 'universitario') {
                 document.getElementById('uniMatricula').value = p.matricula || '';
                 document.getElementById('uniRg').value = p.rg || '';
-                document.getElementById('uniSexo').value = p.sexo || '';
                 document.getElementById('uniEndereco').value = p.endereco || '';
                 document.getElementById('uniCidade').value = p.cidade || '';
                 document.getElementById('uniEstado').value = p.estado || '';
@@ -1120,8 +1938,8 @@
                 document.getElementById('uniCurso').value = p.curso || '';
                 document.getElementById('uniPeriodo').value = p.periodo || '';
                 document.getElementById('uniResponsavel').value = p.responsavel || '';
-                document.getElementById('uniTelefoneResponsavel').value = p.telefoneResponsavel || '';
-                document.getElementById('uniVinculoResponsavel').value = p.vinculoResponsavel || '';
+                document.getElementById('uniTelResponsavel').value = p.telResponsavel || '';
+                document.getElementById('uniVinculo').value = p.vinculo || '';
             }
 
             // Muda para a tab correta
@@ -1139,11 +1957,40 @@
         // EXCLUIR PESSOA
         // ============================================================
         function excluirPessoa(id) {
-            if (!confirm('Excluir este registro?')) return;
+            if (!confirm('⚠️ Tem certeza que deseja excluir este registro?')) return;
             pessoas = pessoas.filter(function(p) { return p.id !== id; });
             salvarPessoas();
             renderizarListas();
             atualizarKPIs();
+        }
+
+        // ============================================================
+        // VISUALIZAR PESSOA
+        // ============================================================
+        function visualizarPessoa(id) {
+            var p = pessoas.find(function(x) { return x.id === id; });
+            if (!p) return;
+            var msg = '📋 DADOS CADASTRAIS\n\n';
+            msg += 'Nome: ' + p.nome + '\n';
+            msg += 'Tipo: ' + p.tipo + '\n';
+            msg += 'CPF: ' + (p.cpf || '-') + '\n';
+            msg += 'Telefone: ' + (p.telefone || '-') + '\n';
+            msg += 'Status: ' + (p.status || '-') + '\n';
+            if (p.tipo === 'beneficiario') {
+                msg += 'Diagnóstico: ' + (p.diagnostico || '-') + '\n';
+                msg += 'CID: ' + (p.cid || '-') + '\n';
+                msg += 'Responsável: ' + (p.responsavel || '-') + '\n';
+            }
+            if (p.tipo === 'profissional') {
+                msg += 'Especialidade: ' + (p.especialidade || '-') + '\n';
+                msg += 'Vínculo: ' + (p.vinculo || '-') + '\n';
+            }
+            if (p.tipo === 'universitario') {
+                msg += 'Matrícula: ' + (p.matricula || '-') + '\n';
+                msg += 'Curso: ' + (p.curso || '-') + '\n';
+                msg += 'Período: ' + (p.periodo || '-') + '\n';
+            }
+            alert(msg);
         }
 
         // ============================================================
@@ -1161,30 +2008,69 @@
             document.getElementById(prefix + 'Nome').value = '';
             document.getElementById(prefix + 'Cpf').value = '';
             document.getElementById(prefix + 'Nascimento').value = '';
-            document.getElementById(prefix + 'Email').value = '';
+            if (document.getElementById(prefix + 'Sexo')) {
+                document.getElementById(prefix + 'Sexo').value = '';
+            }
+            if (document.getElementById(prefix + 'Email')) {
+                document.getElementById(prefix + 'Email').value = '';
+            }
             document.getElementById(prefix + 'Telefone').value = '';
-            document.getElementById(prefix + 'Whatsapp').value = '';
-            document.getElementById(prefix + 'Status').value = tipo === 'universitario' ? 'Ativo' : 'ativo';
+            if (document.getElementById(prefix + 'Whatsapp')) {
+                document.getElementById(prefix + 'Whatsapp').value = '';
+            }
+            document.getElementById(prefix + 'Status').value = tipo === 'universitario' ? 'Ativo' : 'Ativo';
             document.getElementById(prefix + 'Obs').value = '';
+            removerFoto(prefix);
 
             if (tipo === 'beneficiario') {
-                document.getElementById('benefEndereco').value = '';
+                document.getElementById('benefRg').value = '';
+                document.getElementById('benefMatricula').value = '';
+                document.getElementById('benefDiagnostico').value = '';
+                document.getElementById('benefCid').value = '';
+                document.getElementById('benefSuporte').value = '';
+                document.getElementById('benefSuporteDetalhes').value = '';
+                document.getElementById('benefComorbidades').value = '';
+                document.getElementById('benefComorbidadesDetalhes').value = '';
+                document.getElementById('benefEstudante').value = 'Não';
+                document.getElementById('benefEscola').value = '';
+                document.getElementById('benefSerie').value = '';
+                document.getElementById('benefAlergia').value = 'Não';
+                document.getElementById('benefAlergiaDetalhes').value = '';
+                document.getElementById('benefMedicacao').value = 'Não';
+                document.getElementById('benefMedicacaoDetalhes').value = '';
                 document.getElementById('benefResponsavel').value = '';
-                document.getElementById('benefProjeto').value = '';
+                document.getElementById('benefTelResponsavel').value = '';
+                document.getElementById('benefVinculo').value = '';
+                document.getElementById('benefVinculoOutroGroup').style.display = 'none';
+                document.getElementById('benefVinculoOutro').value = '';
+                document.getElementById('benefRgResponsavel').value = '';
+                document.getElementById('benefCpfResponsavel').value = '';
+                document.getElementById('benefEndereco').value = '';
+                document.getElementById('benefRenda').value = '';
+                document.getElementById('benefIrpf').value = '';
+                document.querySelectorAll('.benefAtividade').forEach(function(el) { el.checked = false; });
             }
+
             if (tipo === 'profissional') {
                 document.getElementById('profEspecialidade').value = '';
-                document.getElementById('profRegistro').value = '';
-                document.getElementById('profProjeto').value = '';
+                document.getElementById('profTemRegistro').value = 'Não';
+                toggleRegistroProf();
+                document.getElementById('profConselho').value = '';
+                document.getElementById('profRegistroNum').value = '';
+                document.getElementById('profVinculo').value = '';
+                document.getElementById('profUsuario').value = '';
+                document.getElementById('profSenha').value = '';
+                document.getElementById('profAcesso').value = 'consulta';
             }
+
             if (tipo === 'voluntario') {
+                document.getElementById('volFuncao').value = '';
                 document.getElementById('volArea').value = 'Educação';
-                document.getElementById('volProjeto').value = '';
             }
+
             if (tipo === 'universitario') {
                 document.getElementById('uniMatricula').value = '';
                 document.getElementById('uniRg').value = '';
-                document.getElementById('uniSexo').value = '';
                 document.getElementById('uniEndereco').value = '';
                 document.getElementById('uniCidade').value = '';
                 document.getElementById('uniEstado').value = '';
@@ -1192,9 +2078,11 @@
                 document.getElementById('uniCurso').value = '';
                 document.getElementById('uniPeriodo').value = '';
                 document.getElementById('uniResponsavel').value = '';
-                document.getElementById('uniTelefoneResponsavel').value = '';
-                document.getElementById('uniVinculoResponsavel').value = '';
+                document.getElementById('uniTelResponsavel').value = '';
+                document.getElementById('uniVinculo').value = '';
             }
+
+            document.getElementById(prefix + 'StatusMsg').textContent = '';
         }
 
         // ============================================================
@@ -1219,6 +2107,14 @@
             var container = document.getElementById(containerId);
             var lista = pessoas.filter(function(p) { return p.tipo === tipo; });
 
+            var totalId = {
+                'beneficiario': 'benefTotal',
+                'profissional': 'profTotal',
+                'voluntario': 'volTotal',
+                'universitario': 'uniTotal'
+            } [tipo];
+            document.getElementById(totalId).textContent = '(' + lista.length + ')';
+
             if (lista.length === 0) {
                 var label = tipo === 'beneficiario' ? 'beneficiário' :
                     tipo === 'profissional' ? 'profissional' :
@@ -1229,55 +2125,203 @@
 
             container.innerHTML = lista.map(function(p) {
                 var statusMap = {
-                    'ativo': 'status-ativo',
-                    'pendente': 'status-pendente',
-                    'inativo': 'status-inativo',
                     'Ativo': 'status-ativo',
+                    'Pendente': 'status-pendente',
                     'Inativo': 'status-inativo',
                     'Formado': 'status-formado',
                     'Trancado': 'status-trancado'
                 };
                 var statusLabel = {
-                    'ativo': '✅ Ativo',
-                    'pendente': '⏳ Pendente',
-                    'inativo': '❌ Inativo',
                     'Ativo': '✅ Ativo',
-                    'Inativo': '⚠️ Inativo',
+                    'Pendente': '⏳ Pendente',
+                    'Inativo': '❌ Inativo',
                     'Formado': '🎓 Formado',
                     'Trancado': '⏸️ Trancado'
                 };
 
                 var detalhe = '';
                 if (tipo === 'beneficiario') {
-                    detalhe = '📧 ' + (p.email || '-') + ' | 📞 ' + (p.telefone || '-');
-                    if (p.responsavel) detalhe += ' | 👤 ' + p.responsavel;
+                    detalhe = '📞 ' + (p.telefone || '-') + ' | 👤 ' + (p.responsavel || '-');
+                    if (p.diagnostico) detalhe += ' | 🏥 ' + p.diagnostico;
                 }
                 if (tipo === 'profissional') {
-                    detalhe = '🔬 ' + (p.especialidade || '-') + ' | ' + (p.registro || '-');
+                    detalhe = '🔬 ' + (p.especialidade || '-') + ' | 📞 ' + (p.telefone || '-');
+                    if (p.temRegistro === 'Sim') detalhe += ' | 📜 ' + (p.conselho || '-') + ' ' + (p.registroNum ||
+                        '');
                 }
                 if (tipo === 'voluntario') {
-                    detalhe = '📌 ' + (p.area || '-');
+                    detalhe = '📌 ' + (p.funcao || '-') + ' | 📞 ' + (p.telefone || '-');
+                    if (p.area) detalhe += ' | ' + p.area;
                 }
                 if (tipo === 'universitario') {
-                    detalhe = '🎓 ' + (p.curso || '-') + ' | ' + (p.periodo || '-') + ' | ' + (p.matricula || '-');
-                    if (p.instituicao) detalhe += ' | 🏫 ' + p.instituicao;
-                    if (p.responsavel) detalhe += ' | 👤 ' + p.responsavel;
+                    detalhe = '🎓 ' + (p.curso || '-') + ' | ' + (p.periodo || '-');
+                    if (p.matricula) detalhe += ' | ' + p.matricula;
+                    if (p.instituicao) detalhe += ' | ' + p.instituicao;
                 }
 
-                var projeto = projetos.find(function(pr) { return pr.id === p.projeto_id; });
-                var projetoNome = projeto ? '📋 ' + projeto.nome : '';
+                var fotoHtml = '';
+                if (p.foto) {
+                    fotoHtml = '<img src="' + p.foto + '" alt="' + p.nome + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #F0E9DF;flex-shrink:0;">';
+                } else {
+                    var iniciais = p.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2)
+                    .toUpperCase();
+                    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B',
+                        '#F4511E'
+                    ];
+                    var cor = cores[p.id % cores.length] || '#C65A11';
+                    fotoHtml = '<div style="width:40px;height:40px;border-radius:50%;background:' + cor +
+                        ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">' +
+                        iniciais + '</div>';
+                }
 
                 return '<div class="pessoa-item">' +
-                    '<div class="info">' +
+                    '<div class="info" style="display:flex;align-items:center;gap:12px;">' +
+                    fotoHtml +
+                    '<div>' +
                     '<div class="nome">' + p.nome + (tipo === 'universitario' ? ' 🎓' : '') + '</div>' +
                     '<div class="detalhe">' + detalhe + '</div>' +
-                    (projetoNome ? '<div class="projetos">' + projetoNome + '</div>' : '') +
                     '<div><span class="status-badge ' + (statusMap[p.status] || 'status-pendente') + '">' +
                     (statusLabel[p.status] || p.status) + '</span></div>' +
                     '</div>' +
+                    '</div>' +
                     '<div class="acoes">' +
-                    '<button class="btn btn-primary" onclick="editarPessoa(' + p.id + ')">✏️</button>' +
-                    '<button class="btn btn-danger" onclick="excluirPessoa(' + p.id + ')">🗑️</button>' +
+                    '<button class="btn btn-azul btn-sm" onclick="visualizarPessoa(' + p.id + ')" title="Visualizar">👁️</button>' +
+                    '<button class="btn btn-primary btn-sm" onclick="editarPessoa(' + p.id + ')" title="Editar">✏️</button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="excluirPessoa(' + p.id + ')" title="Excluir">🗑️</button>' +
+                    (tipo === 'beneficiario' ? '<button class="btn btn-teal btn-sm" onclick="imprimirFRB(' + p.id +
+                    ')" title="Imprimir FRB">🖨️</button>' : '') +
+                    (tipo === 'beneficiario' ? '<button class="btn btn-roxo btn-sm" onclick="gerarTermo(' + p.id +
+                    ', \'adesao\')" title="Termos">📄</button>' : '') +
+                    (tipo === 'profissional' ? '<button class="btn btn-teal btn-sm" onclick="gerarTermoProfissional(' +
+                    p.id + ')" title="Termos">📄</button>' : '') +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // ============================================================
+        // FILTRAR LISTA
+        // ============================================================
+        function filtrarLista(tipo) {
+            var buscaId = {
+                'benef': 'buscaBenef',
+                'prof': 'buscaProf',
+                'vol': 'buscaVol',
+                'uni': 'buscaUni'
+            } [tipo];
+
+            var termo = document.getElementById(buscaId).value.toLowerCase();
+            var containerId = {
+                'benef': 'listaBeneficiarios',
+                'prof': 'listaProfissionais',
+                'vol': 'listaVoluntarios',
+                'uni': 'listaUniversitarios'
+            } [tipo];
+
+            var tipoCompleto = {
+                'benef': 'beneficiario',
+                'prof': 'profissional',
+                'vol': 'voluntario',
+                'uni': 'universitario'
+            } [tipo];
+
+            var lista = pessoas.filter(function(p) {
+                if (p.tipo !== tipoCompleto) return false;
+                if (!termo) return true;
+                return (p.nome || '').toLowerCase().indexOf(termo) >= 0 ||
+                    (p.cpf || '').indexOf(termo) >= 0 ||
+                    (p.matricula || '').toLowerCase().indexOf(termo) >= 0 ||
+                    (p.especialidade || '').toLowerCase().indexOf(termo) >= 0 ||
+                    (p.funcao || '').toLowerCase().indexOf(termo) >= 0 ||
+                    (p.curso || '').toLowerCase().indexOf(termo) >= 0;
+            });
+
+            var container = document.getElementById(containerId);
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum resultado encontrado.</div>';
+                return;
+            }
+
+            // Re-renderiza usando a mesma lógica de renderizarLista
+            var totalId = {
+                'benef': 'benefTotal',
+                'prof': 'profTotal',
+                'vol': 'volTotal',
+                'uni': 'uniTotal'
+            } [tipo];
+            document.getElementById(totalId).textContent = '(' + lista.length + ')';
+
+            container.innerHTML = lista.map(function(p) {
+                var statusMap = {
+                    'Ativo': 'status-ativo',
+                    'Pendente': 'status-pendente',
+                    'Inativo': 'status-inativo',
+                    'Formado': 'status-formado',
+                    'Trancado': 'status-trancado'
+                };
+                var statusLabel = {
+                    'Ativo': '✅ Ativo',
+                    'Pendente': '⏳ Pendente',
+                    'Inativo': '❌ Inativo',
+                    'Formado': '🎓 Formado',
+                    'Trancado': '⏸️ Trancado'
+                };
+
+                var detalhe = '';
+                if (tipoCompleto === 'beneficiario') {
+                    detalhe = '📞 ' + (p.telefone || '-') + ' | 👤 ' + (p.responsavel || '-');
+                    if (p.diagnostico) detalhe += ' | 🏥 ' + p.diagnostico;
+                }
+                if (tipoCompleto === 'profissional') {
+                    detalhe = '🔬 ' + (p.especialidade || '-') + ' | 📞 ' + (p.telefone || '-');
+                    if (p.temRegistro === 'Sim') detalhe += ' | 📜 ' + (p.conselho || '-') + ' ' + (p.registroNum ||
+                        '');
+                }
+                if (tipoCompleto === 'voluntario') {
+                    detalhe = '📌 ' + (p.funcao || '-') + ' | 📞 ' + (p.telefone || '-');
+                    if (p.area) detalhe += ' | ' + p.area;
+                }
+                if (tipoCompleto === 'universitario') {
+                    detalhe = '🎓 ' + (p.curso || '-') + ' | ' + (p.periodo || '-');
+                    if (p.matricula) detalhe += ' | ' + p.matricula;
+                    if (p.instituicao) detalhe += ' | ' + p.instituicao;
+                }
+
+                var fotoHtml = '';
+                if (p.foto) {
+                    fotoHtml = '<img src="' + p.foto + '" alt="' + p.nome + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #F0E9DF;flex-shrink:0;">';
+                } else {
+                    var iniciais = p.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2)
+                    .toUpperCase();
+                    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B',
+                        '#F4511E'
+                    ];
+                    var cor = cores[p.id % cores.length] || '#C65A11';
+                    fotoHtml = '<div style="width:40px;height:40px;border-radius:50%;background:' + cor +
+                        ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">' +
+                        iniciais + '</div>';
+                }
+
+                return '<div class="pessoa-item">' +
+                    '<div class="info" style="display:flex;align-items:center;gap:12px;">' +
+                    fotoHtml +
+                    '<div>' +
+                    '<div class="nome">' + p.nome + (tipoCompleto === 'universitario' ? ' 🎓' : '') + '</div>' +
+                    '<div class="detalhe">' + detalhe + '</div>' +
+                    '<div><span class="status-badge ' + (statusMap[p.status] || 'status-pendente') + '">' +
+                    (statusLabel[p.status] || p.status) + '</span></div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="acoes">' +
+                    '<button class="btn btn-azul btn-sm" onclick="visualizarPessoa(' + p.id + ')" title="Visualizar">👁️</button>' +
+                    '<button class="btn btn-primary btn-sm" onclick="editarPessoa(' + p.id + ')" title="Editar">✏️</button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="excluirPessoa(' + p.id + ')" title="Excluir">🗑️</button>' +
+                    (tipoCompleto === 'beneficiario' ? '<button class="btn btn-teal btn-sm" onclick="imprimirFRB(' +
+                    p.id + ')" title="Imprimir FRB">🖨️</button>' : '') +
+                    (tipoCompleto === 'beneficiario' ? '<button class="btn btn-roxo btn-sm" onclick="gerarTermo(' +
+                    p.id + ', \'adesao\')" title="Termos">📄</button>' : '') +
+                    (tipoCompleto === 'profissional' ? '<button class="btn btn-teal btn-sm" onclick="gerarTermoProfissional(' +
+                    p.id + ')" title="Termos">📄</button>' : '') +
                     '</div>' +
                     '</div>';
             }).join('');
@@ -1301,24 +2345,551 @@
         }
 
         // ============================================================
-        // VERIFICAÇÃO DE SESSÃO
+        // IMPRIMIR FRB - Versão SAP Enterprise
         // ============================================================
-        if (!sessionStorage.getItem('amovin_logado')) {
-            window.location.href = 'index.html';
-        }
+        function imprimirFRB(id) {
+            var p = pessoas.find(function(x) { return x.id === id; });
+            if (!p || p.tipo !== 'beneficiario') {
+                alert('⚠️ Beneficiário não encontrado.');
+                return;
+            }
 
-        // ============================================================
-        // INICIALIZAÇÃO
-        // ============================================================
-        preencherProjetos();
-        renderizarListas();
-        atualizarKPIs();
+            var printWindow = window.open('', '_blank', 'width=800,height=600');
+            if (!printWindow) {
+                alert('⚠️ Por favor, permita pop-ups para imprimir.');
+                return;
+            }
 
-        // Atualizar a cada 30 segundos
-        setInterval(function() {
-            renderizarListas();
-            atualizarKPIs();
-        }, 30000);
+            var idade = calcularIdade(p.nascimento);
+            var dataNasc = formatarDataBR(p.nascimento);
+            var atividades = p.atividades && p.atividades.length > 0 ? p.atividades.join(', ') : '-';
+
+            var html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>FRB - ${p.nome}</title>
+                <style>
+                    @page { size: A4 portrait; margin: 14mm; }
+                    * { margin:0; padding:0; box-sizing:border-box; }
+                    body { font-family: Arial, sans-serif; font-size: 11px; line-height: 1.4; color: #1A1A1A; background: white; }
+                    .container { max-width: 780px; margin: 0 auto; padding: 10px; }
+                    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1A1A1A; padding-bottom: 8px; margin-bottom: 12px; }
+                    .header .logo { height: 50px; }
+                    .header .org { text-align: right; font-size: 9px; line-height: 1.3; color: #444; }
+                    .header .org strong { color: #1A1A1A; }
+                    .title { text-align: center; font-weight: 700; font-size: 16px; margin: 10px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .subtitle { font-weight: 700; font-size: 12px; margin: 10px 0 4px; border-bottom: 1px solid #ddd; padding-bottom: 2px; }
+                    .field-row { display: flex; gap: 8px; margin: 2px 0; align-items: baseline; flex-wrap: wrap; }
+                    .field-label { font-weight: 700; min-width: 130px; font-size: 10px; color: #555; }
+                    .field-value { font-size: 11px; border-bottom: 1px solid #ddd; padding: 0 4px; min-width: 80px; }
+                    .field-value.inline { border-bottom: none; padding: 0; }
+                    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
+                    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 12px; }
+                    .signature { margin-top: 30px; text-align: center; }
+                    .signature .line { width: 380px; border-top: 1px solid #1A1A1A; margin: 16px auto 4px; }
+                    .signature .name { font-weight: 700; font-size: 12px; }
+                    .signature .info { font-size: 10px; color: #555; }
+                    .page-break { page-break-before: always; }
+                    .badge-print { display: inline-block; padding: 1px 10px; border-radius: 12px; font-size: 9px; font-weight: 600; background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+                    .badge-print.inativo { background: #FFEBEE; color: #C62828; border-color: #EF9A9A; }
+                    .badge-print.pendente { background: #FFF3E0; color: #E65100; border-color: #FFCC80; }
+                    .footer { text-align: center; font-size: 8px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';">
+            <div class="org">
+                <strong>AMOVIN – Associação e Movimento pela Inclusão</strong><br>
+                CNPJ: 55.880.046/0001-34 | Instagram: @amovin_rpa<br>
+                contato@amovin.org.br | (34) 99821-0513
+            </div>
+        </div>
+
+        <div class="title">Ficha de Registro do Beneficiário (FRB)</div>
+
+        <!-- DADOS DO BENEFICIÁRIO -->
+        <div class="subtitle">📋 DADOS DO BENEFICIÁRIO</div>
+
+        <div class="field-row">
+            <span class="field-label">Nome Completo:</span>
+            <span class="field-value">${p.nome || '-'}</span>
+        </div>
+
+        <div class="grid-3">
+            <div class="field-row"><span class="field-label">Matrícula:</span><span class="field-value">${p.matricula || '-'}</span></div>
+            <div class="field-row"><span class="field-label">Data Nascimento:</span><span class="field-value">${dataNasc}</span></div>
+            <div class="field-row"><span class="field-label">Idade:</span><span class="field-value">${idade || '-'}</span></div>
+        </div>
+
+        <div class="grid-3">
+            <div class="field-row"><span class="field-label">Sexo:</span><span class="field-value">${p.sexo || '-'}</span></div>
+            <div class="field-row"><span class="field-label">RG:</span><span class="field-value">${p.rg || '-'}</span></div>
+            <div class="field-row"><span class="field-label">CPF:</span><span class="field-value">${p.cpf || '-'}</span></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="field-row"><span class="field-label">Diagnóstico:</span><span class="field-value">${p.diagnostico || '-'}</span></div>
+            <div class="field-row"><span class="field-label">CID:</span><span class="field-value">${p.cid || '-'}</span></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="field-row"><span class="field-label">Nível de Suporte:</span><span class="field-value">${p.suporte === 'Sim' ? 'Sim - ' + (p.suporteDetalhes || '') : 'Não'}</span></div>
+            <div class="field-row"><span class="field-label">Comorbidades:</span><span class="field-value">${p.comorbidades === 'Sim' ? 'Sim - ' + (p.comorbidadesDetalhes || '') : 'Não'}</span></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="field-row"><span class="field-label">Estudante:</span><span class="field-value">${p.estudante || 'Não'}${p.estudante === 'Sim' ? ' - ' + (p.escola || '') + (p.serie ? ' (' + p.serie + ')' : '') : ''}</span></div>
+            <div class="field-row"><span class="field-label">Alergia:</span><span class="field-value">${p.alergia === 'Sim' ? 'Sim - ' + (p.alergiaDetalhes || '') : 'Não'}</span></div>
+        </div>
+
+        <div class="field-row">
+            <span class="field-label">Medicação Contínua:</span>
+            <span class="field-value">${p.medicacao === 'Sim' ? 'Sim - ' + (p.medicacaoDetalhes || '') : 'Não'}</span>
+        </div>
+
+        <div class="field-row">
+            <span class="field-label">Atividades Buscadas:</span>
+            <span class="field-value">${atividades}</span>
+        </div>
+
+        <div class="field-row">
+            <span class="field-label">Status:</span>
+            <span class="field-value inline"><span class="badge-print ${p.status === 'Ativo' ? '' : p.status === 'Inativo' ? 'inativo' : 'pendente'}">${p.status || 'Ativo'}</span></span>
+        </div>
+
+        <!-- DADOS DO RESPONSÁVEL -->
+        <div class="subtitle">👨‍👩‍👦 DADOS DO RESPONSÁVEL</div>
+
+        <div class="field-row">
+            <span class="field-label">Nome:</span>
+            <span class="field-value">${p.responsavel || '-'}</span>
+        </div>
+
+        <div class="grid-3">
+            <div class="field-row"><span class="field-label">Telefone:</span><span class="field-value">${p.telResponsavel || '-'}</span></div>
+            <div class="field-row"><span class="field-label">Vínculo:</span><span class="field-value">${p.vinculo === 'Outros' ? p.vinculoOutro : p.vinculo || '-'}</span></div>
+            <div class="field-row"><span class="field-label">CPF:</span><span class="field-value">${p.cpfResponsavel || '-'}</span></div>
+        </div>
+
+        <div class="field-row">
+            <span class="field-label">Endereço:</span>
+            <span class="field-value">${p.endereco || '-'}</span>
+        </div>
+
+        <div class="grid-2">
+            <div class="field-row"><span class="field-label">Renda Familiar:</span><span class="field-value">${p.renda || '-'}</span></div>
+            <div class="field-row"><span class="field-label">Dependente IRPF:</span><span class="field-value">${p.irpf || '-'}</span></div>
+        </div>
+
+        <!-- OBSERVAÇÕES -->
+        ${p.obs ? `
+        <div class="subtitle">📝 OBSERVAÇÕES</div>
+        <div class="field-row"><span class="field-value" style="border-bottom:none;white-space:pre-wrap;">${p.obs}</span></div>
+        ` : ''}
+
+        <!-- ASSINATURAS -->
+        <div class="signature">
+            <div class="line"></div>
+            <div class="name">${p.responsavel || '_________________________'}</div>
+            <div class="info">Responsável pelo Beneficiário</div>
+        </div>
+
+        <div class="signature">
+            <div class="line"></div>
+            <div class="name">Representante AMOVIN</div>
+            <div class="info">Associação e Movimento pela Inclusão</div>
+        </div>
+
+        <div class="footer">
+            Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            window.print();
+            window.onafterprint = function() { window.close(); };
+        };
     </script>
+</body>
+</html>`;
+
+printWindow.document.write(html);
+printWindow.document.close();
+}
+
+// ============================================================
+// GERAR TERMO - Versão SAP Enterprise
+// ============================================================
+function gerarTermo(id, tipo) {
+var p = pessoas.find(function(x) { return x.id === id; });
+if (!p || p.tipo !== 'beneficiario') {
+alert('⚠️ Beneficiário não encontrado.');
+return;
+}
+
+var printWindow = window.open('', '_blank', 'width=800,height=600');
+if (!printWindow) {
+alert('⚠️ Por favor, permita pop-ups para imprimir.');
+return;
+}
+
+var hoje = new Date();
+var dataFormatada = hoje.toLocaleDateString('pt-BR');
+var mesNome = hoje.toLocaleDateString('pt-BR', { month: 'long' });
+var mesCap = mesNome.charAt(0).toUpperCase() + mesNome.slice(1);
+
+var termos = {
+'adesao': {
+titulo: 'TERMO DE ADESÃO E COMPROMISSO',
+conteudo: `
+<p><strong>1. IDENTIFICAÇÃO</strong><br>
+ASSOCIADO(A) RESPONSÁVEL: ${p.responsavel || '________________'}, CPF: ${p.cpfResponsavel || '________________'}, ${p.endereco || 'Endereço não informado'}.<br>
+BENEFICIÁRIO (FILHO/A): ${p.nome || '________________'} | MATRÍCULA: ${p.matricula || '________________'}, Nascimento: ${formatarDataBR(p.nascimento)}.</p>
+
+<p><strong>2. DO OBJETO</strong><br>
+O presente termo formaliza a participação do beneficiário nas atividades promovidas pela Associação, visando o suporte, a inclusão e a defesa de direitos, conforme o Estatuto Social da entidade.</p>
+
+<p><strong>3. COMPROMISSOS DA ASSOCIAÇÃO</strong></p>
+<ul>
+<li>Oferecer atividades, orientações ou acolhimento conforme a disponibilidade de voluntários e recursos.</li>
+<li>Zelar pelo bem-estar e segurança dos beneficiários durante o período das atividades na sede.</li>
+<li>Manter sigilo sobre laudos e dados sensíveis compartilhados pela família.</li>
+</ul>
+
+<p><strong>4. COMPROMISSOS DOS PAIS/RESPONSÁVEIS</strong></p>
+<ul>
+<li><strong>Frequência e Pontualidade:</strong> Comunicar ausências em oficinas ou atendimentos com no mínimo 24h de antecedência.</li>
+<li><strong>Cláusula de Frequência:</strong> A ocorrência de 03 faltas consecutivas ou alternadas, sem comprovação ou justificativa, resultará na perda da vaga no horário atual.</li>
+<li><strong>Participação Ativa:</strong> O responsável compromete-se a realizar, no mínimo, 03 participações voluntárias anuais.</li>
+<li><strong>Atualização de Dados:</strong> Informar qualquer mudança de telefone, endereço ou quadro clínico.</li>
+</ul>
+
+<p><strong>5. PROTEÇÃO DE DADOS E IMAGEM (LGPD)</strong></p>
+<ul>
+<li><strong>Dados Sensíveis:</strong> Autorizo a Associação a armazenar cópias de laudos e documentos para fins estatísticos e de defesa de direitos.</li>
+<li><strong>Uso de Imagem:</strong> ( ) SIM ( ) NÃO - Autorizo a utilização da imagem e voz do beneficiário em fotos e vídeos para divulgação das ações da Associação.</li>
+</ul>
+
+<p><strong>6. DO CUSTO E CONTRIBUIÇÃO</strong></p>
+<ul>
+<li><strong>Gratuidade Atual:</strong> A AMOVIN não realiza cobrança de mensalidades.</li>
+<li><strong>Serviços:</strong> A associação busca oferecer acesso a consultas gratuitas ou com valor social.</li>
+<li><strong>Alterações Futuras:</strong> Em caso de necessidade, a AMOVIN reserva-se o direito de instituir taxas, comunicando com antecedência.</li>
+</ul>
+
+<p><strong>7. DISPOSIÇÕES GERAIS</strong><br>
+Este termo tem validade por tempo indeterminado, podendo ser rescindido por qualquer uma das partes mediante aviso prévio.</p>
+
+<p><strong>8. LOCAL E DATA</strong><br>
+Rio Paranaíba - MG, ${dataFormatada}.</p>
+`
+},
+'consentimento': {
+titulo: 'TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO (TCLE)',
+conteudo: `
+<p><strong>IDENTIFICAÇÃO DO RESPONSÁVEL LEGAL</strong><br>
+Eu, ${p.responsavel || '_________________________'}, portador(a) do CPF: ${p.cpfResponsavel || '_________________________'}, residente na ${p.endereco || '_________________________'}.</p>
+
+<p><strong>IDENTIFICAÇÃO DO PROFISSIONAL</strong><br>
+Declaro que fui previamente informado(a) pelo(a) profissional <strong>_________________________</strong>, inscrito(a) no Conselho de Classe <strong>________________</strong> sob o nº <strong>________________</strong>.</p>
+
+<p><strong>CONSENTIMENTO E ESCLARECIMENTOS</strong><br>
+Declaro que recebi todos os esclarecimentos necessários sobre o diagnóstico, plano de intervenção e objetivos da assistência para o menor <strong>${p.nome}</strong>.</p>
+
+<p>Estou ciente de que posso, a qualquer momento, solicitar novos esclarecimentos e interromper o tratamento. Diante do exposto, dou meu livre consentimento.</p>
+
+<p>Rio Paranaíba - MG, ${dataFormatada}.</p>
+`
+},
+'fisio': {
+titulo: 'FICHA DE AVALIAÇÃO FISIOTERAPÊUTICA PEDIÁTRICA',
+conteudo: `
+<p><strong>IDENTIFICAÇÃO DO PACIENTE</strong><br>
+Nome: ${p.nome || '-'} | Data Nascimento: ${formatarDataBR(p.nascimento) || '-'} | Sexo: ${p.sexo || '-'}<br>
+Responsável: ${p.responsavel || '-'} | Telefone: ${p.telResponsavel || '-'}<br>
+Endereço: ${p.endereco || '-'}</p>
+
+<p><strong>DIAGNÓSTICO CLÍNICO</strong><br>
+${p.diagnostico || '-'} | CID: ${p.cid || '-'}</p>
+
+<p><strong>HISTÓRIA CLÍNICA</strong><br>
+________________________________________<br>
+________________________________________<br>
+________________________________________</p>
+
+<p><strong>EXAME FÍSICO</strong><br>
+________________________________________<br>
+________________________________________<br>
+________________________________________</p>
+
+<p><strong>DIAGNÓSTICO FISIOTERAPÊUTICO</strong><br>
+________________________________________<br>
+________________________________________</p>
+
+<p><strong>PLANO DE TRATAMENTO</strong><br>
+________________________________________<br>
+________________________________________</p>
+
+<p>Rio Paranaíba - MG, ${dataFormatada}.</p>
+`
+}
+};
+
+var termo = termos[tipo] || termos['adesao'];
+
+var html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${termo.titulo}</title>
+    <style>
+        @page { size: A4 portrait; margin: 14mm; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #1A1A1A; background: white; }
+        .container { max-width: 780px; margin: 0 auto; padding: 10px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1A1A1A; padding-bottom: 8px; margin-bottom: 12px; }
+        .header .logo { height: 50px; }
+        .header .org { text-align: right; font-size: 9px; line-height: 1.3; color: #444; }
+        .header .org strong { color: #1A1A1A; }
+        .title { text-align: center; font-weight: 700; font-size: 16px; margin: 12px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        p { margin: 6px 0; }
+        ul { margin: 4px 0 4px 20px; }
+        li { margin: 2px 0; }
+        .signature { margin-top: 30px; text-align: center; }
+        .signature .line { width: 380px; border-top: 1px solid #1A1A1A; margin: 16px auto 4px; }
+        .signature .name { font-weight: 700; font-size: 12px; }
+        .signature .info { font-size: 10px; color: #555; }
+        .page-break { page-break-before: always; }
+        .footer { text-align: center; font-size: 8px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 8px; }
+        .subtitle { font-weight: 700; font-size: 13px; margin: 10px 0 4px; border-bottom: 1px solid #ddd; padding-bottom: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';">
+            <div class="org">
+                <strong>AMOVIN – Associação e Movimento pela Inclusão</strong><br>
+                CNPJ: 55.880.046/0001-34 | Instagram: @amovin_rpa<br>
+                contato@amovin.org.br | (34) 99821-0513
+            </div>
+        </div>
+
+        <div class="title">${termo.titulo}</div>
+
+        ${termo.conteudo}
+
+        <!-- ASSINATURAS -->
+        <div class="signature">
+            <div class="line"></div>
+            <div class="name">${p.responsavel || '_________________________'}</div>
+            <div class="info">Responsável pelo Beneficiário</div>
+        </div>
+
+        <div class="signature">
+            <div class="line"></div>
+            <div class="name">Representante AMOVIN</div>
+            <div class="info">Associação e Movimento pela Inclusão</div>
+        </div>
+
+        <div class="footer">
+            Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            window.print();
+            window.onafterprint = function() { window.close(); };
+        };
+    </script>
+</body>
+</html>`;
+
+printWindow.document.write(html);
+printWindow.document.close();
+}
+
+// ============================================================
+// GERAR TERMO PROFISSIONAL
+// ============================================================
+function gerarTermoProfissional(id) {
+var p = id ? pessoas.find(function(x) { return x.id === id; }) : null;
+
+if (!p) {
+// Se não passou ID, pega do formulário
+var nome = document.getElementById('profNome').value.trim();
+if (!nome) { alert('⚠️ Preencha o nome do profissional primeiro.'); return; }
+
+p = {
+nome: nome,
+especialidade: document.getElementById('profEspecialidade').value || '-',
+cpf: document.getElementById('profCpf').value || '-',
+temRegistro: document.getElementById('profTemRegistro').value || 'Não',
+conselho: document.getElementById('profConselho').value || '-',
+registroNum: document.getElementById('profRegistroNum').value || '-',
+vinculo: document.getElementById('profVinculo').value || '-',
+telefone: document.getElementById('profTelefone').value || '-',
+};
+}
+
+var printWindow = window.open('', '_blank', 'width=800,height=600');
+if (!printWindow) {
+alert('⚠️ Por favor, permita pop-ups para imprimir.');
+return;
+}
+
+var hoje = new Date();
+var dataFormatada = hoje.toLocaleDateString('pt-BR');
+var mesNome = hoje.toLocaleDateString('pt-BR', { month: 'long' });
+var mesCap = mesNome.charAt(0).toUpperCase() + mesNome.slice(1);
+var regText = p.temRegistro === 'Sim' && p.registroNum ? `, registrado(a) sob o nº ${p.registroNum}` : '';
+
+var html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Termo de ${p.vinculo === 'Voluntario' ? 'Voluntário' : 'Parceria'}</title>
+    <style>
+        @page { size: A4 portrait; margin: 14mm; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #1A1A1A; background: white; }
+        .container { max-width: 780px; margin: 0 auto; padding: 10px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1A1A1A; padding-bottom: 8px; margin-bottom: 12px; }
+        .header .logo { height: 50px; }
+        .header .org { text-align: right; font-size: 9px; line-height: 1.3; color: #444; }
+        .header .org strong { color: #1A1A1A; }
+        .title { text-align: center; font-weight: 700; font-size: 16px; margin: 12px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        p { margin: 6px 0; }
+        ul { margin: 4px 0 4px 20px; }
+        li { margin: 2px 0; }
+        .signature { margin-top: 30px; text-align: center; }
+        .signature .line { width: 380px; border-top: 1px solid #1A1A1A; margin: 16px auto 4px; }
+        .signature .name { font-weight: 700; font-size: 12px; }
+        .signature .info { font-size: 10px; color: #555; }
+        .footer { text-align: center; font-size: 8px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';">
+            <div class="org">
+                <strong>AMOVIN – Associação e Movimento pela Inclusão</strong><br>
+                CNPJ: 55.880.046/0001-34 | Instagram: @amovin_rpa<br>
+                contato@amovin.org.br | (34) 99821-0513
+            </div>
+        </div>
+
+        <div class="title">${p.vinculo === 'Voluntario' ? 'TERMO DE ADESÃO AO TRABALHO VOLUNTÁRIO' : 'TERMO DE PARCERIA E COOPERAÇÃO TÉCNICO-SOCIAL'}</div>
+
+        <p><strong>${p.vinculo === 'Voluntario' ? 'VOLUNTÁRIO(A):' : 'PARCEIRO(A):'}</strong>
+        ${p.nome}, ${p.especialidade}, portador(a) do CPF ${p.cpf || '________________'}${regText}.</p>
+
+        <p><strong>ASSOCIAÇÃO:</strong> AMOVIN - Associação e Movimento pela Inclusão em Rio Paranaíba<br>
+        <strong>CNPJ:</strong> 55.880.046/0001-34</p>
+
+        ${p.vinculo === 'Voluntario' ? `
+        <p><strong>CLÁUSULA PRIMEIRA – DA NATUREZA DO VÍNCULO E FISCAL</strong><br>
+        1.1. O serviço prestado é de natureza não remunerada e não gera vínculo empregatício, nem obrigações trabalhistas, previdenciárias ou fiscais para a AMOVIN.</p>
+
+        <p><strong>CLÁUSULA SEGUNDA – DA DISPONIBILIDADE E CUMPRIMENTO DA GRADE</strong><br>
+        2.1. O VOLUNTÁRIO informará previamente à AMOVIN os dias e horários disponíveis para o trabalho voluntário.<br>
+        2.2. Após a definição da grade, o VOLUNTÁRIO compromete-se a cumprir os agendamentos realizados.</p>
+
+        <p><strong>CLÁUSULA TERCEIRA – DO CRITÉRIO DE BENEFÍCIO</strong><br>
+        3.1. A gratuidade nos atendimentos será assegurada apenas às famílias assistidas com cadastro ativo.</p>
+
+        <p><strong>CLÁUSULA QUARTA – DA ESTRUTURA E COMUNICAÇÃO</strong><br>
+        4.1. A AMOVIN disponibiliza o espaço físico. O VOLUNTÁRIO deve comunicar faltas eventuais com 24 horas de antecedência.</p>
+
+        <p><strong>CLÁUSULA QUINTA – DA RESCISÃO E VÍNCULO</strong><br>
+        5.1. O desligamento exige aviso prévio de 30 dias para garantir a transição adequada dos pacientes.</p>
+        ` : `
+        <p><strong>CLÁUSULA PRIMEIRA – DO OBJETO E DA INFRAESTRUTURA</strong><br>
+        1.1. A AMOVIN disponibiliza ao PARCEIRO o uso de suas instalações físicas e materiais pedagógicos.<br>
+        1.2. O PARCEIRO deverá zelar pelo ambiente e materiais, notificando a secretaria com 24 horas de antecedência.</p>
+
+        <p><strong>CLÁUSULA SEGUNDA – DA DISPONIBILIDADE E GESTÃO DE AGENDA</strong><br>
+        2.1. O PARCEIRO informará formalmente à AMOVIN os dias e horários em que disponibilizará seus serviços.<br>
+        2.2. Uma vez estabelecida a grade, o PARCEIRO compromete-se a cumprir integralmente os atendimentos agendados.<br>
+        2.3. O PARCEIRO destinará 50% de sua grade para associados ativos. Os demais 50% ficam sob livre demanda.</p>
+
+        <p><strong>CLÁUSULA TERCEIRA – DA AUSÊNCIA DE VÍNCULO E RESPONSABILIDADE FISCAL</strong><br>
+        3.1. A presente parceria não estabelece qualquer vínculo empregatício entre a AMOVIN e o PARCEIRO.<br>
+        3.2. A AMOVIN não possui qualquer responsabilidade sobre obrigações fiscais ou tributárias do profissional.</p>
+
+        <p><strong>CLÁUSULA QUARTA – DOS CRITÉRIOS PARA VALOR SOCIAL</strong><br>
+        4.1. O acesso ao valor social é exclusivo para famílias com cadastro ativo e que comprovem a não obrigatoriedade de declaração de IR.</p>
+
+        <p><strong>CLÁUSULA QUINTA – DA ASSIDUIDADE E COMUNICAÇÃO</strong><br>
+        5.1. Em caso de eventualidade que impeça o atendimento, o profissional deverá notificar a AMOVIN com antecedência.</p>
+
+        <p><strong>CLÁUSULA SEXTA – DA RESCISÃO</strong><br>
+        6.1. O encerramento da parceria exige aviso prévio de 30 dias e transição orientada dos pacientes.</p>
+        `}
+
+        <p>Rio Paranaíba - MG, ${dataFormatada}.</p>
+
+        <div class="signature">
+            <div class="line"></div>
+            <div class="name">${p.nome}</div>
+            <div class="info">${p.especialidade}${p.temRegistro === 'Sim' && p.registroNum ? ` – Registro: ${p.registroNum}` : ''}</div>
+        </div>
+
+        <div class="signature">
+            <div class="line"></div>
+            <div class="name">Representante AMOVIN</div>
+            <div class="info">Associação e Movimento pela Inclusão</div>
+        </div>
+
+        <div class="footer">
+            Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            window.print();
+            window.onafterprint = function() { window.close(); };
+        };
+    </script>
+</body>
+</html>`;
+
+printWindow.document.write(html);
+printWindow.document.close();
+}
+
+// ============================================================
+// VERIFICAÇÃO DE SESSÃO
+// ============================================================
+if (!sessionStorage.getItem('amovin_logado')) {
+window.location.href = 'index.html';
+}
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+renderizarListas();
+atualizarKPIs();
+
+// Atualizar a cada 30 segundos
+setInterval(function() {
+renderizarListas();
+atualizarKPIs();
+}, 30000);
+
+console.log('✅ IDP - Gestão de Pessoas carregado!');
+console.log('📊 Total de registros:', pessoas.length);
+</script>
+
 </body>
 </html>
