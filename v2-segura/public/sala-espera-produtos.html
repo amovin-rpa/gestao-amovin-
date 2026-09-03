@@ -17,6 +17,10 @@
             --cinza-claro: #F8F4ED;
             --branco: #FFFFFF;
             --vermelho: #E53935;
+            --sombra: 0 2px 12px rgba(0,0,0,0.06);
+            --sombra-hover: 0 4px 24px rgba(0,0,0,0.10);
+            --border-radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * {
             margin: 0;
@@ -34,6 +38,8 @@
             flex: 1;
             margin-left: 270px;
             padding: 24px 30px;
+            min-height: 100vh;
+            width: calc(100% - 270px);
         }
         .topo-bar {
             display: flex;
@@ -66,14 +72,23 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-sair-topo:hover {
+            background: #F0E9DF;
         }
 
         .card {
             background: #FFFFFF;
             padding: 24px;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             border: 1px solid #F0E9DF;
             margin-bottom: 20px;
+            box-shadow: var(--sombra);
+            transition: var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--sombra-hover);
         }
         .card h3 {
             font-size: 16px;
@@ -154,7 +169,7 @@
             cursor: pointer;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            transition: var(--transition);
         }
         .btn-estoque {
             background: #E3F2FD;
@@ -204,11 +219,18 @@
         .filtro-bar select,
         .filtro-bar input {
             padding: 8px 12px;
-            border: 1px solid #E5E0D8;
+            border: 1.5px solid #E5E0D8;
             border-radius: 8px;
             font-size: 12px;
             font-family: 'Inter', sans-serif;
             background: white;
+            transition: var(--transition);
+        }
+        .filtro-bar select:focus,
+        .filtro-bar input:focus {
+            outline: none;
+            border-color: var(--laranja);
+            box-shadow: 0 0 0 3px rgba(198,90,17,0.08);
         }
         .filtro-bar .badge-count {
             font-size: 12px;
@@ -216,12 +238,45 @@
             margin-left: auto;
         }
 
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+        .kpi-card {
+            background: #FFFFFF;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid #F0E9DF;
+            text-align: center;
+            box-shadow: var(--sombra);
+            transition: var(--transition);
+        }
+        .kpi-card:hover {
+            box-shadow: var(--sombra-hover);
+            transform: translateY(-2px);
+        }
+        .kpi-card .kpi-valor {
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .kpi-card .kpi-label {
+            font-size: 11px;
+            color: var(--cinza);
+        }
+        .kpi-valor.laranja { color: var(--laranja); }
+        .kpi-valor.azul { color: var(--azul); }
+        .kpi-valor.verde { color: var(--verde); }
+        .kpi-valor.amarelo { color: #E65100; }
+
         .rodape {
             background: #FFFFFF;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             padding: 12px 18px;
             border: 1px solid #F0E9DF;
             margin-top: 20px;
+            box-shadow: var(--sombra);
         }
         .rodape-grid {
             display: flex;
@@ -267,6 +322,9 @@
         @media (max-width: 900px) {
             .main-content {
                 margin-left: 0;
+                padding: 16px;
+                width: 100%;
+                padding-top: 60px;
             }
             .produto-item {
                 flex-direction: column;
@@ -274,6 +332,11 @@
             }
             .produto-item .acoes {
                 justify-content: center;
+            }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
@@ -325,26 +388,26 @@
                 <h1>⏳ Sala de Espera <span>Produtos</span></h1>
                 <span class="sub">Produtos aguardando direcionamento para Estoque / Patrimônio / Serviço</span>
             </div>
-            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+            <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
         <!-- KPIs -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;margin-bottom:22px;">
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:var(--laranja);" id="kpiTotal">0</div>
-                <div style="font-size:11px;color:var(--cinza);">📦 Aguardando</div>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-valor laranja" id="kpiTotal">0</div>
+                <div class="kpi-label">📦 Aguardando</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:var(--azul);" id="kpiEstoque">0</div>
-                <div style="font-size:11px;color:var(--cinza);">📦 Para Estoque</div>
+            <div class="kpi-card">
+                <div class="kpi-valor azul" id="kpiEstoque">0</div>
+                <div class="kpi-label">📦 Para Estoque</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:var(--verde);" id="kpiPatrimonio">0</div>
-                <div style="font-size:11px;color:var(--cinza);">🏢 Para Patrimônio</div>
+            <div class="kpi-card">
+                <div class="kpi-valor verde" id="kpiPatrimonio">0</div>
+                <div class="kpi-label">🏢 Para Patrimônio</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:#E65100;" id="kpiServico">0</div>
-                <div style="font-size:11px;color:var(--cinza);">🛠️ Para Serviço</div>
+            <div class="kpi-card">
+                <div class="kpi-valor amarelo" id="kpiServico">0</div>
+                <div class="kpi-label">🛠️ Para Serviço</div>
             </div>
         </div>
 
@@ -384,6 +447,7 @@
         </div>
     </main>
 
+    <script src="config.js"></script>
     <script src="menu.js?v=20261007"></script>
     <script>
         // ============================================================
@@ -427,13 +491,14 @@
             var texto = descricao.toLowerCase();
             var palavrasChave = {
                 'estoque': ['material', 'consumível', 'cesta', 'alimento', 'higiene', 'limpeza', 'papel', 'caneta', 'lápis',
-                    'borracha', 'cola', 'tesoura', 'kit'
+                    'borracha', 'cola', 'tesoura', 'kit', 'caderno', 'estojo', 'mochila'
                 ],
                 'patrimonio': ['computador', 'notebook', 'monitor', 'impressora', 'mesa', 'cadeira', 'armário', 'estante',
-                    'veículo', 'carro', 'moto', 'bicicleta', 'equipamento', 'máquina', 'ferramenta'
+                    'veículo', 'carro', 'moto', 'bicicleta', 'equipamento', 'máquina', 'ferramenta', 'aparelho', 'tv',
+                    'televisão', 'projetor', 'som', 'caixa', 'amplificador'
                 ],
                 'servico': ['serviço', 'consultoria', 'treinamento', 'curso', 'oficina', 'palestra', 'evento', 'manutenção',
-                    'reparo', 'instalação', 'transporte'
+                    'reparo', 'instalação', 'transporte', 'hora', 'mão de obra', 'mão-de-obra'
                 ]
             };
 
@@ -561,7 +626,7 @@
                     obs: 'Nota: ' + (nota ? nota.numero : '---') + ' | Sala de Espera'
                 });
                 localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
-                localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
+                localStorage.setItem('amovin_patrimonio_num', String(ultimoNumero));
                 mostrarToast('🏢 Produto adicionado ao Patrimônio!', 'success');
             } else if (destino === 'servico') {
                 var servicos = JSON.parse(localStorage.getItem('amovin_servicos') || '[]');
@@ -584,7 +649,7 @@
         // IGNORAR PRODUTO
         // ============================================================
         function ignorarProduto(id) {
-            if (!confirm('Ignorar este produto? Ele será removido da sala de espera.')) return;
+            if (!confirm('⚠️ Ignorar este produto? Ele será removido da sala de espera.')) return;
             produtosEspera = produtosEspera.filter(function(p) { return p.id !== id; });
             localStorage.setItem('amovin_produtos_espera', JSON.stringify(produtosEspera));
             renderizarProdutos();
@@ -610,33 +675,8 @@
         }
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // VERIFICAÇÃO DE SESSÃO
         // ============================================================
-        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-        var modulosPermitidos = {
-            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
-                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
-                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
-                'configuracoes', 'backup'
-            ],
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
-
-        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-        setTimeout(function() {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                var pagina = href.replace('.html', '');
-                pagina = pagina.split('?')[0].split('#')[0];
-                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-                    item.style.display = 'none';
-                }
-            });
-        }, 500);
-
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
@@ -645,6 +685,10 @@
         // INICIALIZAÇÃO
         // ============================================================
         renderizarProdutos();
+
+        console.log('✅ Sala de Espera - Produtos carregada!');
+        console.log('📦 Total de produtos:', produtosEspera.length);
+        console.log('⏳ Aguardando:', produtosEspera.filter(function(p) { return p.status === 'aguardando'; }).length);
     </script>
 </body>
 </html>
