@@ -85,6 +85,10 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
+        .form-group label .obrigatorio {
+            color: var(--vermelho);
+            font-weight: 700;
+        }
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -196,6 +200,21 @@
             display: none;
         }
 
+        .voltar-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--cinza);
+        }
+        .voltar-link a {
+            color: var(--laranja);
+            text-decoration: none;
+        }
+        .voltar-link a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 24px 18px;
@@ -222,12 +241,12 @@
 
         <form id="formPreCadastro" novalidate>
             <div class="form-group">
-                <label>Nome Completo *</label>
+                <label>Nome Completo <span class="obrigatorio">*</span></label>
                 <input type="text" id="nome" placeholder="Digite seu nome completo" required>
             </div>
 
             <div class="form-group">
-                <label>Email *</label>
+                <label>Email <span class="obrigatorio">*</span></label>
                 <input type="email" id="email" placeholder="seu@email.com" required>
             </div>
 
@@ -243,8 +262,9 @@
             </div>
 
             <div class="form-group">
-                <label>Qual seu interesse?</label>
-                <select id="interesse">
+                <label>Qual seu interesse? <span class="obrigatorio">*</span></label>
+                <select id="interesse" required>
+                    <option value="">Selecione...</option>
                     <option value="Voluntário">💪 Ser Voluntário</option>
                     <option value="Beneficiário">👥 Ser Beneficiário</option>
                     <option value="Profissional">👨‍⚕️ Atuar como Profissional</option>
@@ -282,10 +302,17 @@
             </button>
         </form>
 
+        <div class="voltar-link">
+            <a href="index.html">← Voltar para o site</a>
+        </div>
+
         <div class="footer">
-            © 2026 <a href="https://www.vigorre.com.br">VIGORRE DESIGNER™</a> • v2.0
+            © 2026 <a href="https://www.vigorre.com.br" target="_blank">VIGORRE DESIGNER™</a> • v2.0
         </div>
     </div>
+
+    <!-- Carregar configurações centralizadas -->
+    <script src="config.js"></script>
 
     <script>
         // ============================================================
@@ -296,6 +323,7 @@
 
             var nome = document.getElementById('nome').value.trim();
             var email = document.getElementById('email').value.trim();
+            var interesse = document.getElementById('interesse').value;
             var lgpd = document.getElementById('lgpd').checked;
             var mensagem = document.getElementById('mensagem');
 
@@ -311,6 +339,10 @@
                 mostrarMensagem('⚠️ Digite um email válido.', 'erro');
                 return;
             }
+            if (!interesse) {
+                mostrarMensagem('⚠️ Selecione seu interesse.', 'erro');
+                return;
+            }
             if (!lgpd) {
                 mostrarMensagem('⚠️ Você precisa concordar com a Política de Privacidade.', 'erro');
                 return;
@@ -321,7 +353,7 @@
                 email: email,
                 telefone: document.getElementById('telefone').value.trim(),
                 nascimento: document.getElementById('nascimento').value,
-                interesse: document.getElementById('interesse').value,
+                interesse: interesse,
                 origem: document.getElementById('origem').value,
                 obs: document.getElementById('obs').value.trim(),
                 dataEnvio: new Date().toISOString(),
@@ -341,6 +373,7 @@
 
             setTimeout(function() {
                 try {
+                    // Salva no localStorage
                     var preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
 
                     var existe = preCadastros.some(function(p) {
@@ -359,10 +392,18 @@
                     preCadastros.push(dados);
                     localStorage.setItem('amovin_pre_cadastros', JSON.stringify(preCadastros));
 
+                    // Tenta salvar no Supabase (se disponível via config.js)
                     tentarSalvarSupabase(dados);
 
                     mostrarMensagem('✅ Pré-cadastro enviado com sucesso! Em breve entraremos em contato.', 'sucesso');
                     document.getElementById('formPreCadastro').reset();
+
+                    // Limpa a mensagem após 5 segundos
+                    setTimeout(function() {
+                        var msg = document.getElementById('mensagem');
+                        msg.className = 'mensagem';
+                        msg.textContent = '';
+                    }, 5000);
 
                 } catch (err) {
                     mostrarMensagem('❌ Erro ao enviar. Tente novamente mais tarde.', 'erro');
@@ -382,6 +423,17 @@
 
         function tentarSalvarSupabase(dados) {
             try {
+                // Verifica se o Supabase está disponível via config.js
+                if (typeof AMOVIN_CONFIG !== 'undefined' && AMOVIN_CONFIG) {
+                    var supabaseConfig = AMOVIN_CONFIG.getSupabaseConfig();
+                    if (supabaseConfig && supabaseConfig.url) {
+                        // Aqui você pode inicializar o Supabase com as credenciais do config.js
+                        console.log('🔌 Supabase configurado:', supabaseConfig.url);
+                        // Nota: Para usar o Supabase, você precisa importar a biblioteca
+                    }
+                }
+
+                // Fallback: tentar usar o Supabase global (se existir)
                 if (typeof supabase !== 'undefined' && supabase) {
                     supabase
                         .from('pre_cadastros')
@@ -393,7 +445,8 @@
                             interesse: dados.interesse,
                             origem: dados.origem,
                             obs: dados.obs,
-                            status: 'pendente'
+                            status: 'pendente',
+                            origem_cadastro: 'externo'
                         }])
                         .then(function(result) {
                             console.log('✅ Salvo no Supabase:', result);
@@ -405,6 +458,11 @@
             } catch (e) {
                 console.warn('⚠️ Supabase não disponível:', e);
             }
+        }
+
+        // Verifica se o usuário está logado para redirecionar
+        if (sessionStorage.getItem('amovin_logado') === 'true') {
+            console.log('ℹ️ Você está logado. Use o menu interno para gerenciar pré-cadastros.');
         }
     </script>
 
