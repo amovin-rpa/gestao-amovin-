@@ -17,6 +17,10 @@
             --cinza-claro: #F8F4ED;
             --branco: #FFFFFF;
             --vermelho: #E53935;
+            --sombra: 0 2px 12px rgba(0,0,0,0.06);
+            --sombra-hover: 0 4px 24px rgba(0,0,0,0.10);
+            --border-radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * {
             margin: 0;
@@ -34,6 +38,8 @@
             flex: 1;
             margin-left: 270px;
             padding: 24px 30px;
+            min-height: 100vh;
+            width: calc(100% - 270px);
         }
         .topo-bar {
             display: flex;
@@ -66,14 +72,23 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-sair-topo:hover {
+            background: #F0E9DF;
         }
 
         .card {
             background: #FFFFFF;
             padding: 24px;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             border: 1px solid #F0E9DF;
             margin-bottom: 20px;
+            box-shadow: var(--sombra);
+            transition: var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--sombra-hover);
         }
         .card h3 {
             font-size: 16px;
@@ -109,16 +124,20 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
+        .form-group label .obrigatorio {
+            color: var(--vermelho);
+            font-weight: 700;
+        }
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #E5E0D8;
+            border: 1.5px solid #E5E0D8;
             border-radius: 8px;
             font-size: 13px;
             font-family: 'Inter', sans-serif;
-            transition: border 0.2s;
+            transition: var(--transition);
             background: #FAFAFA;
         }
         .form-group input:focus,
@@ -145,17 +164,18 @@
         }
 
         .btn {
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            text-decoration: none;
         }
         .btn-primary {
             background: var(--laranja);
@@ -163,6 +183,8 @@
         }
         .btn-primary:hover {
             background: var(--laranja-escuro);
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-hover);
         }
         .btn-success {
             background: var(--verde);
@@ -181,16 +203,28 @@
         .btn-outline {
             background: transparent;
             color: var(--cinza);
-            border: 1px solid #E5E0D8;
+            border: 1.5px solid #E5E0D8;
         }
         .btn-outline:hover {
             background: #F8F4ED;
+            border-color: var(--cinza);
         }
         .btn-full {
             width: 100%;
             padding: 14px;
-            font-size: 15px;
+            font-size: 14px;
             justify-content: center;
+        }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
+        .btn-azul {
+            background: var(--azul);
+            color: white;
+        }
+        .btn-azul:hover {
+            background: #1565C0;
         }
 
         /* ============================================================
@@ -203,20 +237,22 @@
         }
         .projeto-card {
             background: #FFFFFF;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             border: 1px solid #F0E9DF;
             padding: 20px;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
         .projeto-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            box-shadow: var(--sombra-hover);
         }
         .projeto-card .cabecalho {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         .projeto-card .cabecalho .nome {
             font-size: 16px;
@@ -338,12 +374,52 @@
             color: #9CA3AF;
         }
 
+        /* ============================================================
+           KPI CARDS
+           ============================================================ */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+        .kpi-card {
+            background: #FFFFFF;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid #F0E9DF;
+            text-align: center;
+            box-shadow: var(--sombra);
+            transition: var(--transition);
+        }
+        .kpi-card:hover {
+            box-shadow: var(--sombra-hover);
+            transform: translateY(-2px);
+        }
+        .kpi-card .kpi-valor {
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .kpi-card .kpi-label {
+            font-size: 11px;
+            color: var(--cinza);
+        }
+        .kpi-valor.laranja { color: var(--laranja); }
+        .kpi-valor.verde { color: var(--verde); }
+        .kpi-valor.vermelho { color: var(--vermelho); }
+        .kpi-valor.azul { color: var(--azul); }
+        .kpi-valor.amarelo { color: #E65100; }
+
+        /* ============================================================
+           RODAPÉ
+           ============================================================ */
         .rodape {
             background: #FFFFFF;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             padding: 12px 18px;
             border: 1px solid #F0E9DF;
             margin-top: 20px;
+            box-shadow: var(--sombra);
         }
         .rodape-grid {
             display: flex;
@@ -386,22 +462,9 @@
             display: none;
         }
 
-        @media (max-width: 900px) {
-            .main-content {
-                margin-left: 0;
-            }
-            .projetos-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* TOAST */
+        /* ============================================================
+           TOAST
+           ============================================================ */
         .toast {
             position: fixed;
             top: 20px;
@@ -438,6 +501,34 @@
                 opacity: 1;
             }
         }
+
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 1000px) {
+            .projetos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+                width: 100%;
+                padding-top: 60px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -450,39 +541,39 @@
                 <h1>📋 Projetos e Convênios <span>AMOVIN</span></h1>
                 <span class="sub">Gerencie projetos, orçamentos e acompanhe a execução</span>
             </div>
-            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+            <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
-        <!-- KPIs Rápidos -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;margin-bottom:22px;">
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:var(--laranja);" id="kpiTotalProjetos">0</div>
-                <div style="font-size:11px;color:var(--cinza);">📋 Total de Projetos</div>
+        <!-- KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-valor laranja" id="kpiTotalProjetos">0</div>
+                <div class="kpi-label">📋 Total de Projetos</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:var(--verde);" id="kpiOrcamentoTotal">R$ 0</div>
-                <div style="font-size:11px;color:var(--cinza);">💰 Orçamento Total</div>
+            <div class="kpi-card">
+                <div class="kpi-valor verde" id="kpiOrcamentoTotal">R$ 0</div>
+                <div class="kpi-label">💰 Orçamento Total</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:#E65100;" id="kpiGastoTotal">R$ 0</div>
-                <div style="font-size:11px;color:var(--cinza);">💳 Total Gasto</div>
+            <div class="kpi-card">
+                <div class="kpi-valor amarelo" id="kpiGastoTotal">R$ 0</div>
+                <div class="kpi-label">💳 Total Gasto</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;margin-bottom:0;">
-                <div style="font-size:28px;font-weight:800;color:var(--azul);" id="kpiSaldoTotal">R$ 0</div>
-                <div style="font-size:11px;color:var(--cinza);">📊 Saldo Disponível</div>
+            <div class="kpi-card">
+                <div class="kpi-valor azul" id="kpiSaldoTotal">R$ 0</div>
+                <div class="kpi-label">📊 Saldo Disponível</div>
             </div>
         </div>
 
         <!-- FORMULÁRIO NOVO PROJETO -->
         <div class="card" style="margin-bottom:20px;">
             <h3>
-                <span>📝 Novo Projeto</span>
+                <span id="tituloForm">📝 Novo Projeto</span>
                 <span class="badge">+ Adicionar</span>
             </h3>
             <input type="hidden" id="projetoId">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Nome do Projeto *</label>
+                    <label>Nome do Projeto <span class="obrigatorio">*</span></label>
                     <input type="text" id="nomeProjeto" placeholder="Ex: Inclusão Digital">
                 </div>
                 <div class="form-group">
@@ -524,7 +615,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Valor (R$)</label>
+                    <label>Valor (R$) <span class="obrigatorio">*</span></label>
                     <input type="number" id="valorRecurso" step="0.01" placeholder="0,00">
                 </div>
             </div>
@@ -535,6 +626,7 @@
             </div>
 
             <button class="btn btn-success btn-full" onclick="salvarProjeto()">💾 Salvar Projeto</button>
+            <div id="statusMsg" style="margin-top:8px;font-size:12px;color:var(--verde);"></div>
         </div>
 
         <!-- LISTA DE PROJETOS -->
@@ -563,14 +655,14 @@
         </div>
     </main>
 
-    <script src="menu.js"></script>
+    <script src="config.js"></script>
+    <script src="menu.js?v=20261007"></script>
     <script>
         // ============================================================
         // DADOS
         // ============================================================
         var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
         var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
-        var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
         var editandoId = null;
         var recursosTemp = [];
 
@@ -645,9 +737,12 @@
         // ============================================================
         function salvarProjeto() {
             var nome = document.getElementById('nomeProjeto').value.trim();
-            if (!nome) { mostrarToast('⚠️ Nome do projeto é obrigatório!', 'warning'); return; }
+            if (!nome) {
+                document.getElementById('statusMsg').textContent = '⚠️ Nome do projeto é obrigatório!';
+                document.getElementById('statusMsg').style.color = '#C62828';
+                return;
+            }
 
-            // Calcula total dos recursos
             var totalRecursos = recursosTemp.reduce(function(s, r) { return s + r.valor; }, 0);
 
             var dados = {
@@ -663,12 +758,10 @@
             if (editandoId) {
                 var idx = projetos.findIndex(function(p) { return p.id === editandoId; });
                 if (idx >= 0) {
-                    // Mantém recursos existentes + novos
                     var recursosExistentes = projetos[idx].recursos || [];
                     dados.recursos = recursosExistentes.concat(recursosTemp);
                     dados.orcamento_total = dados.recursos.reduce(function(s, r) { return s + r.valor; }, 0);
                     for (var k in dados) projetos[idx][k] = dados[k];
-                    // Atualiza orçamentos
                     atualizarOrcamentos(projetos[idx].id, totalRecursos);
                 }
                 editandoId = null;
@@ -677,7 +770,6 @@
                 dados.id = Date.now();
                 dados.data_criacao = new Date().toISOString();
                 projetos.push(dados);
-                // Cria orçamentos padrão
                 criarOrcamentosPadrao(dados.id, totalRecursos);
             }
 
@@ -688,6 +780,9 @@
             recursosTemp = [];
             renderizarRecursos();
 
+            document.getElementById('statusMsg').textContent = '✅ Projeto salvo com sucesso!';
+            document.getElementById('statusMsg').style.color = '#2E7D32';
+            setTimeout(function() { document.getElementById('statusMsg').textContent = ''; }, 4000);
             mostrarToast('✅ Projeto salvo com sucesso!', 'success');
         }
 
@@ -708,7 +803,6 @@
         }
 
         function atualizarOrcamentos(projetoId, total) {
-            // Remove orçamentos antigos
             orcamentos = orcamentos.filter(function(o) { return o.projeto_id !== projetoId; });
             criarOrcamentosPadrao(projetoId, total);
         }
@@ -731,18 +825,15 @@
 
             recursosTemp = p.recursos || [];
             renderizarRecursos();
-
-            document.querySelector('.card h3 span:first-child').textContent = '✏️ Editando: ' + p.nome;
         }
 
         // ============================================================
         // EXCLUIR PROJETO
         // ============================================================
         function excluirProjeto(id) {
-            if (!confirm('Excluir este projeto? Todas as notas vinculadas serão removidas.')) return;
+            if (!confirm('⚠️ Excluir este projeto? Todas as notas vinculadas serão removidas.')) return;
             projetos = projetos.filter(function(p) { return p.id !== id; });
             orcamentos = orcamentos.filter(function(o) { return o.projeto_id !== id; });
-            notas = notas.filter(function(n) { return n.projeto_id !== id; });
             salvar();
             renderizarProjetos();
             atualizarKPIs();
@@ -812,8 +903,8 @@
                         recursosHtml + '</div>' : '') +
                     '<div class="acoes">' +
                     '<button class="btn btn-primary" onclick="editarProjeto(' + p.id + ')">✏️ Editar</button>' +
-                    '<button class="btn btn-success" onclick="window.location.href=\'relatorios-comprovacao.html?projeto=' +
-                    p.id + '\'">📊 Relatório</button>' +
+                    '<button class="btn btn-azul" onclick="window.location.href=\'relatorios.html?projeto=' + p.id +
+                    '\'">📊 Relatório</button>' +
                     '<button class="btn btn-danger" onclick="excluirProjeto(' + p.id + ')">🗑️</button>' +
                     '</div>' +
                     '</div>';
@@ -854,7 +945,8 @@
             document.getElementById('descricaoProjeto').value = '';
             recursosTemp = [];
             renderizarRecursos();
-            document.querySelector('.card h3 span:first-child').textContent = '📝 Novo Projeto';
+            document.getElementById('tituloForm').textContent = '📝 Novo Projeto';
+            document.getElementById('statusMsg').textContent = '';
         }
 
         // ============================================================
@@ -876,33 +968,8 @@
         }
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // VERIFICAÇÃO DE SESSÃO
         // ============================================================
-        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-        var modulosPermitidos = {
-            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
-                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
-                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
-                'configuracoes', 'backup'
-            ],
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
-
-        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-        setTimeout(function() {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                var pagina = href.replace('.html', '');
-                pagina = pagina.split('?')[0].split('#')[0];
-                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-                    item.style.display = 'none';
-                }
-            });
-        }, 500);
-
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
@@ -912,6 +979,10 @@
         // ============================================================
         renderizarProjetos();
         atualizarKPIs();
+
+        console.log('✅ Projetos e Convênios carregado!');
+        console.log('📋 Total de projetos:', projetos.length);
+        console.log('💰 Total de orçamentos:', orcamentos.length);
     </script>
 </body>
 </html>
