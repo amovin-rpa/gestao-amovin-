@@ -49,7 +49,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .doc-item .categoria { font-size: 10px; background: #F8F4ED; padding: 2px 10px; border-radius: 12px; color: var(--cinza); }
 .doc-item .data { font-size: 11px; color: var(--cinza); }
 .doc-item .tags { font-size: 10px; color: var(--azul); }
-
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
@@ -67,7 +66,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>📚 Biblioteca Digital</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar"><h1>📚 Biblioteca Digital</h1><button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button></div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">📚 Documentos</div></div>
@@ -95,6 +94,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
+<script src="config.js"></script>
 <script src="menu.js?v=20261007"></script>
 <script>
 var documentos = JSON.parse(localStorage.getItem('amovin_biblioteca') || '[]');
@@ -111,135 +111,4 @@ if (documentos.length === 0) {
 function salvar() { localStorage.setItem('amovin_biblioteca', JSON.stringify(documentos)); }
 
 function atualizarKPIs() {
-    var total = documentos.length;
-    var categorias = {};
-    documentos.forEach(function(d) { categorias[d.categoria] = true; });
-    var qtdCategorias = Object.keys(categorias).length;
-    
-    var hoje = new Date();
-    var mes = hoje.getMonth();
-    var ano = hoje.getFullYear();
-    var mesCount = documentos.filter(function(d) {
-        if (!d.data) return false;
-        var data = new Date(d.data + 'T00:00:00');
-        return data.getMonth() === mes && data.getFullYear() === ano;
-    }).length;
-
-    document.getElementById('kpiTotal').textContent = total;
-    document.getElementById('kpiCategorias').textContent = qtdCategorias;
-    document.getElementById('kpiMes').textContent = mesCount;
-}
-
-function renderizarDocumentos() {
-    var lista = documentos.slice().sort(function(a, b) { 
-        return new Date(b.data) - new Date(a.data);
-    });
-    var container = document.getElementById('listaDocumentos');
-    if (lista.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhum documento.</div>';
-        return;
-    }
-    container.innerHTML = lista.map(function(d) {
-        var data = d.data ? new Date(d.data + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
-        return '<div class="doc-item">' +
-            '<div><span class="titulo">' + d.nome + '</span> <span class="categoria">' + d.categoria + '</span><br>' +
-            (d.descricao ? '<span style="font-size:12px;color:var(--cinza);">' + d.descricao + '</span><br>' : '') +
-            '<span class="data">📅 ' + data + '</span>' + (d.tags ? ' <span class="tags">🏷️ ' + d.tags + '</span>' : '') + '</div>' +
-            '<div><button class="btn btn-editar" onclick="editarDocumento(' + d.id + ')" style="padding:4px 8px;font-size:10px;">✏️</button>' +
-            '<button class="btn btn-excluir" onclick="excluirDocumento(' + d.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
-    }).join('');
-}
-
-window.salvarDocumento = function() {
-    var nome = document.getElementById('nomeDoc').value.trim();
-    if (!nome) { alert('Preencha o nome do documento!'); return; }
-
-    var dados = {
-        nome: nome,
-        categoria: document.getElementById('categoriaDoc').value,
-        descricao: document.getElementById('descricaoDoc').value.trim(),
-        data: document.getElementById('dataDoc').value,
-        tags: document.getElementById('tagsDoc').value.trim(),
-        obs: document.getElementById('obsDoc').value.trim()
-    };
-
-    if (editandoId) {
-        var idx = documentos.findIndex(function(d) { return d.id === editandoId; });
-        if (idx >= 0) {
-            for (var k in dados) documentos[idx][k] = dados[k];
-        }
-        editandoId = null;
-    } else {
-        dados.id = Date.now();
-        documentos.push(dados);
-    }
-
-    salvar();
-    limparForm();
-    atualizarKPIs();
-    renderizarDocumentos();
-    alert('✅ Documento salvo com sucesso!');
-};
-
-window.editarDocumento = function(id) {
-    var d = documentos.find(function(x) { return x.id === id; });
-    if (!d) return;
-    editandoId = id;
-    document.getElementById('docId').value = id;
-    document.getElementById('nomeDoc').value = d.nome;
-    document.getElementById('categoriaDoc').value = d.categoria;
-    document.getElementById('descricaoDoc').value = d.descricao || '';
-    document.getElementById('dataDoc').value = d.data || '';
-    document.getElementById('tagsDoc').value = d.tags || '';
-    document.getElementById('obsDoc').value = d.obs || '';
-    document.querySelector('.card h3').textContent = '✏️ Editando: ' + d.nome;
-};
-
-window.excluirDocumento = function(id) {
-    if (!confirm('Excluir este documento?')) return;
-    documentos = documentos.filter(function(d) { return d.id !== id; });
-    salvar();
-    atualizarKPIs();
-    renderizarDocumentos();
-};
-
-function limparForm() {
-    editandoId = null;
-    document.getElementById('docId').value = '';
-    document.getElementById('nomeDoc').value = '';
-    document.getElementById('categoriaDoc').value = 'Certidão';
-    document.getElementById('descricaoDoc').value = '';
-    document.getElementById('dataDoc').value = new Date().toISOString().split('T')[0];
-    document.getElementById('tagsDoc').value = '';
-    document.getElementById('obsDoc').value = '';
-    document.querySelector('.card h3').textContent = '📝 Novo Documento';
-}
-
-document.getElementById('dataDoc').value = new Date().toISOString().split('T')[0];
-
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
-
-if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
-
-atualizarKPIs();
-renderizarDocumentos();
-</script>
-</body>
-</html>
+    var total = documentos
