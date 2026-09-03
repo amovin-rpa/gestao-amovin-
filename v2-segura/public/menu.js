@@ -1,5 +1,5 @@
 // ============================================================
-// MENU.JS - VERSÃO COMPLETA (PARA PUBLIC/)
+// MENU.JS - VERSÃO COMPLETA (COM PRÉ-CADASTRO EXTERNO CORRIGIDO)
 // ============================================================
 // Todos os módulos estão dentro da pasta public/
 // Os links são relativos ao diretório atual (public/)
@@ -32,7 +32,8 @@
                     itens: [
                         { icone: '🚀', label: 'Amovin Capta+', href: 'https://amovin-capta.vercel.app/login', target: '_blank' },
                         { icone: '📋', label: 'Sala de Espera', href: 'sala-espera.html' },
-                        { icone: '📝', label: 'Pré-Cadastro', href: 'pre-cadastro.html' },
+                        { icone: '📝', label: 'Pré-Cadastro Interno', href: 'pre-cadastro.html' },
+                        { icone: '📝', label: 'Pré-Cadastro Externo', href: 'pre-cadastro-externo.html' },
                         { icone: '📋', label: 'Projetos e Convênios', href: 'projetos-convenios.html' },
                         { icone: '📋', label: 'Projetos', href: 'projetos.html' }
                     ]
