@@ -109,5 +109,6 @@
         let timeout; function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { signOut(auth); sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
         document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
     </script>
+<script src="menu.js?v=20261007"></script>
 </body>
 </html>
