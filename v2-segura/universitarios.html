@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amovin ERP Social • Universitários</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --laranja: #C65A11;
+  --amarelo: #F5C518;
+  --verde: #57C220;
+  --azul: #1E88E5;
+  --grafite: #1A1A1A;
+  --cinza: #6B7280;
+  --cinza-claro: #F8F4ED;
+  --branco: #FFFFFF;
+  --vermelho: #E53935;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+
+/* ============================================================
+   A SIDEBAR VEM DO menu.js
+   ============================================================ */
+
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
+.topo-bar h1 .badge { font-size: 12px; font-weight: 400; background: #E3F2FD; color: #1565C0; padding: 4px 12px; border-radius: 20px; margin-left: 10px; }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 16px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
+.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
+.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+
+.busca-bar { background: #FFFFFF; padding: 14px 18px; border-radius: 14px; border: 1px solid #F0E9DF; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.busca-bar input { flex: 1; padding: 10px 14px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; min-width: 200px; }
+.btn-novo { padding: 10px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
+
+.universitario-card { background: #FFFFFF; padding: 16px 20px; border-radius: 12px; border: 1px solid #F0E9DF; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.universitario-card.status-inativo { opacity: 0.7; border-left: 4px solid var(--amarelo); }
+.universitario-card.status-formado { opacity: 0.6; border-left: 4px solid var(--verde); }
+.universitario-card.status-trancado { opacity: 0.5; border-left: 4px solid var(--vermelho); }
+
+.universitario-info { display: flex; align-items: center; gap: 14px; flex: 1; }
+.universitario-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; border: 2px solid #F0E9DF; font-weight: 700; }
+.universitario-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.universitario-dados h4 { font-size: 14px; color: var(--grafite); margin-bottom: 2px; }
+.universitario-dados p { font-size: 11px; color: var(--cinza); margin: 1px 0; }
+.status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 9px; font-weight: 600; }
+.status-ativo { background: #E8F5E9; color: #2E7D32; }
+.status-inativo { background: #FFF3E0; color: #E65100; }
+.status-formado { background: #E3F2FD; color: #1565C0; }
+.status-trancado { background: #FFEBEE; color: #C62828; }
+.btn-acao { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 10px; font-weight: 600; }
+.btn-editar { background: #F5A623; color: white; }
+.btn-excluir { background: var(--vermelho); color: white; }
+.btn-crm { background: var(--azul); color: white; }
+.sem-dados { text-align: center; padding: 40px; color: #9CA3AF; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 750px; max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 18px 22px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 2; }
+.modal-header h3 { font-size: 18px; }
+.modal-body { padding: 22px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-full { grid-column: 1 / -1; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.form-group label .opcional { font-weight: 400; color: var(--cinza); font-size: 10px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; }
+.form-group textarea { resize: vertical; min-height: 50px; }
+.form-group .campo-obrigatorio { color: var(--vermelho); }
+.foto-container { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 0; }
+.foto-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #F0E9DF; display: none; }
+.foto-preview.visible { display: block; }
+.foto-placeholder { width: 120px; height: 120px; border-radius: 50%; background: #F0E9DF; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--cinza); border: 4px dashed #E5E0D8; }
+.foto-placeholder.hidden { display: none; }
+.btn-salvar { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.btn-salvar:hover { background: #A04A0E; }
+.btn-fechar { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza); }
+.section-title { font-size: 14px; font-weight: 700; color: var(--grafite); border-bottom: 1px solid #F0E9DF; padding-bottom: 8px; grid-column: 1 / -1; margin-bottom: 6px; background: #FFF8E7; padding: 8px 12px; border-radius: 6px; }
+
+.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+.rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
+.rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
+.rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
+.logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+
+@media (max-width: 900px) { .main-content { margin-left: 0; } }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .busca-bar { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+
+<main class="main-content">
+  <div class="topo-bar">
+    <h1>🎓 Universitários <span class="badge">UFV</span></h1>
+    <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">Total</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiAtivos">0</div><div class="kpi-label">✅ Ativos</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiFormados">0</div><div class="kpi-label">🎓 Formados</div></div>
+    <div class="kpi-card"><div class="kpi-valor" id="kpiCursos">0</div><div class="kpi-label">📚 Cursos</div></div>
+  </div>
+
+  <div class="busca-bar">
+    <input type="text" id="buscaUniversitario" placeholder="Buscar por nome, matrícula, CPF, curso..." oninput="filtrar()">
+    <button class="btn-novo" onclick="abrirForm()">+ Novo Universitário</button>
+  </div>
+
+  <div id="listaUniversitarios"></div>
+
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="modalForm" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tituloModal">📝 Novo Universitário</h3>
+      <button class="btn-fechar" onclick="fecharForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="universitarioId">
+      <div class="form-grid">
+        
+        <!-- ============================================ -->
+        <!-- FOTO -->
+        <!-- ============================================ -->
+        <div class="section-title">📸 Foto <span class="opcional">(opcional)</span></div>
+        <div class="form-full">
+          <div class="form-group" style="text-align:center;">
+            <div class="foto-container">
+              <div id="fotoPlaceholder" class="foto-placeholder">📷</div>
+              <img id="fotoPreview" class="foto-preview" alt="Pré-visualização">
+              <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                <input type="file" id="fotoUniversitario" accept="image/*" onchange="previewFoto(event)" style="display:none;">
+                <button type="button" class="btn" style="background:var(--azul);color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="document.getElementById('fotoUniversitario').click()">📁 Escolher Foto</button>
+                <button type="button" class="btn" style="background:var(--vermelho);color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;" onclick="removerFoto()">🗑️ Remover</button>
+              </div>
+              <small style="color:var(--cinza);font-size:10px;display:block;margin-top:4px;">Formatos: JPG, PNG | Máximo: 5MB</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- DADOS PESSOAIS -->
+        <!-- ============================================ -->
+        <div class="section-title">📋 DADOS PESSOAIS</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Nome Completo <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="nomeUniversitario" placeholder="Nome completo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Matrícula <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="matriculaUniversitario" placeholder="Nº de matrícula da UFV">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>CPF <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="cpfUniversitario" placeholder="000.000.000-00">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>RG</label>
+            <input type="text" id="rgUniversitario" placeholder="RG">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Data de Nascimento <span class="campo-obrigatorio">*</span></label>
+            <input type="date" id="dataNascUniversitario">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Sexo <span class="campo-obrigatorio">*</span></label>
+            <select id="sexoUniversitario">
+              <option value="">Selecione...</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- CONTATO -->
+        <!-- ============================================ -->
+        <div class="section-title">📞 CONTATO</div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Telefone <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="telefoneUniversitario" placeholder="(34) 99999-9999">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>WhatsApp</label>
+            <input type="text" id="whatsappUniversitario" placeholder="(34) 99999-9999">
+          </div>
+        </div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="emailUniversitario" placeholder="email@ufv.br">
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ENDEREÇO (OPCIONAL) -->
+        <!-- ============================================ -->
+        <div class="section-title">📍 ENDEREÇO <span class="opcional">(opcional)</span></div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" id="enderecoUniversitario" placeholder="Rua, número, bairro">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Cidade</label>
+            <input type="text" id="cidadeUniversitario" placeholder="Cidade">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="estadoUniversitario">
+              <option value="">Selecione...</option>
+              <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+              <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+              <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+              <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+              <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+              <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+              <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+              <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+              <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- DADOS ACADÊMICOS -->
+        <!-- ============================================ -->
+        <div class="section-title">🎓 DADOS ACADÊMICOS</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Instituição <span class="campo-obrigatorio">*</span></label>
+            <select id="instituicaoUniversitario">
+              <option value="UFV - Viçosa">UFV - Viçosa</option>
+              <option value="UFV - Florestal">UFV - Florestal</option>
+              <option value="UFV - Rio Paranaíba">UFV - Rio Paranaíba</option>
+              <option value="UFV - Outro">UFV - Outro</option>
+              <option value="Outra Instituição">Outra Instituição</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Curso <span class="campo-obrigatorio">*</span></label>
+            <input type="text" id="cursoUniversitario" placeholder="Ex: Administração, Engenharia">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Período <span class="campo-obrigatorio">*</span></label>
+            <select id="periodoUniversitario">
+              <option value="">Selecione...</option>
+              <option value="1º Período">1º Período</option>
+              <option value="2º Período">2º Período</option>
+              <option value="3º Período">3º Período</option>
+              <option value="4º Período">4º Período</option>
+              <option value="5º Período">5º Período</option>
+              <option value="6º Período">6º Período</option>
+              <option value="7º Período">7º Período</option>
+              <option value="8º Período">8º Período</option>
+              <option value="9º Período">9º Período</option>
+              <option value="10º Período">10º Período</option>
+              <option value="Período Especial">Período Especial</option>
+              <option value="Pós-graduação">Pós-graduação</option>
+              <option value="Mestrado">Mestrado</option>
+              <option value="Doutorado">Doutorado</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- RESPONSÁVEL (OPCIONAL) -->
+        <!-- ============================================ -->
+        <div class="section-title">👨‍👩‍👦 RESPONSÁVEL <span class="opcional">(opcional)</span></div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Nome do Responsável</label>
+            <input type="text" id="responsavelUniversitario" placeholder="Nome do responsável (opcional)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Telefone do Responsável</label>
+            <input type="text" id="telefoneResponsavelUniversitario" placeholder="(34) 99999-9999">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label>Vínculo</label>
+            <select id="vinculoResponsavelUniversitario">
+              <option value="">Selecione...</option>
+              <option value="Pai">Pai</option>
+              <option value="Mãe">Mãe</option>
+              <option value="Avô">Avô</option>
+              <option value="Avó">Avó</option>
+              <option value="Tio">Tio</option>
+              <option value="Tia">Tia</option>
+              <option value="Irmão">Irmão</option>
+              <option value="Irmã">Irmã</option>
+              <option value="Cônjuge">Cônjuge</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- OBSERVAÇÕES -->
+        <!-- ============================================ -->
+        <div class="section-title">📝 OBSERVAÇÕES</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea id="obsUniversitario" rows="2" placeholder="Informações adicionais..."></textarea>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- STATUS -->
+        <!-- ============================================ -->
+        <div class="section-title">📌 STATUS</div>
+
+        <div class="form-full">
+          <div class="form-group">
+            <label>Status <span class="campo-obrigatorio">*</span></label>
+            <select id="statusUniversitario">
+              <option value="Ativo">✅ Ativo</option>
+              <option value="Inativo">⚠️ Inativo</option>
+              <option value="Formado">🎓 Formado</option>
+              <option value="Trancado">⏸️ Trancado</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+      <button class="btn-salvar" onclick="salvarUniversitario()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="menu.js"></script>
+<script>
+// ============================================================
+// BANCO DE DADOS LOCAL (Firebase)
+// ============================================================
+var universitarios = JSON.parse(localStorage.getItem('amovin_universitarios') || '[]');
+var editandoId = null;
+var fotoDataURL = null;
+
+// Dados iniciais
+if (universitarios.length === 0) {
+    universitarios = [
+        { 
+            id: 1, 
+            nome: 'Ana Beatriz Silva', 
+            matricula: '2024001234', 
+            cpf: '123.456.789-00', 
+            rg: 'MG-12.345.678', 
+            dataNasc: '2000-05-15', 
+            sexo: 'Feminino',
+            telefone: '(34) 99999-1111', 
+            whatsapp: '(34) 99999-1111', 
+            email: 'ana.silva@ufv.br',
+            endereco: 'Rua das Flores, 123', 
+            cidade: 'Viçosa', 
+            estado: 'MG',
+            instituicao: 'UFV - Viçosa', 
+            curso: 'Administração', 
+            periodo: '6º Período',
+            responsavel: 'Maria Silva', 
+            telefoneResponsavel: '(34) 99999-0001', 
+            vinculoResponsavel: 'Mãe',
+            status: 'Ativo', 
+            observacoes: 'Bolsista do programa de extensão',
+            dataCadastro: '2026-07-01', 
+            foto: null 
+        },
+        { 
+            id: 2, 
+            nome: 'Carlos Eduardo Souza', 
+            matricula: '2023005678', 
+            cpf: '987.654.321-00', 
+            rg: 'MG-98.765.432', 
+            dataNasc: '1999-03-20', 
+            sexo: 'Masculino',
+            telefone: '(34) 99999-2222', 
+            whatsapp: '(34) 99999-2222', 
+            email: 'carlos.souza@ufv.br',
+            endereco: 'Rua Universitária, 456', 
+            cidade: 'Viçosa', 
+            estado: 'MG',
+            instituicao: 'UFV - Viçosa', 
+            curso: 'Engenharia Civil', 
+            periodo: '8º Período',
+            responsavel: '', 
+            telefoneResponsavel: '', 
+            vinculoResponsavel: '',
+            status: 'Ativo', 
+            observacoes: 'Monitor de Cálculo',
+            dataCadastro: '2026-07-01', 
+            foto: null 
+        }
+    ];
+    salvar();
+}
+
+function salvar() {
+    localStorage.setItem('amovin_universitarios', JSON.stringify(universitarios));
+}
+
+// ============================================================
+// FUNÇÕES DE FORMATAÇÃO
+// ============================================================
+function formatarDataBR(dataISO) {
+    if (!dataISO) return '-';
+    var partes = dataISO.split('-');
+    return partes[2] + '/' + partes[1] + '/' + partes[0];
+}
+
+function calcularIdade(dataNasc) {
+    if (!dataNasc) return '';
+    var hoje = new Date();
+    var nasc = new Date(dataNasc + 'T00:00:00');
+    var idade = hoje.getFullYear() - nasc.getFullYear();
+    var mes = hoje.getMonth() - nasc.getMonth();
+    if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) {
+        idade--;
+    }
+    return idade + ' anos';
+}
+
+function getAvatarHtml(pessoa) {
+    if (pessoa.foto) {
+        return '<img src="' + pessoa.foto + '" alt="' + pessoa.nome + '" class="universitario-avatar">';
+    }
+    var iniciais = pessoa.nome.split(' ').map(function(n) { return n[0]; }).join('').substring(0, 2).toUpperCase();
+    var cores = ['#C65A11', '#1E88E5', '#57C220', '#7B1FA2', '#E53935', '#F5C518', '#00897B', '#F4511E'];
+    var cor = cores[pessoa.id % cores.length] || '#C65A11';
+    return '<div class="universitario-avatar" style="background:' + cor + ';">' + iniciais + '</div>';
+}
+
+function getStatusBadge(status) {
+    var map = {
+        'Ativo': '<span class="status-badge status-ativo">✅ Ativo</span>',
+        'Inativo': '<span class="status-badge status-inativo">⚠️ Inativo</span>',
+        'Formado': '<span class="status-badge status-formado">🎓 Formado</span>',
+        'Trancado': '<span class="status-badge status-trancado">⏸️ Trancado</span>'
+    };
+    return map[status] || map['Ativo'];
+}
+
+function getStatusClass(status) {
+    var map = {
+        'Inativo': 'status-inativo',
+        'Formado': 'status-formado',
+        'Trancado': 'status-trancado'
+    };
+    return map[status] || '';
+}
+
+// ============================================================
+// PRÉ-VISUALIZAÇÃO DA FOTO
+// ============================================================
+window.previewFoto = function(event) {
+    var file = event.target.files[0];
+    if (!file) { removerFoto(); return; }
+    if (file.size > 5 * 1024 * 1024) {
+        alert('⚠️ A foto não pode ter mais que 5MB.');
+        document.getElementById('fotoUniversitario').value = '';
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        fotoDataURL = e.target.result;
+        var preview = document.getElementById('fotoPreview');
+        preview.src = fotoDataURL;
+        preview.className = 'foto-preview visible';
+        document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
+    };
+    reader.readAsDataURL(file);
+};
+
+window.removerFoto = function() {
+    fotoDataURL = null;
+    document.getElementById('fotoUniversitario').value = '';
+    document.getElementById('fotoPreview').className = 'foto-preview';
+    document.getElementById('fotoPreview').src = '';
+    document.getElementById('fotoPlaceholder').className = 'foto-placeholder';
+};
+
+// ============================================================
+// IMPORTAR PARA CRM
+// ============================================================
+function importarParaCRM(universitario) {
+    var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
+    var existe = contatos.some(function(c) {
+        return c.nome === universitario.nome && c.tipo === 'universitario' && c.origem === 'pessoas';
+    });
+
+    if (!existe) {
+        var novoContato = {
+            id: Date.now(),
+            nome: universitario.nome || '',
+            tipo: 'universitario',
+            cpf: universitario.cpf || '',
+            rg: universitario.rg || '',
+            tel1: universitario.telefone || '',
+            whatsapp: universitario.whatsapp || universitario.telefone || '',
+            email: universitario.email || '',
+            endereco: universitario.endereco || '',
+            cidade: universitario.cidade || '',
+            estado: universitario.estado || '',
+            responsavel: universitario.responsavel || '',
+            categoria: 'Universitário',
+            obs: universitario.curso || '',
+            favorito: false,
+            origem: 'pessoas',
+            ativo: universitario.status === 'Ativo',
+            status: universitario.status || 'Ativo',
+            foto: universitario.foto || null,
+            dataCadastro: new Date().toISOString().split('T')[0]
+        };
+        contatos.push(novoContato);
+        localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
+        return true;
+    }
+    return false;
+}
+
+// ============================================================
+// RENDERIZAÇÃO
+// ============================================================
+function filtrar() {
+    var lista = universitarios.slice();
+
+    var busca = document.getElementById('buscaUniversitario').value.toLowerCase();
+    if (busca) {
+        lista = lista.filter(function(p) {
+            return (p.nome || '').toLowerCase().indexOf(busca) >= 0 ||
+                   (p.matricula || '').toLowerCase().indexOf(busca) >= 0 ||
+                   (p.cpf || '').indexOf(busca) >= 0 ||
+                   (p.curso || '').toLowerCase().indexOf(busca) >= 0;
+        });
+    }
+
+    lista.sort(function(a, b) {
+        return (a.nome || '').localeCompare(b.nome || '');
+    });
+
+    var container = document.getElementById('listaUniversitarios');
+    if (lista.length === 0) {
+        container.innerHTML = '<div class="sem-dados">Nenhum universitário cadastrado.</div>';
+    } else {
+        container.innerHTML = lista.map(function(p) {
+            var idade = p.dataNasc ? calcularIdade(p.dataNasc) : '';
+            var statusBadge = getStatusBadge(p.status || 'Ativo');
+            var statusClass = getStatusClass(p.status || 'Ativo');
+            var responsavelInfo = p.responsavel ? ' | 👤 ' + p.responsavel : '';
+
+            return '<div class="universitario-card ' + statusClass + '">' +
+                '<div class="universitario-info">' +
+                getAvatarHtml(p) +
+                '<div class="universitario-dados">' +
+                '<h4>' + p.nome + ' | ' + p.matricula + ' | ' + p.curso + '</h4>' +
+                '<p>📞 ' + (p.telefone || '-') + ' | 📧 ' + (p.email || '-') + responsavelInfo + '</p>' +
+                '<p>🎓 ' + p.instituicao + ' | ' + p.periodo + ' | ' + statusBadge + (idade ? ' | 🎂 ' + idade : '') + '</p>' +
+                '</div></div>' +
+                '<div class="contato-acoes">' +
+                '<button class="btn-acao btn-editar" onclick="abrirForm(' + p.id + ')">✏️</button>' +
+                '<button class="btn-acao btn-excluir" onclick="excluirUniversitario(' + p.id + ')">🗑️</button>' +
+                '<button class="btn-acao btn-crm" onclick="enviarParaCRM(' + p.id + ')">📤 CRM</button>' +
+                '</div></div>';
+        }).join('');
+    }
+
+    atualizarKPIs();
+}
+
+function atualizarKPIs() {
+    document.getElementById('kpiTotal').textContent = universitarios.length;
+    document.getElementById('kpiAtivos').textContent = universitarios.filter(function(p) { return p.status === 'Ativo' || !p.status; }).length;
+    document.getElementById('kpiFormados').textContent = universitarios.filter(function(p) { return p.status === 'Formado'; }).length;
+    
+    var cursos = {};
+    universitarios.forEach(function(p) {
+        if (p.curso) cursos[p.curso] = (cursos[p.curso] || 0) + 1;
+    });
+    document.getElementById('kpiCursos').textContent = Object.keys(cursos).length;
+}
+
+// ============================================================
+// FORMULÁRIO
+// ============================================================
+window.abrirForm = function(id) {
+    editandoId = id || null;
+    document.getElementById('modalForm').style.display = 'flex';
+    document.getElementById('tituloModal').textContent = id ? '✏️ Editar Universitário' : '📝 Novo Universitário';
+
+    removerFoto();
+
+    if (id) {
+        var p = universitarios.find(function(x) { return x.id === id; });
+        if (!p) return;
+        document.getElementById('universitarioId').value = p.id;
+        document.getElementById('nomeUniversitario').value = p.nome || '';
+        document.getElementById('matriculaUniversitario').value = p.matricula || '';
+        document.getElementById('cpfUniversitario').value = p.cpf || '';
+        document.getElementById('rgUniversitario').value = p.rg || '';
+        document.getElementById('dataNascUniversitario').value = p.dataNasc || '';
+        document.getElementById('sexoUniversitario').value = p.sexo || '';
+        document.getElementById('telefoneUniversitario').value = p.telefone || '';
+        document.getElementById('whatsappUniversitario').value = p.whatsapp || '';
+        document.getElementById('emailUniversitario').value = p.email || '';
+        document.getElementById('enderecoUniversitario').value = p.endereco || '';
+        document.getElementById('cidadeUniversitario').value = p.cidade || '';
+        document.getElementById('estadoUniversitario').value = p.estado || '';
+        document.getElementById('instituicaoUniversitario').value = p.instituicao || 'UFV - Viçosa';
+        document.getElementById('cursoUniversitario').value = p.curso || '';
+        document.getElementById('periodoUniversitario').value = p.periodo || '';
+        document.getElementById('responsavelUniversitario').value = p.responsavel || '';
+        document.getElementById('telefoneResponsavelUniversitario').value = p.telefoneResponsavel || '';
+        document.getElementById('vinculoResponsavelUniversitario').value = p.vinculoResponsavel || '';
+        document.getElementById('statusUniversitario').value = p.status || 'Ativo';
+        document.getElementById('obsUniversitario').value = p.observacoes || '';
+
+        if (p.foto) {
+            fotoDataURL = p.foto;
+            var preview = document.getElementById('fotoPreview');
+            preview.src = p.foto;
+            preview.className = 'foto-preview visible';
+            document.getElementById('fotoPlaceholder').className = 'foto-placeholder hidden';
+        }
+    } else {
+        document.getElementById('universitarioId').value = '';
+        document.getElementById('nomeUniversitario').value = '';
+        document.getElementById('matriculaUniversitario').value = '';
+        document.getElementById('cpfUniversitario').value = '';
+        document.getElementById('rgUniversitario').value = '';
+        document.getElementById('dataNascUniversitario').value = '';
+        document.getElementById('sexoUniversitario').value = '';
+        document.getElementById('telefoneUniversitario').value = '';
+        document.getElementById('whatsappUniversitario').value = '';
+        document.getElementById('emailUniversitario').value = '';
+        document.getElementById('enderecoUniversitario').value = '';
+        document.getElementById('cidadeUniversitario').value = '';
+        document.getElementById('estadoUniversitario').value = '';
+        document.getElementById('instituicaoUniversitario').value = 'UFV - Viçosa';
+        document.getElementById('cursoUniversitario').value = '';
+        document.getElementById('periodoUniversitario').value = '';
+        document.getElementById('responsavelUniversitario').value = '';
+        document.getElementById('telefoneResponsavelUniversitario').value = '';
+        document.getElementById('vinculoResponsavelUniversitario').value = '';
+        document.getElementById('statusUniversitario').value = 'Ativo';
+        document.getElementById('obsUniversitario').value = '';
+    }
+};
+
+window.fecharForm = function() {
+    document.getElementById('modalForm').style.display = 'none';
+};
+
+window.salvarUniversitario = function() {
+    console.log('🔵 Botão Salvar Universitário clicado!');
+
+    var nome = document.getElementById('nomeUniversitario').value.trim();
+    if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
+
+    var matricula = document.getElementById('matriculaUniversitario').value.trim();
+    if (!matricula) { alert('⚠️ Matrícula é obrigatória!'); return; }
+
+    var cpf = document.getElementById('cpfUniversitario').value.replace(/\D/g, '');
+    if (!cpf || cpf.length < 6) { alert('⚠️ CPF inválido!'); return; }
+
+    var dataNasc = document.getElementById('dataNascUniversitario').value;
+    if (!dataNasc) { alert('⚠️ Data de nascimento é obrigatória!'); return; }
+
+    var telefone = document.getElementById('telefoneUniversitario').value.trim();
+    if (!telefone) { alert('⚠️ Telefone é obrigatório!'); return; }
+
+    var curso = document.getElementById('cursoUniversitario').value.trim();
+    if (!curso) { alert('⚠️ Curso é obrigatório!'); return; }
+
+    var periodo = document.getElementById('periodoUniversitario').value;
+    if (!periodo) { alert('⚠️ Período é obrigatório!'); return; }
+
+    var status = document.getElementById('statusUniversitario').value;
+
+    var dados = {
+        nome: nome,
+        matricula: matricula,
+        cpf: cpf,
+        rg: document.getElementById('rgUniversitario').value.trim(),
+        dataNasc: dataNasc,
+        sexo: document.getElementById('sexoUniversitario').value,
+        telefone: telefone,
+        whatsapp: document.getElementById('whatsappUniversitario').value.trim(),
+        email: document.getElementById('emailUniversitario').value.trim(),
+        endereco: document.getElementById('enderecoUniversitario').value.trim(),
+        cidade: document.getElementById('cidadeUniversitario').value.trim(),
+        estado: document.getElementById('estadoUniversitario').value,
+        instituicao: document.getElementById('instituicaoUniversitario').value,
+        curso: curso,
+        periodo: periodo,
+        responsavel: document.getElementById('responsavelUniversitario').value.trim(),
+        telefoneResponsavel: document.getElementById('telefoneResponsavelUniversitario').value.trim(),
+        vinculoResponsavel: document.getElementById('vinculoResponsavelUniversitario').value,
+        status: status,
+        observacoes: document.getElementById('obsUniversitario').value.trim()
+    };
+
+    if (fotoDataURL) {
+        dados.foto = fotoDataURL;
+    } else if (editandoId) {
+        var existente = universitarios.find(function(p) { return p.id === editandoId; });
+        if (existente && existente.foto) {
+            dados.foto = existente.foto;
+        }
+    }
+
+    console.log('📝 Dados a salvar:', dados);
+
+    if (editandoId) {
+        var idx = universitarios.findIndex(function(p) { return p.id === editandoId; });
+        if (idx >= 0) {
+            for (var k in dados) {
+                universitarios[idx][k] = dados[k];
+            }
+            universitarios[idx].dataAtualizacao = new Date().toISOString().split('T')[0];
+        }
+    } else {
+        dados.id = Date.now();
+        dados.dataCadastro = new Date().toISOString().split('T')[0];
+        universitarios.push(dados);
+    }
+
+    salvar();
+    console.log('✅ Dados salvos! Total:', universitarios.length);
+
+    var pessoaSalva = editandoId ? universitarios.find(function(p) { return p.id === editandoId; }) : dados;
+    if (pessoaSalva) {
+        importarParaCRM(pessoaSalva);
+    }
+
+    fecharForm();
+    filtrar();
+    alert('✅ Universitário salvo com sucesso!');
+};
+
+// ============================================================
+// ENVIAR PARA CRM
+// ============================================================
+window.enviarParaCRM = function(id) {
+    var p = universitarios.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    var importado = importarParaCRM(p);
+    if (importado) {
+        alert('✅ ' + p.nome + ' foi importado para o CRM Social!');
+    } else {
+        alert('ℹ️ ' + p.nome + ' já existe no CRM Social.');
+    }
+};
+
+// ============================================================
+// EXCLUIR (apenas marca como inativo)
+// ============================================================
+window.excluirUniversitario = function(id) {
+    var p = universitarios.find(function(x) { return x.id === id; });
+    if (!p) return;
+
+    if (!confirm('⚠️ Tem certeza que deseja marcar ' + p.nome + ' como INATIVO?\n\nATENÇÃO: Isso NÃO excluirá do CRM Social.')) return;
+
+    p.status = 'Inativo';
+    salvar();
+    filtrar();
+    alert('✅ ' + p.nome + ' foi marcado como INATIVO.');
+};
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+filtrar();
+
+// ============================================================
+// VERIFICAÇÃO DE SESSÃO
+// ============================================================
+if (!sessionStorage.getItem('amovin_logado')) {
+    window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>
