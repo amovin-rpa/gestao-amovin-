@@ -63,7 +63,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <main class="main-content">
   <div class="topo-bar">
     <h1>🤖 Assistente IA <span>AMOVIN</span></h1>
-    <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+    <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
   </div>
 
   <div style="font-size:12px;color:var(--cinza);margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;">
@@ -113,8 +113,30 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </main>
 
+<script src="config.js"></script>
 <script src="menu.js?v=20261007"></script>
 <script>
+// ============================================================
+// USAR CONFIG.JS OU LOCALSTORAGE (FALLBACK)
+// ============================================================
+function getGeminiKey() {
+    if (typeof AMOVIN_CONFIG !== 'undefined' && AMOVIN_CONFIG) {
+        return AMOVIN_CONFIG.getGeminiKey();
+    }
+    return localStorage.getItem('amovin_gemini_key');
+}
+
+function setGeminiKey(key) {
+    if (typeof AMOVIN_CONFIG !== 'undefined' && AMOVIN_CONFIG) {
+        AMOVIN_CONFIG.setGeminiKey(key);
+    } else {
+        localStorage.setItem('amovin_gemini_key', key);
+    }
+}
+
+// ============================================================
+// FUNÇÕES DO CHAT
+// ============================================================
 function adicionarMensagem(t, tipo) {
     var container = document.getElementById('chatMensagens');
     var d = document.createElement('div');
@@ -132,7 +154,7 @@ window.perguntar = function(t) {
 function configurarChave() {
     var key = prompt('🔑 Digite sua chave do OpenRouter (sk-or-v1-...):\n\nObtenha gratuitamente em: https://openrouter.ai/keys');
     if (key && key.length > 10) {
-        localStorage.setItem('amovin_gemini_key', key);
+        setGeminiKey(key);
         atualizarStatus();
         mostrarToast('✅ Chave OpenRouter configurada com sucesso!', 'success');
     } else if (key !== null) {
@@ -141,7 +163,7 @@ function configurarChave() {
 }
 
 function atualizarStatus() {
-    var key = localStorage.getItem('amovin_gemini_key');
+    var key = getGeminiKey();
     var chaveEl = document.getElementById('statusChave');
     var modeloEl = document.getElementById('statusModelo');
     var statusIa = document.getElementById('iaStatus');
@@ -181,7 +203,7 @@ window.enviarMensagem = function() {
     adicionarMensagem(t, 'usuario');
     document.getElementById('inputMsg').value = '';
 
-    var key = localStorage.getItem('amovin_gemini_key') || '';
+    var key = getGeminiKey();
     if (!key) {
         adicionarMensagem('⚠️ Chave OpenRouter não configurada. Clique em "Configurar" acima.', 'ia');
         return;
@@ -232,32 +254,18 @@ Pergunta: ` + t;
     });
 };
 
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup','central-ia'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-setTimeout(function() {
-    document.querySelectorAll('.nav-item').forEach(function(item) {
-        var href = item.getAttribute('href') || '';
-        var pagina = href.replace('.html', '').split('?')[0].split('#')[0];
-        if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-            item.style.display = 'none';
-        }
-    });
-}, 300);
-
+// ============================================================
+// VERIFICAÇÃO DE SESSÃO
+// ============================================================
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
 
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🤖 Assistente IA - AMOVIN ERP (OpenRouter)');
     atualizarStatus();
-    console.log('🔑 Chave:', localStorage.getItem('amovin_gemini_key') ? 'Configurada ✅' : 'Não configurada ❌');
+    console.log('🔑 Chave:', getGeminiKey() ? 'Configurada ✅' : 'Não configurada ❌');
 });
 
 var styleToast = document.createElement('style');
