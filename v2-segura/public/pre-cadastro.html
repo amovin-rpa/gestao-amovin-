@@ -48,6 +48,9 @@
             font-weight: 700;
             color: var(--grafite);
         }
+        .topo-bar h1 span {
+            color: var(--laranja);
+        }
         .btn-sair-topo {
             background: #F8F4ED;
             color: #1A1A1A;
@@ -59,12 +62,12 @@
             cursor: pointer;
         }
 
-        /* LINK PÚBLICO */
-        .link-publico-box {
-            background: #FFFFFF;
-            padding: 16px 20px;
+        /* LINK PÚBLICO - BANNER DESTAQUE */
+        .public-link-banner {
+            background: linear-gradient(135deg, #FFF8E7, #FFF3E0);
+            border: 2px dashed var(--laranja);
             border-radius: 14px;
-            border: 1px solid #F0E9DF;
+            padding: 20px 24px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -72,52 +75,69 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .link-publico-box .info {
+        .public-link-banner .info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
         }
-        .link-publico-box .info .icone {
-            font-size: 24px;
+        .public-link-banner .info .icone {
+            font-size: 32px;
         }
-        .link-publico-box .info .texto {
-            font-size: 13px;
+        .public-link-banner .info .texto h4 {
+            font-size: 16px;
+            color: var(--grafite);
+            font-weight: 700;
+        }
+        .public-link-banner .info .texto p {
+            font-size: 12px;
             color: var(--cinza);
         }
-        .link-publico-box .info .texto strong {
-            color: var(--grafite);
-        }
-        .link-publico-box .link-url {
+        .public-link-banner .link-actions {
             display: flex;
-            align-items: center;
             gap: 10px;
-            background: #F8F4ED;
-            padding: 8px 14px;
-            border-radius: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .public-link-banner .link-actions input {
+            padding: 10px 14px;
             border: 1px solid #E5E0D8;
-        }
-        .link-publico-box .link-url input {
-            border: none;
-            background: transparent;
+            border-radius: 8px;
             font-size: 13px;
-            color: var(--azul);
             font-family: 'Inter', sans-serif;
-            min-width: 300px;
+            background: white;
+            min-width: 280px;
         }
-        .link-publico-box .link-url input:focus {
+        .public-link-banner .link-actions input:focus {
             outline: none;
+            border-color: var(--laranja);
         }
-        .btn-copiar {
-            padding: 6px 16px;
+        .btn-copiar-link {
+            padding: 10px 20px;
+            background: var(--laranja);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .btn-copiar-link:hover {
+            background: var(--laranja-escuro);
+        }
+        .btn-abrir-link {
+            padding: 10px 20px;
             background: var(--azul);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 13px;
+            transition: background 0.2s;
+            text-decoration: none;
         }
-        .btn-copiar:hover {
+        .btn-abrir-link:hover {
             background: #1565C0;
         }
 
@@ -155,6 +175,10 @@
             margin-bottom: 4px;
             text-transform: uppercase;
         }
+        .form-group label .obrigatorio {
+            color: var(--vermelho);
+            font-weight: 700;
+        }
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -164,6 +188,14 @@
             border-radius: 8px;
             font-size: 13px;
             font-family: 'Inter', sans-serif;
+            transition: border 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--laranja);
+            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.08);
         }
         .form-group textarea {
             resize: vertical;
@@ -260,6 +292,32 @@
             color: #9CA3AF;
         }
 
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+        .kpi-card {
+            background: #FFFFFF;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid #F0E9DF;
+            text-align: center;
+        }
+        .kpi-card .kpi-valor {
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .kpi-card .kpi-label {
+            font-size: 11px;
+            color: var(--cinza);
+        }
+        .kpi-valor.laranja { color: var(--laranja); }
+        .kpi-valor.verde { color: var(--verde); }
+        .kpi-valor.vermelho { color: var(--vermelho); }
+        .kpi-valor.amarelo { color: #E65100; }
+
         .rodape {
             background: #FFFFFF;
             border-radius: 14px;
@@ -315,99 +373,17 @@
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            .link-publico-box .link-url input {
-                min-width: 150px;
-            }
-        }
-
-        /* 🔥 LINK PÚBLICO - ESTILO DE DESTAQUE */
-        .public-link-banner {
-            background: linear-gradient(135deg, #FFF8E7, #FFF3E0);
-            border: 2px dashed var(--laranja);
-            border-radius: 14px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .public-link-banner .info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .public-link-banner .info .icone {
-            font-size: 32px;
-        }
-        .public-link-banner .info .texto h4 {
-            font-size: 16px;
-            color: var(--grafite);
-            font-weight: 700;
-        }
-        .public-link-banner .info .texto p {
-            font-size: 12px;
-            color: var(--cinza);
-        }
-        .public-link-banner .link-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .public-link-banner .link-actions input {
-            padding: 10px 14px;
-            border: 1px solid #E5E0D8;
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: 'Inter', sans-serif;
-            background: white;
-            min-width: 280px;
-        }
-        .public-link-banner .link-actions input:focus {
-            outline: none;
-            border-color: var(--laranja);
-        }
-        .btn-copiar-link {
-            padding: 10px 20px;
-            background: var(--laranja);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: background 0.2s;
-        }
-        .btn-copiar-link:hover {
-            background: var(--laranja-escuro);
-        }
-        .btn-abrir-link {
-            padding: 10px 20px;
-            background: var(--azul);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: background 0.2s;
-            text-decoration: none;
-        }
-        .btn-abrir-link:hover {
-            background: #1565C0;
-        }
-
-        @media (max-width: 768px) {
-            .public-link-banner .link-actions input {
-                min-width: 180px;
-            }
             .public-link-banner {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .public-link-banner .link-actions {
-                flex-wrap: wrap;
+            .public-link-banner .link-actions input {
+                min-width: 180px;
+            }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
@@ -420,7 +396,7 @@
     <main class="main-content">
         <div class="topo-bar">
             <h1>📝 Pré-Cadastro</h1>
-            <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+            <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
         <!-- 🔥 BANNER DO LINK PÚBLICO -->
@@ -435,41 +411,41 @@
             <div class="link-actions">
                 <input type="text" id="linkPublico" value="https://amovin.vercel.app/pre-cadastro-externo.html" readonly>
                 <button class="btn-copiar-link" onclick="copiarLink()">📋 Copiar</button>
-                <a href="#" class="btn-abrir-link" onclick="abrirLink()" target="_blank">🔗 Abrir</a>
+                <a href="#" class="btn-abrir-link" onclick="abrirLink(event)" target="_blank">🔗 Abrir</a>
             </div>
         </div>
 
         <!-- KPIs -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:22px;">
-            <div class="card" style="padding:16px;text-align:center;">
-                <div style="font-size:28px;font-weight:800;color:var(--laranja);" id="kpiTotal">0</div>
-                <div style="font-size:11px;color:var(--cinza);">📋 Total</div>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-valor laranja" id="kpiTotal">0</div>
+                <div class="kpi-label">📋 Total</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;">
-                <div style="font-size:28px;font-weight:800;color:#E65100;" id="kpiPendentes">0</div>
-                <div style="font-size:11px;color:var(--cinza);">⏳ Pendentes</div>
+            <div class="kpi-card">
+                <div class="kpi-valor amarelo" id="kpiPendentes">0</div>
+                <div class="kpi-label">⏳ Pendentes</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;">
-                <div style="font-size:28px;font-weight:800;color:var(--verde);" id="kpiAprovados">0</div>
-                <div style="font-size:11px;color:var(--cinza);">✅ Aprovados</div>
+            <div class="kpi-card">
+                <div class="kpi-valor verde" id="kpiAprovados">0</div>
+                <div class="kpi-label">✅ Aprovados</div>
             </div>
-            <div class="card" style="padding:16px;text-align:center;">
-                <div style="font-size:28px;font-weight:800;color:var(--vermelho);" id="kpiReprovados">0</div>
-                <div style="font-size:11px;color:var(--cinza);">❌ Reprovados</div>
+            <div class="kpi-card">
+                <div class="kpi-valor vermelho" id="kpiReprovados">0</div>
+                <div class="kpi-label">❌ Reprovados</div>
             </div>
         </div>
 
         <!-- FORMULÁRIO E LISTA -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
             <div class="card">
-                <h3>📝 Novo Pré-Cadastro</h3>
+                <h3 id="tituloForm">📝 Novo Pré-Cadastro</h3>
                 <input type="hidden" id="preId">
                 <div class="form-group">
-                    <label>Nome Completo *</label>
+                    <label>Nome Completo <span class="obrigatorio">*</span></label>
                     <input type="text" id="nome" placeholder="Nome da pessoa">
                 </div>
                 <div class="form-group">
-                    <label>Email *</label>
+                    <label>Email <span class="obrigatorio">*</span></label>
                     <input type="email" id="email" placeholder="email@exemplo.com">
                 </div>
                 <div class="form-grid">
@@ -483,13 +459,15 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Interesse</label>
+                    <label>Interesse <span class="obrigatorio">*</span></label>
                     <select id="interesse">
+                        <option value="">Selecione...</option>
                         <option value="Voluntário">💪 Voluntário</option>
                         <option value="Beneficiário">👥 Beneficiário</option>
                         <option value="Profissional">👨‍⚕️ Profissional</option>
                         <option value="Doador">🤝 Doador</option>
                         <option value="Parceiro">🏢 Parceiro</option>
+                        <option value="Outro">📌 Outro</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -497,11 +475,12 @@
                     <textarea id="obs" rows="2" placeholder="Informações adicionais..."></textarea>
                 </div>
                 <button class="btn-salvar" onclick="salvarPreCadastro()" style="width:100%;">💾 Salvar</button>
+                <div id="statusMsg" style="margin-top:8px;font-size:12px;color:var(--verde);"></div>
             </div>
 
             <div class="card">
                 <h3>📋 Lista de Pré-Cadastros</h3>
-                <div style="overflow-x:auto;">
+                <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
                     <table class="tabela-pre-cadastro" id="tabelaPreCadastro">
                         <thead>
                             <tr>
@@ -534,7 +513,8 @@
         </div>
     </main>
 
-    <script src="menu.js"></script>
+    <script src="config.js"></script>
+    <script src="menu.js?v=20261007"></script>
     <script>
         // ============================================================
         // DADOS
@@ -565,7 +545,8 @@
             alert('✅ Link copiado!');
         }
 
-        function abrirLink() {
+        function abrirLink(e) {
+            e.preventDefault();
             var url = document.getElementById('linkPublico').value;
             window.open(url, '_blank');
         }
@@ -609,19 +590,22 @@
                 tbody.innerHTML = '<tr><td colspan="4" class="sem-dados">Nenhum pré-cadastro.</td></tr>';
                 return;
             }
-            tbody.innerHTML = preCadastros.map(function(p) {
+            // Ordenar por data de criação (mais recente primeiro)
+            var lista = preCadastros.slice().sort(function(a, b) {
+                return new Date(b.dataCriacao) - new Date(a.dataCriacao);
+            });
+            tbody.innerHTML = lista.map(function(p) {
                 var statusBadge = getStatusBadge(p.status);
                 var statusLabel = getStatusLabel(p.status);
-                var data = p.dataCriacao ? new Date(p.dataCriacao).toLocaleDateString('pt-BR') : '-';
                 return '<tr>' +
                     '<td><strong>' + p.nome + '</strong><br><span style="font-size:11px;color:var(--cinza);">' + p.email + '</span></td>' +
                     '<td>' + p.interesse + '</td>' +
                     '<td><span class="status-badge ' + statusBadge + '">' + statusLabel + '</span></td>' +
                     '<td style="white-space:nowrap;">' +
-                    (p.status === 'pendente' ? '<button class="btn-acao btn-aprovar" onclick="aprovar(' + p.id + ')">✅</button> ' : '') +
-                    (p.status === 'pendente' ? '<button class="btn-acao btn-reprovar" onclick="reprovar(' + p.id + ')">❌</button> ' : '') +
-                    '<button class="btn-acao btn-editar" onclick="editar(' + p.id + ')">✏️</button> ' +
-                    '<button class="btn-acao btn-excluir" onclick="excluir(' + p.id + ')">🗑️</button>' +
+                    (p.status === 'pendente' ? '<button class="btn-acao btn-aprovar" onclick="aprovar(' + p.id + ')" title="Aprovar">✅</button> ' : '') +
+                    (p.status === 'pendente' ? '<button class="btn-acao btn-reprovar" onclick="reprovar(' + p.id + ')" title="Reprovar">❌</button> ' : '') +
+                    '<button class="btn-acao btn-editar" onclick="editar(' + p.id + ')" title="Editar">✏️</button> ' +
+                    '<button class="btn-acao btn-excluir" onclick="excluir(' + p.id + ')" title="Excluir">🗑️</button>' +
                     '</td>' +
                     '</tr>';
             }).join('');
@@ -631,16 +615,35 @@
         window.salvarPreCadastro = function() {
             var nome = document.getElementById('nome').value.trim();
             var email = document.getElementById('email').value.trim();
+            var interesse = document.getElementById('interesse').value;
 
-            if (!nome) { alert('⚠️ Nome é obrigatório!'); return; }
-            if (!email) { alert('⚠️ Email é obrigatório!'); return; }
+            if (!nome) {
+                document.getElementById('statusMsg').textContent = '⚠️ Nome é obrigatório!';
+                document.getElementById('statusMsg').style.color = '#C62828';
+                return;
+            }
+            if (!email) {
+                document.getElementById('statusMsg').textContent = '⚠️ Email é obrigatório!';
+                document.getElementById('statusMsg').style.color = '#C62828';
+                return;
+            }
+            if (!email.includes('@')) {
+                document.getElementById('statusMsg').textContent = '⚠️ Email inválido!';
+                document.getElementById('statusMsg').style.color = '#C62828';
+                return;
+            }
+            if (!interesse) {
+                document.getElementById('statusMsg').textContent = '⚠️ Selecione o interesse!';
+                document.getElementById('statusMsg').style.color = '#C62828';
+                return;
+            }
 
             var dados = {
                 nome: nome,
                 email: email,
                 telefone: document.getElementById('telefone').value.trim(),
                 nascimento: document.getElementById('nascimento').value,
-                interesse: document.getElementById('interesse').value,
+                interesse: interesse,
                 obs: document.getElementById('obs').value.trim()
             };
 
@@ -650,6 +653,7 @@
                     for (var k in dados) preCadastros[idx][k] = dados[k];
                 }
                 editandoId = null;
+                document.getElementById('tituloForm').textContent = '📝 Novo Pré-Cadastro';
             } else {
                 dados.id = Date.now();
                 dados.status = 'pendente';
@@ -660,7 +664,9 @@
             salvar();
             limparForm();
             renderizarLista();
-            alert('✅ Pré-cadastro salvo com sucesso!');
+            document.getElementById('statusMsg').textContent = '✅ Pré-cadastro salvo com sucesso!';
+            document.getElementById('statusMsg').style.color = '#2E7D32';
+            setTimeout(function() { document.getElementById('statusMsg').textContent = ''; }, 3000);
         };
 
         window.editar = function(id) {
@@ -672,9 +678,9 @@
             document.getElementById('email').value = p.email;
             document.getElementById('telefone').value = p.telefone || '';
             document.getElementById('nascimento').value = p.nascimento || '';
-            document.getElementById('interesse').value = p.interesse;
+            document.getElementById('interesse').value = p.interesse || '';
             document.getElementById('obs').value = p.obs || '';
-            document.querySelector('.card h3').textContent = '✏️ Editando: ' + p.nome;
+            document.getElementById('tituloForm').textContent = '✏️ Editando: ' + p.nome;
         };
 
         window.excluir = function(id) {
@@ -715,37 +721,15 @@
             document.getElementById('email').value = '';
             document.getElementById('telefone').value = '';
             document.getElementById('nascimento').value = '';
-            document.getElementById('interesse').value = 'Voluntário';
+            document.getElementById('interesse').value = '';
             document.getElementById('obs').value = '';
-            document.querySelector('.card h3').textContent = '📝 Novo Pré-Cadastro';
+            document.getElementById('tituloForm').textContent = '📝 Novo Pré-Cadastro';
+            document.getElementById('statusMsg').textContent = '';
         }
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // VERIFICAÇÃO DE SESSÃO
         // ============================================================
-        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-        var modulosPermitidos = {
-            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas', 'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes', 'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios', 'configuracoes', 'backup'],
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
-
-        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-
-        // Aguarda o menu carregar para aplicar permissões
-        setTimeout(function() {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                var pagina = href.replace('.html', '');
-                pagina = pagina.split('?')[0].split('#')[0];
-                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-                    item.style.display = 'none';
-                }
-            });
-        }, 500);
-
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
@@ -754,6 +738,9 @@
         // INICIALIZAÇÃO
         // ============================================================
         renderizarLista();
+
+        console.log('✅ Pré-Cadastro carregado!');
+        console.log('📋 Total:', preCadastros.length);
     </script>
 </body>
 </html>
