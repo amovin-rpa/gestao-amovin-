@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amovin ERP Social • Financeiro</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<!-- Chart.js para gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- SheetJS para exportar Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- jsPDF para exportar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root {
   --laranja: #C65A11;
@@ -16,94 +23,300 @@
   --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
   --vermelho: #E53935;
+  --roxo: #7B1FA2;
+  --teal: #00897B;
+  --sombra: 0 2px 12px rgba(0,0,0,0.06);
+  --sombra-hover: 0 4px 24px rgba(0,0,0,0.10);
+  --border-radius: 12px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
 /* ============================================================
-   A SIDEBAR FOI REMOVIDA DAQUI - VEM DO menu.js
+   CONTEÚDO PRINCIPAL
    ============================================================ */
-
-.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; min-height: 100vh; width: calc(100% - 270px); }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
 .topo-bar h1 span { font-size: 14px; font-weight: 400; color: var(--cinza); margin-left: 12px; }
-.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.btn-sair-topo:hover { background: #F0E9DF; }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 22px; }
-.kpi-card { background: #FFFFFF; padding: 18px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; }
-.kpi-card .kpi-valor { font-size: 24px; font-weight: 800; color: var(--laranja); }
-.kpi-card .kpi-label { font-size: 11px; color: var(--cinza); }
+/* ============================================================
+   KPIs
+   ============================================================ */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 18px 20px; border-radius: var(--border-radius); border: 1px solid #F0E9DF; display: flex; align-items: center; gap: 14px; transition: var(--transition); box-shadow: var(--sombra); }
+.kpi-card:hover { box-shadow: var(--sombra-hover); transform: translateY(-2px); }
+.kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.kpi-icon.verde { background: #E8F5E9; }
+.kpi-icon.vermelho { background: #FFEBEE; }
+.kpi-icon.azul { background: #E3F2FD; }
+.kpi-icon.amarelo { background: #FFF3E0; }
+.kpi-icon.roxo { background: #F3E5F5; }
+.kpi-icon.teal { background: #E0F2F1; }
+.kpi-info { flex: 1; }
+.kpi-info .valor { font-size: 20px; font-weight: 800; color: var(--grafite); }
+.kpi-info .label { font-size: 10px; color: var(--cinza); }
+.kpi-info .trend { font-size: 10px; font-weight: 600; margin-top: 2px; }
+.kpi-info .trend.up { color: var(--verde); }
+.kpi-info .trend.down { color: var(--vermelho); }
 
-.grid-financeiro { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.card { background: #FFFFFF; padding: 24px; border-radius: 14px; border: 1px solid #F0E9DF; }
-.card h3 { font-size: 16px; font-weight: 700; color: var(--grafite); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; }
+/* ============================================================
+   GRID
+   ============================================================ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card { background: #FFFFFF; padding: 24px; border-radius: var(--border-radius); border: 1px solid #F0E9DF; box-shadow: var(--sombra); transition: var(--transition); }
+.card:hover { box-shadow: var(--sombra-hover); }
+.card h3 { font-size: 15px; font-weight: 700; color: var(--grafite); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #F8F4ED; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.card h3 .badge { font-size: 10px; font-weight: 600; padding: 2px 12px; border-radius: 20px; background: #E8F5E9; color: #2E7D32; }
+.card h3 .badge.vermelho { background: #FFEBEE; color: #C62828; }
 
+/* ============================================================
+   FORMULÁRIO
+   ============================================================ */
 .form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
-.form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+.form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1.5px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; transition: var(--transition); }
+.form-group input:focus, .form-group select:focus { border-color: var(--laranja); outline: none; box-shadow: 0 0 0 3px rgba(198,90,17,0.1); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-.btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; }
+/* ============================================================
+   BOTÕES - SAP ENTERPRISE
+   ============================================================ */
+.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
 .btn-salvar { background: var(--laranja); color: white; }
-.btn-editar { background: var(--amarelo); color: #1A1A1A; }
-.btn-excluir { background: var(--vermelho); color: white; }
+.btn-salvar:hover { background: var(--laranja-escuro); transform: translateY(-1px); box-shadow: var(--sombra-hover); }
+.btn-verde { background: var(--verde); color: white; }
+.btn-verde:hover { background: #388E3C; }
+.btn-vermelho { background: var(--vermelho); color: white; }
+.btn-vermelho:hover { background: #C62828; }
+.btn-azul { background: var(--azul); color: white; }
+.btn-azul:hover { background: #1565C0; }
+.btn-outline { background: transparent; color: var(--laranja); border: 2px solid var(--laranja); }
+.btn-outline:hover { background: var(--laranja); color: white; }
+.btn-sm { padding: 4px 10px; font-size: 10px; }
 
-.lancamento-item { padding: 12px 16px; border-bottom: 1px solid #F0E9DF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
-.lancamento-item .descricao { font-weight: 600; color: var(--grafite); font-size: 13px; }
-.lancamento-item .valor { font-weight: 700; }
-.lancamento-item .valor.receita { color: var(--verde); }
-.lancamento-item .valor.despesa { color: var(--vermelho); }
-.lancamento-item .data { font-size: 11px; color: var(--cinza); }
-.lancamento-item .categoria { font-size: 10px; background: #F8F4ED; padding: 2px 10px; border-radius: 12px; color: var(--cinza); }
-
+/* ============================================================
+   TABELAS
+   ============================================================ */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #F8F4ED; padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 700; color: var(--cinza); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #F0E9DF; }
+td { padding: 10px 12px; border-bottom: 1px solid #F0E9DF; }
+tr:hover { background: #FFF8E7; }
+.valor-receita { color: var(--verde); font-weight: 700; }
+.valor-despesa { color: var(--vermelho); font-weight: 700; }
+.status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+.status-pago { background: #E8F5E9; color: #2E7D32; }
+.status-pendente { background: #FFF3E0; color: #E65100; }
+.status-vencido { background: #FFEBEE; color: #C62828; }
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
-.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+/* ============================================================
+   GRÁFICOS
+   ============================================================ */
+.chart-container { position: relative; height: 200px; }
+
+/* ============================================================
+   ANIMAÇÕES
+   ============================================================ */
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.fade-in { animation: fadeIn 0.4s ease; }
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+.rodape { background: #FFFFFF; border-radius: var(--border-radius); padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; box-shadow: var(--sombra); }
 .rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 900px) { .main-content { margin-left: 0; } .grid-financeiro { grid-template-columns: 1fr; } }
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width: 1000px) { .grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .main-content { margin-left: 0; padding: 16px; width: 100%; padding-top: 60px; } .kpi-row { grid-template-columns: 1fr 1fr; } .form-row { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .kpi-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- O MENU SERÁ CARREGADO PELO menu.js -->
+<!-- MENU -->
 <div id="menu-container"></div>
 
 <main class="main-content">
+  <!-- TOPO -->
   <div class="topo-bar">
-    <h1>💰 Financeiro <span>Gestão de receitas e despesas</span></h1>
+    <div>
+      <h1>💰 Financeiro <span>Gestão com padrão SAP</span></h1>
+    </div>
     <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
   </div>
 
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotalReceitas">R$ 0</div><div class="kpi-label">📈 Total Receitas</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotalDespesas">R$ 0</div><div class="kpi-label">📉 Total Despesas</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiSaldo">R$ 0</div><div class="kpi-label">💰 Saldo</div></div>
-    <div class="kpi-card"><div class="kpi-valor" id="kpiTotalLancamentos">0</div><div class="kpi-label">📋 Lançamentos</div></div>
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpiContainer">
+    <div class="kpi-card">
+      <div class="kpi-icon verde">📈</div>
+      <div class="kpi-info">
+        <div class="valor" id="kpiReceitas">R$ 0</div>
+        <div class="label">Receitas</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon vermelho">📉</div>
+      <div class="kpi-info">
+        <div class="valor" id="kpiDespesas">R$ 0</div>
+        <div class="label">Despesas</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon azul">💰</div>
+      <div class="kpi-info">
+        <div class="valor" id="kpiSaldo">R$ 0</div>
+        <div class="label">Saldo</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon amarelo">📋</div>
+      <div class="kpi-info">
+        <div class="valor" id="kpiTotalLancamentos">0</div>
+        <div class="label">Lançamentos</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon roxo">⏳</div>
+      <div class="kpi-info">
+        <div class="valor" id="kpiPendentes">0</div>
+        <div class="label">Pendentes</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon teal">📊</div>
+      <div class="kpi-info">
+        <div class="valor" id="kpiProjetos">0</div>
+        <div class="label">Projetos</div>
+      </div>
+    </div>
   </div>
 
-  <div class="grid-financeiro">
-    <div class="card">
-      <h3>📝 Novo Lançamento <span style="font-size:12px;color:var(--cinza);font-weight:400;" id="totalLancamentos">0 registros</span></h3>
+  <!-- GRID PRINCIPAL -->
+  <div class="grid-2">
+    <!-- COLUNA 1: NOVO LANÇAMENTO -->
+    <div class="card fade-in">
+      <h3>📝 Novo Lançamento <span class="badge" id="statusBadge">Automático</span></h3>
       <input type="hidden" id="lancamentoId">
-      <div class="form-group"><label>Tipo *</label><select id="tipoLancamento"><option value="receita">📈 Receita</option><option value="despesa">📉 Despesa</option></select></div>
-      <div class="form-group"><label>Descrição *</label><input type="text" id="descricaoLancamento" placeholder="Ex: Doação Mensal"></div>
-      <div class="form-group"><label>Categoria</label><select id="categoriaLancamento"><option>Doação</option><option>Convênio</option><option>Emenda</option><option>Patrocínio</option><option>Material</option><option>Serviço</option><option>Folha</option><option>Outros</option></select></div>
-      <div class="form-row"><div class="form-group"><label>Valor (R$) *</label><input type="number" id="valorLancamento" step="0.01" placeholder="0,00"></div><div class="form-group"><label>Data *</label><input type="date" id="dataLancamento"></div></div>
-      <div class="form-group"><label>Observações</label><input type="text" id="obsLancamento"></div>
-      <button class="btn btn-salvar" onclick="salvarLancamento()" style="width:100%;padding:12px;font-size:14px;">💾 Salvar Lançamento</button>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tipo *</label>
+          <select id="tipoLancamento">
+            <option value="receita">📈 Receita</option>
+            <option value="despesa">📉 Despesa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Categoria *</label>
+          <select id="categoriaLancamento">
+            <option value="Doação">Doação</option>
+            <option value="Convênio">Convênio</option>
+            <option value="Emenda">Emenda</option>
+            <option value="Patrocínio">Patrocínio</option>
+            <option value="Material">Material</option>
+            <option value="Serviço">Serviço</option>
+            <option value="Folha">Folha</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descrição *</label>
+        <input type="text" id="descricaoLancamento" placeholder="Ex: Doação mensal da Empresa ABC">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Valor (R$) *</label>
+          <input type="number" id="valorLancamento" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group">
+          <label>Data *</label>
+          <input type="date" id="dataLancamento">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Projeto</label>
+        <select id="projetoLancamento">
+          <option value="">Nenhum</option>
+          <option value="Inclusão Digital">Inclusão Digital</option>
+          <option value="Esporte para Todos">Esporte para Todos</option>
+          <option value="Reforço Escolar">Reforço Escolar</option>
+          <option value="Capacitação Profissional">Capacitação Profissional</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="statusLancamento">
+          <option value="pago">✅ Pago</option>
+          <option value="pendente">⏳ Pendente</option>
+          <option value="vencido">❌ Vencido</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Observações</label>
+        <input type="text" id="obsLancamento" placeholder="Informações adicionais...">
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-salvar" onclick="salvarLancamento()" style="flex:1;">💾 Salvar</button>
+        <button class="btn btn-azul" onclick="importarDoIDP()" style="flex:1;">📄 IDP</button>
+      </div>
+      <div id="statusMsg" style="margin-top:10px;font-size:12px;color:var(--cinza);"></div>
     </div>
-    <div class="card">
-      <h3>📋 Últimos Lançamentos</h3>
-      <div id="listaLancamentos"><div class="sem-dados">Nenhum lançamento.</div></div>
+
+    <!-- COLUNA 2: GRÁFICOS E RESUMO -->
+    <div class="card fade-in">
+      <h3>📊 Resumo Financeiro <span class="badge">Mensal</span></h3>
+      <div class="chart-container">
+        <canvas id="graficoMensal"></canvas>
+      </div>
+      <div style="margin-top:12px;display:flex;justify-content:space-between;font-size:11px;color:var(--cinza);">
+        <span>📈 Receitas: <strong id="legendaReceitas" style="color:var(--verde);">R$ 0</strong></span>
+        <span>📉 Despesas: <strong id="legendaDespesas" style="color:var(--vermelho);">R$ 0</strong></span>
+      </div>
     </div>
   </div>
 
+  <!-- LISTA DE LANÇAMENTOS -->
+  <div class="card fade-in" style="margin-top:20px;">
+    <h3>📋 Últimos Lançamentos <span class="badge" id="totalLancamentosBadge">0 registros</span></h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Projeto</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaLancamentos">
+          <tr><td colspan="8" class="sem-dados">Nenhum lançamento.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+      <button class="btn btn-verde" onclick="exportarExcel()">📊 Excel</button>
+      <button class="btn btn-vermelho" onclick="exportarPDF()">📄 PDF</button>
+      <button class="btn btn-azul" onclick="gerarRelatorioCompleto()">📋 Relatório</button>
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
   <div class="rodape">
     <div class="rodape-grid">
       <div class="rodape-logo">
@@ -111,7 +324,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
         <span class="logo-vigorre-fallback">Vigorre</span>
       </div>
       <div class="rodape-info">
-        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | Padrão SAP S/4HANA</div>
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | Padrão SAP</div>
         <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
         <div class="email">contato@vigorre.com.br</div>
       </div>
@@ -119,76 +332,218 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   </div>
 </main>
 
-<script src="menu.js"></script>
+<script src="menu.js?v=20261007"></script>
 <script>
 // ============================================================
 // BANCO DE DADOS LOCAL
 // ============================================================
 var lancamentos = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
 var editandoId = null;
+var graficoMensal = null;
 
 if (lancamentos.length === 0) {
+    var hoje = new Date().toISOString().split('T')[0];
     lancamentos = [
-        { id: 1, tipo: 'receita', descricao: 'Doação Mensal - Parceiro A', categoria: 'Doação', valor: 5000, data: new Date().toISOString().split('T')[0], obs: 'Referente a junho/2026' },
-        { id: 2, tipo: 'despesa', descricao: 'Material Esportivo', categoria: 'Material', valor: 1200, data: new Date().toISOString().split('T')[0], obs: 'Compra de bolas e redes' }
+        { id: 1, tipo: 'receita', descricao: 'Doação - Empresa ABC', categoria: 'Doação', valor: 5000, data: hoje, projeto: 'Inclusão Digital', obs: '', status: 'pago' },
+        { id: 2, tipo: 'despesa', descricao: 'Material Esportivo', categoria: 'Material', valor: 1200, data: hoje, projeto: 'Esporte para Todos', obs: '', status: 'pendente' },
+        { id: 3, tipo: 'receita', descricao: 'Convênio - Prefeitura', categoria: 'Convênio', valor: 15000, data: hoje, projeto: 'Capacitação Profissional', obs: '', status: 'pago' },
     ];
     salvar();
 }
-function salvar() { localStorage.setItem('amovin_financeiro', JSON.stringify(lancamentos)); }
 
+function salvar() {
+    localStorage.setItem('amovin_financeiro', JSON.stringify(lancamentos));
+}
+
+// ============================================================
+// FUNÇÕES AUXILIARES
+// ============================================================
 function fm(v) { return 'R$ ' + (v||0).toFixed(2).replace('.', ','); }
 
+function getStatusLabel(status) {
+    var map = { 'pago': '✅ Pago', 'pendente': '⏳ Pendente', 'vencido': '❌ Vencido' };
+    return map[status] || status;
+}
+function getStatusClass(status) {
+    var map = { 'pago': 'status-pago', 'pendente': 'status-pendente', 'vencido': 'status-vencido' };
+    return map[status] || 'status-pendente';
+}
+
+// ============================================================
+// ATUALIZAR KPIs
+// ============================================================
 function atualizarKPIs() {
     var receitas = lancamentos.filter(function(l) { return l.tipo === 'receita'; });
     var despesas = lancamentos.filter(function(l) { return l.tipo === 'despesa'; });
     var totalReceitas = receitas.reduce(function(s, l) { return s + l.valor; }, 0);
     var totalDespesas = despesas.reduce(function(s, l) { return s + l.valor; }, 0);
     var saldo = totalReceitas - totalDespesas;
+    var pendentes = lancamentos.filter(function(l) { return l.status === 'pendente' || l.status === 'vencido'; }).length;
+    var projetos = {};
+    lancamentos.forEach(function(l) { if (l.projeto) projetos[l.projeto] = true; });
 
-    document.getElementById('kpiTotalReceitas').textContent = fm(totalReceitas);
-    document.getElementById('kpiTotalDespesas').textContent = fm(totalDespesas);
+    document.getElementById('kpiReceitas').textContent = fm(totalReceitas);
+    document.getElementById('kpiDespesas').textContent = fm(totalDespesas);
     document.getElementById('kpiSaldo').textContent = fm(saldo);
     document.getElementById('kpiSaldo').style.color = saldo >= 0 ? '#57C220' : '#E53935';
     document.getElementById('kpiTotalLancamentos').textContent = lancamentos.length;
-    document.getElementById('totalLancamentos').textContent = lancamentos.length + ' registros';
+    document.getElementById('kpiPendentes').textContent = pendentes;
+    document.getElementById('kpiProjetos').textContent = Object.keys(projetos).length;
+    document.getElementById('totalLancamentosBadge').textContent = lancamentos.length + ' registros';
+
+    document.getElementById('legendaReceitas').textContent = fm(totalReceitas);
+    document.getElementById('legendaDespesas').textContent = fm(totalDespesas);
 }
 
+// ============================================================
+// RENDERIZAR LISTA
+// ============================================================
 function renderizarLancamentos() {
-    var lista = lancamentos.slice().sort(function(a, b) { return new Date(b.data) - new Date(a.data); }).slice(0, 20);
-    var container = document.getElementById('listaLancamentos');
+    var lista = lancamentos.slice().sort(function(a, b) {
+        return new Date(b.data) - new Date(a.data);
+    }).slice(0, 50);
+
+    var tbody = document.getElementById('listaLancamentos');
     if (lista.length === 0) {
-        container.innerHTML = '<div class="sem-dados">Nenhum lançamento.</div>';
+        tbody.innerHTML = '<tr><td colspan="8" class="sem-dados">Nenhum lançamento.</td></tr>';
         return;
     }
-    container.innerHTML = lista.map(function(l) {
-        var valorClass = l.tipo === 'receita' ? 'receita' : 'despesa';
-        var sinal = l.tipo === 'receita' ? '+' : '-';
+
+    tbody.innerHTML = lista.map(function(l) {
         var data = new Date(l.data + 'T00:00:00').toLocaleDateString('pt-BR');
-        return '<div class="lancamento-item">' +
-            '<div><span class="descricao">' + l.descricao + '</span> <span class="categoria">' + l.categoria + '</span></div>' +
-            '<div><span class="valor ' + valorClass + '">' + sinal + ' ' + fm(l.valor) + '</span> <span class="data">' + data + '</span>' +
-            '<button class="btn btn-editar" onclick="editarLancamento(' + l.id + ')" style="padding:4px 8px;font-size:10px;margin-left:4px;">✏️</button>' +
-            '<button class="btn btn-excluir" onclick="excluirLancamento(' + l.id + ')" style="padding:4px 8px;font-size:10px;">🗑️</button></div></div>';
+        var valorClass = l.tipo === 'receita' ? 'valor-receita' : 'valor-despesa';
+        var sinal = l.tipo === 'receita' ? '+' : '-';
+        var statusLabel = getStatusLabel(l.status);
+        var statusClass = getStatusClass(l.status);
+        var tipoIcon = l.tipo === 'receita' ? '📈' : '📉';
+
+        return '<tr>' +
+            '<td>' + data + '</td>' +
+            '<td>' + tipoIcon + ' ' + (l.tipo === 'receita' ? 'Receita' : 'Despesa') + '</td>' +
+            '<td><strong>' + l.descricao + '</strong></td>' +
+            '<td>' + l.categoria + '</td>' +
+            '<td>' + (l.projeto || '-') + '</td>' +
+            '<td class="' + valorClass + '">' + sinal + ' ' + fm(l.valor) + '</td>' +
+            '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+            '<td>' +
+            '<button class="btn btn-azul btn-sm" onclick="editarLancamento(' + l.id + ')">✏️</button> ' +
+            '<button class="btn btn-vermelho btn-sm" onclick="excluirLancamento(' + l.id + ')">🗑️</button>' +
+            '</td>' +
+            '</tr>';
     }).join('');
 }
 
+// ============================================================
+// GRÁFICO
+// ============================================================
+function atualizarGrafico() {
+    var ctx = document.getElementById('graficoMensal').getContext('2d');
+
+    var meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    var receitasPorMes = meses.map(function(m, i) {
+        var total = 0;
+        lancamentos.forEach(function(l) {
+            if (l.tipo === 'receita' && l.data) {
+                var mes = parseInt(l.data.split('-')[1]) - 1;
+                if (mes === i) total += l.valor;
+            }
+        });
+        return total;
+    });
+    var despesasPorMes = meses.map(function(m, i) {
+        var total = 0;
+        lancamentos.forEach(function(l) {
+            if (l.tipo === 'despesa' && l.data) {
+                var mes = parseInt(l.data.split('-')[1]) - 1;
+                if (mes === i) total += l.valor;
+            }
+        });
+        return total;
+    });
+
+    if (graficoMensal) { graficoMensal.destroy(); }
+
+    graficoMensal = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: meses,
+            datasets: [
+                {
+                    label: 'Receitas',
+                    data: receitasPorMes,
+                    backgroundColor: 'rgba(87, 194, 32, 0.7)',
+                    borderColor: '#57C220',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                },
+                {
+                    label: 'Despesas',
+                    data: despesasPorMes,
+                    backgroundColor: 'rgba(229, 57, 53, 0.7)',
+                    borderColor: '#E53935',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 8,
+                        font: { size: 10, family: 'Inter' },
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) { return 'R$ ' + (value/1000).toFixed(0) + 'k'; },
+                        font: { size: 9, family: 'Inter' }
+                    },
+                    grid: { color: 'rgba(0,0,0,0.04)' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 9, family: 'Inter' } }
+                }
+            }
+        }
+    });
+}
+
+// ============================================================
+// CRUD LANÇAMENTOS
+// ============================================================
 window.salvarLancamento = function() {
     var tipo = document.getElementById('tipoLancamento').value;
     var descricao = document.getElementById('descricaoLancamento').value.trim();
     var valor = parseFloat(document.getElementById('valorLancamento').value) || 0;
     var data = document.getElementById('dataLancamento').value;
+    var categoria = document.getElementById('categoriaLancamento').value;
+    var projeto = document.getElementById('projetoLancamento').value;
+    var status = document.getElementById('statusLancamento').value;
+    var obs = document.getElementById('obsLancamento').value.trim();
 
-    if (!descricao) { alert('Preencha a descrição!'); return; }
-    if (valor <= 0) { alert('Valor deve ser maior que zero!'); return; }
-    if (!data) { alert('Selecione a data!'); return; }
+    if (!descricao) { alert('⚠️ Preencha a descrição!'); return; }
+    if (valor <= 0) { alert('⚠️ Valor deve ser maior que zero!'); return; }
+    if (!data) { alert('⚠️ Selecione a data!'); return; }
 
     var dados = {
         tipo: tipo,
         descricao: descricao,
-        categoria: document.getElementById('categoriaLancamento').value,
         valor: valor,
         data: data,
-        obs: document.getElementById('obsLancamento').value.trim()
+        categoria: categoria,
+        projeto: projeto || '',
+        status: status,
+        obs: obs
     };
 
     if (editandoId) {
@@ -197,6 +552,7 @@ window.salvarLancamento = function() {
             for (var k in dados) lancamentos[idx][k] = dados[k];
         }
         editandoId = null;
+        document.getElementById('statusBadge').textContent = 'Automático';
     } else {
         dados.id = Date.now();
         lancamentos.push(dados);
@@ -204,63 +560,197 @@ window.salvarLancamento = function() {
 
     salvar();
     limparForm();
-    atualizarKPIs();
-    renderizarLancamentos();
-    alert('✅ Lançamento salvo com sucesso!');
+    atualizarTudo();
+    document.getElementById('statusMsg').textContent = '✅ Lançamento salvo com sucesso!';
+    document.getElementById('statusMsg').style.color = '#2E7D32';
+    setTimeout(function() { document.getElementById('statusMsg').textContent = ''; }, 3000);
 };
 
 window.editarLancamento = function(id) {
     var l = lancamentos.find(function(x) { return x.id === id; });
     if (!l) return;
     editandoId = id;
-    document.getElementById('lancamentoId').value = id;
     document.getElementById('tipoLancamento').value = l.tipo;
     document.getElementById('descricaoLancamento').value = l.descricao;
-    document.getElementById('categoriaLancamento').value = l.categoria;
     document.getElementById('valorLancamento').value = l.valor;
     document.getElementById('dataLancamento').value = l.data;
+    document.getElementById('categoriaLancamento').value = l.categoria;
+    document.getElementById('projetoLancamento').value = l.projeto || '';
+    document.getElementById('statusLancamento').value = l.status || 'pendente';
     document.getElementById('obsLancamento').value = l.obs || '';
-    document.querySelector('.card h3').innerHTML = '✏️ Editando Lançamento <span style="font-size:12px;color:var(--cinza);font-weight:400;">' + l.descricao + '</span>';
+    document.getElementById('statusBadge').textContent = '✏️ Editando';
 };
 
 window.excluirLancamento = function(id) {
     if (!confirm('Excluir este lançamento?')) return;
     lancamentos = lancamentos.filter(function(l) { return l.id !== id; });
     salvar();
-    atualizarKPIs();
-    renderizarLancamentos();
+    atualizarTudo();
 };
 
 function limparForm() {
     editandoId = null;
-    document.getElementById('lancamentoId').value = '';
-    document.getElementById('tipoLancamento').value = 'receita';
     document.getElementById('descricaoLancamento').value = '';
-    document.getElementById('categoriaLancamento').value = 'Doação';
     document.getElementById('valorLancamento').value = '';
-    document.getElementById('dataLancamento').value = new Date().toISOString().split('T')[0];
     document.getElementById('obsLancamento').value = '';
-    document.querySelector('.card h3').innerHTML = '📝 Novo Lançamento <span style="font-size:12px;color:var(--cinza);font-weight:400;" id="totalLancamentos">' + lancamentos.length + ' registros</span>';
+    document.getElementById('dataLancamento').value = new Date().toISOString().split('T')[0];
+    document.getElementById('tipoLancamento').value = 'receita';
+    document.getElementById('categoriaLancamento').value = 'Doação';
+    document.getElementById('projetoLancamento').value = '';
+    document.getElementById('statusLancamento').value = 'pago';
+    document.getElementById('statusBadge').textContent = 'Automático';
 }
 
-document.getElementById('dataLancamento').value = new Date().toISOString().split('T')[0];
-
 // ============================================================
-// CONTROLE DE PERFIL
+// IMPORTAR DO IDP
 // ============================================================
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
+window.importarDoIDP = function() {
+    var docs = JSON.parse(localStorage.getItem('amovin_idp_documentos') || '[]');
+    if (docs.length === 0) {
+        alert('⚠️ Nenhum documento encontrado no IDP.');
+        return;
+    }
+    var ultimo = docs[docs.length - 1];
+    var dados = ultimo.dados || {};
+    if (!dados.emitente && !dados.valor) {
+        alert('⚠️ Documento não possui dados financeiros identificados.');
+        return;
+    }
+    document.getElementById('descricaoLancamento').value = dados.emitente || 'Documento IDP';
+    document.getElementById('valorLancamento').value = dados.valor || 0;
+    if (dados.data) {
+        var partes = dados.data.split('/');
+        if (partes.length === 3) {
+            document.getElementById('dataLancamento').value = partes[2] + '-' + partes[1] + '-' + partes[0];
+        }
+    }
+    document.getElementById('obsLancamento').value = 'Importado do IDP - ' + ultimo.id;
+    document.getElementById('statusMsg').textContent = '✅ Dados importados do IDP! Revise e salve.';
+    document.getElementById('statusMsg').style.color = '#1565C0';
+    setTimeout(function() { document.getElementById('statusMsg').textContent = ''; }, 5000);
 };
 
-if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+// ============================================================
+// EXPORTAR EXCEL
+// ============================================================
+window.exportarExcel = function() {
+    if (lancamentos.length === 0) { alert('Nenhum dado para exportar.'); return; }
+    var dados = lancamentos.map(function(l) {
+        return {
+            'Data': l.data,
+            'Tipo': l.tipo === 'receita' ? 'Receita' : 'Despesa',
+            'Descrição': l.descricao,
+            'Categoria': l.categoria,
+            'Projeto': l.projeto || '-',
+            'Valor': l.valor,
+            'Status': l.status || 'pendente'
+        };
+    });
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.json_to_sheet(dados);
+    XLSX.utils.book_append_sheet(wb, ws, 'Financeiro');
+    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    var blob = new Blob([wbout], { type: 'application/octet-stream' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'financeiro-amovin-' + new Date().toISOString().split('T')[0] + '.xlsx';
+    a.click();
+    URL.revokeObjectURL(url);
+};
 
-atualizarKPIs();
-renderizarLancamentos();
+// ============================================================
+// EXPORTAR PDF
+// ============================================================
+window.exportarPDF = function() {
+    if (lancamentos.length === 0) { alert('Nenhum dado para exportar.'); return; }
+    var doc = new jspdf.jsPDF('p', 'mm', 'a4');
+    var pageWidth = doc.internal.pageSize.getWidth();
+    var y = 20;
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('AMOVIN - Relatório Financeiro', pageWidth / 2, y, { align: 'center' });
+    y += 10;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Data: ' + new Date().toLocaleDateString('pt-BR'), pageWidth / 2, y, { align: 'center' });
+    y += 10;
+    var totalReceitas = lancamentos.filter(function(l) { return l.tipo === 'receita'; }).reduce(function(s, l) { return s + l.valor; }, 0);
+    var totalDespesas = lancamentos.filter(function(l) { return l.tipo === 'despesa'; }).reduce(function(s, l) { return s + l.valor; }, 0);
+    doc.setFontSize(11);
+    doc.text('📈 Total Receitas: ' + fm(totalReceitas), 20, y);
+    doc.text('📉 Total Despesas: ' + fm(totalDespesas), 20, y + 6);
+    doc.text('💰 Saldo: ' + fm(totalReceitas - totalDespesas), 20, y + 12);
+    y += 24;
+    doc.autoTable({
+        startY: y,
+        head: [['Data', 'Tipo', 'Descrição', 'Categoria', 'Valor', 'Status']],
+        body: lancamentos.slice(0, 30).map(function(l) {
+            return [
+                l.data,
+                l.tipo === 'receita' ? 'Receita' : 'Despesa',
+                l.descricao,
+                l.categoria,
+                'R$ ' + l.valor.toFixed(2),
+                getStatusLabel(l.status)
+            ];
+        }),
+        styles: { fontSize: 8, cellPadding: 3 },
+        headStyles: { fillColor: [198, 90, 17] },
+        didDrawPage: function(data) {
+            doc.setFontSize(8);
+            doc.text('Gerado por AMOVIN ERP', pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+        }
+    });
+    doc.save('financeiro-amovin-' + new Date().toISOString().split('T')[0] + '.pdf');
+};
+
+// ============================================================
+// RELATÓRIO COMPLETO
+// ============================================================
+window.gerarRelatorioCompleto = function() {
+    var totalReceitas = lancamentos.filter(function(l) { return l.tipo === 'receita'; }).reduce(function(s, l) { return s + l.valor; }, 0);
+    var totalDespesas = lancamentos.filter(function(l) { return l.tipo === 'despesa'; }).reduce(function(s, l) { return s + l.valor; }, 0);
+    var msg = '📋 RELATÓRIO FINANCEIRO COMPLETO\n';
+    msg += '═'.repeat(50) + '\n\n';
+    msg += '📅 Data: ' + new Date().toLocaleString('pt-BR') + '\n\n';
+    msg += '📊 RESUMO GERAL\n';
+    msg += '─'.repeat(30) + '\n';
+    msg += '📈 Total Receitas: ' + fm(totalReceitas) + '\n';
+    msg += '📉 Total Despesas: ' + fm(totalDespesas) + '\n';
+    msg += '💰 Saldo: ' + fm(totalReceitas - totalDespesas) + '\n\n';
+    msg += '📋 ÚLTIMOS LANÇAMENTOS\n';
+    msg += '─'.repeat(30) + '\n';
+    lancamentos.slice(0, 20).forEach(function(l) {
+        msg += l.data + ' | ' + (l.tipo === 'receita' ? '📈' : '📉') + ' ' + l.descricao + ' | ' + fm(l.valor) + '\n';
+    });
+    alert(msg);
+};
+
+// ============================================================
+// ATUALIZAR TUDO
+// ============================================================
+function atualizarTudo() {
+    atualizarKPIs();
+    renderizarLancamentos();
+    atualizarGrafico();
+}
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+document.getElementById('dataLancamento').value = new Date().toISOString().split('T')[0];
+atualizarTudo();
+
+// ============================================================
+// VERIFICAÇÃO DE SESSÃO
+// ============================================================
+if (!sessionStorage.getItem('amovin_logado')) {
+    window.location.href = 'index.html';
+}
+
+console.log('✅ Financeiro carregado!');
+console.log('📊 Total de lançamentos:', lancamentos.length);
 </script>
 </body>
 </html>
