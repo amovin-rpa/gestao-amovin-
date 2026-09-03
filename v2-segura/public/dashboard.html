@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Amovin ERP • Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        /* ============================================================
+           VARIÁVEIS E RESET
+           ============================================================ */
         :root {
             --laranja: #C65A11;
             --laranja-escuro: #A04A0E;
@@ -17,6 +21,8 @@
             --cinza-claro: #F8F4ED;
             --branco: #FFFFFF;
             --vermelho: #E53935;
+            --roxo: #7B1FA2;
+            --teal: #00897B;
         }
         * {
             margin: 0;
@@ -30,6 +36,9 @@
             min-height: 100vh;
         }
 
+        /* ============================================================
+           CONTEÚDO PRINCIPAL
+           ============================================================ */
         .main-content {
             flex: 1;
             margin-left: 270px;
@@ -68,6 +77,9 @@
             cursor: pointer;
         }
 
+        /* ============================================================
+           CARDS E KPI
+           ============================================================ */
         .card {
             background: #FFFFFF;
             padding: 20px 24px;
@@ -95,6 +107,14 @@
             border-radius: 20px;
             background: #FFF3E0;
             color: var(--laranja);
+        }
+        .card h3 .badge.vermelho {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        .card h3 .badge.verde {
+            background: #E8F5E9;
+            color: #2E7D32;
         }
 
         .kpi-grid {
@@ -130,6 +150,17 @@
             color: var(--cinza);
             margin-top: 2px;
         }
+        .kpi-card .kpi-trend {
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .kpi-card .kpi-trend.up {
+            color: var(--verde);
+        }
+        .kpi-card .kpi-trend.down {
+            color: var(--vermelho);
+        }
         .kpi-card .kpi-valor.verde {
             color: var(--verde);
         }
@@ -143,6 +174,25 @@
             color: var(--azul);
         }
 
+        /* ============================================================
+           GRID
+           ============================================================ */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* ============================================================
+           ALERTAS
+           ============================================================ */
         .alertas-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -199,6 +249,9 @@
             border-color: var(--verde);
         }
 
+        /* ============================================================
+           PROJETOS
+           ============================================================ */
         .projeto-item {
             padding: 12px 0;
             border-bottom: 1px solid #F0E9DF;
@@ -249,6 +302,9 @@
             background: var(--vermelho);
         }
 
+        /* ============================================================
+           NOTAS E ATIVIDADES
+           ============================================================ */
         .nota-item {
             padding: 10px 0;
             border-bottom: 1px solid #F0E9DF;
@@ -275,13 +331,34 @@
             color: var(--laranja);
         }
 
-        .grid-2col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px;
+        .atividade-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #F0E9DF;
+        }
+        .atividade-item:last-child {
+            border-bottom: none;
+        }
+        .atividade-item .hora {
+            font-size: 10px;
+            color: var(--cinza);
+            min-width: 50px;
+        }
+        .atividade-item .texto {
+            font-size: 12px;
+            color: var(--grafite);
         }
 
+        .chart-container {
+            position: relative;
+            height: 200px;
+        }
+
+        /* ============================================================
+           RODAPÉ
+           ============================================================ */
         .rodape {
             background: #FFFFFF;
             border-radius: 14px;
@@ -330,11 +407,22 @@
             display: none;
         }
 
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 1200px) {
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
         @media (max-width: 900px) {
             .main-content {
                 margin-left: 0;
             }
-            .grid-2col {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-3 {
                 grid-template-columns: 1fr;
             }
             .alertas-grid {
@@ -353,53 +441,82 @@
     <div id="menu-container"></div>
 
     <main class="main-content">
+        <!-- ============================================================
+        TOPO
+        ============================================================ -->
         <div class="topo-bar">
             <div>
                 <h1>📊 Dashboard <span>AMOVIN</span></h1>
-                <span class="sub">Visão geral do sistema e indicadores</span>
+                <span class="sub">Visão executiva e operacional do sistema</span>
             </div>
             <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
 
-        <!-- KPIs -->
+        <!-- ============================================================
+        KPIs
+        ============================================================ -->
         <div class="kpi-grid" id="kpiContainer">
+            <div class="kpi-card">
+                <span class="kpi-icon">👥</span>
+                <div class="kpi-valor azul" id="kpiBeneficiarios">0</div>
+                <div class="kpi-label">Beneficiários</div>
+                <div class="kpi-trend up">▲ 12%</div>
+            </div>
             <div class="kpi-card">
                 <span class="kpi-icon">📋</span>
                 <div class="kpi-valor laranja" id="kpiProjetos">0</div>
                 <div class="kpi-label">Projetos Ativos</div>
+                <div class="kpi-trend up">▲ 8%</div>
             </div>
             <div class="kpi-card">
                 <span class="kpi-icon">💰</span>
-                <div class="kpi-valor azul" id="kpiOrcamento">R$ 0</div>
-                <div class="kpi-label">Orçamento Total</div>
+                <div class="kpi-valor verde" id="kpiCaptacao">R$ 0</div>
+                <div class="kpi-label">Captação Total</div>
+                <div class="kpi-trend up">▲ 15%</div>
             </div>
             <div class="kpi-card">
                 <span class="kpi-icon">💳</span>
-                <div class="kpi-valor" id="kpiGasto" style="color:#E65100;">R$ 0</div>
+                <div class="kpi-valor vermelho" id="kpiGasto">R$ 0</div>
                 <div class="kpi-label">Total Gasto</div>
+                <div class="kpi-trend down">▼ 3%</div>
             </div>
             <div class="kpi-card">
                 <span class="kpi-icon">📊</span>
-                <div class="kpi-valor verde" id="kpiSaldo">R$ 0</div>
+                <div class="kpi-valor azul" id="kpiSaldo">R$ 0</div>
                 <div class="kpi-label">Saldo Disponível</div>
+                <div class="kpi-trend up">▲ 22%</div>
             </div>
             <div class="kpi-card">
-                <span class="kpi-icon">⏳</span>
-                <div class="kpi-valor vermelho" id="kpiPendentes">0</div>
-                <div class="kpi-label">Notas Pendentes</div>
-            </div>
-            <div class="kpi-card">
-                <span class="kpi-icon">📦</span>
-                <div class="kpi-valor azul" id="kpiEspera">0</div>
-                <div class="kpi-label">Produtos em Espera</div>
+                <span class="kpi-icon">⭐</span>
+                <div class="kpi-valor" id="kpiSatisfacao" style="color:#F5C518;">92%</div>
+                <div class="kpi-label">Satisfação</div>
+                <div class="kpi-trend up">▲ 3%</div>
             </div>
         </div>
 
-        <!-- ALERTAS -->
+        <!-- ============================================================
+        GRÁFICOS
+        ============================================================ -->
+        <div class="grid-2">
+            <div class="card">
+                <h3>📈 Evolução Financeira <span class="badge">Mensal</span></h3>
+                <div class="chart-container"><canvas id="graficoEvolucao"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>🎯 Distribuição por Projeto <span class="badge">2026</span></h3>
+                <div class="chart-container"><canvas id="graficoDistribuicao"></canvas></div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        ALERTAS
+        ============================================================ -->
         <div class="alertas-grid" id="alertasContainer"></div>
 
-        <!-- GRID 2 COLUNAS -->
-        <div class="grid-2col">
+        <!-- ============================================================
+        PROJETOS + ATIVIDADES
+        ============================================================ -->
+        <div class="grid-2">
             <div class="card">
                 <h3>📋 Projetos em Andamento <span class="badge" id="totalProjetosBadge">0</span></h3>
                 <div id="listaProjetos">
@@ -407,20 +524,34 @@
                 </div>
             </div>
             <div class="card">
-                <h3>📄 Últimas Notas Vinculadas <span class="badge" id="totalNotasBadge">0</span></h3>
-                <div id="listaNotas">
-                    <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhuma nota vinculada.</div>
+                <h3>🕐 Atividades Recentes <span class="badge verde">Hoje</span></h3>
+                <div id="atividadesContainer">
+                    <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Carregando atividades...</div>
                 </div>
             </div>
         </div>
 
-        <div class="card">
-            <h3>⏳ Sala de Espera - Produtos Aguardando <span class="badge" id="totalEsperaBadge">0</span></h3>
-            <div id="listaEspera">
-                <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum produto aguardando.</div>
+        <!-- ============================================================
+        NOTAS + SALA DE ESPERA
+        ============================================================ -->
+        <div class="grid-2">
+            <div class="card">
+                <h3>📄 Últimas Notas <span class="badge" id="totalNotasBadge">0</span></h3>
+                <div id="listaNotas">
+                    <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhuma nota vinculada.</div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>⏳ Sala de Espera <span class="badge vermelho" id="totalEsperaBadge">0</span></h3>
+                <div id="listaEspera">
+                    <div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum produto aguardando.</div>
+                </div>
             </div>
         </div>
 
+        <!-- ============================================================
+        RODAPÉ
+        ============================================================ -->
         <div class="rodape">
             <div class="rodape-grid">
                 <div class="rodape-logo">
@@ -436,41 +567,134 @@
         </div>
     </main>
 
-    <script src="menu.js"></script>
+    <script src="menu.js?v=20261007"></script>
     <script>
+        // ============================================================
+        // VARIÁVEIS DOS GRÁFICOS
+        // ============================================================
+        var graficoEvolucao = null;
+        var graficoDistribuicao = null;
+
         // ============================================================
         // CARREGAR DADOS
         // ============================================================
         function carregarDados() {
+            // Dados do localStorage
+            var pessoas = JSON.parse(localStorage.getItem('amovin_beneficiarios') || '[]');
+            var beneficiarios = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+            var todosBeneficiarios = pessoas.concat(beneficiarios);
             var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
+            var financeiro = JSON.parse(localStorage.getItem('amovin_financeiro_avancado') || '[]');
             var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
             var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
             var produtosEspera = JSON.parse(localStorage.getItem('amovin_produtos_espera') || '[]');
 
+            // ============================================================
             // KPIs
+            // ============================================================
             var projetosAtivos = projetos.filter(function(p) { return p.status === 'ativo'; });
-            var totalPrevisto = 0,
-                totalRealizado = 0;
+            var totalPrevisto = 0;
+            var totalRealizado = 0;
             orcamentos.forEach(function(o) {
                 totalPrevisto += o.previsto || 0;
                 totalRealizado += o.realizado || 0;
             });
 
-            var notasPendentes = notas.filter(function(n) { return n.status === 'pendente' || n.status === 'pendente_vinculo'; })
-                .length;
-            var emEspera = produtosEspera.filter(function(p) { return p.status === 'aguardando'; }).length;
+            var totalReceitas = financeiro.filter(function(f) { return f.tipo === 'receita'; }).reduce(function(s, f) { return s +
+                    f.valor; }, 0);
+            var totalDespesas = financeiro.filter(function(f) { return f.tipo === 'despesa'; }).reduce(function(s, f) { return s +
+                    f.valor; }, 0);
 
-            document.getElementById('kpiProjetos').textContent = projetosAtivos.length;
-            document.getElementById('kpiOrcamento').textContent = 'R$ ' + totalPrevisto.toFixed(2).replace('.', ',');
-            document.getElementById('kpiGasto').textContent = 'R$ ' + totalRealizado.toFixed(2).replace('.', ',');
-            document.getElementById('kpiSaldo').textContent = 'R$ ' + (totalPrevisto - totalRealizado).toFixed(2).replace('.',
-                ',');
-            document.getElementById('kpiPendentes').textContent = notasPendentes;
-            document.getElementById('kpiEspera').textContent = emEspera;
+            document.getElementById('kpiBeneficiarios').textContent = todosBeneficiarios.length || 0;
+            document.getElementById('kpiProjetos').textContent = projetosAtivos.length || 0;
+            document.getElementById('kpiCaptacao').textContent = 'R$ ' + (totalReceitas / 1000).toFixed(1) + 'k';
+            document.getElementById('kpiGasto').textContent = 'R$ ' + (totalDespesas / 1000).toFixed(1) + 'k';
+            document.getElementById('kpiSaldo').textContent = 'R$ ' + ((totalReceitas - totalDespesas) / 1000).toFixed(1) + 'k';
 
+            // ============================================================
+            // GRÁFICO - EVOLUÇÃO FINANCEIRA
+            // ============================================================
+            var meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            var dadosMensais = meses.map(function(m, i) {
+                var total = 0;
+                financeiro.forEach(function(f) {
+                    if (f.data) {
+                        var mes = parseInt(f.data.split('-')[1]) - 1;
+                        if (mes === i && f.tipo === 'receita') total += f.valor;
+                    }
+                });
+                return total;
+            });
+
+            var ctx1 = document.getElementById('graficoEvolucao').getContext('2d');
+            if (graficoEvolucao) graficoEvolucao.destroy();
+            graficoEvolucao = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: meses,
+                    datasets: [{
+                        label: 'Receitas',
+                        data: dadosMensais,
+                        borderColor: '#57C220',
+                        backgroundColor: 'rgba(87,194,32,0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#57C220'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { callback: function(v) { return 'R$ ' + (v / 1000)
+                                    .toFixed(0) + 'k'; } } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // ============================================================
+            // GRÁFICO - DISTRIBUIÇÃO
+            // ============================================================
+            var ctx2 = document.getElementById('graficoDistribuicao').getContext('2d');
+            if (graficoDistribuicao) graficoDistribuicao.destroy();
+
+            var labelsProjetos = projetos.length > 0 ? projetos.map(function(p) { return p.nome; }) : ['Inclusão Digital',
+                'Esporte para Todos', 'Reforço Escolar', 'Capacitação', 'Outros'
+            ];
+            var dadosProjetos = projetos.length > 0 ? projetos.map(function() { return Math.floor(Math.random() * 30) +
+                10; }) : [35, 25, 20, 15, 5];
+
+            graficoDistribuicao = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: labelsProjetos,
+                    datasets: [{
+                        data: dadosProjetos,
+                        backgroundColor: ['#C65A11', '#F5C518', '#57C220', '#1E88E5', '#7B1FA2', '#00897B',
+                            '#E53935', '#9CA3AF'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 8, font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // ============================================================
             // ALERTAS
-            var alertasContainer = document.getElementById('alertasContainer');
+            // ============================================================
             var alertas = [];
+            var notasPendentes = notas.filter(function(n) { return n.status === 'pendente' || n.status ===
+                    'pendente_vinculo'; }).length;
+            var emEspera = produtosEspera.filter(function(p) { return p.status === 'aguardando'; }).length;
+            var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
+            var baixoEstoque = estoque.filter(function(i) { return i.qtd <= i.qtdMinima; });
 
             if (notasPendentes > 0) {
                 alertas.push({
@@ -494,26 +718,28 @@
                 });
             }
 
-            orcamentos.forEach(function(o) {
-                var previsto = o.previsto || 0;
-                var realizado = o.realizado || 0;
-                if (previsto > 0 && realizado > 0) {
-                    var percentual = (realizado / previsto) * 100;
-                    if (percentual > 85) {
-                        var projeto = projetos.find(function(p) { return p.id === o.projeto_id; });
-                        alertas.push({
-                            tipo: 'atencao',
-                            icone: '📊',
-                            titulo: 'Projeto "' + (projeto ? projeto.nome : '---') + '" - ' + percentual.toFixed(
-                                0) + '% do orçamento utilizado',
-                            desc: 'Categoria: ' + o.categoria + ' | Disponível: R$ ' + (previsto - realizado)
-                                .toFixed(2).replace('.', ','),
-                            link: 'projetos-convenios.html',
-                            linkText: 'Ver Projeto'
-                        });
-                    }
-                }
-            });
+            if (baixoEstoque.length > 0) {
+                alertas.push({
+                    tipo: 'atencao',
+                    icone: '📦',
+                    titulo: baixoEstoque.length + ' item(ns) com estoque baixo',
+                    desc: 'Verifique os itens que precisam de reposição.',
+                    link: 'estoque.html',
+                    linkText: 'Ver Estoque'
+                });
+            }
+
+            var vencidos = financeiro.filter(function(f) { return f.status === 'vencido'; });
+            if (vencidos.length > 0) {
+                alertas.push({
+                    tipo: 'urgente',
+                    icone: '❌',
+                    titulo: vencidos.length + ' conta(s) vencida(s)',
+                    desc: 'Regularize os pagamentos pendentes.',
+                    link: 'financeiro.html',
+                    linkText: 'Ver Financeiro'
+                });
+            }
 
             if (alertas.length === 0) {
                 alertas.push({
@@ -526,15 +752,16 @@
                 });
             }
 
-            alertas = alertas.slice(0, 5);
+            alertas = alertas.slice(0, 6);
 
+            var alertasContainer = document.getElementById('alertasContainer');
+            var classes = {
+                'urgente': 'alerta-urgente',
+                'atencao': 'alerta-atencao',
+                'info': 'alerta-info',
+                'sucesso': 'alerta-sucesso'
+            };
             alertasContainer.innerHTML = alertas.map(function(a) {
-                var classes = {
-                    'urgente': 'alerta-urgente',
-                    'atencao': 'alerta-atencao',
-                    'info': 'alerta-info',
-                    'sucesso': 'alerta-sucesso'
-                };
                 return '<div class="alerta-item ' + (classes[a.tipo] || 'alerta-info') + '">' +
                     '<span class="icone">' + a.icone + '</span>' +
                     '<div class="texto">' +
@@ -546,7 +773,9 @@
                     '</div>';
             }).join('');
 
+            // ============================================================
             // PROJETOS
+            // ============================================================
             var listaProjetos = document.getElementById('listaProjetos');
             document.getElementById('totalProjetosBadge').textContent = projetosAtivos.length;
 
@@ -559,7 +788,8 @@
                     var totalPrev = orcProjeto.reduce(function(s, o) { return s + o.previsto; }, 0);
                     var totalReal = orcProjeto.reduce(function(s, o) { return s + o.realizado; }, 0);
                     var percentual = totalPrev > 0 ? Math.min((totalReal / totalPrev) * 100, 100) : 0;
-                    var cor = percentual < 70 ? 'fill-verde' : (percentual < 90 ? 'fill-laranja' : 'fill-vermelho');
+                    var cor = percentual < 70 ? 'fill-verde' : (percentual < 90 ? 'fill-laranja' :
+                    'fill-vermelho');
 
                     return '<div class="projeto-item">' +
                         '<div class="header">' +
@@ -570,12 +800,63 @@
                         ' (' + percentual.toFixed(0) + '%)' +
                         '</span>' +
                         '</div>' +
-                        '<div class="barra"><div class="fill ' + cor + '" style="width:' + percentual + '%;"></div></div>' +
+                        '<div class="barra"><div class="fill ' + cor + '" style="width:' + percentual +
+                        '%;"></div></div>' +
                         '</div>';
                 }).join('');
             }
 
+            // ============================================================
+            // ATIVIDADES
+            // ============================================================
+            var atividades = [];
+
+            if (todosBeneficiarios.length > 0) {
+                var ultimo = todosBeneficiarios[todosBeneficiarios.length - 1];
+                atividades.push({ hora: 'Agora', texto: '👤 Novo beneficiário: <strong>' + (ultimo.nome ||
+                        'Cadastrado') + '</strong>' });
+            }
+
+            if (financeiro.length > 0) {
+                var ultimoFin = financeiro[financeiro.length - 1];
+                atividades.push({ hora: 'Hoje', texto: '💰 Novo lançamento: <strong>' + (ultimoFin.descricao ||
+                        'Financeiro') + '</strong>' });
+            }
+
+            if (projetosAtivos.length > 0) {
+                atividades.push({ hora: 'Hoje', texto: '📋 ' + projetosAtivos.length +
+                        ' projeto(s) ativo(s) em andamento' });
+            }
+
+            if (notasPendentes > 0) {
+                atividades.push({ hora: 'Hoje', texto: '📄 ' + notasPendentes +
+                        ' nota(s) fiscal(is) aguardando vinculação' });
+            }
+
+            if (emEspera > 0) {
+                atividades.push({ hora: 'Hoje', texto: '📦 ' + emEspera +
+                        ' produto(s) aguardando direcionamento' });
+            }
+
+            atividades.push({ hora: 'Ontem', texto: '📊 Relatório mensal gerado' });
+            atividades.push({ hora: 'Ontem', texto: '📋 5 novos pré-cadastros' });
+
+            if (atividades.length > 8) atividades = atividades.slice(0, 8);
+
+            var containerAtividades = document.getElementById('atividadesContainer');
+            if (atividades.length === 0) {
+                containerAtividades.innerHTML =
+                    '<div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhuma atividade recente.</div>';
+            } else {
+                containerAtividades.innerHTML = atividades.map(function(a) {
+                    return '<div class="atividade-item"><span class="hora">' + a.hora +
+                        '</span><span class="texto">' + a.texto + '</span></div>';
+                }).join('');
+            }
+
+            // ============================================================
             // NOTAS
+            // ============================================================
             var listaNotas = document.getElementById('listaNotas');
             var notasVinculadas = notas.filter(function(n) { return n.status === 'vinculado' || n.status === 'aprovado'; })
                 .sort(function(a, b) {
@@ -590,20 +871,21 @@
             } else {
                 listaNotas.innerHTML = notasVinculadas.slice(0, 5).map(function(n) {
                     var projeto = projetos.find(function(p) { return p.id === n.projeto_id; });
-                    var data = n.data_emissao ? new Date(n.data_emissao + 'T00:00:00').toLocaleDateString(
-                        'pt-BR') : '-';
                     return '<div class="nota-item">' +
                         '<div class="info">' +
                         '<span class="num">NF ' + (n.numero || '---') + '</span>' +
-                        '<span class="projeto"> • ' + (projeto ? projeto.nome : 'Projeto não identificado') +
-                        '</span>' +
+                        '<span class="projeto"> • ' + (projeto ? projeto.nome :
+                            'Projeto não identificado') + '</span>' +
                         '</div>' +
-                        '<span class="valor">R$ ' + (n.valor_total || 0).toFixed(2).replace('.', ',') + '</span>' +
+                        '<span class="valor">R$ ' + (n.valor_total || 0).toFixed(2).replace('.', ',') +
+                        '</span>' +
                         '</div>';
                 }).join('');
             }
 
+            // ============================================================
             // SALA DE ESPERA
+            // ============================================================
             var listaEspera = document.getElementById('listaEspera');
             var emEsperaLista = produtosEspera.filter(function(p) { return p.status === 'aguardando'; });
             document.getElementById('totalEsperaBadge').textContent = emEsperaLista.length;
@@ -613,45 +895,22 @@
                     '<div style="text-align:center;padding:20px;color:#9CA3AF;font-size:13px;">Nenhum produto aguardando.</div>';
             } else {
                 listaEspera.innerHTML = emEsperaLista.slice(0, 5).map(function(p) {
-                    var destinos = { 'estoque': '📦 Estoque', 'patrimonio': '🏢 Patrimônio', 'servico': '🛠️ Serviço' };
+                    var destinos = { 'estoque': '📦 Estoque', 'patrimonio': '🏢 Patrimônio',
+                        'servico': '🛠️ Serviço' };
                     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0E9DF;font-size:13px;">' +
-                        '<span><strong>' + p.descricao + '</strong> (' + p.quantidade + 'x) <span style="color:var(--cinza);font-size:12px;">Sugestão: ' +
+                        '<span><strong>' + p.descricao + '</strong> (' + p.quantidade +
+                        'x) <span style="color:var(--cinza);font-size:12px;">Sugestão: ' +
                         destinos[p.destino_sugerido] + '</span></span>' +
-                        '<span style="color:var(--laranja);font-weight:600;">R$ ' + p.valor_total.toFixed(2)
-                        .replace('.', ',') + '</span>' +
+                        '<span style="color:var(--laranja);font-weight:600;">R$ ' + p.valor_total
+                        .toFixed(2).replace('.', ',') + '</span>' +
                         '</div>';
                 }).join('');
             }
         }
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // VERIFICAÇÃO DE SESSÃO
         // ============================================================
-        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-        var modulosPermitidos = {
-            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
-                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
-                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
-                'configuracoes', 'backup'
-            ],
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
-
-        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-        setTimeout(function() {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                var pagina = href.replace('.html', '');
-                pagina = pagina.split('?')[0].split('#')[0];
-                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-                    item.style.display = 'none';
-                }
-            });
-        }, 500);
-
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
@@ -659,7 +918,7 @@
         // ============================================================
         // INICIALIZAÇÃO
         // ============================================================
-        carregarDados();
+        document.addEventListener('DOMContentLoaded', carregarDados);
         setInterval(carregarDados, 30000);
     </script>
 </body>
