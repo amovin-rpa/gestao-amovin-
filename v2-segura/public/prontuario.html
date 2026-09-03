@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amovin ERP • Prontuário</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           VARIÁVEIS E RESET - SAP ENTERPRISE
+           ============================================================ */
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+            --roxo: #7B1FA2;
+            --teal: #00897B;
+            --sombra: 0 2px 12px rgba(0,0,0,0.06);
+            --sombra-hover: 0 4px 24px rgba(0,0,0,0.10);
+            --border-radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F8F4ED;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ============================================================
+           CONTEÚDO PRINCIPAL
+           ============================================================ */
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+            min-height: 100vh;
+            width: calc(100% - 270px);
+        }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .topo-bar h1 span {
+            color: var(--laranja);
+        }
+        .topo-bar .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-sair-topo:hover {
+            background: #F0E9DF;
+        }
+
+        /* ============================================================
+           CARDS
+           ============================================================ */
+        .card {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            border: 1px solid #F0E9DF;
+            margin-bottom: 20px;
+            box-shadow: var(--sombra);
+            transition: var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--sombra-hover);
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--grafite);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card h3 .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: #FFF3E0;
+            color: var(--laranja);
+        }
+        .card h3 .badge.verde {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        /* ============================================================
+           FORMULÁRIO - SAP ENTERPRISE
+           ============================================================ */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cinza);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-group label .opcional {
+            font-weight: 400;
+            color: var(--cinza);
+            font-size: 10px;
+            text-transform: none;
+        }
+        .form-group label .obrigatorio {
+            color: var(--vermelho);
+            font-weight: 700;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            background: #FAFAFA;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--laranja);
+            background: var(--branco);
+            box-shadow: 0 0 0 3px rgba(198, 90, 17, 0.08);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        /* ============================================================
+           BOTÕES - SAP ENTERPRISE
+           ============================================================ */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: var(--laranja);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--laranja-escuro);
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-hover);
+        }
+        .btn-success {
+            background: var(--verde);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #388E3C;
+        }
+        .btn-danger {
+            background: var(--vermelho);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #C62828;
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--cinza);
+            border: 1.5px solid #E5E0D8;
+        }
+        .btn-outline:hover {
+            background: #F8F4ED;
+            border-color: var(--cinza);
+        }
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            font-size: 14px;
+            justify-content: center;
+        }
+        .btn-azul {
+            background: var(--azul);
+            color: white;
+        }
+        .btn-azul:hover {
+            background: #1565C0;
+        }
+        .btn-roxo {
+            background: var(--roxo);
+            color: white;
+        }
+        .btn-roxo:hover {
+            background: #5D0F7A;
+        }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
+        .btn-teal {
+            background: var(--teal);
+            color: white;
+        }
+        .btn-teal:hover {
+            background: #00695C;
+        }
+
+        /* ============================================================
+           SEÇÃO TÍTULO
+           ============================================================ */
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--grafite);
+            border-bottom: 1px solid #F0E9DF;
+            padding-bottom: 8px;
+            grid-column: 1 / -1;
+            margin-bottom: 6px;
+            background: #FFF8E7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ============================================================
+           SEM DADOS
+           ============================================================ */
+        .sem-dados {
+            text-align: center;
+            padding: 30px;
+            color: #9CA3AF;
+            font-size: 13px;
+        }
+
+        /* ============================================================
+           RODAPÉ
+           ============================================================ */
+        .rodape {
+            background: #FFFFFF;
+            border-radius: var(--border-radius);
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+            box-shadow: var(--sombra);
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo {
+            flex-shrink: 0;
+        }
+        .rodape-logo .logo-vigorre {
+            width: 50px;
+        }
+        .rodape-info {
+            flex: 1;
+        }
+        .rodape-info .copyright {
+            font-size: 8px;
+            color: #8A8F98;
+        }
+        .rodape-info .tm {
+            font-size: 6px;
+            vertical-align: super;
+        }
+        .rodape-info .contato {
+            font-size: 9px;
+            color: #8A8F98;
+        }
+        .rodape-info a {
+            color: #C65A11;
+            text-decoration: none;
+        }
+        .rodape-info .email {
+            font-size: 8px;
+            color: #aaa;
+        }
+        .logo-vigorre-fallback {
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+                width: 100%;
+                padding-top: 60px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================================
+           EVOLUÇÃO ITEM
+           ============================================================ */
+        .evolucao-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid #F0E9DF;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .evolucao-item:hover {
+            background: #FFF8E7;
+        }
+        .evolucao-item .info {
+            flex: 1;
+            min-width: 200px;
+        }
+        .evolucao-item .info .data {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--azul);
+        }
+        .evolucao-item .info .texto {
+            font-size: 12px;
+            color: var(--grafite);
+            margin-top: 2px;
+        }
+        .evolucao-item .acoes {
+            display: flex;
+            gap: 4px;
+        }
+        .evolucao-item .acoes .btn {
+            padding: 2px 8px;
+            font-size: 9px;
+        }
+
+        /* ============================================================
+           CHECKBOX GROUP
+           ============================================================ */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .checkbox-group label {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--grafite);
+        }
+        .checkbox-group input[type="checkbox"],
+        .checkbox-group input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--laranja);
+            cursor: pointer;
+        }
+
+        /* ============================================================
+           PRINT STYLES - SAP ENTERPRISE A4
+           ============================================================ */
+        .print-container {
+            display: none;
+            background: white;
+            padding: 30px;
+            max-width: 210mm;
+            margin: 0 auto;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #1A1A1A;
+        }
+        .print-container .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #1A1A1A;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+        .print-container .brand-logo {
+            height: 55px;
+            width: auto;
+        }
+        .print-container .org {
+            text-align: right;
+            font-size: 9px;
+            line-height: 1.3;
+        }
+        .print-container .title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            margin: 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .print-container .subtitle {
+            font-weight: 700;
+            font-size: 12px;
+            margin: 10px 0 4px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 2px;
+        }
+        .print-container .field-row {
+            display: flex;
+            gap: 8px;
+            margin: 2px 0;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+        .print-container .field-label {
+            font-weight: 700;
+            min-width: 130px;
+            font-size: 10px;
+            color: #444;
+        }
+        .print-container .field-value {
+            font-size: 11px;
+            border-bottom: 1px solid #ddd;
+            padding: 0 4px;
+            min-width: 80px;
+        }
+        .print-container .field-value.inline {
+            border-bottom: none;
+            padding: 0;
+        }
+        .print-container .signature {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .print-container .line {
+            width: 380px;
+            border-top: 1px solid #1A1A1A;
+            margin: 16px auto 4px;
+        }
+        .print-container .page-break {
+            page-break-before: always;
+        }
+        .print-container .evo-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 10px;
+        }
+        .print-container .evo-table th,
+        .print-container .evo-table td {
+            border: 1px solid #ddd;
+            padding: 4px 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .print-container .evo-table th {
+            background: #f3f4f6;
+            font-weight: 700;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            #print-area,
+            #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="menu-container"></div>
+
+    <main class="main-content">
+        <!-- ============================================================
+        TOPO
+        ============================================================ -->
+        <div class="topo-bar">
+            <div>
+                <h1>📋 Prontuário <span>AMOVIN</span></h1>
+                <span class="sub">Registro de evoluções, anamnese e histórico clínico</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        SELECIONAR BENEFICIÁRIO
+        ============================================================ -->
+        <div class="card">
+            <h3>👤 Selecionar Beneficiário</h3>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                <div style="flex:1;min-width:200px;">
+                    <select id="selectBeneficiario" onchange="carregarProntuario()" style="width:100%;padding:12px 14px;border:1.5px solid #E5E0D8;border-radius:8px;font-size:14px;font-family:'Inter',sans-serif;">
+                        <option value="">Selecione um beneficiário...</option>
+                    </select>
+                </div>
+                <div id="benefInfo" style="font-size:13px;color:var(--cinza);flex:1;min-width:150px;">
+                    <span id="benefNomeSelecionado" style="font-weight:600;color:var(--grafite);">Nenhum selecionado</span>
+                    <span id="benefDetalhesSelecionado" style="display:block;font-size:11px;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        PRONTUÁRIO
+        ============================================================ -->
+        <div id="prontuarioContainer" style="display:none;">
+            <!-- DADOS DO PACIENTE -->
+            <div class="card">
+                <h3>📋 Dados do Paciente</h3>
+                <div id="dadosPaciente" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+                </div>
+            </div>
+
+            <!-- FORMULÁRIO PRONTUÁRIO -->
+            <div class="card">
+                <h3>📝 Registro de Prontuário</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+                    <!-- COLUNA ESQUERDA -->
+                    <div>
+                        <!-- AVALIAÇÃO FÍSICA -->
+                        <div class="section-title">📊 Avaliação Física</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Peso (kg)</label>
+                                <input type="text" id="prontPeso" placeholder="Ex: 45.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Altura (cm)</label>
+                                <input type="text" id="prontAltura" placeholder="Ex: 160">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Data da Avaliação</label>
+                            <input type="date" id="prontDataAvaliacao">
+                        </div>
+
+                        <!-- HISTÓRIA CLÍNICA -->
+                        <div class="section-title">🏥 História Clínica</div>
+                        <div class="form-group">
+                            <label>História Clínica</label>
+                            <textarea id="prontHistoria" rows="2" placeholder="Histórico clínico do paciente..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Queixa Principal</label>
+                            <textarea id="prontQueixa" rows="2" placeholder="Queixa principal..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>HMP/HMA</label>
+                            <textarea id="prontHmp" rows="2" placeholder="HMP/HMA..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Medicamentos em Uso</label>
+                            <textarea id="prontMedicamentos" rows="2" placeholder="Medicamentos em uso..."></textarea>
+                        </div>
+
+                        <!-- RESTRIÇÕES E CIRURGIAS -->
+                        <div class="section-title">⚠️ Restrições e Cirurgias</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Restrição Alimentar</label>
+                                <select id="prontRestricao">
+                                    <option value="">Selecione...</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Quais restrições?</label>
+                                <input type="text" id="prontRestricaoDetalhes" placeholder="Descreva as restrições">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Cirurgias</label>
+                                <select id="prontCirurgias">
+                                    <option value="">Selecione...</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Quais cirurgias?</label>
+                                <input type="text" id="prontCirurgiasDetalhes" placeholder="Descreva as cirurgias">
+                            </div>
+                        </div>
+
+                        <!-- SAÚDE GERAL -->
+                        <div class="section-title">🩺 Saúde Geral</div>
+                        <div class="form-group">
+                            <label>Saúde Geral</label>
+                            <textarea id="prontSaudeGeral" rows="2" placeholder="Saúde geral da criança..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Convulsões</label>
+                                <select id="prontConvulsoes">
+                                    <option value="">Selecione...</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Frequência</label>
+                                <input type="text" id="prontConvulsoesFreq" placeholder="Frequência das convulsões">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Constipação</label>
+                                <select id="prontConstipacao">
+                                    <option value="">Selecione...</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Sono</label>
+                                <select id="prontSono">
+                                    <option value="">Selecione...</option>
+                                    <option value="Bom">Bom</option>
+                                    <option value="Ruim">Ruim</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUNA DIREITA -->
+                    <div>
+                        <!-- SUPORTES E ALIMENTAÇÃO -->
+                        <div class="section-title">🔄 Suportes e Alimentação</div>
+                        <div class="form-group">
+                            <label>Suportes Utilizados</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" class="prontSuporte" value="Comunicação Alternativa"> Comunicação Alternativa</label>
+                                <label><input type="checkbox" class="prontSuporte" value="Órteses"> Órteses</label>
+                                <label><input type="checkbox" class="prontSuporte" value="Próteses"> Próteses</label>
+                                <label><input type="checkbox" class="prontSuporte" value="Adequação Postural"> Adequação Postural</label>
+                                <label><input type="checkbox" class="prontSuporte" value="Outros"> Outros</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Observações dos Suportes</label>
+                            <textarea id="prontSuporteObs" rows="2" placeholder="Observações sobre os suportes..."></textarea>
+                        </div>
+
+                        <div class="section-title">🍽️ Alimentação e Líquidos</div>
+                        <div class="form-group">
+                            <label>Alimentação</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" class="prontAlimentacao" value="Pastoso"> Pastoso</label>
+                                <label><input type="checkbox" class="prontAlimentacao" value="Líquido"> Líquido</label>
+                                <label><input type="checkbox" class="prontAlimentacao" value="Auxiliado"> Auxiliado</label>
+                                <label><input type="checkbox" class="prontAlimentacao" value="Independente"> Independente</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Líquidos</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" class="prontLiquidos" value="Mamadeira"> Mamadeira</label>
+                                <label><input type="checkbox" class="prontLiquidos" value="Copo"> Copo</label>
+                                <label><input type="checkbox" class="prontLiquidos" value="Auxiliado"> Auxiliado</label>
+                                <label><input type="checkbox" class="prontLiquidos" value="Independente"> Independente</label>
+                            </div>
+                        </div>
+
+                        <div class="section-title">🚿 Higiene e Autonomia</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Higiene</label>
+                                <select id="prontHigiene">
+                                    <option value="">Selecione...</option>
+                                    <option value="Dependente">Dependente</option>
+                                    <option value="Independente">Independente</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Vestuário</label>
+                                <input type="text" id="prontVestuario" placeholder="Observações sobre vestuário">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Segurança</label>
+                            <input type="text" id="prontSeguranca" placeholder="Observações sobre segurança">
+                        </div>
+
+                        <!-- FAMÍLIA -->
+                        <div class="section-title">👨‍👩‍👦 Observações da Família</div>
+                        <div class="form-group">
+                            <label>Potencialidades</label>
+                            <textarea id="prontPotencialidades" rows="2" placeholder="Potencialidades do beneficiário..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Dificuldades</label>
+                            <textarea id="prontDificuldades" rows="2" placeholder="Dificuldades da família..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Expectativas</label>
+                            <textarea id="prontExpectativas" rows="2" placeholder="Expectativas em relação ao apoio..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTÕES SALVAR/IMPRIMIR -->
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid #F0E9DF;">
+                    <button class="btn btn-primary" onclick="salvarProntuario()">💾 Salvar Prontuário</button>
+                    <button class="btn btn-teal" onclick="imprimirProntuario()">🖨️ Imprimir Prontuário</button>
+                    <button class="btn btn-outline" onclick="limparProntuario()">🔄 Limpar</button>
+                </div>
+                <div id="prontStatusMsg" style="margin-top:8px;font-size:12px;color:var(--verde);"></div>
+            </div>
+
+            <!-- EVOLUÇÕES -->
+            <div class="card">
+                <h3>📈 Evoluções <span class="badge verde" id="totalEvolucoes">0</span></h3>
+
+                <!-- NOVA EVOLUÇÃO -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px;padding:12px;background:#F8F4ED;border-radius:8px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Data/Hora</label>
+                        <input type="datetime-local" id="evoData" style="padding:6px 10px;font-size:12px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Atividades</label>
+                        <input type="text" id="evoAtividades" placeholder="Atividades realizadas" style="padding:6px 10px;font-size:12px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Desempenho</label>
+                        <input type="text" id="evoDesempenho" placeholder="Desempenho do dia" style="padding:6px 10px;font-size:12px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Planejamento</label>
+                        <input type="text" id="evoPlanejamento" placeholder="Planejamento/Orientação" style="padding:6px 10px;font-size:12px;">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="adicionarEvolucao()">➕ Adicionar Evolução</button>
+
+                <!-- LISTA DE EVOLUÇÕES -->
+                <div id="listaEvolucoes" style="margin-top:12px;max-height:300px;overflow-y:auto;">
+                    <div class="sem-dados">Nenhuma evolução registrada.</div>
+                </div>
+            </div>
+
+            <!-- HISTÓRICO DE ATENDIMENTOS -->
+            <div class="card">
+                <h3>📋 Histórico de Atendimentos <span class="badge" id="totalAtendimentos">0</span></h3>
+                <div id="listaAtendimentos">
+                    <div class="sem-dados">Nenhum atendimento registrado.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        RODAPÉ
+        ============================================================ -->
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span> | SAP Enterprise</div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================================
+    ÁREA DE IMPRESSÃO (OCULTA)
+    ============================================================ -->
+    <div id="print-area" style="display:none;"></div>
+
+    <script src="menu.js?v=20261007"></script>
+    <script>
+        // ============================================================
+        // BANCO DE DADOS LOCAL
+        // ============================================================
+        var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+        var prontuarios = JSON.parse(localStorage.getItem('amovin_prontuarios') || '[]');
+        var evolucoes = JSON.parse(localStorage.getItem('amovin_evolucoes') || '[]');
+        var consultas = JSON.parse(localStorage.getItem('amovin_consultas') || '[]');
+
+        var beneficiarioSelecionado = null;
+        var prontuarioAtual = null;
+
+        // ============================================================
+        // FUNÇÕES AUXILIARES
+        // ============================================================
+        function formatarDataBR(dataISO) {
+            if (!dataISO) return '-';
+            var partes = dataISO.split('-');
+            return partes[2] + '/' + partes[1] + '/' + partes[0];
+        }
+
+        function formatarDataHoraBR(dataISO) {
+            if (!dataISO) return '-';
+            try {
+                var d = new Date(dataISO);
+                return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) { return '-'; }
+        }
+
+        function calcularIdade(dataNasc) {
+            if (!dataNasc) return '';
+            var hoje = new Date();
+            var nasc = new Date(dataNasc + 'T00:00:00');
+            var idade = hoje.getFullYear() - nasc.getFullYear();
+            var mes = hoje.getMonth() - nasc.getMonth();
+            if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) {
+                idade--;
+            }
+            return idade >= 0 ? idade + ' anos' : '';
+        }
+
+        // ============================================================
+        // CARREGAR SELECT DE BENEFICIÁRIOS
+        // ============================================================
+        function carregarSelectBeneficiarios() {
+            var select = document.getElementById('selectBeneficiario');
+            var beneficiarios = pessoas.filter(function(p) { return p.tipo === 'beneficiario'; });
+            select.innerHTML = '<option value="">Selecione um beneficiário...</option>';
+            beneficiarios.sort(function(a, b) { return (a.nome || '').localeCompare(b.nome || ''); });
+            beneficiarios.forEach(function(p) {
+                var option = document.createElement('option');
+                option.value = p.id;
+                option.textContent = p.nome + (p.matricula ? ' (' + p.matricula + ')' : '');
+                select.appendChild(option);
+            });
+        }
+
+        // ============================================================
+        // CARREGAR PRONTUÁRIO
+        // ============================================================
+        function carregarProntuario() {
+            var select = document.getElementById('selectBeneficiario');
+            var id = parseInt(select.value);
+            if (!id) {
+                document.getElementById('prontuarioContainer').style.display = 'none';
+                document.getElementById('benefNomeSelecionado').textContent = 'Nenhum selecionado';
+                document.getElementById('benefDetalhesSelecionado').textContent = '';
+                return;
+            }
+
+            beneficiarioSelecionado = pessoas.find(function(p) { return p.id === id; });
+            if (!beneficiarioSelecionado) return;
+
+            document.getElementById('prontuarioContainer').style.display = 'block';
+            document.getElementById('benefNomeSelecionado').textContent = beneficiarioSelecionado.nome;
+            document.getElementById('benefDetalhesSelecionado').textContent =
+                'Idade: ' + calcularIdade(beneficiarioSelecionado.nascimento) +
+                ' | Diagnóstico: ' + (beneficiarioSelecionado.diagnostico || '-') +
+                ' | CID: ' + (beneficiarioSelecionado.cid || '-');
+
+            // Carregar dados do paciente
+            var dadosPaciente = document.getElementById('dadosPaciente');
+            dadosPaciente.innerHTML = '';
+            var campos = [
+                { label: 'Nome', value: beneficiarioSelecionado.nome },
+                { label: 'Data Nascimento', value: formatarDataBR(beneficiarioSelecionado.nascimento) },
+                { label: 'Idade', value: calcularIdade(beneficiarioSelecionado.nascimento) },
+                { label: 'Sexo', value: beneficiarioSelecionado.sexo || '-' },
+                { label: 'Responsável', value: beneficiarioSelecionado.responsavel || '-' },
+                { label: 'Telefone', value: beneficiarioSelecionado.telResponsavel || '-' },
+                { label: 'Diagnóstico', value: beneficiarioSelecionado.diagnostico || '-' },
+                { label: 'CID', value: beneficiarioSelecionado.cid || '-' }
+            ];
+            campos.forEach(function(c) {
+                var div = document.createElement('div');
+                div.style.cssText = 'font-size:13px;padding:4px 0;border-bottom:1px solid #F0E9DF;';
+                div.innerHTML = '<strong>' + c.label + ':</strong> ' + (c.value || '-');
+                dadosPaciente.appendChild(div);
+            });
+
+            // Carregar prontuário
+            prontuarioAtual = prontuarios.find(function(p) { return p.beneficiarioId === id; });
+            if (prontuarioAtual) {
+                carregarDadosProntuario(prontuarioAtual);
+            } else {
+                limparProntuario();
+                // Criar prontuário vazio
+                prontuarioAtual = {
+                    beneficiarioId: id,
+                    profissionalId: 'admin',
+                    profissionalName: 'Administrador',
+                    specialty: 'Administrador',
+                    evaluationDate: new Date().toISOString().split('T')[0],
+                    supports: [],
+                    feeding: [],
+                    liquids: [],
+                    evolutions: []
+                };
+            }
+
+            // Carregar evoluções
+            carregarEvolucoes(id);
+
+            // Carregar atendimentos
+            carregarAtendimentos(id);
+
+            // Atualizar total
+            document.getElementById('totalEvolucoes').textContent = (prontuarioAtual.evolutions || []).length;
+        }
+
+        // ============================================================
+        // CARREGAR DADOS DO PRONTUÁRIO
+        // ============================================================
+        function carregarDadosProntuario(p) {
+            document.getElementById('prontPeso').value = p.weight || '';
+            document.getElementById('prontAltura').value = p.height || '';
+            document.getElementById('prontDataAvaliacao').value = p.evaluationDate || '';
+            document.getElementById('prontHistoria').value = p.clinicalHistory || '';
+            document.getElementById('prontQueixa').value = p.mainComplaint || '';
+            document.getElementById('prontHmp').value = p.hmpHma || '';
+            document.getElementById('prontMedicamentos').value = p.medicationInUse || '';
+            document.getElementById('prontRestricao').value = p.foodRestriction || '';
+            document.getElementById('prontRestricaoDetalhes').value = p.foodRestrictionDetails || '';
+            document.getElementById('prontCirurgias').value = p.surgeries || '';
+            document.getElementById('prontCirurgiasDetalhes').value = p.surgeryDetails || '';
+            document.getElementById('prontSaudeGeral').value = p.generalHealth || '';
+            document.getElementById('prontConvulsoes').value = p.seizures || '';
+            document.getElementById('prontConvulsoesFreq').value = p.seizureFrequency || '';
+            document.getElementById('prontConstipacao').value = p.constipation || '';
+            document.getElementById('prontSono').value = p.sleep || '';
+            document.getElementById('prontSuporteObs').value = p.supportObservations || '';
+            document.getElementById('prontHigiene').value = p.hygiene || '';
+            document.getElementById('prontVestuario').value = p.clothing || '';
+            document.getElementById('prontSeguranca').value = p.safety || '';
+            document.getElementById('prontPotencialidades').value = p.familyPotentials || '';
+            document.getElementById('prontDificuldades').value = p.familyDifficulties || '';
+            document.getElementById('prontExpectativas').value = p.familyExpectations || '';
+
+            // Checkboxes
+            document.querySelectorAll('.prontSuporte').forEach(function(el) {
+                el.checked = p.supports && p.supports.indexOf(el.value) >= 0;
+            });
+            document.querySelectorAll('.prontAlimentacao').forEach(function(el) {
+                el.checked = p.feeding && p.feeding.indexOf(el.value) >= 0;
+            });
+            document.querySelectorAll('.prontLiquidos').forEach(function(el) {
+                el.checked = p.liquids && p.liquids.indexOf(el.value) >= 0;
+            });
+        }
+
+        // ============================================================
+        // SALVAR PRONTUÁRIO
+        // ============================================================
+        function salvarProntuario() {
+            if (!beneficiarioSelecionado) {
+                alert('⚠️ Selecione um beneficiário primeiro.');
+                return;
+            }
+
+            var supports = [];
+            document.querySelectorAll('.prontSuporte:checked').forEach(function(el) { supports.push(el.value); });
+
+            var feeding = [];
+            document.querySelectorAll('.prontAlimentacao:checked').forEach(function(el) { feeding.push(el.value); });
+
+            var liquids = [];
+            document.querySelectorAll('.prontLiquidos:checked').forEach(function(el) { liquids.push(el.value); });
+
+            var dados = {
+                beneficiarioId: beneficiarioSelecionado.id,
+                profissionalId: 'admin',
+                profissionalName: 'Administrador',
+                specialty: 'Administrador',
+                weight: document.getElementById('prontPeso').value.trim(),
+                height: document.getElementById('prontAltura').value.trim(),
+                evaluationDate: document.getElementById('prontDataAvaliacao').value,
+                clinicalHistory: document.getElementById('prontHistoria').value.trim(),
+                mainComplaint: document.getElementById('prontQueixa').value.trim(),
+                hmpHma: document.getElementById('prontHmp').value.trim(),
+                medicationInUse: document.getElementById('prontMedicamentos').value.trim(),
+                foodRestriction: document.getElementById('prontRestricao').value,
+                foodRestrictionDetails: document.getElementById('prontRestricaoDetalhes').value.trim(),
+                surgeries: document.getElementById('prontCirurgias').value,
+                surgeryDetails: document.getElementById('prontCirurgiasDetalhes').value.trim(),
+                generalHealth: document.getElementById('prontSaudeGeral').value.trim(),
+                seizures: document.getElementById('prontConvulsoes').value,
+                seizureFrequency: document.getElementById('prontConvulsoesFreq').value.trim(),
+                constipation: document.getElementById('prontConstipacao').value,
+                sleep: document.getElementById('prontSono').value,
+                supports: supports,
+                supportObservations: document.getElementById('prontSuporteObs').value.trim(),
+                feeding: feeding,
+                liquids: liquids,
+                hygiene: document.getElementById('prontHigiene').value,
+                clothing: document.getElementById('prontVestuario').value.trim(),
+                safety: document.getElementById('prontSeguranca').value.trim(),
+                familyPotentials: document.getElementById('prontPotencialidades').value.trim(),
+                familyDifficulties: document.getElementById('prontDificuldades').value.trim(),
+                familyExpectations: document.getElementById('prontExpectativas').value.trim(),
+                evolutions: prontuarioAtual ? prontuarioAtual.evolutions || [] : [],
+                updatedAt: new Date().toISOString()
+            };
+
+            var idx = prontuarios.findIndex(function(p) { return p.beneficiarioId === beneficiarioSelecionado.id; });
+            if (idx >= 0) {
+                prontuarios[idx] = dados;
+            } else {
+                dados.createdAt = new Date().toISOString();
+                prontuarios.push(dados);
+            }
+
+            localStorage.setItem('amovin_prontuarios', JSON.stringify(prontuarios));
+            prontuarioAtual = dados;
+
+            document.getElementById('prontStatusMsg').textContent = '✅ Prontuário salvo com sucesso!';
+            setTimeout(function() {
+                document.getElementById('prontStatusMsg').textContent = '';
+            }, 4000);
+
+            // Registrar atendimento
+            registrarAtendimento('prontuário', 'Registro de prontuário atualizado');
+        }
+
+        // ============================================================
+        // LIMPAR PRONTUÁRIO
+        // ============================================================
+        function limparProntuario() {
+            document.getElementById('prontPeso').value = '';
+            document.getElementById('prontAltura').value = '';
+            document.getElementById('prontDataAvaliacao').value = new Date().toISOString().split('T')[0];
+            document.getElementById('prontHistoria').value = '';
+            document.getElementById('prontQueixa').value = '';
+            document.getElementById('prontHmp').value = '';
+            document.getElementById('prontMedicamentos').value = '';
+            document.getElementById('prontRestricao').value = '';
+            document.getElementById('prontRestricaoDetalhes').value = '';
+            document.getElementById('prontCirurgias').value = '';
+            document.getElementById('prontCirurgiasDetalhes').value = '';
+            document.getElementById('prontSaudeGeral').value = '';
+            document.getElementById('prontConvulsoes').value = '';
+            document.getElementById('prontConvulsoesFreq').value = '';
+            document.getElementById('prontConstipacao').value = '';
+            document.getElementById('prontSono').value = '';
+            document.getElementById('prontSuporteObs').value = '';
+            document.getElementById('prontHigiene').value = '';
+            document.getElementById('prontVestuario').value = '';
+            document.getElementById('prontSeguranca').value = '';
+            document.getElementById('prontPotencialidades').value = '';
+            document.getElementById('prontDificuldades').value = '';
+            document.getElementById('prontExpectativas').value = '';
+            document.querySelectorAll('.prontSuporte').forEach(function(el) { el.checked = false; });
+            document.querySelectorAll('.prontAlimentacao').forEach(function(el) { el.checked = false; });
+            document.querySelectorAll('.prontLiquidos').forEach(function(el) { el.checked = false; });
+        }
+
+        // ============================================================
+        // ADICIONAR EVOLUÇÃO
+        // ============================================================
+        function adicionarEvolucao() {
+            if (!beneficiarioSelecionado) {
+                alert('⚠️ Selecione um beneficiário primeiro.');
+                return;
+            }
+
+            var data = document.getElementById('evoData').value;
+            var atividades = document.getElementById('evoAtividades').value.trim();
+            var desempenho = document.getElementById('evoDesempenho').value.trim();
+            var planejamento = document.getElementById('evoPlanejamento').value.trim();
+
+            if (!atividades && !desempenho && !planejamento) {
+                alert('⚠️ Preencha pelo menos um campo da evolução.');
+                return;
+            }
+
+            var evo = {
+                id: Date.now(),
+                dateTime: data || new Date().toISOString(),
+                activities: atividades || '-',
+                performance: desempenho || '-',
+                planning: planejamento || '-'
+            };
+
+            if (!prontuarioAtual) {
+                prontuarioAtual = {
+                    beneficiarioId: beneficiarioSelecionado.id,
+                    profissionalId: 'admin',
+                    profissionalName: 'Administrador',
+                    specialty: 'Administrador',
+                    evolutions: []
+                };
+            }
+
+            if (!prontuarioAtual.evolutions) prontuarioAtual.evolutions = [];
+            prontuarioAtual.evolutions.push(evo);
+
+            // Salvar evolução no prontuário
+            var idx = prontuarios.findIndex(function(p) { return p.beneficiarioId === beneficiarioSelecionado.id; });
+            if (idx >= 0) {
+                prontuarios[idx].evolutions = prontuarioAtual.evolutions;
+                localStorage.setItem('amovin_prontuarios', JSON.stringify(prontuarios));
+            } else {
+                prontuarios.push(prontuarioAtual);
+                localStorage.setItem('amovin_prontuarios', JSON.stringify(prontuarios));
+            }
+
+            // Limpar campos
+            document.getElementById('evoData').value = '';
+            document.getElementById('evoAtividades').value = '';
+            document.getElementById('evoDesempenho').value = '';
+            document.getElementById('evoPlanejamento').value = '';
+
+            carregarEvolucoes(beneficiarioSelecionado.id);
+            document.getElementById('totalEvolucoes').textContent = (prontuarioAtual.evolutions || []).length;
+
+            // Registrar atendimento
+            registrarAtendimento('evolução', 'Nova evolução registrada para ' + beneficiarioSelecionado.nome);
+        }
+
+        // ============================================================
+        // EXCLUIR EVOLUÇÃO
+        // ============================================================
+        function excluirEvolucao(id) {
+            if (!confirm('⚠️ Tem certeza que deseja excluir esta evolução?')) return;
+            if (!prontuarioAtual || !prontuarioAtual.evolutions) return;
+
+            prontuarioAtual.evolutions = prontuarioAtual.evolutions.filter(function(e) { return e.id !== id; });
+
+            var idx = prontuarios.findIndex(function(p) { return p.beneficiarioId === beneficiarioSelecionado.id; });
+            if (idx >= 0) {
+                prontuarios[idx].evolutions = prontuarioAtual.evolutions;
+                localStorage.setItem('amovin_prontuarios', JSON.stringify(prontuarios));
+            }
+
+            carregarEvolucoes(beneficiarioSelecionado.id);
+            document.getElementById('totalEvolucoes').textContent = (prontuarioAtual.evolutions || []).length;
+        }
+
+        // ============================================================
+        // CARREGAR EVOLUÇÕES
+        // ============================================================
+        function carregarEvolucoes(beneficiarioId) {
+            var container = document.getElementById('listaEvolucoes');
+            var evos = [];
+
+            var pront = prontuarios.find(function(p) { return p.beneficiarioId === beneficiarioId; });
+            if (pront && pront.evolutions) {
+                evos = pront.evolutions;
+                prontuarioAtual = pront;
+            }
+
+            if (evos.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhuma evolução registrada.</div>';
+                return;
+            }
+
+            container.innerHTML = evos.slice().reverse().map(function(e) {
+                return '<div class="evolucao-item">' +
+                    '<div class="info">' +
+                    '<div class="data">📅 ' + formatarDataHoraBR(e.dateTime) + '</div>' +
+                    '<div class="texto"><strong>Atividades:</strong> ' + (e.activities || '-') + '</div>' +
+                    '<div class="texto"><strong>Desempenho:</strong> ' + (e.performance || '-') + '</div>' +
+                    '<div class="texto"><strong>Planejamento:</strong> ' + (e.planning || '-') + '</div>' +
+                    '</div>' +
+                    '<div class="acoes">' +
+                    '<button class="btn btn-danger btn-sm" onclick="excluirEvolucao(' + e.id + ')">🗑️</button>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // ============================================================
+        // REGISTRAR ATENDIMENTO
+        // ============================================================
+        function registrarAtendimento(tipo, descricao) {
+            if (!beneficiarioSelecionado) return;
+            var atendimento = {
+                id: Date.now(),
+                beneficiarioId: beneficiarioSelecionado.id,
+                beneficiarioNome: beneficiarioSelecionado.nome,
+                profissionalId: 'admin',
+                profissionalNome: 'Administrador',
+                date: new Date().toISOString().split('T')[0],
+                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                tipo: tipo,
+                descricao: descricao,
+                attendance: 'presente'
+            };
+            consultas.push(atendimento);
+            localStorage.setItem('amovin_consultas', JSON.stringify(consultas));
+            carregarAtendimentos(beneficiarioSelecionado.id);
+        }
+
+        // ============================================================
+        // CARREGAR ATENDIMENTOS
+        // ============================================================
+        function carregarAtendimentos(beneficiarioId) {
+            var container = document.getElementById('listaAtendimentos');
+            var lista = consultas.filter(function(c) { return c.beneficiarioId === beneficiarioId; })
+                .sort(function(a, b) { return b.id - a.id; });
+
+            document.getElementById('totalAtendimentos').textContent = lista.length;
+
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="sem-dados">Nenhum atendimento registrado.</div>';
+                return;
+            }
+
+            container.innerHTML = lista.slice(0, 20).map(function(c) {
+                return '<div class="evolucao-item">' +
+                    '<div class="info">' +
+                    '<div class="data">📅 ' + formatarDataBR(c.date) + ' ' + (c.time || '') +
+                    ' | <span class="status-badge status-ativo">' + (c.attendance === 'presente' ? '✅ Presente' :
+                        c.attendance === 'falta' ? '❌ Falta' : '⏳ Pendente') + '</span></div>' +
+                    '<div class="texto"><strong>' + (c.tipo || 'Atendimento') + ':</strong> ' + (c.descricao || '-') +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // ============================================================
+        // IMPRIMIR PRONTUÁRIO - SAP ENTERPRISE A4
+        // ============================================================
+        function imprimirProntuario() {
+            if (!beneficiarioSelecionado) {
+                alert('⚠️ Selecione um beneficiário primeiro.');
+                return;
+            }
+
+            var printWindow = window.open('', '_blank', 'width=800,height=600');
+            if (!printWindow) {
+                alert('⚠️ Por favor, permita pop-ups para imprimir.');
+                return;
+            }
+
+            var p = beneficiarioSelecionado;
+            var pront = prontuarioAtual || {};
+
+            var idade = calcularIdade(p.nascimento);
+            var dataNasc = formatarDataBR(p.nascimento);
+            var evos = pront.evolutions || [];
+
+            var supports = (pront.supports || []).join(', ') || '-';
+            var feeding = (pront.feeding || []).join(', ') || '-';
+            var liquids = (pront.liquids || []).join(', ') || '-';
+
+            var html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Prontuário - ${p.nome}</title>
+                <style>
+                    @page { size: A4 portrait; margin: 12mm; }
+                    * { margin:0; padding:0; box-sizing:border-box; }
+                    body { font-family: Arial, sans-serif; font-size: 10px; line-height: 1.3; color: #1A1A1A; background: white; }
+                    .container { max-width: 780px; margin: 0 auto; padding: 8px; }
+                    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1A1A1A; padding-bottom: 6px; margin-bottom: 10px; }
+                    .header .logo { height: 45px; }
+                    .header .org { text-align: right; font-size: 8px; line-height: 1.2; color: #444; }
+                    .header .org strong { color: #1A1A1A; }
+                    .title { text-align: center; font-weight: 700; font-size: 14px; margin: 8px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .subtitle { font-weight: 700; font-size: 11px; margin: 8px 0 3px; border-bottom: 1px solid #ddd; padding-bottom: 2px; }
+                    .field-row { display: flex; gap: 6px; margin: 2px 0; align-items: baseline; flex-wrap: wrap; }
+                    .field-label { font-weight: 700; min-width: 110px; font-size: 9px; color: #444; }
+                    .field-value { font-size: 10px; border-bottom: 1px solid #ddd; padding: 0 4px; min-width: 60px; }
+                    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; }
+                    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px 8px; }
+                    .signature { margin-top: 20px; text-align: center; }
+                    .signature .line { width: 340px; border-top: 1px solid #1A1A1A; margin: 12px auto 4px; }
+                    .signature .name { font-weight: 700; font-size: 11px; }
+                    .signature .info { font-size: 9px; color: #555; }
+                    .page-break { page-break-before: always; }
+                    .footer { text-align: center; font-size: 7px; color: #999; margin-top: 16px; border-top: 1px solid #eee; padding-top: 6px; }
+                    .evo-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 9px; }
+                    .evo-table th, .evo-table td { border: 1px solid #ddd; padding: 3px 5px; text-align: left; vertical-align: top; }
+                    .evo-table th { background: #f3f4f6; font-weight: 700; }
+                    .badge-print { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 8px; font-weight: 600; background: #E8F5E9; color: #2E7D32; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <img src="images/amovin-logo.png" alt="AMOVIN" class="logo" onerror="this.style.display='none';">
+                        <div class="org">
+                            <strong>AMOVIN – Associação e Movimento pela Inclusão</strong><br>
+                            CNPJ: 55.880.046/0001-34 | Instagram: @amovin_rpa<br>
+                            contato@amovin.org.br | (34) 99821-0513
+                        </div>
+                    </div>
+
+                    <div class="title">Prontuário de Atendimento Multidisciplinar</div>
+
+                    <!-- DADOS DO PACIENTE -->
+                    <div class="subtitle">📋 DADOS DO PACIENTE</div>
+                    <div class="field-row"><span class="field-label">Nome:</span><span class="field-value">${p.nome || '-'}</span></div>
+                    <div class="grid-3">
+                        <div class="field-row"><span class="field-label">Nascimento:</span><span class="field-value">${dataNasc}</span></div>
+                        <div class="field-row"><span class="field-label">Idade:</span><span class="field-value">${idade || '-'}</span></div>
+                        <div class="field-row"><span class="field-label">Sexo:</span><span class="field-value">${p.sexo || '-'}</span></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="field-row"><span class="field-label">Diagnóstico:</span><span class="field-value">${p.diagnostico || '-'}</span></div>
+                        <div class="field-row"><span class="field-label">CID:</span><span class="field-value">${p.cid || '-'}</span></div>
+                    </div>
+                    <div class="field-row"><span class="field-label">Responsável:</span><span class="field-value">${p.responsavel || '-'}</span></div>
+                    <div class="field-row"><span class="field-label">Telefone:</span><span class="field-value">${p.telResponsavel || '-'}</span></div>
+                    <div class="field-row"><span class="field-label">Endereço:</span><span class="field-value">${p.endereco || '-'}</span></div>
+
+                    <!-- AVALIAÇÃO FÍSICA -->
+                    <div class="subtitle">📊 AVALIAÇÃO FÍSICA</div>
+                    <div class="grid-3">
+                        <div class="field-row"><span class="field-label">Peso:</span><span class="field-value">${pront.weight || '-'} kg</span></div>
+                        <div class="field-row"><span class="field-label">Altura:</span><span class="field-value">${pront.height || '-'} cm</span></div>
+                        <div class="field-row"><span class="field-label">Data Avaliação:</span><span class="field-value">${formatarDataBR(pront.evaluationDate) || '-'}</span></div>
+                    </div>
+
+                    <!-- HISTÓRIA CLÍNICA -->
+                    <div class="subtitle">🏥 HISTÓRIA CLÍNICA</div>
+                    <div class="field-row"><span class="field-label">História Clínica:</span><span class="field-value">${pront.clinicalHistory || '-'}</span></div>
+                    <div class="field-row"><span class="field-label">Queixa Principal:</span><span class="field-value">${pront.mainComplaint || '-'}</span></div>
+                    <div class="field-row"><span class="field-label">HMP/HMA:</span><span class="field-value">${pront.hmpHma || '-'}</span></div>
+                    <div class="field-row"><span class="field-label">Medicamentos em Uso:</span><span class="field-value">${pront.medicationInUse || '-'}</span></div>
+
+                    <!-- RESTRIÇÕES E CIRURGIAS -->
+                    <div class="subtitle">⚠️ RESTRIÇÕES E CIRURGIAS</div>
+                    <div class="field-row"><span class="field-label">Restrição Alimentar:</span><span class="field-value">${pront.foodRestriction || '-'} ${pront.foodRestrictionDetails ? '- ' + pront.foodRestrictionDetails : ''}</span></div>
+                    <div class="field-row"><span class="field-label">Cirurgias:</span><span class="field-value">${pront.surgeries || '-'} ${pront.surgeryDetails ? '- ' + pront.surgeryDetails : ''}</span></div>
+
+                    <!-- SAÚDE GERAL -->
+                    <div class="subtitle">🩺 SAÚDE GERAL</div>
+                    <div class="field-row"><span class="field-label">Saúde Geral:</span><span class="field-value">${pront.generalHealth || '-'}</span></div>
+                    <div class="grid-3">
+                        <div class="field-row"><span class="field-label">Convulsões:</span><span class="field-value">${pront.seizures || '-'}${pront.seizureFrequency ? ' (' + pront.seizureFrequency + ')' : ''}</span></div>
+                        <div class="field-row"><span class="field-label">Constipação:</span><span class="field-value">${pront.constipation || '-'}</span></div>
+                        <div class="field-row"><span class="field-label">Sono:</span><span class="field-value">${pront.sleep || '-'}</span></div>
+                    </div>
+
+                    <!-- SUPORTES E ALIMENTAÇÃO -->
+                    <div class="subtitle">🔄 SUPORTES E ALIMENTAÇÃO</div>
+                    <div class="field-row"><span class="field-label">Suportes:</span><span class="field-value">${supports}</span></div>
+                    <div class="field-row"><span class="field-label">Obs. Suportes:</span><span class="field-value">${pront.supportObservations || '-'}</span></div>
+                    <div class="grid-2">
+                        <div class="field-row"><span class="field-label">Alimentação:</span><span class="field-value">${feeding}</span></div>
+                        <div class="field-row"><span class="field-label">Líquidos:</span><span class="field-value">${liquids}</span></div>
+                    </div>
+
+                    <!-- HIGIENE E AUTONOMIA -->
+                    <div class="subtitle">🚿 HIGIENE E AUTONOMIA</div>
+                    <div class="grid-3">
+                        <div class="field-row"><span class="field-label">Higiene:</span><span class="field-value">${pront.hygiene || '-'}</span></div>
+                        <div class="field-row"><span class="field-label">Vestuário:</span><span class="field-value">${pront.clothing || '-'}</span></div>
+                        <div class="field-row"><span class="field-label">Segurança:</span><span class="field-value">${pront.safety || '-'}</span></div>
+                    </div>
+
+                    <!-- OBSERVAÇÕES DA FAMÍLIA -->
+                    <div class="subtitle">👨‍👩‍👦 OBSERVAÇÕES DA FAMÍLIA</div>
+                    <div class="field-row"><span class="field-label">Potencialidades:</span><span class="field-value">${pront.familyPotentials || '-'}</span></div>
+                    <div class="field-row"><span class="field-label">Dificuldades:</span><span class="field-value">${pront.familyDifficulties || '-'}</span></div>
+                    <div class="field-row"><span class="field-label">Expectativas:</span><span class="field-value">${pront.familyExpectations || '-'}</span></div>
+
+                    <!-- EVOLUÇÕES -->
+                    <div class="subtitle">📈 EVOLUÇÕES</div>
+                    ${evos.length === 0 ? '<div class="field-row"><span class="field-value">Nenhuma evolução registrada.</span></div>' : `
+                    <table class="evo-table">
+                        <thead>
+                            <tr><th>Data/Hora</th><th>Atividades</th><th>Desempenho</th><th>Planejamento</th></tr>
+                        </thead>
+                        <tbody>
+                            ${evos.map(function(e) {
+                                return '<tr><td>' + formatarDataHoraBR(e.dateTime) + '</td><td>' + (e.activities || '-') + '</td><td>' + (e.performance || '-') + '</td><td>' + (e.planning || '-') + '</td></tr>';
+                            }).join('')}
+                        </tbody>
+                    </table>
+                    `}
+
+                    <!-- ASSINATURAS -->
+                    <div class="signature">
+                        <div class="line"></div>
+                        <div class="name">${pront.profissionalName || '_________________________'}</div>
+                        <div class="info">${pront.specialty || 'Profissional Responsável'}</div>
+                    </div>
+
+                    <div class="footer">
+                        Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+                    </div>
+                </div>
+
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.onafterprint = function() { window.close(); };
+                    };
+                <\/script>
+            </body>
+            </html>`;
+
+            printWindow.document.write(html);
+            printWindow.document.close();
+        }
+
+        // ============================================================
+        // VERIFICAÇÃO DE SESSÃO
+        // ============================================================
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        carregarSelectBeneficiarios();
+
+        console.log('✅ Prontuário carregado!');
+        console.log('📊 Total de beneficiários:', pessoas.filter(function(p) { return p.tipo === 'beneficiario'; }).length);
+        console.log('📋 Total de prontuários:', prontuarios.length);
+        console.log('📈 Total de evoluções:', evolucoes.length);
+    </script>
+</body>
+</html>
