@@ -79,7 +79,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>📅 Agenda</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar"><h1>📅 Agenda</h1><button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button></div>
 
   <div class="abas">
     <button class="aba ativa" onclick="mudarAba('agendamentos',this)">📋 Agendamentos</button>
@@ -122,6 +122,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
+<script src="config.js"></script>
 <script src="menu.js?v=20261007"></script>
 <script>
 var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
@@ -173,25 +174,6 @@ window.removerSlot = function(d,h,s) { slots=slots.filter(function(sl){return !(
 function renderizarSlots() { var c=document.getElementById('listaSlots'); if(slots.length===0){c.innerHTML='<div class="sem-dados">Nenhum horário.</div>';return;} c.innerHTML=slots.sort(function(a,b){return a.data.localeCompare(b.data)||a.hora.localeCompare(b.hora);}).map(function(s){return '<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #F0E9DF;flex-wrap:wrap;gap:6px;"><span>📅 '+new Date(s.data+'T00:00:00').toLocaleDateString('pt-BR')+' 🕐 '+s.hora+' | '+sn[s.sala]+'</span><button class="btn-acao btn-excluir" onclick="removerSlot(\''+s.data+'\',\''+s.hora+'\',\''+s.sala+'\')">🗑️</button></div>';}).join(''); }
 
 window.mudarAba = function(aba, btn) { document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('ativa');}); btn.classList.add('ativa'); document.getElementById('aba-agendamentos').style.display = aba==='agendamentos'?'block':'none'; document.getElementById('aba-disponibilidade').style.display = aba==='disponibilidade'?'block':'none'; };
-
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
 
