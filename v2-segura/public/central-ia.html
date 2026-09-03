@@ -81,7 +81,7 @@
             <h1>🧠 Central de IA <span>AMOVIN</span></h1>
             <span class="sub">Inteligência artificial para extração, classificação e integração de dados</span>
         </div>
-        <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
+        <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
     </div>
 
     <div class="card" style="background:linear-gradient(135deg, #F5F0FF, #F0F9FF);border-color:var(--roxo);">
@@ -140,6 +140,7 @@
     </div>
 </main>
 
+<script src="config.js"></script>
 <script src="menu.js?v=20261007"></script>
 <script>
 // ============================================================
@@ -151,7 +152,25 @@ var textoExtraido = '';
 var dadosExtraidos = {};
 
 // ============================================================
-// 🔥 FUNÇÃO PRINCIPAL: Extrair texto de QUALQUER formato
+// USAR CONFIG.JS OU LOCALSTORAGE (FALLBACK)
+// ============================================================
+function getGeminiKey() {
+    if (typeof AMOVIN_CONFIG !== 'undefined' && AMOVIN_CONFIG) {
+        return AMOVIN_CONFIG.getGeminiKey();
+    }
+    return localStorage.getItem('amovin_gemini_key');
+}
+
+function setGeminiKey(key) {
+    if (typeof AMOVIN_CONFIG !== 'undefined' && AMOVIN_CONFIG) {
+        AMOVIN_CONFIG.setGeminiKey(key);
+    } else {
+        localStorage.setItem('amovin_gemini_key', key);
+    }
+}
+
+// ============================================================
+// EXTRAIR TEXTO DO ARQUIVO
 // ============================================================
 async function extrairTextoDoArquivo(file) {
     // 1. PDF - Usar PDF.js
@@ -201,7 +220,7 @@ async function extrairTextoDoArquivo(file) {
 // VERIFICAR CHAVE
 // ============================================================
 function verificarChave() {
-    var key = localStorage.getItem('amovin_gemini_key');
+    var key = getGeminiKey();
     var statusEl = document.getElementById('statusIA');
     var chaveEl = document.getElementById('statusChave');
 
@@ -221,7 +240,7 @@ function verificarChave() {
 function configurarChave() {
     var key = prompt('🔑 Digite sua chave do OpenRouter (sk-or-v1-...):\n\nObtenha gratuitamente em: https://openrouter.ai/keys');
     if (key && key.length > 10) {
-        localStorage.setItem('amovin_gemini_key', key);
+        setGeminiKey(key);
         verificarChave();
         mostrarToast('✅ Chave OpenRouter configurada com sucesso!', 'success');
     } else if (key !== null) {
@@ -230,7 +249,7 @@ function configurarChave() {
 }
 
 async function testarConexao() {
-    var key = localStorage.getItem('amovin_gemini_key');
+    var key = getGeminiKey();
     if (!key || key.length < 10) {
         mostrarToast('⚠️ Configure a chave primeiro!', 'warning');
         return;
@@ -267,7 +286,7 @@ async function testarConexao() {
 }
 
 // ============================================================
-// PROCESSAR NOTA (UPLOAD) - AGORA COM PDF.JS E OCR
+// PROCESSAR NOTA (UPLOAD)
 // ============================================================
 async function processarNota(event) {
     var file = event.target.files[0];
@@ -281,7 +300,6 @@ async function processarNota(event) {
     preview.classList.add('visivel');
 
     try {
-        // 🔥 USA A NOVA FUNÇÃO INTELIGENTE
         textoExtraido = await extrairTextoDoArquivo(file);
         
         if (!textoExtraido || textoExtraido.trim().length < 10) {
@@ -311,7 +329,7 @@ async function processarNotaIA() {
         return;
     }
 
-    var key = localStorage.getItem('amovin_gemini_key');
+    var key = getGeminiKey();
     if (!key || key.length < 10) {
         mostrarToast('⚠️ Chave OpenRouter não configurada.', 'warning');
         return;
@@ -466,6 +484,9 @@ function mostrarToast(mensagem, tipo) {
     }, 4000);
 }
 
+// ============================================================
+// DRAG AND DROP
+// ============================================================
 var dz = document.getElementById('dropzoneNota');
 dz.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
 dz.addEventListener('dragleave', function(e) { e.preventDefault(); this.classList.remove('dragover'); });
@@ -480,11 +501,17 @@ dz.addEventListener('drop', function(e) {
     }
 });
 
+// ============================================================
+// VERIFICAÇÃO DE SESSÃO
+// ============================================================
+if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     verificarChave();
 });
-
-if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
 </script>
 </body>
 </html>
