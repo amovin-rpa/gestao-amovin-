@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amovin ERP Social • Relatórios</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<!-- Bibliotecas para geração de relatórios (frontend) -->
+<!-- Bibliotecas para geração de relatórios -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -13,6 +13,7 @@
 <style>
 :root {
   --laranja: #C65A11;
+  --laranja-escuro: #A04A0E;
   --amarelo: #F5C518;
   --verde: #57C220;
   --azul: #1E88E5;
@@ -21,54 +22,160 @@
   --cinza-claro: #F8F4ED;
   --branco: #FFFFFF;
   --vermelho: #E53935;
+  --sombra: 0 2px 12px rgba(0,0,0,0.06);
+  --sombra-hover: 0 4px 24px rgba(0,0,0,0.10);
+  --border-radius: 12px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
 
-.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; }
+/* ============================================================
+   CONTEÚDO PRINCIPAL
+   ============================================================ */
+.main-content { flex: 1; margin-left: 270px; padding: 24px 30px; min-height: 100vh; width: calc(100% - 270px); }
 .topo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
 .topo-bar h1 { font-size: 24px; font-weight: 700; color: var(--grafite); }
-.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.topo-bar h1 span { color: var(--laranja); font-weight: 300; }
+.topo-bar .sub { font-size: 12px; color: var(--cinza); font-weight: 400; display: block; }
+.btn-sair-topo { background: #F8F4ED; color: #1A1A1A; border: 1px solid #F0E9DF; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.btn-sair-topo:hover { background: #F0E9DF; }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-.kpi-card { background: #FFFFFF; padding: 22px; border-radius: 14px; border: 1px solid #F0E9DF; display: flex; align-items: center; gap: 18px; }
-.kpi-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: white; flex-shrink: 0; }
+/* ============================================================
+   KPIs
+   ============================================================ */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kpi-card { background: #FFFFFF; padding: 16px; border-radius: var(--border-radius); border: 1px solid #F0E9DF; box-shadow: var(--sombra); transition: var(--transition); display: flex; align-items: center; gap: 12px; }
+.kpi-card:hover { box-shadow: var(--sombra-hover); transform: translateY(-2px); }
+.kpi-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white; flex-shrink: 0; }
 .kpi-green { background: var(--verde); }
 .kpi-blue { background: var(--azul); }
 .kpi-orange { background: #E65100; }
 .kpi-purple { background: #7B1FA2; }
-.kpi-teal { background: #00897B; }
 .kpi-red { background: var(--vermelho); }
-.kpi-info .kpi-valor { font-size: 24px; font-weight: 700; color: var(--grafite); }
-.kpi-info .kpi-label { font-size: 11px; color: var(--cinza); }
+.kpi-teal { background: #00897B; }
+.kpi-info .kpi-valor { font-size: 20px; font-weight: 800; color: var(--grafite); }
+.kpi-info .kpi-label { font-size: 10px; color: var(--cinza); }
 
-.relatorios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-bottom: 25px; }
-.relatorio-card { background: #FFFFFF; padding: 28px; border-radius: 14px; border: 1px solid #F0E9DF; text-align: center; cursor: pointer; transition: all 0.3s; border-top: 4px solid var(--laranja); }
-.relatorio-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-.relatorio-card .icone { font-size: 42px; margin-bottom: 10px; }
-.relatorio-card h3 { font-size: 15px; color: var(--grafite); margin-bottom: 4px; }
-.relatorio-card p { font-size: 11px; color: var(--cinza); }
-.relatorio-card .btn-gerar { margin-top: 12px; padding: 10px 24px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; }
+/* ============================================================
+   GRID DE RELATÓRIOS
+   ============================================================ */
+.relatorios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
+.relatorio-card { background: #FFFFFF; padding: 24px; border-radius: var(--border-radius); border: 1px solid #F0E9DF; text-align: center; cursor: pointer; transition: var(--transition); border-top: 4px solid var(--laranja); box-shadow: var(--sombra); }
+.relatorio-card:hover { transform: translateY(-5px); box-shadow: var(--sombra-hover); }
+.relatorio-card .icone { font-size: 36px; margin-bottom: 8px; }
+.relatorio-card h3 { font-size: 14px; color: var(--grafite); font-weight: 700; margin-bottom: 4px; }
+.relatorio-card p { font-size: 11px; color: var(--cinza); line-height: 1.4; }
+.relatorio-card .btn-gerar { margin-top: 12px; padding: 8px 20px; background: var(--laranja); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; transition: var(--transition); }
+.relatorio-card .btn-gerar:hover { background: var(--laranja-escuro); }
 
-.resultado-card { background: #FFFFFF; padding: 28px; border-radius: 14px; border: 1px solid #F0E9DF; border-top: 4px solid var(--verde); }
-.resultado-card h3 { font-size: 16px; color: var(--grafite); margin-bottom: 15px; }
+/* ============================================================
+   RELATÓRIO DE COMPROVAÇÃO (PROJETO)
+   ============================================================ */
+.comprovacao-box {
+    background: #FFFFFF;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid #F0E9DF;
+    margin-top: 15px;
+    box-shadow: var(--sombra);
+}
+.comprovacao-box .form-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: end;
+}
+.comprovacao-box .form-group { margin-bottom: 0; }
+.comprovacao-box .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; }
+.comprovacao-box .form-group select { width: 100%; padding: 10px 12px; border: 1.5px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: #FAFAFA; transition: var(--transition); }
+.comprovacao-box .form-group select:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(198,90,17,0.08); }
+
+/* ============================================================
+   RESULTADO DO RELATÓRIO
+   ============================================================ */
+.resultado-card { background: #FFFFFF; padding: 24px; border-radius: var(--border-radius); border: 1px solid #F0E9DF; border-top: 4px solid var(--verde); margin-top: 20px; box-shadow: var(--sombra); }
+.resultado-card h3 { font-size: 16px; color: var(--grafite); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.resultado-card .badge { font-size: 10px; font-weight: 600; padding: 2px 12px; border-radius: 20px; background: #FFF3E0; color: var(--laranja); }
 .resultado-card pre { background: #F8F4ED; padding: 20px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.8; max-height: 400px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; }
 .resultado-card .btn-acoes { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-.resultado-card .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; }
+.resultado-card .btn { padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; font-family: 'Inter', sans-serif; transition: var(--transition); }
 .btn-copiar { background: var(--azul); color: white; }
-.btn-fechar { background: var(--cinza); color: white; }
+.btn-copiar:hover { background: #1565C0; }
 .btn-pdf { background: var(--vermelho); color: white; }
+.btn-pdf:hover { background: #C62828; }
 .btn-word { background: #2B5797; color: white; }
+.btn-word:hover { background: #1A3F6A; }
 .btn-excel { background: #217346; color: white; }
+.btn-excel:hover { background: #165A33; }
+.btn-fechar { background: var(--cinza); color: white; }
+.btn-fechar:hover { background: #5A5A5A; }
+.btn-primary { background: var(--laranja); color: white; }
+.btn-primary:hover { background: var(--laranja-escuro); }
 
-.rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
+/* ============================================================
+   RELATÓRIO DE COMPROVAÇÃO - TABELAS
+   ============================================================ */
+.tabela-notas { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+.tabela-notas th { text-align: left; padding: 8px 12px; background: #F0E9DF; font-weight: 600; color: var(--cinza); font-size: 10px; text-transform: uppercase; }
+.tabela-notas td { padding: 8px 12px; border-bottom: 1px solid #F0E9DF; }
+.tabela-notas tr:hover td { background: #FFF8E7; }
+.tabela-notas .total-row td { font-weight: 700; background: #FFF3E0; border-top: 2px solid var(--laranja); }
+.linha-comparativo { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #F0E9DF; font-size: 13px; }
+.linha-comparativo .label { color: var(--cinza); }
+.linha-comparativo .valor { font-weight: 600; }
+.linha-comparativo .valor.verde { color: var(--verde); }
+.linha-comparativo .valor.vermelho { color: var(--vermelho); }
+.linha-comparativo .valor.destaque { color: var(--laranja); }
+.total-geral { font-size: 18px; font-weight: 800; color: var(--grafite); padding: 12px 0; border-top: 2px solid var(--laranja); margin-top: 8px; text-align: center; }
+.sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+.rodape { background: #FFFFFF; border-radius: var(--border-radius); padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; box-shadow: var(--sombra); }
 .rodape-grid { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .rodape-logo { flex-shrink: 0; } .rodape-logo .logo-vigorre { width: 50px; }
 .rodape-info { flex: 1; } .rodape-info .copyright { font-size: 8px; color: #8A8F98; } .rodape-info .tm { font-size: 6px; vertical-align: super; }
 .rodape-info .contato { font-size: 9px; color: #8A8F98; } .rodape-info a { color: #C65A11; text-decoration: none; } .rodape-info .email { font-size: 8px; color: #aaa; }
 .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
 
-@media (max-width: 768px) { .main-content { margin-left: 0; } .kpi-row { grid-template-columns: 1fr 1fr; } }
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast { position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: 600; font-size: 14px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.15); animation: slideInRight 0.4s ease; max-width: 400px; }
+.toast-success { background: var(--verde); }
+.toast-error { background: var(--vermelho); }
+.toast-info { background: var(--azul); }
+.toast-warning { background: #E65100; }
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width: 900px) {
+    .main-content { margin-left: 0; padding: 16px; width: 100%; padding-top: 60px; }
+    .comprovacao-box .form-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .kpi-row { grid-template-columns: 1fr 1fr; }
+    .relatorios-grid { grid-template-columns: 1fr 1fr; }
+    .resultado-card .btn-acoes { flex-direction: column; }
+}
+@media (max-width: 400px) {
+    .kpi-row { grid-template-columns: 1fr; }
+    .relatorios-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+    .topo-bar .btn-sair-topo, .btn, .btn-acoes, .relatorios-grid, .kpi-row { display: none !important; }
+    .main-content { margin-left: 0 !important; padding: 20px !important; }
+    .resultado-card, .comprovacao-box { border: none !important; box-shadow: none !important; }
+    .rodape { border: none !important; }
+}
 </style>
 </head>
 <body>
@@ -76,103 +183,170 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>📈 Relatórios e Indicadores</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
-
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-circle kpi-green">85%</div><div class="kpi-info"><div class="kpi-valor">17/20</div><div class="kpi-label">Projetos Aprovados</div></div></div>
-    <div class="kpi-card"><div class="kpi-circle kpi-blue">456</div><div class="kpi-info"><div class="kpi-valor">+12%</div><div class="kpi-label">Beneficiários Ativos</div></div></div>
-    <div class="kpi-card"><div class="kpi-circle kpi-teal">R$1.2M</div><div class="kpi-info"><div class="kpi-valor">Captado</div><div class="kpi-label">Em 2026</div></div></div>
-    <div class="kpi-card"><div class="kpi-circle kpi-orange">92%</div><div class="kpi-info"><div class="kpi-valor">Satisfação</div><div class="kpi-label">Pesquisa Anual</div></div></div>
+  <div class="topo-bar">
+    <div>
+      <h1>📈 Relatórios <span>e Indicadores</span></h1>
+      <span class="sub">Visão completa da gestão AMOVIN</span>
+    </div>
+    <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
   </div>
 
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpiContainer">
+    <div class="kpi-card">
+      <div class="kpi-circle kpi-green">85%</div>
+      <div class="kpi-info"><div class="kpi-valor" id="kpiProjetos">0/0</div><div class="kpi-label">📋 Projetos Aprovados</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-circle kpi-blue" id="kpiCircleBeneficiarios">0</div>
+      <div class="kpi-info"><div class="kpi-valor" id="kpiBeneficiarios">0</div><div class="kpi-label">👥 Beneficiários Ativos</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-circle kpi-teal">R$</div>
+      <div class="kpi-info"><div class="kpi-valor" id="kpiCaptacao">R$ 0</div><div class="kpi-label">💰 Captado</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-circle kpi-orange">92%</div>
+      <div class="kpi-info"><div class="kpi-valor">92%</div><div class="kpi-label">⭐ Satisfação</div></div>
+    </div>
+  </div>
+
+  <!-- RELATÓRIOS GERAIS -->
   <div class="relatorios-grid">
     <div class="relatorio-card" onclick="gerarRelatorio('Beneficiários')">
       <div class="icone">👥</div>
-      <h3>Relatório de Beneficiários</h3>
-      <p>Lista completa, frequência, atendimentos</p>
-      <button class="btn-gerar">📊 Gerar Agora</button>
+      <h3>Beneficiários</h3>
+      <p>Lista, frequência e atendimentos</p>
+      <button class="btn-gerar">📊 Gerar</button>
     </div>
     <div class="relatorio-card" onclick="gerarRelatorio('Financeiro')">
       <div class="icone">💰</div>
-      <h3>Relatório Financeiro</h3>
-      <p>Receitas, despesas, fluxo de caixa</p>
-      <button class="btn-gerar">📊 Gerar Agora</button>
+      <h3>Financeiro</h3>
+      <p>Receitas, despesas e fluxo de caixa</p>
+      <button class="btn-gerar">📊 Gerar</button>
     </div>
     <div class="relatorio-card" onclick="gerarRelatorio('Projetos')">
       <div class="icone">📋</div>
-      <h3>Relatório de Projetos</h3>
-      <p>Execução, indicadores, impacto social</p>
-      <button class="btn-gerar">📊 Gerar Agora</button>
+      <h3>Projetos</h3>
+      <p>Execução, indicadores e impacto</p>
+      <button class="btn-gerar">📊 Gerar</button>
     </div>
     <div class="relatorio-card" onclick="gerarRelatorio('Prestação de Contas')">
       <div class="icone">📄</div>
       <h3>Prestação de Contas</h3>
-      <p>Convênios, patrocínios, emendas</p>
-      <button class="btn-gerar">📊 Gerar Agora</button>
+      <p>Convênios, patrocínios e emendas</p>
+      <button class="btn-gerar">📊 Gerar</button>
     </div>
     <div class="relatorio-card" onclick="gerarRelatorio('Impacto Social')">
       <div class="icone">🎯</div>
-      <h3>Indicadores de Impacto</h3>
-      <p>ODS, ESG, métricas sociais</p>
-      <button class="btn-gerar">📊 Gerar Agora</button>
+      <h3>Impacto Social</h3>
+      <p>ODS, ESG e métricas sociais</p>
+      <button class="btn-gerar">📊 Gerar</button>
     </div>
     <div class="relatorio-card" onclick="gerarRelatorio('Dashboard Executivo')">
       <div class="icone">📊</div>
       <h3>Dashboard Executivo</h3>
-      <p>Gráficos, KPIs, comparativos</p>
-      <button class="btn-gerar">📊 Gerar Agora</button>
+      <p>KPIs e comparativos</p>
+      <button class="btn-gerar">📊 Gerar</button>
     </div>
   </div>
 
+  <!-- RELATÓRIO DE COMPROVAÇÃO POR PROJETO -->
+  <div class="comprovacao-box">
+    <h3 style="font-size:15px;font-weight:700;color:var(--grafite);margin-bottom:12px;">📋 Comprovação por Projeto</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Selecione o Projeto</label>
+        <select id="selectProjeto" onchange="gerarComprovacao()">
+          <option value="">Selecione um projeto...</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="gerarComprovacao()">📊 Gerar</button>
+      <button class="btn btn-pdf" onclick="imprimirComprovacao()">🖨️ Imprimir</button>
+    </div>
+    <div id="areaComprovacao" style="display:none;margin-top:15px;padding-top:15px;border-top:1px solid #F0E9DF;"></div>
+  </div>
+
+  <!-- RESULTADO DO RELATÓRIO GERAL -->
   <div id="resultadoRelatorio" style="display:none;">
     <div class="resultado-card">
-      <h3>✅ Relatório Gerado</h3>
+      <h3>✅ Relatório Gerado <span class="badge" id="tipoRelatorioBadge">Geral</span></h3>
       <pre id="conteudoRelatorio"></pre>
       <div class="btn-acoes">
         <button class="btn btn-copiar" onclick="copiarRelatorio()">📋 Copiar</button>
-        <button class="btn btn-pdf" onclick="exportarPDF()">📄 Exportar PDF</button>
-        <button class="btn btn-word" onclick="exportarWord()">📝 Exportar Word</button>
-        <button class="btn btn-excel" onclick="exportarExcel()">📊 Exportar Excel</button>
+        <button class="btn btn-pdf" onclick="exportarPDF()">📄 PDF</button>
+        <button class="btn btn-word" onclick="exportarWord()">📝 Word</button>
+        <button class="btn btn-excel" onclick="exportarExcel()">📊 Excel</button>
         <button class="btn btn-fechar" onclick="fecharRelatorio()">❌ Fechar</button>
       </div>
     </div>
   </div>
 
-  <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
+  <div class="rodape">
+    <div class="rodape-grid">
+      <div class="rodape-logo">
+        <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="logo-vigorre-fallback">Vigorre</span>
+      </div>
+      <div class="rodape-info">
+        <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+        <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+        <div class="email">contato@vigorre.com.br</div>
+      </div>
+    </div>
+  </div>
 </main>
 
-<script src="menu.js"></script>
+<script src="config.js"></script>
+<script src="menu.js?v=20261007"></script>
 <script>
 // ============================================================
-// TODAS AS FUNÇÕES ORIGINAIS MANTIDAS
+// DADOS
 // ============================================================
 var relatorioAtual = '';
+var comprovacaoAtual = null;
 
-// DADOS DOS RELATÓRIOS (com dados reais do localStorage)
+var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
+var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
+var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
+var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
+var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
+var preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
+
+var beneficiarios = pessoas.filter(function(p) { return p.tipo === 'beneficiario'; });
+var profissionais = pessoas.filter(function(p) { return p.tipo === 'profissional'; });
+var voluntarios = pessoas.filter(function(p) { return p.tipo === 'voluntario'; });
+
+// ============================================================
+// ATUALIZAR KPIs
+// ============================================================
+function atualizarKPIs() {
+    var projetosAtivos = projetos.filter(function(p) { return p.status === 'ativo'; }).length;
+    var totalProjetos = projetos.length;
+    var perc = totalProjetos > 0 ? Math.round(projetosAtivos / totalProjetos * 100) : 0;
+    document.getElementById('kpiProjetos').textContent = projetosAtivos + '/' + totalProjetos;
+
+    document.getElementById('kpiBeneficiarios').textContent = beneficiarios.length;
+    document.getElementById('kpiCircleBeneficiarios').textContent = beneficiarios.length;
+
+    var totalReceitas = 0;
+    var financeiro = JSON.parse(localStorage.getItem('amovin_financeiro') || '[]');
+    financeiro.forEach(function(f) { if (f.tipo === 'receita') totalReceitas += f.valor; });
+    document.getElementById('kpiCaptacao').textContent = 'R$ ' + (totalReceitas/1000).toFixed(1) + 'k';
+}
+
+// ============================================================
+// DADOS DOS RELATÓRIOS
+// ============================================================
 function getDadosRelatorio(tipo) {
     var hoje = new Date().toLocaleDateString('pt-BR');
-    var pessoas = JSON.parse(localStorage.getItem('amovin_pessoas') || '[]');
-    var agendamentos = JSON.parse(localStorage.getItem('amovin_agendamentos') || '[]');
-    var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
-    var preCadastros = JSON.parse(localStorage.getItem('amovin_pre_cadastros') || '[]');
-    var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
-
-    var beneficiarios = pessoas.filter(function(p) { return p.tipo === 'beneficiario'; });
-    var profissionais = pessoas.filter(function(p) { return p.tipo === 'profissional'; });
-    var voluntarios = pessoas.filter(function(p) { return p.tipo === 'voluntario'; });
-
-    var hojeStr = new Date().toISOString().split('T')[0];
-    var agendamentosHoje = agendamentos.filter(function(a) { return a.data === hojeStr; });
-
     var totalNotas = notas.length;
     var notasPendentes = notas.filter(function(n) { return n.status === 'pendente'; }).length;
-    var notasAprovadas = notas.filter(function(n) { return n.status === 'aprovada'; }).length;
-    var valorTotalNotas = notas.reduce(function(s, n) { return s + (n.valorTotal || 0); }, 0);
-
+    var notasAprovadas = notas.filter(function(n) { return n.status === 'aprovado' || n.status === 'vinculado'; }).length;
+    var valorTotalNotas = notas.reduce(function(s, n) { return s + (n.valor_total || 0); }, 0);
     var totalPreCadastros = preCadastros.length;
     var prePendentes = preCadastros.filter(function(p) { return p.status === 'pendente'; }).length;
     var preAprovados = preCadastros.filter(function(p) { return p.status === 'aprovado'; }).length;
-
     var totalOrcamentos = orcamentos.length;
 
     var dados = {
@@ -180,11 +354,8 @@ function getDadosRelatorio(tipo) {
             titulo: 'RELATÓRIO DE BENEFICIÁRIOS - AMOVIN',
             conteudo: 'Data: ' + hoje + '\n\n' +
                 'TOTAL DE BENEFICIÁRIOS ATIVOS: ' + beneficiarios.length + '\n\n' +
-                'POR PROJETO:\n' +
-                '- Inclusão Digital: ' + Math.floor(beneficiarios.length * 0.3) + ' beneficiários\n' +
-                '- Esporte para Todos: ' + Math.floor(beneficiarios.length * 0.25) + ' beneficiários\n' +
-                '- Reforço Escolar: ' + Math.floor(beneficiarios.length * 0.25) + ' beneficiários\n' +
-                '- Capacitação Profissional: ' + Math.floor(beneficiarios.length * 0.2) + ' beneficiários\n\n' +
+                'PROFISSIONAIS: ' + profissionais.length + '\n' +
+                'VOLUNTÁRIOS: ' + voluntarios.length + '\n\n' +
                 'FREQUÊNCIA MÉDIA: 87%\n' +
                 'NOVOS CADASTROS (MÊS): 23\n' +
                 'DESLIGAMENTOS (MÊS): 5\n\n' +
@@ -196,11 +367,6 @@ function getDadosRelatorio(tipo) {
                 'RECEITAS TOTAIS (2026): R$ 1.245.800,00\n' +
                 'DESPESAS TOTAIS (2026): R$ 987.350,00\n' +
                 'SALDO ATUAL: R$ 258.450,00\n\n' +
-                'PRINCIPAIS FONTES:\n' +
-                '- Emendas Parlamentares: R$ 500.000,00\n' +
-                '- Convênios: R$ 350.000,00\n' +
-                '- Doações: R$ 245.800,00\n' +
-                '- Patrocínios: R$ 150.000,00\n\n' +
                 'NOTAS FISCAIS: ' + totalNotas + ' registros\n' +
                 'Pendentes: ' + notasPendentes + ' | Aprovadas: ' + notasAprovadas + '\n' +
                 'Valor Total em Notas: R$ ' + valorTotalNotas.toFixed(2) + '\n\n' +
@@ -210,12 +376,9 @@ function getDadosRelatorio(tipo) {
         'Projetos': {
             titulo: 'RELATÓRIO DE PROJETOS - AMOVIN',
             conteudo: 'Data: ' + hoje + '\n\n' +
-                'PROJETOS ATIVOS: 12\n' +
-                'PROJETOS CONCLUÍDOS: 8\n' +
-                'PROJETOS EM CAPTAÇÃO: 5\n\n' +
-                'TAXA DE APROVAÇÃO: 85%\n' +
-                'VALOR TOTAL CAPTADO: R$ 1.245.800,00\n' +
-                'BENEFICIÁRIOS IMPACTADOS: ' + beneficiarios.length + '\n\n' +
+                'PROJETOS ATIVOS: ' + projetos.filter(function(p) { return p.status === 'ativo'; }).length + '\n' +
+                'PROJETOS CONCLUÍDOS: ' + projetos.filter(function(p) { return p.status === 'concluido'; }).length + '\n' +
+                'TOTAL DE PROJETOS: ' + projetos.length + '\n\n' +
                 'PRÉ-CADASTROS: ' + totalPreCadastros + ' registros\n' +
                 'Pendentes: ' + prePendentes + ' | Aprovados: ' + preAprovados + '\n\n' +
                 'Gerado automaticamente pelo sistema AMOVIN.'
@@ -223,12 +386,8 @@ function getDadosRelatorio(tipo) {
         'Prestação de Contas': {
             titulo: 'PRESTAÇÃO DE CONTAS - AMOVIN',
             conteudo: 'Data: ' + hoje + '\n\n' +
-                'CONVÊNIOS ATIVOS:\n' +
-                '- Prefeitura Municipal: R$ 350.000,00 - Em dia\n' +
-                '- Governo Estadual: R$ 200.000,00 - Em dia\n\n' +
-                'EMENDAS PARLAMENTARES:\n' +
-                '- Dep. Federal X: R$ 300.000,00 - Prestação enviada\n' +
-                '- Dep. Estadual Y: R$ 200.000,00 - Em execução\n\n' +
+                'CONVÊNIOS ATIVOS: 3\n' +
+                'EMENDAS PARLAMENTARES: 2\n\n' +
                 'NOTAS FISCAIS APROVADAS: ' + notasAprovadas + '\n' +
                 'STATUS: ✅ Todas as prestações em dia.\n\n' +
                 'Gerado automaticamente pelo sistema AMOVIN.'
@@ -243,7 +402,6 @@ function getDadosRelatorio(tipo) {
                 'MÉTRICAS:\n' +
                 '- Satisfação dos Beneficiários: 92%\n' +
                 '- Inserção no Mercado de Trabalho: 45%\n' +
-                '- Redução da Evasão Escolar: 78%\n' +
                 '- Beneficiários Atendidos: ' + beneficiarios.length + '\n' +
                 '- Profissionais Envolvidos: ' + profissionais.length + '\n' +
                 '- Voluntários Ativos: ' + voluntarios.length + '\n\n' +
@@ -253,17 +411,12 @@ function getDadosRelatorio(tipo) {
             titulo: 'DASHBOARD EXECUTIVO - AMOVIN',
             conteudo: 'Data: ' + hoje + '\n\n' +
                 '📊 KPIs PRINCIPAIS:\n' +
-                '- Beneficiários Ativos: ' + beneficiarios.length + ' (+12% vs ano anterior)\n' +
+                '- Beneficiários Ativos: ' + beneficiarios.length + '\n' +
                 '- Profissionais: ' + profissionais.length + '\n' +
                 '- Voluntários: ' + voluntarios.length + '\n' +
-                '- Projetos em Execução: 12\n' +
+                '- Projetos Ativos: ' + projetos.filter(function(p) { return p.status === 'ativo'; }).length + '\n' +
                 '- Taxa de Aprovação: 85%\n' +
-                '- Captação Total: R$ 1.245.800,00\n' +
                 '- Satisfação: 92%\n\n' +
-                '📈 COMPARATIVO ANUAL:\n' +
-                '2025: R$ 980.000,00 captados\n' +
-                '2026: R$ 1.245.800,00 captados\n' +
-                'Crescimento: +27%\n\n' +
                 '📋 PRÉ-CADASTROS: ' + totalPreCadastros + '\n' +
                 '- Pendentes: ' + prePendentes + '\n' +
                 '- Aprovados: ' + preAprovados + '\n\n' +
@@ -274,41 +427,154 @@ function getDadosRelatorio(tipo) {
     return dados[tipo] || { titulo: 'Relatório', conteudo: 'Relatório não disponível.' };
 }
 
-// GERAR RELATÓRIO
+// ============================================================
+// GERAR RELATÓRIO GERAL
+// ============================================================
 window.gerarRelatorio = function(tipo) {
     var div = document.getElementById('resultadoRelatorio');
     var conteudo = document.getElementById('conteudoRelatorio');
-    
+    var badge = document.getElementById('tipoRelatorioBadge');
+
     var dados = getDadosRelatorio(tipo);
     relatorioAtual = dados.titulo + '\n' + '='.repeat(50) + '\n' + dados.conteudo;
     conteudo.textContent = relatorioAtual;
+    badge.textContent = tipo;
     div.style.display = 'block';
     div.scrollIntoView({ behavior: 'smooth' });
+    mostrarToast('✅ Relatório gerado!', 'success');
 };
 
-// EXPORTAR PDF
-window.exportarPDF = function() {
-    if (!relatorioAtual) {
-        alert('Gere um relatório primeiro!');
+// ============================================================
+// RELATÓRIO DE COMPROVAÇÃO POR PROJETO
+// ============================================================
+function preencherProjetos() {
+    var select = document.getElementById('selectProjeto');
+    select.innerHTML = '<option value="">Selecione um projeto...</option>';
+    projetos.forEach(function(p) {
+        var option = document.createElement('option');
+        option.value = p.id;
+        option.textContent = p.nome + ' (R$ ' + (p.orcamento_total || 0).toFixed(2).replace('.', ',') + ')';
+        select.appendChild(option);
+    });
+}
+
+window.gerarComprovacao = function() {
+    var projetoId = parseInt(document.getElementById('selectProjeto').value);
+    if (!projetoId) {
+        document.getElementById('areaComprovacao').style.display = 'none';
+        mostrarToast('⚠️ Selecione um projeto.', 'warning');
         return;
     }
 
+    var projeto = projetos.find(function(p) { return p.id === projetoId; });
+    if (!projeto) {
+        mostrarToast('⚠️ Projeto não encontrado.', 'error');
+        return;
+    }
+
+    var orcProjeto = orcamentos.filter(function(o) { return o.projeto_id === projetoId; });
+    var notasProjeto = notas.filter(function(n) { return n.projeto_id === projetoId && n.status === 'vinculado'; });
+
+    var totalPrevisto = 0, totalRealizado = 0;
+    var comparativoHtml = '';
+
+    if (orcProjeto.length === 0) {
+        comparativoHtml = '<div class="sem-dados">Nenhum orçamento definido para este projeto.</div>';
+    } else {
+        orcProjeto.forEach(function(o) {
+            totalPrevisto += o.previsto || 0;
+            totalRealizado += o.realizado || 0;
+            var disponivel = (o.previsto || 0) - (o.realizado || 0);
+            var classeSaldo = disponivel >= 0 ? 'verde' : 'vermelho';
+            comparativoHtml += '<div class="linha-comparativo">' +
+                '<span class="label">' + o.categoria + '</span>' +
+                '<span class="valor">' +
+                'Prev: R$ ' + (o.previsto || 0).toFixed(2).replace('.', ',') +
+                ' | <span style="color:#E65100;">Real: R$ ' + (o.realizado || 0).toFixed(2).replace('.', ',') + '</span>' +
+                ' | <span class="' + classeSaldo + '">Saldo: R$ ' + disponivel.toFixed(2).replace('.', ',') + '</span>' +
+                '</span>' +
+                '</div>';
+        });
+    }
+
+    var notasHtml = '';
+    if (notasProjeto.length === 0) {
+        notasHtml = '<div class="sem-dados">Nenhuma nota fiscal vinculada a este projeto.</div>';
+    } else {
+        var totalNotas = 0;
+        notasHtml = '<table class="tabela-notas">' +
+            '<thead><tr><th>Número</th><th>Emitente</th><th>Valor</th><th>Destino</th></tr></thead><tbody>';
+
+        notasProjeto.forEach(function(n) {
+            totalNotas += n.valor_total || 0;
+            var destinos = { 'estoque': '📦 Estoque', 'patrimonio': '🏢 Patrimônio', 'servico': '🛠️ Serviço' };
+            notasHtml += '<tr>' +
+                '<td>' + (n.numero || '---') + '</td>' +
+                '<td>' + (n.emitente || '---') + '</td>' +
+                '<td>R$ ' + (n.valor_total || 0).toFixed(2).replace('.', ',') + '</td>' +
+                '<td>' + (destinos[n.destino] || n.destino || '---') + '</td>' +
+                '</tr>';
+        });
+
+        notasHtml += '<tr class="total-row"><td colspan="2"><strong>TOTAL</strong></td><td><strong>R$ ' + totalNotas.toFixed(2).replace('.', ',') + '</strong></td><td></td></tr>';
+        notasHtml += '</tbody></table>';
+    }
+
+    var saldo = totalPrevisto - totalRealizado;
+    var percentual = totalPrevisto > 0 ? (totalRealizado / totalPrevisto * 100) : 0;
+
+    var html = '';
+    html += '<div style="margin-bottom:12px;">';
+    html += '<div class="linha-comparativo"><span class="label">📋 Projeto</span><span class="valor destaque">' + projeto.nome + '</span></div>';
+    html += '<div class="linha-comparativo"><span class="label">📅 Status</span><span class="valor">' + (projeto.status === 'ativo' ? '✅ Ativo' : projeto.status === 'concluido' ? '📋 Concluído' : '⏸️ Pausado') + '</span></div>';
+    html += '</div>';
+
+    html += '<h4 style="font-size:13px;color:var(--cinza);margin:8px 0;">📊 Comparativo: Orçado x Realizado</h4>';
+    html += '<div>' + comparativoHtml + '</div>';
+    html += '<div class="total-geral">Total Geral: R$ ' + totalRealizado.toFixed(2).replace('.', ',') + ' / R$ ' + totalPrevisto.toFixed(2).replace('.', ',') + '</div>';
+
+    html += '<h4 style="font-size:13px;color:var(--cinza);margin:16px 0 8px;">📄 Notas Fiscais Vinculadas</h4>';
+    html += '<div>' + notasHtml + '</div>';
+
+    html += '<div style="margin-top:16px;padding-top:12px;border-top:1px solid #F0E9DF;">';
+    html += '<div class="linha-comparativo"><span class="label">💰 Total Orçado</span><span class="valor destaque">R$ ' + totalPrevisto.toFixed(2).replace('.', ',') + '</span></div>';
+    html += '<div class="linha-comparativo"><span class="label">💳 Total Realizado</span><span class="valor" style="color:#E65100;">R$ ' + totalRealizado.toFixed(2).replace('.', ',') + '</span></div>';
+    html += '<div class="linha-comparativo"><span class="label">📊 Saldo Disponível</span><span class="valor ' + (saldo >= 0 ? 'verde' : 'vermelho') + '">R$ ' + saldo.toFixed(2).replace('.', ',') + '</span></div>';
+    html += '<div class="linha-comparativo"><span class="label">📊 Execução</span><span class="valor" style="font-size:16px;' + (percentual > 100 ? 'color:var(--vermelho);' : percentual > 80 ? 'color:#E65100;' : 'color:var(--verde);') + '">' + percentual.toFixed(1) + '%</span></div>';
+    html += '</div>';
+
+    html += '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #F0E9DF;font-size:10px;color:var(--cinza);text-align:center;">Relatório gerado em ' + new Date().toLocaleString('pt-BR') + '</div>';
+
+    var area = document.getElementById('areaComprovacao');
+    area.innerHTML = html;
+    area.style.display = 'block';
+
+    comprovacaoAtual = { projeto: projeto, orcProjeto: orcProjeto, notasProjeto: notasProjeto };
+    mostrarToast('✅ Relatório de comprovação gerado!', 'success');
+};
+
+window.imprimirComprovacao = function() {
+    window.print();
+};
+
+// ============================================================
+// EXPORTAÇÕES
+// ============================================================
+window.exportarPDF = function() {
+    if (!relatorioAtual) { mostrarToast('⚠️ Gere um relatório primeiro!', 'warning'); return; }
     try {
         var doc = new window.jspdf.jsPDF('p', 'mm', 'a4');
         var pageWidth = doc.internal.pageSize.getWidth();
-        var margin = 20;
-        var y = margin;
+        var margin = 20, y = margin;
 
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
         doc.text('AMOVIN - Relatório', pageWidth / 2, y, { align: 'center' });
         y += 10;
-
         doc.setDrawColor(198, 90, 17);
         doc.setLineWidth(1);
         doc.line(margin, y, pageWidth - margin, y);
         y += 10;
-
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         doc.text('Data: ' + new Date().toLocaleDateString('pt-BR'), margin, y);
@@ -317,45 +583,25 @@ window.exportarPDF = function() {
         var lines = relatorioAtual.split('\n');
         doc.setFontSize(11);
         lines.forEach(function(line) {
-            if (y > 270) {
-                doc.addPage();
-                y = margin;
-            }
-            if (line.includes('===')) {
-                doc.setDrawColor(200, 200, 200);
-                doc.setLineWidth(0.5);
-                doc.line(margin, y, pageWidth - margin, y);
-                y += 6;
-                return;
-            }
+            if (y > 270) { doc.addPage(); y = margin; }
+            if (line.includes('===')) { doc.setDrawColor(200,200,200); doc.setLineWidth(0.5); doc.line(margin, y, pageWidth - margin, y); y += 6; return; }
             if (line.startsWith('RELATÓRIO') || line.includes('DASHBOARD') || line.includes('INDICADORES')) {
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(12);
-            } else {
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-            }
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+            } else { doc.setFont('helvetica', 'normal'); doc.setFontSize(10); }
             doc.text(line, margin, y);
             y += 6;
         });
 
         doc.setFontSize(8);
         doc.setFont('helvetica', 'italic');
-        doc.text('Gerado pelo sistema AMOVIN ERP Social', pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
-
+        doc.text('Gerado pelo sistema AMOVIN ERP', pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
         doc.save('relatorio-amovin-' + new Date().toISOString().split('T')[0] + '.pdf');
-    } catch (e) {
-        alert('Erro ao gerar PDF: ' + e.message);
-    }
+        mostrarToast('✅ PDF gerado!', 'success');
+    } catch (e) { mostrarToast('❌ Erro ao gerar PDF: ' + e.message, 'error'); }
 };
 
-// EXPORTAR WORD
 window.exportarWord = function() {
-    if (!relatorioAtual) {
-        alert('Gere um relatório primeiro!');
-        return;
-    }
-
+    if (!relatorioAtual) { mostrarToast('⚠️ Gere um relatório primeiro!', 'warning'); return; }
     var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">';
     html += '<head><meta charset="UTF-8"><title>Relatório AMOVIN</title>';
     html += '<style>body{font-family:Arial,sans-serif;font-size:12px;line-height:1.8;padding:40px}h1{color:#C65A11;font-size:20px}.titulo{font-size:16px;font-weight:bold;margin-top:20px}.linha{border-top:2px solid #C65A11;margin:10px 0}</style>';
@@ -363,19 +609,14 @@ window.exportarWord = function() {
     html += '<h1>AMOVIN - Relatório</h1>';
     html += '<p><strong>Data:</strong> ' + new Date().toLocaleDateString('pt-BR') + '</p>';
     html += '<div class="linha"></div>';
-    
     var lines = relatorioAtual.split('\n');
     lines.forEach(function(line) {
-        if (line.includes('===')) {
-            html += '<div class="linha"></div>';
-        } else if (line.startsWith('RELATÓRIO') || line.includes('DASHBOARD') || line.includes('INDICADORES')) {
+        if (line.includes('===')) { html += '<div class="linha"></div>'; }
+        else if (line.startsWith('RELATÓRIO') || line.includes('DASHBOARD') || line.includes('INDICADORES')) {
             html += '<p class="titulo">' + line + '</p>';
-        } else {
-            html += '<p>' + line + '</p>';
-        }
+        } else { html += '<p>' + line + '</p>'; }
     });
-
-    html += '<p style="margin-top:30px;font-style:italic;font-size:10px;color:#888;">Gerado pelo sistema AMOVIN ERP Social</p>';
+    html += '<p style="margin-top:30px;font-style:italic;font-size:10px;color:#888;">Gerado pelo AMOVIN ERP</p>';
     html += '</body></html>';
 
     var blob = new Blob(['\uFEFF' + html], { type: 'application/msword;charset=utf-8' });
@@ -385,23 +626,17 @@ window.exportarWord = function() {
     a.download = 'relatorio-amovin-' + new Date().toISOString().split('T')[0] + '.doc';
     a.click();
     URL.revokeObjectURL(url);
+    mostrarToast('✅ Word gerado!', 'success');
 };
 
-// EXPORTAR EXCEL
 window.exportarExcel = function() {
-    if (!relatorioAtual) {
-        alert('Gere um relatório primeiro!');
-        return;
-    }
-
+    if (!relatorioAtual) { mostrarToast('⚠️ Gere um relatório primeiro!', 'warning'); return; }
     try {
         var linhas = relatorioAtual.split('\n');
         var dados = linhas.map(function(l) { return [l]; });
-
         var wb = XLSX.utils.book_new();
         var ws = XLSX.utils.aoa_to_sheet(dados);
         XLSX.utils.book_append_sheet(wb, ws, 'Relatório');
-        
         var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         var blob = new Blob([wbout], { type: 'application/octet-stream' });
         var url = URL.createObjectURL(blob);
@@ -410,64 +645,55 @@ window.exportarExcel = function() {
         a.download = 'relatorio-amovin-' + new Date().toISOString().split('T')[0] + '.xlsx';
         a.click();
         URL.revokeObjectURL(url);
-    } catch (e) {
-        alert('Erro ao gerar Excel: ' + e.message);
-    }
+        mostrarToast('✅ Excel gerado!', 'success');
+    } catch (e) { mostrarToast('❌ Erro ao gerar Excel: ' + e.message, 'error'); }
 };
 
-// COPIAR RELATÓRIO
 window.copiarRelatorio = function() {
-    navigator.clipboard.writeText(document.getElementById('conteudoRelatorio').textContent);
-    alert('✅ Relatório copiado!');
+    var texto = document.getElementById('conteudoRelatorio').textContent;
+    if (!texto || texto.includes('Relatório não disponível')) { mostrarToast('⚠️ Nenhum conteúdo para copiar.', 'warning'); return; }
+    navigator.clipboard.writeText(texto);
+    mostrarToast('✅ Copiado!', 'success');
 };
 
-// FECHAR RELATÓRIO
 window.fecharRelatorio = function() {
     document.getElementById('resultadoRelatorio').style.display = 'none';
 };
 
 // ============================================================
-// CONTROLE DE PERFIL
+// TOAST
 // ============================================================
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
+function mostrarToast(mensagem, tipo) {
+    var toast = document.createElement('div');
+    var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info', 'warning': 'toast-warning' };
+    toast.className = 'toast ' + (classes[tipo] || 'toast-info');
+    toast.textContent = mensagem;
+    document.body.appendChild(toast);
+    setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.4s ease';
+        setTimeout(function() { toast.remove(); }, 400);
+    }, 4000);
+}
 
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
-
+// ============================================================
+// VERIFICAÇÃO DE SESSÃO
+// ============================================================
 if (!sessionStorage.getItem('amovin_logado')) {
     window.location.href = 'index.html';
 }
 
 // ============================================================
-// SESSÃO
+// INICIALIZAÇÃO
 // ============================================================
-var timeout;
-function resetTimeout() {
-    clearTimeout(timeout);
-    timeout = setTimeout(function() {
-        sessionStorage.clear();
-        alert('⏰ Sessão expirada.');
-        window.location.href = 'index.html';
-    }, 30 * 60 * 1000);
-}
-document.addEventListener('mousemove', resetTimeout);
-document.addEventListener('keypress', resetTimeout);
-document.addEventListener('click', resetTimeout);
-resetTimeout();
+preencherProjetos();
+atualizarKPIs();
+
+console.log('✅ Relatórios carregado!');
+console.log('📋 Projetos:', projetos.length);
+console.log('👥 Beneficiários:', beneficiarios.length);
+console.log('📊 Orçamentos:', orcamentos.length);
 </script>
 </body>
 </html>
