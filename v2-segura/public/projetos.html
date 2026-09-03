@@ -5,85 +5,476 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMOVIN - Gerador de Projetos</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --laranja: #C65A11;
+            --laranja-escuro: #A04A0E;
+            --amarelo: #F5C518;
+            --verde: #57C220;
+            --azul: #1E88E5;
+            --grafite: #1A1A1A;
+            --cinza: #6B7280;
+            --cinza-claro: #F8F4ED;
+            --branco: #FFFFFF;
+            --vermelho: #E53935;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f6fa; min-height: 100vh; }
-        .topo { background: linear-gradient(135deg, #1a5c2e 0%, #2d8a4e 100%); color: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .topo h2 { font-size: 18px; }
-        .btn-topo { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; margin-left: 8px; }
-        .btn-topo:hover { background: rgba(255,255,255,0.3); }
-        .container { max-width: 1500px; margin: 0 auto; padding: 20px; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display: flex; min-height: 100vh; }
+
+        .main-content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 24px 30px;
+        }
+        .topo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topo-bar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--grafite);
+        }
+        .topo-bar h1 span {
+            color: var(--laranja);
+        }
+        .topo-bar .sub {
+            font-size: 12px;
+            color: var(--cinza);
+            font-weight: 400;
+            display: block;
+        }
+        .btn-sair-topo {
+            background: #F8F4ED;
+            color: #1A1A1A;
+            border: 1px solid #F0E9DF;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-sair-topo:hover {
+            background: #F0E9DF;
+        }
+
+        .container { max-width: 1500px; margin: 0 auto; }
         .grid-principal { display: grid; grid-template-columns: 480px 1fr; gap: 20px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .card h3 { color: #1a5c2e; margin-bottom: 20px; font-size: 18px; border-bottom: 3px solid #2d8a4e; padding-bottom: 10px; }
+        .card { background: white; padding: 25px; border-radius: 14px; border: 1px solid #F0E9DF; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        .card h3 { color: var(--grafite); margin-bottom: 20px; font-size: 18px; border-bottom: 3px solid var(--laranja); padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: 600; font-size: 13px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2d8a4e; outline: none; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--cinza); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; transition: border 0.2s; background: #FAFAFA; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--laranja); outline: none; box-shadow: 0 0 0 3px rgba(198,90,17,0.08); background: white; }
         .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-gerar { width: 100%; padding: 14px; background: linear-gradient(135deg, #1a5c2e 0%, #2d8a4e 100%); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: transform 0.2s; }
-        .btn-gerar:hover { transform: translateY(-2px); }
+
+        .btn-gerar {
+            width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 10px;
+            font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: all 0.2s;
+            box-shadow: 0 4px 24px rgba(198,90,17,0.20);
+        }
+        .btn-gerar:hover { background: var(--laranja-escuro); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(198,90,17,0.30); }
         .btn-gerar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .resultado-box { min-height: 600px; max-height: 850px; overflow-y: auto; background: #fafafa; padding: 30px; border-radius: 8px; border: 2px solid #e0e0e0; white-space: pre-wrap; line-height: 1.8; font-size: 13px; font-family: 'Courier New', monospace; }
+
+        .resultado-box {
+            min-height: 600px; max-height: 850px; overflow-y: auto; background: #FAFAFA; padding: 30px;
+            border-radius: 8px; border: 2px solid #F0E9DF; white-space: pre-wrap; line-height: 1.8;
+            font-size: 13px; font-family: 'Courier New', monospace;
+        }
         .placeholder { text-align: center; padding-top: 250px; color: #bbb; }
-        .loading-ia { text-align: center; padding: 40px; color: #2d8a4e; }
-        .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #e0e0e0; border-top: 3px solid #2d8a4e; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        .loading-ia { text-align: center; padding: 40px; color: var(--laranja); }
+        .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #E5E0D8; border-top: 3px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .acoes { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-acao { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #2d8a4e; background: white; color: #2d8a4e; cursor: pointer; font-size: 13px; font-weight: bold; }
-        .btn-acao:hover { background: #2d8a4e; color: white; }
-        .btn-acao.destaque { background: #2d8a4e; color: white; }
-        .btn-acao.destaque:hover { background: #1a5c2e; }
-        @media (max-width: 1000px) { .grid-principal { grid-template-columns: 1fr; } .linha-dupla { grid-template-columns: 1fr; } }
+        .btn-acao { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid var(--laranja); background: white; color: var(--laranja); cursor: pointer; font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .btn-acao:hover { background: var(--laranja); color: white; }
+        .btn-acao.destaque { background: var(--laranja); color: white; }
+        .btn-acao.destaque:hover { background: var(--laranja-escuro); }
+
+        .rodape {
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 1px solid #F0E9DF;
+            margin-top: 20px;
+        }
+        .rodape-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .rodape-logo { flex-shrink: 0; }
+        .rodape-logo .logo-vigorre { width: 50px; }
+        .rodape-info { flex: 1; }
+        .rodape-info .copyright { font-size: 8px; color: #8A8F98; }
+        .rodape-info .tm { font-size: 6px; vertical-align: super; }
+        .rodape-info .contato { font-size: 9px; color: #8A8F98; }
+        .rodape-info a { color: #C65A11; text-decoration: none; }
+        .rodape-info .email { font-size: 8px; color: #aaa; }
+        .logo-vigorre-fallback { font-size: 12px; font-weight: 700; display: none; }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            animation: slideInRight 0.4s ease;
+            max-width: 400px;
+        }
+        .toast-success { background: var(--verde); }
+        .toast-error { background: var(--vermelho); }
+        .toast-info { background: var(--azul); }
+        .toast-warning { background: #E65100; }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 1000px) {
+            .main-content { margin-left: 0; padding: 16px; width: 100%; padding-top: 60px; }
+            .grid-principal { grid-template-columns: 1fr; }
+            .linha-dupla { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <div class="topo"><h2>📋 Gerador Inteligente de Projetos Sociais</h2><div><a href="dashboard.html" class="btn-topo">🏠 Dashboard</a><a href="oficios.html" class="btn-topo">📄 Ofícios</a><button class="btn-topo" onclick="fazerLogout()">🚪 Sair</button></div></div>
-    <div class="container"><div class="grid-principal">
-        <div class="card"><h3>📝 Dados do Projeto</h3>
-            <div class="form-group"><label>Nome do Projeto *</label><input type="text" id="nomeProjeto" placeholder="Ex: Inclusão Digital para Jovens" required></div>
-            <div class="form-group"><label>Categoria *</label><select id="categoria" required><option value="">Selecione...</option><option value="social">Social</option><option value="esportivo">Esportivo</option><option value="educacional">Educacional</option><option value="inclusivo">Inclusão</option><option value="cultural">Cultural</option><option value="saude">Saúde</option><option value="meio_ambiente">Meio Ambiente</option></select></div>
-            <div class="linha-dupla"><div class="form-group"><label>Público-Alvo *</label><input type="text" id="publicoAlvo" placeholder="Ex: Jovens de 15 a 29 anos" required></div><div class="form-group"><label>Qtd. Beneficiários *</label><input type="number" id="qtdBeneficiarios" placeholder="Ex: 200" required></div></div>
-            <div class="linha-dupla"><div class="form-group"><label>Cidade *</label><input type="text" id="cidade" value="Rio Paranaíba" required></div><div class="form-group"><label>Estado *</label><input type="text" id="estado" value="MG" required></div></div>
-            <div class="linha-dupla"><div class="form-group"><label>Duração *</label><input type="text" id="duracao" placeholder="Ex: 12 meses" required></div><div class="form-group"><label>Valor Estimado (R$) *</label><input type="text" id="valorEstimado" placeholder="Ex: 50.000,00" required></div></div>
-            <div class="form-group"><label>Resumo da Ideia *</label><textarea id="resumoIdeia" rows="4" placeholder="Descreva brevemente o projeto..." required></textarea></div>
-            <div class="form-group"><label>Tipo de Financiador</label><select id="tipoFinanciador"><option value="municipal">Governo Municipal</option><option value="estadual">Governo Estadual</option><option value="federal">Governo Federal</option><option value="privado">Empresa Privada</option><option value="internacional">Organismo Internacional</option><option value="leis_incentivo">Leis de Incentivo</option></select></div>
-            <button class="btn-gerar" id="btnGerar" onclick="gerarProjeto()">🤖 Gerar Projeto Completo com IA</button></div>
-        <div class="card"><h3>📋 Projeto Gerado</h3>
-            <div id="loadingIA" class="loading-ia" style="display: none;"><div class="spinner"></div><div>IA criando projeto profissional...</div><div style="font-size: 12px; color: #999;">Isso pode levar até 30 segundos</div></div>
-            <div id="resultado" class="resultado-box"><div class="placeholder"><div style="font-size: 60px;">📋</div><div>Preencha o formulário e clique em</div><div><strong>"Gerar Projeto Completo com IA"</strong></div></div></div>
-            <div class="acoes" id="acoes" style="display: none;"><button class="btn-acao" onclick="copiarTexto()">📋 Copiar</button><button class="btn-acao" onclick="baixarTexto()">💾 Baixar</button><button class="btn-acao destaque" onclick="novoProjeto()">🔄 Novo Projeto</button></div></div>
-    </div></div>
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        const firebaseConfig = { apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U", authDomain: "amovin-oficios-teste.firebaseapp.com", projectId: "amovin-oficios-teste", storageBucket: "amovin-oficios-teste.firebasestorage.app", messagingSenderId: "901387183295", appId: "1:901387183295:web:b9a445cbe259d1c14c120a" };
-        const app = initializeApp(firebaseConfig); const auth = getAuth(app);
-        onAuthStateChanged(auth, (user) => { if (!user) window.location.href = 'index.html'; });
-        window.fazerLogout = async function() { await signOut(auth); sessionStorage.clear(); window.location.href = 'index.html'; };
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', () => { history.pushState(null, null, location.href); signOut(auth); sessionStorage.clear(); window.location.href = 'index.html'; });
+
+    <div id="menu-container"></div>
+
+    <main class="main-content">
+        <div class="topo-bar">
+            <div>
+                <h1>📋 Gerador Inteligente <span>de Projetos</span></h1>
+                <span class="sub">Crie projetos completos com IA para a AMOVIN</span>
+            </div>
+            <button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
+        </div>
+
+        <div class="container">
+            <div class="grid-principal">
+                <!-- FORMULÁRIO -->
+                <div class="card">
+                    <h3>📝 Dados do Projeto</h3>
+                    <div class="form-group">
+                        <label>Nome do Projeto <span style="color:var(--vermelho);">*</span></label>
+                        <input type="text" id="nomeProjeto" placeholder="Ex: Inclusão Digital para Jovens" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria <span style="color:var(--vermelho);">*</span></label>
+                        <select id="categoria" required>
+                            <option value="">Selecione...</option>
+                            <option value="social">Social</option>
+                            <option value="esportivo">Esportivo</option>
+                            <option value="educacional">Educacional</option>
+                            <option value="inclusivo">Inclusão</option>
+                            <option value="cultural">Cultural</option>
+                            <option value="saude">Saúde</option>
+                            <option value="meio_ambiente">Meio Ambiente</option>
+                        </select>
+                    </div>
+                    <div class="linha-dupla">
+                        <div class="form-group">
+                            <label>Público-Alvo <span style="color:var(--vermelho);">*</span></label>
+                            <input type="text" id="publicoAlvo" placeholder="Ex: Jovens de 15 a 29 anos" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Qtd. Beneficiários <span style="color:var(--vermelho);">*</span></label>
+                            <input type="number" id="qtdBeneficiarios" placeholder="Ex: 200" required>
+                        </div>
+                    </div>
+                    <div class="linha-dupla">
+                        <div class="form-group">
+                            <label>Cidade <span style="color:var(--vermelho);">*</span></label>
+                            <input type="text" id="cidade" value="Rio Paranaíba" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado <span style="color:var(--vermelho);">*</span></label>
+                            <input type="text" id="estado" value="MG" required>
+                        </div>
+                    </div>
+                    <div class="linha-dupla">
+                        <div class="form-group">
+                            <label>Duração <span style="color:var(--vermelho);">*</span></label>
+                            <input type="text" id="duracao" placeholder="Ex: 12 meses" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor Estimado (R$) <span style="color:var(--vermelho);">*</span></label>
+                            <input type="text" id="valorEstimado" placeholder="Ex: 50.000,00" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Resumo da Ideia <span style="color:var(--vermelho);">*</span></label>
+                        <textarea id="resumoIdeia" rows="4" placeholder="Descreva brevemente o projeto..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Financiador</label>
+                        <select id="tipoFinanciador">
+                            <option value="municipal">🏛️ Governo Municipal</option>
+                            <option value="estadual">🏛️ Governo Estadual</option>
+                            <option value="federal">🏛️ Governo Federal</option>
+                            <option value="privado">🏢 Empresa Privada</option>
+                            <option value="internacional">🌍 Organismo Internacional</option>
+                            <option value="leis_incentivo">📜 Leis de Incentivo</option>
+                        </select>
+                    </div>
+                    <button class="btn-gerar" id="btnGerar" onclick="gerarProjeto()">🤖 Gerar Projeto Completo com IA</button>
+                </div>
+
+                <!-- RESULTADO -->
+                <div class="card">
+                    <h3>📋 Projeto Gerado</h3>
+                    <div id="loadingIA" class="loading-ia" style="display: none;">
+                        <div class="spinner"></div>
+                        <div>IA criando projeto profissional...</div>
+                        <div style="font-size: 12px; color: #999; margin-top: 4px;">Isso pode levar até 30 segundos</div>
+                    </div>
+                    <div id="resultado" class="resultado-box">
+                        <div class="placeholder">
+                            <div style="font-size: 60px;">📋</div>
+                            <div>Preencha o formulário e clique em</div>
+                            <div><strong>"Gerar Projeto Completo com IA"</strong></div>
+                        </div>
+                    </div>
+                    <div class="acoes" id="acoes" style="display: none;">
+                        <button class="btn-acao" onclick="copiarTexto()">📋 Copiar</button>
+                        <button class="btn-acao" onclick="baixarTexto()">💾 Baixar</button>
+                        <button class="btn-acao destaque" onclick="novoProjeto()">🔄 Novo Projeto</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RODAPÉ -->
+        <div class="rodape">
+            <div class="rodape-grid">
+                <div class="rodape-logo">
+                    <img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                    <span class="logo-vigorre-fallback">Vigorre</span>
+                </div>
+                <div class="rodape-info">
+                    <div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div>
+                    <div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div>
+                    <div class="email">contato@vigorre.com.br</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="menu.js?v=20261007"></script>
+    <script>
+        // ============================================================
+        // GERAR PROJETO COM GEMINI (USANDO CONFIG.JS)
+        // ============================================================
         window.gerarProjeto = async function() {
-            const nome = document.getElementById('nomeProjeto').value.trim(), categoria = document.getElementById('categoria').value, publicoAlvo = document.getElementById('publicoAlvo').value.trim(), qtd = document.getElementById('qtdBeneficiarios').value.trim(), cidade = document.getElementById('cidade').value.trim(), estado = document.getElementById('estado').value.trim(), duracao = document.getElementById('duracao').value.trim(), valor = document.getElementById('valorEstimado').value.trim(), resumo = document.getElementById('resumoIdeia').value.trim(), financiador = document.getElementById('tipoFinanciador').value;
-            if (!nome || !categoria || !publicoAlvo || !qtd || !cidade || !estado || !duracao || !valor || !resumo) { alert('❌ Preencha todos os campos com *'); return; }
-            const btnGerar = document.getElementById('btnGerar'), loadingIA = document.getElementById('loadingIA'), resultado = document.getElementById('resultado'), acoes = document.getElementById('acoes');
-            btnGerar.disabled = true; btnGerar.textContent = '⏳ Gerando projeto...'; loadingIA.style.display = 'block'; resultado.innerHTML = ''; acoes.style.display = 'none';
-            const prompt = `Crie um PROJETO SOCIAL COMPLETO para a AMOVIN (Associação e Movimento pela Inclusão), Rio Paranaíba/MG.\nDADOS: Nome: ${nome}, Categoria: ${categoria}, Público: ${publicoAlvo}, Beneficiários: ${qtd}, Local: ${cidade}/${estado}, Duração: ${duracao}, Valor: R$ ${valor}, Resumo: ${resumo}, Financiador: ${financiador}.\nGERE AS 30 SEÇÕES: Capa, Sumário, Apresentação, Diagnóstico, Justificativa, Problema, Objetivo Geral, Objetivos Específicos, Metodologia, Execução, Cronograma Mensal, Cronograma Físico, Cronograma Financeiro, Indicadores de Resultado, Indicadores de Impacto, Indicadores de Inclusão, Metas Quantitativas, Metas Qualitativas, Sustentabilidade, Gestão de Riscos, Equipe Técnica, Plano de Comunicação, Plano de Divulgação, Monitoramento, Prestação de Contas, Avaliação de Impacto, ODS, LGPD, ESG, Conclusão. Use linguagem profissional para ${financiador}.`;
+            const nome = document.getElementById('nomeProjeto').value.trim();
+            const categoria = document.getElementById('categoria').value;
+            const publicoAlvo = document.getElementById('publicoAlvo').value.trim();
+            const qtd = document.getElementById('qtdBeneficiarios').value.trim();
+            const cidade = document.getElementById('cidade').value.trim();
+            const estado = document.getElementById('estado').value.trim();
+            const duracao = document.getElementById('duracao').value.trim();
+            const valor = document.getElementById('valorEstimado').value.trim();
+            const resumo = document.getElementById('resumoIdeia').value.trim();
+            const financiador = document.getElementById('tipoFinanciador').value;
+
+            if (!nome || !categoria || !publicoAlvo || !qtd || !cidade || !estado || !duracao || !valor || !resumo) {
+                mostrarToast('⚠️ Preencha todos os campos com *', 'warning');
+                return;
+            }
+
+            const btnGerar = document.getElementById('btnGerar');
+            const loadingIA = document.getElementById('loadingIA');
+            const resultado = document.getElementById('resultado');
+            const acoes = document.getElementById('acoes');
+
+            btnGerar.disabled = true;
+            btnGerar.textContent = '⏳ Gerando projeto...';
+            loadingIA.style.display = 'block';
+            resultado.innerHTML = '';
+            acoes.style.display = 'none';
+
+            // 🔑 Usa a chave do config.js
+            const API_KEY = AMOVIN_CONFIG ? AMOVIN_CONFIG.getGeminiKey() : '';
+
+            if (!API_KEY) {
+                mostrarToast('⚠️ Chave Gemini não configurada! Acesse Configurações > Integrações.', 'warning');
+                btnGerar.disabled = false;
+                btnGerar.textContent = '🤖 Gerar Projeto Completo com IA';
+                loadingIA.style.display = 'none';
+                return;
+            }
+
+            const prompt = `Crie um PROJETO SOCIAL COMPLETO para a AMOVIN (Associação e Movimento pela Inclusão), Rio Paranaíba/MG.
+
+DADOS DO PROJETO:
+- Nome: ${nome}
+- Categoria: ${categoria}
+- Público-Alvo: ${publicoAlvo}
+- Beneficiários: ${qtd}
+- Local: ${cidade}/${estado}
+- Duração: ${duracao}
+- Valor Estimado: R$ ${valor}
+- Resumo: ${resumo}
+- Financiador: ${financiador}
+
+GERE UM PROJETO PROFISSIONAL COM AS SEGUINTES SEÇÕES:
+1. CAPA (com título, local, data)
+2. SUMÁRIO
+3. APRESENTAÇÃO DA INSTITUIÇÃO (AMOVIN)
+4. DIAGNÓSTICO DA REALIDADE
+5. JUSTIFICATIVA
+6. PROBLEMA CENTRAL
+7. OBJETIVO GERAL
+8. OBJETIVOS ESPECÍFICOS (mínimo 5)
+9. METODOLOGIA
+10. PLANO DE EXECUÇÃO
+11. CRONOGRAMA MENSAL (tabela)
+12. CRONOGRAMA FÍSICO
+13. CRONOGRAMA FINANCEIRO (tabela com itens)
+14. INDICADORES DE RESULTADO
+15. INDICADORES DE IMPACTO
+16. INDICADORES DE INCLUSÃO
+17. METAS QUANTITATIVAS
+18. METAS QUALITATIVAS
+19. SUSTENTABILIDADE DO PROJETO
+20. GESTÃO DE RISCOS
+21. EQUIPE TÉCNICA
+22. PLANO DE COMUNICAÇÃO
+23. PLANO DE DIVULGAÇÃO
+24. MONITORAMENTO E AVALIAÇÃO
+25. PRESTAÇÃO DE CONTAS
+26. AVALIAÇÃO DE IMPACTO
+27. ODS (Objetivos de Desenvolvimento Sustentável)
+28. LGPD (Proteção de Dados)
+29. ESG (Ambiental, Social e Governança)
+30. CONCLUSÃO
+
+Use linguagem profissional e objetiva, adequada para apresentação a ${financiador}.`;
+
             try {
-                // 🔒 CHAVE PROTEGIDA - Busca do navegador, NUNCA exposta no código
-                const API_KEY = localStorage.getItem('amovin_gemini_key') || '';
-                if (!API_KEY) { alert('⚠️ Chave Gemini não configurada!\n\nAcesse config-chave.html para configurar.'); btnGerar.disabled = false; btnGerar.textContent = '🤖 Gerar Projeto Completo com IA'; loadingIA.style.display = 'none'; return; }
                 const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY;
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 4000 } }) });
-                const data = await response.json(); resultado.textContent = data.candidates[0].content.parts[0].text; acoes.style.display = 'flex';
-            } catch (erro) { resultado.innerHTML = '<div style="color:red;text-align:center;padding:40px;">❌ Erro ao gerar projeto. Tente novamente.</div>'; }
-            finally { btnGerar.disabled = false; btnGerar.textContent = '🤖 Gerar Projeto Completo com IA'; loadingIA.style.display = 'none'; }
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 4500 }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.message || 'Erro na API');
+                }
+
+                const texto = data.candidates[0].content.parts[0].text;
+                resultado.textContent = texto;
+                acoes.style.display = 'flex';
+                mostrarToast('✅ Projeto gerado com sucesso!', 'success');
+
+            } catch (erro) {
+                console.error(erro);
+                resultado.innerHTML = '<div style="color:var(--vermelho);text-align:center;padding:40px;">❌ Erro ao gerar projeto: ' + erro.message + '</div>';
+                mostrarToast('❌ Erro ao gerar projeto. Tente novamente.', 'error');
+            } finally {
+                btnGerar.disabled = false;
+                btnGerar.textContent = '🤖 Gerar Projeto Completo com IA';
+                loadingIA.style.display = 'none';
+            }
         };
-        window.copiarTexto = function() { navigator.clipboard.writeText(document.getElementById('resultado').textContent); alert('✅ Copiado!'); };
-        window.baixarTexto = function() { const blob = new Blob([document.getElementById('resultado').textContent], { type: 'text/plain' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'projeto-amovin.txt'; a.click(); };
-        window.novoProjeto = function() { document.getElementById('resultado').innerHTML = '<div class="placeholder"><div style="font-size:60px;">📋</div><div>Preencha e clique em</div><div><strong>"Gerar Projeto Completo com IA"</strong></div></div>'; document.getElementById('acoes').style.display = 'none'; };
-        let timeout; function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { signOut(auth); sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
-        document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
+
+        // ============================================================
+        // FUNÇÕES AUXILIARES
+        // ============================================================
+        window.copiarTexto = function() {
+            const texto = document.getElementById('resultado').textContent;
+            if (!texto || texto.includes('Preencha')) {
+                mostrarToast('⚠️ Nenhum projeto para copiar.', 'warning');
+                return;
+            }
+            navigator.clipboard.writeText(texto).then(() => {
+                mostrarToast('✅ Copiado!', 'success');
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = texto;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                textarea.remove();
+                mostrarToast('✅ Copiado!', 'success');
+            });
+        };
+
+        window.baixarTexto = function() {
+            const texto = document.getElementById('resultado').textContent;
+            if (!texto || texto.includes('Preencha')) {
+                mostrarToast('⚠️ Nenhum projeto para baixar.', 'warning');
+                return;
+            }
+            const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'projeto-amovin-' + new Date().toISOString().split('T')[0] + '.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            mostrarToast('✅ Download iniciado!', 'success');
+        };
+
+        window.novoProjeto = function() {
+            document.getElementById('resultado').innerHTML = `
+                <div class="placeholder">
+                    <div style="font-size:60px;">📋</div>
+                    <div>Preencha o formulário e clique em</div>
+                    <div><strong>"Gerar Projeto Completo com IA"</strong></div>
+                </div>
+            `;
+            document.getElementById('acoes').style.display = 'none';
+        };
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function mostrarToast(mensagem, tipo) {
+            var toast = document.createElement('div');
+            var classes = { 'success': 'toast-success', 'error': 'toast-error', 'info': 'toast-info', 'warning': 'toast-warning' };
+            toast.className = 'toast ' + (classes[tipo] || 'toast-info');
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(function() { toast.remove(); }, 400);
+            }, 4000);
+        }
+
+        // ============================================================
+        // VERIFICAÇÃO DE SESSÃO
+        // ============================================================
+        if (!sessionStorage.getItem('amovin_logado')) {
+            window.location.href = 'index.html';
+        }
+
+        console.log('✅ Gerador de Projetos carregado!');
+        console.log('🤖 Gemini:', AMOVIN_CONFIG && AMOVIN_CONFIG.hasGeminiKey() ? '✅ Configurada' : '⏳ Não configurada');
     </script>
 </body>
 </html>
