@@ -1,10 +1,15 @@
-# Ignorar a v1 (raiz) - tudo que não for v2-segura
-/*.html
-/*.js
-/*.css
-!v2-segura/
+# Ignorar tudo que não for v2-segura/public/
+/*
+!/v2-segura/
+/v2-segura/*
+!/v2-segura/public/
+/v2-segura/public/*
+!/v2-segura/public/**/*.html
+!/v2-segura/public/**/*.js
+!/v2-segura/public/**/*.css
+!/v2-segura/public/images/
 
-# Ignorar arquivos do Next.js (para não tentar buildar)
+# Ignorar Next.js
 v2-segura/app/
 v2-segura/components/
 v2-segura/lib/
@@ -20,7 +25,8 @@ v2-segura/tsconfig.json
 v2-segura/.env.local
 v2-segura/.env.example
 
-# Ignorar arquivos do sistema
+# Sistema
 .DS_Store
 *.log
 *.tmp
+.vercel/
