@@ -68,6 +68,110 @@
             cursor: pointer;
         }
 
+        /* ============================================================
+           BANNER DO LINK PÚBLICO
+           ============================================================ */
+        .public-link-banner {
+            background: linear-gradient(135deg, #FFF8E7, #FFF3E0);
+            border: 2px dashed var(--laranja);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+        .public-link-banner:hover {
+            border-color: var(--laranja-escuro);
+            box-shadow: 0 4px 20px rgba(198, 90, 17, 0.10);
+        }
+        .public-link-banner .info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .public-link-banner .info .icone {
+            font-size: 32px;
+        }
+        .public-link-banner .info .texto h4 {
+            font-size: 16px;
+            color: var(--grafite);
+            font-weight: 700;
+        }
+        .public-link-banner .info .texto p {
+            font-size: 12px;
+            color: var(--cinza);
+        }
+        .public-link-banner .info .texto .url-amigavel {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--laranja);
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+        .public-link-banner .link-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .public-link-banner .link-actions input {
+            padding: 10px 14px;
+            border: 1.5px solid #E5E0D8;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            min-width: 280px;
+            transition: border 0.2s;
+        }
+        .public-link-banner .link-actions input:focus {
+            outline: none;
+            border-color: var(--laranja);
+        }
+        .public-link-banner .link-actions input::selection {
+            background: var(--laranja);
+            color: white;
+        }
+        .btn-copiar-link {
+            padding: 10px 20px;
+            background: var(--laranja);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .btn-copiar-link:hover {
+            background: var(--laranja-escuro);
+        }
+        .btn-copiar-link.copiado {
+            background: var(--verde);
+        }
+        .btn-abrir-link {
+            padding: 10px 20px;
+            background: var(--azul);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .btn-abrir-link:hover {
+            background: #1565C0;
+        }
+
         .card {
             background: #FFFFFF;
             padding: 20px 24px;
@@ -340,10 +444,23 @@
             .alertas-grid {
                 grid-template-columns: 1fr;
             }
+            .public-link-banner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .public-link-banner .link-actions input {
+                min-width: 180px;
+            }
         }
         @media (max-width: 480px) {
             .kpi-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+            .public-link-banner .link-actions {
+                flex-direction: column;
+            }
+            .public-link-banner .link-actions input {
+                min-width: 100%;
             }
         }
     </style>
@@ -361,7 +478,28 @@
             <button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button>
         </div>
 
-        <!-- KPIs -->
+        <!-- ============================================================
+        BANNER DO LINK PÚBLICO - PRÉ-CADASTRO
+        ============================================================ -->
+        <div class="public-link-banner">
+            <div class="info">
+                <span class="icone">🌟</span>
+                <div class="texto">
+                    <h4>Faça parte da AMOVIN!</h4>
+                    <p>Compartilhe este link para que novas pessoas façam o pré-cadastro</p>
+                    <span class="url-amigavel">🔗 Quero ser AMOVIN</span>
+                </div>
+            </div>
+            <div class="link-actions">
+                <input type="text" id="linkPublico" value="https://amovin.vercel.app/pre-cadastro-externo.html" readonly>
+                <button class="btn-copiar-link" id="btnCopiarLink" onclick="copiarLink()">📋 Copiar</button>
+                <a href="#" class="btn-abrir-link" onclick="abrirLink(event)" target="_blank">🔗 Abrir</a>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        KPIs
+        ============================================================ -->
         <div class="kpi-grid" id="kpiContainer">
             <div class="kpi-card">
                 <span class="kpi-icon">📋</span>
@@ -438,6 +576,36 @@
 
     <script src="menu.js?v=20261007"></script>
     <script>
+        // ============================================================
+        // FUNÇÃO COPIAR LINK
+        // ============================================================
+        function copiarLink() {
+            var input = document.getElementById('linkPublico');
+            var btn = document.getElementById('btnCopiarLink');
+
+            input.select();
+            input.setSelectionRange(0, 99999);
+
+            try {
+                document.execCommand('copy');
+                btn.textContent = '✅ Copiado!';
+                btn.classList.add('copiado');
+
+                setTimeout(function() {
+                    btn.textContent = '📋 Copiar';
+                    btn.classList.remove('copiado');
+                }, 3000);
+            } catch (err) {
+                alert('❌ Erro ao copiar. Selecione o link manualmente.');
+            }
+        }
+
+        function abrirLink(e) {
+            e.preventDefault();
+            var url = document.getElementById('linkPublico').value;
+            window.open(url, '_blank');
+        }
+
         // ============================================================
         // CARREGAR DADOS
         // ============================================================
@@ -625,33 +793,8 @@
         }
 
         // ============================================================
-        // CONTROLE DE PERFIL
+        // VERIFICAÇÃO DE SESSÃO
         // ============================================================
-        var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-        var modulosPermitidos = {
-            admin: ['dashboard', 'bi', 'capta', 'sala-espera', 'pre-cadastro', 'financeiro', 'orcamentos', 'prestacao-contas',
-                'pessoas', 'profissionais', 'voluntarios', 'agenda-telefonica', 'agenda', 'documentos', 'qrcodes',
-                'notas-fiscais', 'estoque', 'patrimonio', 'biblioteca', 'certificados', 'chat', 'assistente', 'relatorios',
-                'configuracoes', 'backup'
-            ],
-            recepcao: ['dashboard', 'pessoas', 'agenda-telefonica', 'agenda', 'documentos'],
-            consulta: ['dashboard', 'agenda', 'agenda-telefonica', 'assistente'],
-            financeiro: ['dashboard', 'financeiro', 'orcamentos', 'prestacao-contas', 'relatorios'],
-            voluntario: ['dashboard', 'agenda', 'voluntarios', 'agenda-telefonica']
-        };
-
-        var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-        setTimeout(function() {
-            document.querySelectorAll('.nav-item').forEach(function(item) {
-                var href = item.getAttribute('href') || '';
-                var pagina = href.replace('.html', '');
-                pagina = pagina.split('?')[0].split('#')[0];
-                if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-                    item.style.display = 'none';
-                }
-            });
-        }, 500);
-
         if (!sessionStorage.getItem('amovin_logado')) {
             window.location.href = 'index.html';
         }
