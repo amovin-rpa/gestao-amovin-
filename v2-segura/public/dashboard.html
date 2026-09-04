@@ -39,7 +39,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -66,6 +66,43 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+        }
+
+        /* ============================================================
+           STATUS BAR - SAUDAÇÃO + FIREBASE
+           ============================================================ */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #F0E9DF;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .status-bar .saudacao {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--grafite);
+        }
+        .status-bar .status-firebase {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: #F8F4ED;
+        }
+        .status-bar .status-firebase .conectado {
+            color: var(--verde);
+        }
+        .status-bar .status-firebase .offline {
+            color: var(--vermelho);
+        }
+        .status-bar .status-firebase .verificando {
+            color: var(--cinza);
         }
 
         /* ============================================================
@@ -479,6 +516,18 @@
         </div>
 
         <!-- ============================================================
+        STATUS BAR - SAUDAÇÃO + FIREBASE
+        ============================================================ -->
+        <div class="status-bar">
+            <div class="saudacao">
+                <span id="mensagemSaudacao">🌅 Bom dia, Administrador!</span>
+            </div>
+            <div class="status-firebase">
+                <span id="statusFirebase">🔄 Verificando conexão...</span>
+            </div>
+        </div>
+
+        <!-- ============================================================
         BANNER DO LINK PÚBLICO - PRÉ-CADASTRO
         ============================================================ -->
         <div class="public-link-banner">
@@ -491,7 +540,7 @@
                 </div>
             </div>
             <div class="link-actions">
-                <input type="text" id="linkPublico" value="https://amovin.vercel.app/pre-cadastro-externo.html" readonly>
+                <input type="text" id="linkPublico" value="https://amovin-erp-social.vercel.app/pre-cadastro-externo.html" readonly>
                 <button class="btn-copiar-link" id="btnCopiarLink" onclick="copiarLink()">📋 Copiar</button>
                 <a href="#" class="btn-abrir-link" onclick="abrirLink(event)" target="_blank">🔗 Abrir</a>
             </div>
@@ -604,6 +653,80 @@
             e.preventDefault();
             var url = document.getElementById('linkPublico').value;
             window.open(url, '_blank');
+        }
+
+        // ============================================================
+        // SAUDAÇÃO PERSONALIZADA
+        // ============================================================
+        function atualizarSaudacao() {
+            var nome = sessionStorage.getItem('amovin_nome') || 'Administrador';
+            var agora = new Date();
+            var hora = agora.getHours();
+            var saudacao = '';
+
+            if (hora >= 5 && hora < 12) {
+                saudacao = '🌅 Bom dia';
+            } else if (hora >= 12 && hora < 18) {
+                saudacao = '☀️ Boa tarde';
+            } else if (hora >= 18 && hora < 23) {
+                saudacao = '🌙 Boa noite';
+            } else {
+                saudacao = '🌙 Boa madrugada';
+            }
+
+            document.getElementById('mensagemSaudacao').textContent = saudacao + ', ' + nome + '!';
+        }
+
+        // ============================================================
+        // STATUS FIREBASE
+        // ============================================================
+        function verificarStatusFirebase() {
+            var statusEl = document.getElementById('statusFirebase');
+
+            // Verifica se o Firebase está disponível globalmente
+            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+                statusEl.innerHTML = '🟢 Firebase Conectado';
+                statusEl.className = 'conectado';
+                return;
+            }
+
+            // Tenta carregar o Firebase via CDN se não estiver disponível
+            if (typeof firebase === 'undefined') {
+                // Carrega Firebase dinamicamente
+                var script = document.createElement('script');
+                script.src = 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js';
+                script.onload = function() {
+                    var authScript = document.createElement('script');
+                    authScript.src = 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js';
+                    authScript.onload = function() {
+                        try {
+                            var firebaseConfig = {
+                                apiKey: "AIzaSyDu5663V7pAamG2lzjD1i2CNTKh6uPZO3U",
+                                authDomain: "amovin-oficios-teste.firebaseapp.com",
+                                projectId: "amovin-oficios-teste",
+                                storageBucket: "amovin-oficios-teste.firebasestorage.app",
+                                messagingSenderId: "901387183295",
+                                appId: "1:901387183295:web:b9a445cbe259d1c14c120a"
+                            };
+                            firebase.initializeApp(firebaseConfig);
+                            statusEl.innerHTML = '🟢 Firebase Conectado';
+                            statusEl.className = 'conectado';
+                        } catch (e) {
+                            statusEl.innerHTML = '🟡 Firebase Offline (modo local)';
+                            statusEl.className = 'offline';
+                        }
+                    };
+                    document.head.appendChild(authScript);
+                };
+                script.onerror = function() {
+                    statusEl.innerHTML = '🟡 Firebase Offline (modo local)';
+                    statusEl.className = 'offline';
+                };
+                document.head.appendChild(script);
+            } else {
+                statusEl.innerHTML = '🟡 Firebase Offline (modo local)';
+                statusEl.className = 'offline';
+            }
         }
 
         // ============================================================
@@ -802,8 +925,20 @@
         // ============================================================
         // INICIALIZAÇÃO
         // ============================================================
-        carregarDados();
-        setInterval(carregarDados, 30000);
+        document.addEventListener('DOMContentLoaded', function() {
+            atualizarSaudacao();
+            verificarStatusFirebase();
+            carregarDados();
+
+            // Atualiza saudação a cada minuto
+            setInterval(atualizarSaudacao, 60000);
+
+            // Tenta reconectar Firebase a cada 30 segundos
+            setInterval(verificarStatusFirebase, 30000);
+
+            // Recarrega dados a cada 30 segundos
+            setInterval(carregarDados, 30000);
+        });
     </script>
 </body>
 </html>
