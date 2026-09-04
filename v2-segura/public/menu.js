@@ -1,7 +1,7 @@
 // ============================================================
-// MENU.JS - AMOVIN ERP SOCIAL (VERSÃO COMPLETA)
+// MENU.JS - AMOVIN ERP SOCIAL (VERSÃO CORRETA)
 // ============================================================
-// Módulos ativos e unificados do sistema
+// Módulos unificados e organizados
 // Última atualização: 04/09/2026
 
 (function() {
