@@ -123,9 +123,6 @@
                 }
             ]
         },
-        // ============================================================
-        // RECEPÇÃO
-        // ============================================================
         recepcao: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
@@ -135,9 +132,6 @@
                 { nome: 'Captação', itens: [{ icone: '📋', label: 'Sala de Espera', href: 'sala-espera.html' }] }
             ]
         },
-        // ============================================================
-        // CONSULTA
-        // ============================================================
         consulta: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
@@ -145,9 +139,6 @@
                 { nome: 'Comunicação', itens: [{ icone: '🤖', label: 'Assistente IA', href: 'assistente.html' }, { icone: '💬', label: 'Chat Interno', href: 'chat.html' }] }
             ]
         },
-        // ============================================================
-        // FINANCEIRO
-        // ============================================================
         financeiro: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
@@ -155,9 +146,6 @@
                 { nome: 'Relatórios', itens: [{ icone: '📈', label: 'Relatórios', href: 'relatorios.html' }] }
             ]
         },
-        // ============================================================
-        // VOLUNTÁRIO
-        // ============================================================
         voluntario: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
@@ -167,9 +155,6 @@
         }
     };
 
-    // ============================================================
-    // FUNÇÃO PARA GERAR O HTML DO MENU
-    // ============================================================
     function gerarMenuHTML() {
         var perfilConfig = MENU_CONFIG[PERFIL_ATUAL] || MENU_CONFIG.admin;
         var html = '';
@@ -207,17 +192,11 @@
         return html;
     }
 
-    // ============================================================
-    // FUNÇÃO DE LOGOUT
-    // ============================================================
     window.logout = function() {
         sessionStorage.clear();
         window.location.href = 'index.html';
     };
 
-    // ============================================================
-    // FUNÇÃO PARA CARREGAR O MENU
-    // ============================================================
     function carregarMenu() {
         var container = document.getElementById('menu-container');
         if (!container) {
@@ -235,9 +214,6 @@
         }
     }
 
-    // ============================================================
-    // INJETAR ESTILOS DO MENU
-    // ============================================================
     function injectMenuStyles() {
         if (document.getElementById('menu-styles')) return;
 
@@ -274,9 +250,6 @@
         document.head.appendChild(style);
     }
 
-    // ============================================================
-    // CRIAR BOTÃO DE MENU MOBILE
-    // ============================================================
     function criarMenuToggle() {
         if (document.querySelector('.menu-toggle')) return;
 
@@ -308,9 +281,6 @@
         document.body.appendChild(overlay);
     }
 
-    // ============================================================
-    // INICIALIZAÇÃO
-    // ============================================================
     function init() {
         injectMenuStyles();
         carregarMenu();
