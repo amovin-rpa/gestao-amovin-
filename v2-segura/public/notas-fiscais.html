@@ -38,6 +38,10 @@
         .btn-success:hover { background: #388E3C; }
         .btn-outline { background: transparent; color: var(--cinza); border: 1px solid #E5E0D8; }
         .btn-outline:hover { background: #F8F4ED; }
+        .btn-danger { background: var(--vermelho); color: white; }
+        .btn-danger:hover { background: #C62828; }
+        .btn-warning { background: var(--dourado); color: white; }
+        .btn-warning:hover { background: #B45309; }
         .dropzone { border: 3px dashed #E5E0D8; border-radius: 14px; padding: 40px 20px; text-align: center; transition: all 0.3s; cursor: pointer; background: #FAFAFA; }
         .dropzone:hover, .dropzone.dragover { border-color: var(--roxo); background: #F5F0FF; }
         .dropzone .icone { font-size: 48px; display: block; margin-bottom: 12px; }
@@ -51,18 +55,29 @@
         .preview-item .label { color: var(--cinza); font-weight: 500; }
         .preview-item .valor { font-weight: 600; color: var(--grafite); }
         .preview-item .valor.destaque { color: var(--roxo); font-size: 15px; }
-        .preview-itens { margin-top: 8px; }
+        .preview-itens { margin-top: 8px; max-height: 200px; overflow-y: auto; }
         .item-linha-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; padding: 6px 0; font-size: 11px; font-weight: 700; color: var(--cinza); border-bottom: 2px solid var(--cinza); margin-bottom: 4px; }
         .item-linha { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; padding: 4px 0; font-size: 12px; border-bottom: 1px solid #F0E9DF; }
         .status-ia { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .status-ia.sucesso { background: #D1FAE5; color: #065F46; }
         .status-ia.erro { background: #FEE2E2; color: #991B1B; }
+        .status-ia.aviso { background: #FEF3C7; color: #92400E; }
         .toast { position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: 600; font-size: 14px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.15); animation: slideInRight 0.4s ease; max-width: 400px; }
         .toast-success { background: var(--verde); }
         .toast-error { background: var(--vermelho); }
         .toast-info { background: var(--azul); }
         .toast-warning { background: var(--dourado); }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-overlay.ativo { display: flex; }
+        .modal { background: white; border-radius: 16px; padding: 30px; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal h2 { font-size: 20px; color: var(--grafite); margin-bottom: 16px; }
+        .modal .form-group { margin-bottom: 12px; }
+        .modal .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; }
+        .modal .form-group input, .modal .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #E5E0D8; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+        .modal .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modal .btn-group { display: flex; gap: 12px; margin-top: 16px; justify-content: flex-end; }
 
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
@@ -96,8 +111,8 @@
         .rodape-info .copyright { font-size: 8px; color: #8A8F98; }
         .rodape-info .contato { font-size: 9px; color: #8A8F98; }
         .rodape-info a { color: #C65A11; text-decoration: none; }
-        
-        @media (max-width: 900px) { .main-content { margin-left: 0; } .preview-grid { grid-template-columns: 1fr; } .destinos-grid { grid-template-columns: 1fr; } .modulos-grid { grid-template-columns: 1fr 1fr; } .saldo-box { grid-template-columns: 1fr; } }
+
+        @media (max-width: 900px) { .main-content { margin-left: 0; } .preview-grid { grid-template-columns: 1fr; } .destinos-grid { grid-template-columns: 1fr; } .modulos-grid { grid-template-columns: 1fr 1fr; } .saldo-box { grid-template-columns: 1fr; } .modal .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -154,6 +169,7 @@
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
             <button class="btn btn-success" onclick="avancarParaVinculo()" id="btnAvancar" disabled>✅ Avançar para Vinculação</button>
             <button class="btn btn-outline" onclick="limparDados()">🔄 Nova Nota</button>
+            <button class="btn btn-warning" onclick="fecharPreviewEabrirManual()" id="btnManual">✏️ Inserir Manual</button>
         </div>
     </div>
 
@@ -201,7 +217,17 @@
                 <div class="modulo-card selecionado" data-modulo="financeiro" onclick="toggleModulo(this)"><span class="icone">💰</span><span class="nome">Financeiro</span></div>
                 <div class="modulo-card selecionado" data-modulo="prestacao" onclick="toggleModulo(this)"><span class="icone">📋</span><span class="nome">Prest. Contas</span></div>
                 <div class="modulo-card selecionado" data-modulo="orcamento" onclick="toggleModulo(this)"><span class="icone">📊</span><span class="nome">Orçamento</span></div>
-                <div class="modulo-card" data-modulo="crm" onclick="toggleModulo(this)"><span class="icone">☎️</span><span class="nome">CRM</span></div>
+                <div class="modulo-card selecionado" data-modulo="crm" onclick="toggleModulo(this)"><span class="icone">☎️</span><span class="nome">CRM</span></div>
+            </div>
+        </div>
+
+        <div style="margin:16px 0; background:#FFF8E1; border-radius:10px; padding:12px 16px; border-left:4px solid var(--dourado);">
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <span style="font-size:20px;">📦</span>
+                <div>
+                    <div style="font-weight:600; font-size:13px; color:var(--grafite);">Produtos vão para Sala de Espera</div>
+                    <div style="font-size:12px; color:var(--cinza);">Os produtos serão enviados para a <strong>Sala de Espera de Produtos</strong> para definição de BP e outros ajustes antes de ir para Estoque/Patrimônio.</div>
+                </div>
             </div>
         </div>
 
@@ -251,6 +277,58 @@
         </div>
     </div>
 
+    <!-- ============================================================
+    MODAL - INSERÇÃO MANUAL
+    ============================================================ -->
+    <div class="modal-overlay" id="modalManual">
+        <div class="modal">
+            <h2>✏️ Inserir Nota Fiscal Manualmente</h2>
+            <p style="color:var(--cinza);font-size:13px;margin-bottom:16px;">Preencha os campos abaixo com os dados da nota fiscal.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>📋 Número da Nota *</label>
+                    <input type="text" id="manualNumero" placeholder="Ex: 138960">
+                </div>
+                <div class="form-group">
+                    <label>📅 Data Emissão *</label>
+                    <input type="date" id="manualData">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>🏢 Emitente (Razão Social) *</label>
+                <input type="text" id="manualEmitente" placeholder="Ex: EBAZAR.COM.BR LTDA">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>📄 CNPJ *</label>
+                    <input type="text" id="manualCnpj" placeholder="Ex: 03.007.331/0122-39">
+                </div>
+                <div class="form-group">
+                    <label>📞 Telefone</label>
+                    <input type="text" id="manualTelefone" placeholder="Ex: (11) 99999-9999">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>💰 Valor Total *</label>
+                <input type="number" id="manualValor" step="0.01" placeholder="0,00">
+            </div>
+
+            <div class="form-group">
+                <label>📦 Itens (um por linha: Descrição; Quantidade; Valor Unitário; Valor Total)</label>
+                <textarea id="manualItens" rows="4" placeholder="Ex:&#10;Balanca Bioimpedancia; 1; 39,99; 39,99&#10;Mouse; 2; 25,00; 50,00"></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-outline" onclick="fecharModalManual()">Cancelar</button>
+                <button class="btn btn-success" onclick="salvarManual()">✅ Salvar Nota</button>
+            </div>
+        </div>
+    </div>
+
     <div class="rodape">
         <div class="rodape-grid">
             <div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';"></div>
@@ -273,16 +351,25 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 var dadosNota = null;
 var textoExtraido = '';
 var destinoSelecionado = 'patrimonio';
-var modulosSelecionados = ['financeiro', 'prestacao', 'orcamento'];
+var modulosSelecionados = ['financeiro', 'prestacao', 'orcamento', 'crm'];
 var notas = JSON.parse(localStorage.getItem('amovin_notas_fiscais') || '[]');
 var projetos = JSON.parse(localStorage.getItem('amovin_projetos') || '[]');
 var orcamentos = JSON.parse(localStorage.getItem('amovin_orcamentos') || '[]');
+var produtosEspera = JSON.parse(localStorage.getItem('amovin_produtos_espera') || '[]');
+var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
 
 // ============================================================
 // FUNÇÕES AUXILIARES
 // ============================================================
 function fm(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
 function salvarNotas() { localStorage.setItem('amovin_notas_fiscais', JSON.stringify(notas)); }
+function salvarProdutosEspera() { localStorage.setItem('amovin_produtos_espera', JSON.stringify(produtosEspera)); }
+function salvarContatos() { localStorage.setItem('amovin_contatos', JSON.stringify(contatos)); }
+
+function limparString(str) {
+    if (!str) return '';
+    return str.replace(/[^\w\s@.\-()/]/g, ' ').replace(/\s+/g, ' ').trim();
+}
 
 // ============================================================
 // USAR CONFIG.JS OU LOCALSTORAGE (FALLBACK)
@@ -303,31 +390,39 @@ function setGeminiKey(key) {
 }
 
 // ============================================================
-// EXTRAIR TEXTO DO ARQUIVO (PDF, IMAGEM, TXT, XML, DOC)
+// EXTRAIR TEXTO DO ARQUIVO
 // ============================================================
 async function extrairTextoDoArquivo(file) {
     // 1. PDF - PDF.js
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let textoCompleto = '';
-        for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            textoCompleto += textContent.items.map(item => item.str).join(' ') + '\n';
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let textoCompleto = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                textoCompleto += textContent.items.map(item => item.str).join(' ') + '\n';
+            }
+            return textoCompleto;
+        } catch (e) {
+            throw new Error('Erro ao ler PDF: ' + e.message);
         }
-        return textoCompleto;
     }
     // 2. Imagens - Tesseract OCR
     if (file.type.startsWith('image/')) {
-        const resultado = await Tesseract.recognize(file, 'por+eng');
-        return resultado.data.text;
+        try {
+            const resultado = await Tesseract.recognize(file, 'por+eng');
+            return resultado.data.text;
+        } catch (e) {
+            throw new Error('Erro ao ler imagem: ' + e.message);
+        }
     }
     // 3. Outros - FileReader
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => resolve(e.target.result);
-        reader.onerror = reject;
+        reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
         reader.readAsText(file);
     });
 }
@@ -403,54 +498,95 @@ async function processarNota(event) {
     preview.innerHTML = '<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⏳</span><p style="margin-top:8px;color:var(--cinza);">Extraindo texto...</p></div>';
     preview.classList.add('visivel');
     document.getElementById('passoPreview').style.display = 'block';
+    document.getElementById('statusExtraido').textContent = '📄 Extraindo texto...';
 
     try {
         textoExtraido = await extrairTextoDoArquivo(file);
+
         if (!textoExtraido || textoExtraido.trim().length < 10) {
-            info.innerHTML = '⚠️ Não foi possível extrair texto';
-            mostrarToast('⚠️ Arquivo sem texto legível.', 'warning');
-            preview.classList.remove('visivel');
-            document.getElementById('passoPreview').style.display = 'none';
+            info.innerHTML = '⚠️ Não foi possível extrair texto. A nota pode estar ilegível.';
+            document.getElementById('statusExtraido').textContent = '⚠️ Ilegível';
+            document.getElementById('statusExtraido').className = 'badge badge-ia status-ia aviso';
+            preview.innerHTML = `
+                <div style="text-align:center;padding:20px;">
+                    <span style="font-size:48px;">⚠️</span>
+                    <p style="margin-top:12px;color:var(--dourado);font-weight:600;">Não foi possível ler a nota fiscal automaticamente.</p>
+                    <p style="color:var(--cinza);font-size:13px;margin-top:8px;">O arquivo pode estar ilegível ou em um formato não suportado.</p>
+                    <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                        <button class="btn btn-outline" onclick="limparDados()" style="border-color:var(--cinza);">🔄 Tentar Novamente</button>
+                        <button class="btn btn-warning" onclick="fecharPreviewEabrirManual()">✏️ Inserir Manualmente</button>
+                    </div>
+                </div>
+            `;
             return;
         }
+
         info.innerHTML = '📎 Arquivo lido: ' + file.name + ' (' + textoExtraido.length + ' caracteres)';
-        document.getElementById('statusExtraido').textContent = '📄 Extraindo com IA...';
-        extrairDadosComIA(textoExtraido);
+        document.getElementById('statusExtraido').textContent = '🤖 Analisando com IA...';
+        await extrairDadosComIA(textoExtraido);
+
     } catch (error) {
         console.error('❌ Erro:', error);
         info.innerHTML = '❌ Erro ao processar';
-        mostrarToast('❌ Erro: ' + error.message, 'error');
-        preview.classList.remove('visivel');
-        document.getElementById('passoPreview').style.display = 'none';
+        document.getElementById('statusExtraido').textContent = '❌ Erro';
+        document.getElementById('statusExtraido').className = 'badge badge-ia status-ia erro';
+        preview.innerHTML = `
+            <div style="text-align:center;padding:20px;">
+                <span style="font-size:48px;">❌</span>
+                <p style="margin-top:12px;color:var(--vermelho);font-weight:600;">Erro ao processar o arquivo</p>
+                <p style="color:var(--cinza);font-size:13px;margin-top:8px;">${error.message || 'Tente novamente ou insira manualmente.'}</p>
+                <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-outline" onclick="limparDados()" style="border-color:var(--cinza);">🔄 Tentar Novamente</button>
+                    <button class="btn btn-warning" onclick="fecharPreviewEabrirManual()">✏️ Inserir Manualmente</button>
+                </div>
+            </div>
+        `;
     }
 }
 
 // ============================================================
-// EXTRAIR DADOS COM IA (OpenRouter)
+// EXTRAIR DADOS COM IA
 // ============================================================
 async function extrairDadosComIA(texto) {
     var preview = document.getElementById('previewIA');
     var key = getGeminiKey();
-    
+
     if (!key || key.length < 10) {
-        mostrarToast('⚠️ Chave não configurada.', 'warning');
+        mostrarToast('⚠️ Chave não configurada. Use a inserção manual.', 'warning');
+        document.getElementById('statusExtraido').textContent = '⚠️ Sem chave';
+        document.getElementById('statusExtraido').className = 'badge badge-ia status-ia aviso';
+        preview.innerHTML = `
+            <div style="text-align:center;padding:20px;">
+                <span style="font-size:48px;">🔑</span>
+                <p style="margin-top:12px;color:var(--dourado);font-weight:600;">Chave da IA não configurada.</p>
+                <p style="color:var(--cinza);font-size:13px;margin-top:8px;">Configure a chave OpenRouter ou insira a nota manualmente.</p>
+                <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="configurarChave()" style="background:var(--roxo);">🔑 Configurar Chave</button>
+                    <button class="btn btn-warning" onclick="fecharPreviewEabrirManual()">✏️ Inserir Manualmente</button>
+                </div>
+            </div>
+        `;
         return;
     }
 
     var prompt = `Extraia os campos da nota fiscal abaixo e retorne APENAS UM JSON VÁLIDO.
 
-Campos:
-- numero: Número da Nota
-- emitente: Nome do Emitente
-- cnpj: CNPJ do Emitente
-- dataEmissao: Data de Emissão (YYYY-MM-DD)
-- valorTotal: Valor Total (apenas número)
-- itens: Lista com descricao, quantidade, valor_unitario, valor_total
+Campos obrigatórios:
+- numero: Número da Nota (string)
+- emitente: Nome do Emitente (string)
+- cnpj: CNPJ do Emitente (string, apenas números)
+- telefone: Telefone do Emitente (string, se disponível)
+- dataEmissao: Data de Emissão (string no formato YYYY-MM-DD)
+- valorTotal: Valor Total (número, use 0 se não encontrar)
+- itens: Lista com descricao (string), quantidade (número), valor_unitario (número), valor_total (número)
 
-Texto:
-${texto.substring(0, 4000)}
+Texto da nota:
+${texto.substring(0, 6000)}
 
-Retorne APENAS o JSON, sem texto adicional.`;
+IMPORTANTE:
+- Se algum campo não for encontrado, use null
+- O JSON deve ser válido e conter TODOS os campos acima
+- Retorne APENAS o JSON, sem texto adicional`;
 
     try {
         var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -463,7 +599,7 @@ Retorne APENAS o JSON, sem texto adicional.`;
             },
             body: JSON.stringify({
                 model: 'google/gemini-2.5-flash',
-                max_tokens: 4000,
+                max_tokens: 6000,
                 messages: [{ role: 'user', content: prompt }]
             })
         });
@@ -471,38 +607,57 @@ Retorne APENAS o JSON, sem texto adicional.`;
         var data = await response.json();
 
         if (data.error) {
-            document.getElementById('statusExtraido').textContent = '❌ Erro';
-            preview.innerHTML = `<div style="text-align:center;padding:20px;"><span style="font-size:32px;">❌</span><p style="color:var(--vermelho);">${data.error.message}</p></div>`;
-            return;
+            throw new Error(data.error.message || 'Erro na API');
         }
 
         if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-            document.getElementById('statusExtraido').textContent = '❌ Erro';
-            preview.innerHTML = `<div style="text-align:center;padding:20px;"><span style="font-size:32px;">❌</span><p style="color:var(--vermelho);">Resposta inválida</p></div>`;
-            return;
+            throw new Error('Resposta inválida da IA');
         }
 
         var resposta = data.choices[0].message.content;
         var match = resposta.match(/\{[\s\S]*\}/);
         if (!match) {
-            document.getElementById('statusExtraido').textContent = '⚠️ Erro';
-            preview.innerHTML = `<div style="text-align:center;padding:20px;"><span style="font-size:32px;">⚠️</span><p style="color:var(--dourado);">JSON não encontrado</p></div>`;
-            return;
+            throw new Error('JSON não encontrado na resposta');
         }
 
         var dados = JSON.parse(match[0]);
-        if (!dados || typeof dados !== 'object') throw new Error('Dados inválidos');
+
+        if (!dados.numero && !dados.emitente) {
+            throw new Error('Dados insuficientes extraídos. A nota pode estar ilegível.');
+        }
 
         dadosNota = dados;
+
+        if (!dados.itens || dados.itens.length === 0) {
+            dados.itens = [{
+                descricao: 'Item da NF ' + (dados.numero || ''),
+                quantidade: 1,
+                valor_unitario: dados.valorTotal || 0,
+                valor_total: dados.valorTotal || 0
+            }];
+        }
+
         document.getElementById('statusExtraido').textContent = '✅ Concluído';
+        document.getElementById('statusExtraido').className = 'badge badge-ia status-ia sucesso';
         document.getElementById('btnAvancar').disabled = false;
         mostrarPreview(dados);
         mostrarToast('✅ Dados extraídos com sucesso!', 'success');
 
     } catch (e) {
-        console.error('❌ Erro:', e);
-        document.getElementById('statusExtraido').textContent = '❌ Erro';
-        preview.innerHTML = `<div style="text-align:center;padding:20px;"><span style="font-size:32px;">❌</span><p style="color:var(--vermelho);">${e.message}</p></div>`;
+        console.error('❌ Erro na extração:', e);
+        document.getElementById('statusExtraido').textContent = '⚠️ Erro';
+        document.getElementById('statusExtraido').className = 'badge badge-ia status-ia aviso';
+        preview.innerHTML = `
+            <div style="text-align:center;padding:20px;">
+                <span style="font-size:48px;">⚠️</span>
+                <p style="margin-top:12px;color:var(--dourado);font-weight:600;">Não foi possível extrair os dados automaticamente.</p>
+                <p style="color:var(--cinza);font-size:13px;margin-top:8px;">${e.message || 'A nota pode estar ilegível ou incompleta.'}</p>
+                <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-outline" onclick="limparDados()" style="border-color:var(--cinza);">🔄 Tentar Novamente</button>
+                    <button class="btn btn-warning" onclick="fecharPreviewEabrirManual()">✏️ Inserir Manualmente</button>
+                </div>
+            </div>
+        `;
     }
 }
 
@@ -530,6 +685,7 @@ function mostrarPreview(dados) {
             <div class="preview-item"><span class="label">📋 Número</span><span class="valor destaque">${dados.numero || '—'}</span></div>
             <div class="preview-item"><span class="label">🏢 Emitente</span><span class="valor">${dados.emitente || '—'}</span></div>
             <div class="preview-item"><span class="label">📄 CNPJ</span><span class="valor">${dados.cnpj || '—'}</span></div>
+            <div class="preview-item"><span class="label">📞 Telefone</span><span class="valor">${dados.telefone || '—'}</span></div>
             <div class="preview-item"><span class="label">📅 Data Emissão</span><span class="valor">${dados.dataEmissao || '—'}</span></div>
             <div class="preview-item"><span class="label">💰 Valor Total</span><span class="valor destaque">${fm(dados.valorTotal)}</span></div>
         </div>
@@ -542,6 +698,91 @@ function mostrarPreview(dados) {
     document.getElementById('resumoNumero').textContent = dados.numero || '---';
     document.getElementById('resumoEmitente').textContent = dados.emitente || '---';
     document.getElementById('resumoValor').textContent = fm(dados.valorTotal || 0);
+}
+
+// ============================================================
+// FECHAR PREVIEW E ABRIR MANUAL
+// ============================================================
+function fecharPreviewEabrirManual() {
+    document.getElementById('passoPreview').style.display = 'none';
+    abrirModalManual();
+}
+
+// ============================================================
+// MODAL MANUAL
+// ============================================================
+function abrirModalManual() {
+    document.getElementById('modalManual').classList.add('ativo');
+    document.getElementById('manualData').value = new Date().toISOString().split('T')[0];
+}
+
+function fecharModalManual() {
+    document.getElementById('modalManual').classList.remove('ativo');
+}
+
+function salvarManual() {
+    var numero = document.getElementById('manualNumero').value.trim();
+    var data = document.getElementById('manualData').value;
+    var emitente = document.getElementById('manualEmitente').value.trim();
+    var cnpj = document.getElementById('manualCnpj').value.trim();
+    var telefone = document.getElementById('manualTelefone').value.trim();
+    var valor = parseFloat(document.getElementById('manualValor').value) || 0;
+    var itensText = document.getElementById('manualItens').value.trim();
+
+    if (!numero) { mostrarToast('⚠️ Número da nota é obrigatório!', 'warning'); return; }
+    if (!emitente) { mostrarToast('⚠️ Emitente é obrigatório!', 'warning'); return; }
+    if (!data) { mostrarToast('⚠️ Data é obrigatória!', 'warning'); return; }
+
+    var itens = [];
+    if (itensText) {
+        var linhas = itensText.split('\n').filter(function(l) { return l.trim(); });
+        linhas.forEach(function(linha) {
+            var partes = linha.split(';').map(function(p) { return p.trim(); });
+            if (partes.length >= 4) {
+                itens.push({
+                    descricao: partes[0],
+                    quantidade: parseFloat(partes[1]) || 1,
+                    valor_unitario: parseFloat(partes[2].replace(',', '.')) || 0,
+                    valor_total: parseFloat(partes[3].replace(',', '.')) || 0
+                });
+            } else if (partes.length === 1) {
+                itens.push({
+                    descricao: partes[0],
+                    quantidade: 1,
+                    valor_unitario: valor,
+                    valor_total: valor
+                });
+            }
+        });
+    }
+
+    if (itens.length === 0) {
+        itens.push({
+            descricao: 'Item da NF ' + numero,
+            quantidade: 1,
+            valor_unitario: valor,
+            valor_total: valor
+        });
+    }
+
+    dadosNota = {
+        numero: numero,
+        emitente: emitente,
+        cnpj: cnpj,
+        telefone: telefone,
+        dataEmissao: data,
+        valorTotal: valor,
+        itens: itens,
+        manual: true
+    };
+
+    fecharModalManual();
+    document.getElementById('passoPreview').style.display = 'block';
+    document.getElementById('statusExtraido').textContent = '✏️ Manual';
+    document.getElementById('statusExtraido').className = 'badge badge-ia status-ia sucesso';
+    document.getElementById('btnAvancar').disabled = false;
+    mostrarPreview(dadosNota);
+    mostrarToast('✅ Dados inseridos manualmente!', 'success');
 }
 
 // ============================================================
@@ -569,7 +810,7 @@ function preencherProjetos() {
     select.innerHTML = '<option value="">Selecione um projeto...</option>';
     projetos.forEach(function(p) {
         if (p.status === 'ativo') {
-            select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + p.orcamento_total.toFixed(2).replace('.', ',') + ')</option>';
+            select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (R$ ' + (p.orcamento_total || 0).toFixed(2).replace('.', ',') + ')</option>';
         }
     });
 }
@@ -581,7 +822,8 @@ function sugerirProjeto(emitente) {
         'computador': 'Inclusão Digital',
         'notebook': 'Inclusão Digital',
         'esporte': 'Esporte para Todos',
-        'bola': 'Esporte para Todos'
+        'bola': 'Esporte para Todos',
+        'material': 'Inclusão Digital'
     };
     var texto = emitente.toLowerCase();
     for (var key in keywords) {
@@ -603,6 +845,11 @@ function atualizarSaldo() {
     document.getElementById('saldoPrevisto').textContent = fm(previsto);
     document.getElementById('saldoRealizado').textContent = fm(realizado);
     document.getElementById('saldoDisponivel').textContent = fm(previsto - realizado);
+
+    var saldo = previsto - realizado;
+    if (saldo < (dadosNota ? dadosNota.valorTotal || 0 : 0)) {
+        mostrarToast('⚠️ Atenção: Saldo insuficiente para esta nota!', 'warning');
+    }
 }
 
 // ============================================================
@@ -641,7 +888,11 @@ function confirmarVinculo() {
         id: Date.now(),
         numero: dadosNota.numero || '*',
         numeroInterno: numeroInterno,
-        emitente: { razaoSocial: dadosNota.emitente || 'Fornecedor', cnpj: dadosNota.cnpj || '*' },
+        emitente: {
+            razaoSocial: dadosNota.emitente || 'Fornecedor',
+            cnpj: dadosNota.cnpj || '',
+            telefone: dadosNota.telefone || ''
+        },
         valores: { valorTotal: valorNota },
         dataEmissao: dadosNota.dataEmissao || '',
         dataEntrega: dataEntrega,
@@ -653,17 +904,26 @@ function confirmarVinculo() {
         status: 'vinculado',
         observacao: obs,
         data_criacao: new Date().toISOString(),
-        origem: 'ia'
+        origem: dadosNota.manual ? 'manual' : 'ia'
     };
 
     notas.push(novaNota);
     salvarNotas();
 
-    // Atualiza orçamento
     var orc = orcamentos.find(function(o) { return o.projeto_id === projetoId && o.categoria === categoria; });
-    if (orc) { orc.realizado += valorNota; localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos)); }
+    if (orc) {
+        orc.realizado += valorNota;
+        localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
+    } else {
+        orcamentos.push({
+            projeto_id: projetoId,
+            categoria: categoria,
+            previsto: 0,
+            realizado: valorNota
+        });
+        localStorage.setItem('amovin_orcamentos', JSON.stringify(orcamentos));
+    }
 
-    // 🔥 Envia para os módulos selecionados
     direcionarParaModulos(novaNota);
 
     document.getElementById('passoVinculo').style.display = 'none';
@@ -681,13 +941,13 @@ function confirmarVinculo() {
 }
 
 // ============================================================
-// DIRECIONAR PARA MÓDULOS (CRM, ESTOQUE, PATRIMÔNIO)
+// DIRECIONAR PARA MÓDULOS
 // ============================================================
 function direcionarParaModulos(nota) {
-    // 1. CRM - Cadastra o emitente como contato
     if (modulosSelecionados.indexOf('crm') >= 0 && nota.emitente && nota.emitente.razaoSocial && nota.emitente.razaoSocial !== '---') {
-        var contatos = JSON.parse(localStorage.getItem('amovin_contatos') || '[]');
-        var existe = contatos.some(function(c) { return c.nome === nota.emitente.razaoSocial || c.cnpj === nota.emitente.cnpj; });
+        var existe = contatos.some(function(c) {
+            return c.nome === nota.emitente.razaoSocial || c.cnpj === nota.emitente.cnpj;
+        });
         if (!existe) {
             contatos.push({
                 id: Date.now(),
@@ -697,56 +957,38 @@ function direcionarParaModulos(nota) {
                 tel1: nota.emitente.telefone || '',
                 cnpj: nota.emitente.cnpj || '',
                 origem: 'nota_fiscal',
-                obs: 'Cadastrado via NF ' + nota.numero
+                obs: 'Cadastrado via NF ' + nota.numero + ' - ' + nota.numeroInterno
             });
-            localStorage.setItem('amovin_contatos', JSON.stringify(contatos));
+            salvarContatos();
             mostrarToast('✅ Fornecedor enviado para CRM!', 'success');
         }
     }
 
-    // 2. Estoque ou Patrimônio - Adiciona os itens
-    if (!nota.itens || nota.itens.length === 0) {
-        nota.itens = [{ descricao: 'Item da NF ' + nota.numero, quantidade: 1, valorUnitario: nota.valores.valorTotal, valorTotal: nota.valores.valorTotal }];
-    }
+    if (nota.itens && nota.itens.length > 0) {
+        nota.itens.forEach(function(item) {
+            var nomeProduto = item.descricao || 'Item da NF ' + nota.numero;
 
-    nota.itens.forEach(function(item) {
-        var nomeProduto = item.descricao || 'Item da NF ' + nota.numero;
-        var valorItem = item.valor_total || item.valorTotal || nota.valores.valorTotal || 0;
-
-        // Estoque
-        if (nota.destino === 'estoque' || modulosSelecionados.indexOf('estoque') >= 0) {
-            var estoque = JSON.parse(localStorage.getItem('amovin_estoque') || '[]');
-            estoque.push({
-                id: Date.now(),
-                nome: nomeProduto,
+            var produtoEspera = {
+                id: Date.now() + Math.random() * 1000,
+                descricao: nomeProduto,
+                quantidade: item.quantidade || 1,
+                valor_unitario: item.valor_unitario || 0,
+                valor_total: item.valor_total || (item.valor_unitario || 0) * (item.quantidade || 1),
+                nota_id: nota.id,
+                nota_numero: nota.numero,
+                projeto_id: nota.projeto_id,
                 categoria: nota.categoria_orcamento || 'Diversos',
-                unidade: item.unidade || 'UN',
-                qtd: item.quantidade || 1,
-                local: 'Almoxarifado',
-                obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
-            });
-            localStorage.setItem('amovin_estoque', JSON.stringify(estoque));
-        }
+                destino_sugerido: nota.destino || 'patrimonio',
+                status: 'aguardando',
+                data_criacao: new Date().toISOString()
+            };
 
-        // Patrimônio
-        if (nota.destino === 'patrimonio' || modulosSelecionados.indexOf('patrimonio') >= 0) {
-            var patrimonio = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
-            var ultimoNumero = parseInt(localStorage.getItem('amovin_patrimonio_num') || '0');
-            ultimoNumero++;
-            patrimonio.push({
-                id: Date.now(),
-                nome: nomeProduto,
-                numero: 'AMOVIN-' + String(ultimoNumero).padStart(4, '0'),
-                categoria: nota.categoria_orcamento || 'Equipamento',
-                valor: valorItem,
-                status: 'Em Operação',
-                local: 'Sede AMOVIN',
-                obs: 'Nota: ' + nota.numero + ' | Projeto: ' + nota.projeto_id
-            });
-            localStorage.setItem('amovin_bens', JSON.stringify(patrimonio));
-            localStorage.setItem('amovin_patrimonio_num', ultimoNumero);
-        }
-    });
+            produtosEspera.push(produtoEspera);
+        });
+
+        salvarProdutosEspera();
+        mostrarToast('📦 ' + nota.itens.length + ' produto(s) enviado(s) para Sala de Espera!', 'success');
+    }
 }
 
 // ============================================================
