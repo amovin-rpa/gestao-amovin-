@@ -1,3 +1,6 @@
+cd /workspaces/gestao-amovin-
+
+cat > .gitignore << 'EOF'
 # Dependências
 node_modules/
 .pnp/
@@ -12,6 +15,7 @@ dist/
 # Ambiente
 .env.local
 .env.*.local
+.env.example
 
 # Logs
 *.log
@@ -32,3 +36,7 @@ Thumbs.db
 # Backup
 *.bak
 *.old
+
+# Vercel
+.vercel/
+EOF
