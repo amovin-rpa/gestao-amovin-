@@ -1,5 +1,5 @@
 // ============================================================
-// MENU.JS - AMOVIN ERP SOCIAL (VERSÃO LIMPA)
+// MENU.JS - AMOVIN ERP SOCIAL (VERSÃO COMPLETA)
 // ============================================================
 // Módulos ativos e unificados do sistema
 // Última atualização: 04/09/2026
@@ -13,6 +13,9 @@
     var MENU_CONFIG = {
         admin: {
             categorias: [
+                // ============================================================
+                // PRINCIPAL
+                // ============================================================
                 {
                     nome: 'Principal',
                     itens: [
@@ -20,16 +23,22 @@
                         { icone: '📈', label: 'BI Executivo', href: 'bi.html' }
                     ]
                 },
+                // ============================================================
+                // CAPTAÇÃO
+                // ============================================================
                 {
                     nome: 'Captação',
                     itens: [
                         { icone: '🚀', label: 'Amovin Capta+', href: 'https://amovin-capta.vercel.app/login', target: '_blank' },
                         { icone: '📋', label: 'Sala de Espera', href: 'sala-espera.html' },
-                        { icone: '📝', label: 'Pré-Cadastro', href: 'pre-cadastro.html' },
-                        { icone: '📝', label: 'Pré-Cadastro Externo', href: 'pre-cadastro-externo.html' },
-                        { icone: '📋', label: 'Projetos e Convênios', href: 'projetos-convenios.html' }
+                        { icone: '📝', label: 'Pré-Cadastro Interno', href: 'pre-cadastro.html' },
+                        { icone: '📋', label: 'Projetos e Convênios', href: 'projetos-convenios.html' },
+                        { icone: '📋', label: 'Projetos', href: 'projetos.html' }
                     ]
                 },
+                // ============================================================
+                // FINANCEIRO
+                // ============================================================
                 {
                     nome: 'Financeiro',
                     itens: [
@@ -39,6 +48,9 @@
                         { icone: '📄', label: 'Notas Fiscais', href: 'notas-fiscais.html' }
                     ]
                 },
+                // ============================================================
+                // PESSOAS
+                // ============================================================
                 {
                     nome: 'Pessoas',
                     itens: [
@@ -46,6 +58,9 @@
                         { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }
                     ]
                 },
+                // ============================================================
+                // ATENDIMENTO
+                // ============================================================
                 {
                     nome: 'Atendimento',
                     itens: [
@@ -54,6 +69,9 @@
                         { icone: '📝', label: 'Prontuário', href: 'prontuario.html' }
                     ]
                 },
+                // ============================================================
+                // DOCUMENTOS
+                // ============================================================
                 {
                     nome: 'Documentos',
                     itens: [
@@ -64,6 +82,9 @@
                         { icone: '📋', label: 'Ofícios', href: 'oficios.html' }
                     ]
                 },
+                // ============================================================
+                // EDUCAÇÃO
+                // ============================================================
                 {
                     nome: 'Educação',
                     itens: [
@@ -71,6 +92,9 @@
                         { icone: '🎓', label: 'Certificados', href: 'certificados.html' }
                     ]
                 },
+                // ============================================================
+                // COMUNICAÇÃO
+                // ============================================================
                 {
                     nome: 'Comunicação',
                     itens: [
@@ -78,12 +102,18 @@
                         { icone: '🧠', label: 'Central IA', href: 'central-ia.html' }
                     ]
                 },
+                // ============================================================
+                // RELATÓRIOS
+                // ============================================================
                 {
                     nome: 'Relatórios',
                     itens: [
                         { icone: '📈', label: 'Relatórios', href: 'relatorios.html' }
                     ]
                 },
+                // ============================================================
+                // SISTEMA
+                // ============================================================
                 {
                     nome: 'Sistema',
                     itens: [
@@ -93,15 +123,21 @@
                 }
             ]
         },
+        // ============================================================
+        // PERFIL: RECEPÇÃO
+        // ============================================================
         recepcao: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
                 { nome: 'Pessoas', itens: [{ icone: '👥', label: 'Gestão de Pessoas (IDP)', href: 'idp.html' }, { icone: '☎️', label: 'CRM Social', href: 'agenda-telefonica.html' }] },
                 { nome: 'Atendimento', itens: [{ icone: '📅', label: 'Agenda', href: 'agenda.html' }] },
-                { nome: 'Documentos', itens: [{ icone: '📝', label: 'Documentos', href: 'documentos.html' }] },
+                { nome: 'Documentos', itens: [{ icone: '📝', label: 'Documentos Oficiais', href: 'documentos.html' }] },
                 { nome: 'Captação', itens: [{ icone: '📋', label: 'Sala de Espera', href: 'sala-espera.html' }] }
             ]
         },
+        // ============================================================
+        // PERFIL: CONSULTA
+        // ============================================================
         consulta: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
@@ -109,6 +145,9 @@
                 { nome: 'Comunicação', itens: [{ icone: '🤖', label: 'Assistente IA', href: 'assistente.html' }, { icone: '💬', label: 'Chat Interno', href: 'chat.html' }] }
             ]
         },
+        // ============================================================
+        // PERFIL: FINANCEIRO
+        // ============================================================
         financeiro: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
@@ -116,6 +155,9 @@
                 { nome: 'Relatórios', itens: [{ icone: '📈', label: 'Relatórios', href: 'relatorios.html' }] }
             ]
         },
+        // ============================================================
+        // PERFIL: VOLUNTÁRIO
+        // ============================================================
         voluntario: {
             categorias: [
                 { nome: 'Principal', itens: [{ icone: '📊', label: 'Dashboard', href: 'dashboard.html' }] },
@@ -125,6 +167,9 @@
         }
     };
 
+    // ============================================================
+    // GERAR MENU HTML
+    // ============================================================
     function gerarMenuHTML() {
         var perfilConfig = MENU_CONFIG[PERFIL_ATUAL] || MENU_CONFIG.admin;
         var html = '';
@@ -162,6 +207,9 @@
         return html;
     }
 
+    // ============================================================
+    // FUNÇÕES DO MENU
+    // ============================================================
     window.logout = function() {
         sessionStorage.clear();
         window.location.href = 'index.html';
@@ -251,6 +299,9 @@
         document.body.appendChild(overlay);
     }
 
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
     function init() {
         injectMenuStyles();
         carregarMenu();
