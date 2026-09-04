@@ -24,10 +24,6 @@
       "dest": "/v2-segura/public/index.html"
     },
     {
-      "src": "/index.html",
-      "dest": "/v2-segura/public/index.html"
-    },
-    {
       "src": "/(.*)\\.html",
       "dest": "/v2-segura/public/$1.html"
     },
