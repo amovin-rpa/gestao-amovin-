@@ -6,12 +6,24 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-  // Para manter compatibilidade com arquivos HTML existentes
-  rewrites: async () => {
+  // Servir arquivos HTML da pasta v2-segura/public
+  async rewrites() {
     return [
       {
         source: '/:path*.html',
-        destination: '/:path*',
+        destination: '/v2-segura/public/:path*',
+      },
+      {
+        source: '/:path*.js',
+        destination: '/v2-segura/public/:path*',
+      },
+      {
+        source: '/:path*.css',
+        destination: '/v2-segura/public/:path*',
+      },
+      {
+        source: '/images/:path*',
+        destination: '/v2-segura/public/images/:path*',
       },
     ];
   },
