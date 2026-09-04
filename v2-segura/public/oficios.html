@@ -91,9 +91,9 @@
             btnGerar.disabled = true; btnGerar.textContent = '⏳ Gerando...'; loadingIA.style.display = 'block'; resultado.innerHTML = ''; acoes.style.display = 'none';
             const prompt = `Crie um ofício oficial da AMOVIN (Associação e Movimento pela Inclusão), localizada em Rio Paranaíba/MG.\nDADOS DO OFÍCIO:\n- Destinatário: ${destinatario}\n- Cargo: ${cargo}\n- Instituição: ${instituicao}\n- Tipo de Documento: ${tipo}\n- Assunto: ${assunto}\n- Objetivo: ${objetivo}\n- Grau de Formalidade: ${formalidade}\n- Perfil do Destinatário: ${tipoDest}\n\nINSTRUÇÕES:\n1. Siga o Manual de Redação da Presidência da República\n2. Use o pronome de tratamento adequado ao cargo\n3. Inclua numeração do ofício\n4. Inclua local e data: Rio Paranaíba/MG\n5. Corpo do texto com 2 a 4 parágrafos profissionais\n6. Fechamento formal\n7. Inclua no rodapé: AMOVIN, CNPJ, endereço\n\nGere o ofício completo e profissional.`;
             try {
-                // 🔒 CHAVE PROTEGIDA - Busca do navegador, NUNCA exposta no código
-                const API_KEY = localStorage.getItem('amovin_gemini_key') || '';
-                if (!API_KEY) { alert('⚠️ Chave Gemini não configurada!\n\nAcesse config-chave.html para configurar.'); btnGerar.disabled = false; btnGerar.textContent = '🤖 Gerar Ofício com IA'; loadingIA.style.display = 'none'; return; }
+                // 🔒 CHAVE PROTEGIDA - Usa config.js ou fallback
+                const API_KEY = (typeof AMOVIN_CONFIG !== 'undefined' && AMOVIN_CONFIG) ? AMOVIN_CONFIG.getGeminiKey() : localStorage.getItem('amovin_gemini_key') || '';
+                if (!API_KEY) { alert('⚠️ Chave Gemini não configurada!\n\nAcesse Configurações > Integrações.'); btnGerar.disabled = false; btnGerar.textContent = '🤖 Gerar Ofício com IA'; loadingIA.style.display = 'none'; return; }
                 const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY;
                 const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 2000 } }) });
                 if (!response.ok) { const erro = await response.json(); throw new Error(erro.error?.message || 'Erro na conexão com a IA'); }
@@ -109,6 +109,7 @@
         let timeout; function resetTimeout() { clearTimeout(timeout); timeout = setTimeout(() => { signOut(auth); sessionStorage.clear(); alert('⏰ Sessão expirada.'); window.location.href = 'index.html'; }, 30 * 60 * 1000); }
         document.addEventListener('mousemove', resetTimeout); document.addEventListener('keypress', resetTimeout); document.addEventListener('click', resetTimeout); resetTimeout();
     </script>
-<script src="menu.js?v=20261007"></script>
+    <script src="config.js"></script>
+    <script src="menu.js?v=20261007"></script>
 </body>
 </html>
