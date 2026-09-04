@@ -53,7 +53,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 .status-manutencao { background: #FFF3E0; color: #E65100; }
 .status-baixado { background: #FFEBEE; color: #C62828; }
 .patrimonio-item .valor { font-weight: 700; color: var(--verde); }
-
 .sem-dados { text-align: center; padding: 30px; color: #9CA3AF; }
 
 .rodape { background: #FFFFFF; border-radius: 14px; padding: 12px 18px; border: 1px solid #F0E9DF; margin-top: 20px; }
@@ -71,7 +70,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
 <div id="menu-container"></div>
 
 <main class="main-content">
-  <div class="topo-bar"><h1>🏢 Patrimônio</h1><button class="btn-sair-topo" onclick="window.location.href='index.html'">🚪 Sair</button></div>
+  <div class="topo-bar"><h1>🏢 Patrimônio</h1><button class="btn-sair-topo" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button></div>
 
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-valor" id="kpiTotal">0</div><div class="kpi-label">🏢 Bens</div></div>
@@ -101,6 +100,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: #F8F4ED; display
   <div class="rodape"><div class="rodape-grid"><div class="rodape-logo"><img src="images/logo-vigorre.png" alt="Vigorre" class="logo-vigorre" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span class="logo-vigorre-fallback">Vigorre</span></div><div class="rodape-info"><div class="copyright">© 2026 VIGORRE DESIGNER<span class="tm">™</span></div><div class="contato"><a href="https://www.vigorre.com.br">www.vigorre.com.br</a> | <a href="https://wa.me/5534991850735">(34) 99185-0735</a></div><div class="email">contato@vigorre.com.br</div></div></div></div>
 </main>
 
+<script src="config.js"></script>
 <script src="menu.js?v=20261007"></script>
 <script>
 var bens = JSON.parse(localStorage.getItem('amovin_bens') || '[]');
@@ -232,25 +232,6 @@ function limparForm() {
     document.getElementById('obsBem').value = '';
     document.querySelector('.card h3').textContent = '📝 Novo Bem';
 }
-
-var perfil = sessionStorage.getItem('amovin_perfil') || 'admin';
-var modulosPermitidos = {
-    admin: ['dashboard','bi','capta','sala-espera','pre-cadastro','financeiro','orcamentos','prestacao-contas','pessoas','profissionais','voluntarios','agenda-telefonica','agenda','documentos','qrcodes','notas-fiscais','estoque','patrimonio','biblioteca','certificados','chat','assistente','relatorios','configuracoes','backup'],
-    recepcao: ['dashboard','pessoas','agenda-telefonica','agenda','documentos'],
-    consulta: ['dashboard','agenda','agenda-telefonica','assistente'],
-    financeiro: ['dashboard','financeiro','orcamentos','prestacao-contas','relatorios'],
-    voluntario: ['dashboard','agenda','voluntarios','agenda-telefonica']
-};
-
-var permitidos = modulosPermitidos[perfil] || modulosPermitidos.admin;
-document.querySelectorAll('.nav-item').forEach(function(item) {
-    var href = item.getAttribute('href') || '';
-    var pagina = href.replace('.html', '');
-    pagina = pagina.split('?')[0].split('#')[0];
-    if (pagina && permitidos.indexOf(pagina) === -1 && pagina !== 'dashboard' && pagina !== '') {
-        item.style.display = 'none';
-    }
-});
 
 if (!sessionStorage.getItem('amovin_logado')) { window.location.href = 'index.html'; }
 
