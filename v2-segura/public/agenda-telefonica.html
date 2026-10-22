@@ -143,7 +143,7 @@
         </div>
         <div>
             <div class="busca-bar">
-                <input type="text" id="buscaContato" placeholder="🔍 Buscar por nome, empresa, código, CPF/CNPJ..." oninput="filtrar()">
+                <input type="text" id="buscaContato" placeholder="🔍 Buscar por nome, empresa, código, CPF/CNPJ..." oninput="filtrar()" autocomplete="off" name="busca_crm_x1">
             </div>
             <div id="listaContatos"><div class="loading"><div class="spinner"></div><div>Carregando...</div></div></div>
         </div>
@@ -185,16 +185,15 @@
                 <option value="Fundação">🏛️ Fundação</option>
                 <option value="Fornecedor">📦 Fornecedor</option>
                 <option value="Autônomo">👤 Autônomo</option>
-                <option value="Fisioterapeuta">🦴 Fisioterapeuta</option>
-                <option value="Psicólogo">🧠 Psicólogo</option>
-                <option value="Nutricionista">🥗 Nutricionista</option>
-                <option value="Assistente Social">🤝 Assistente Social</option>
                 <option value="Profissional">👨‍⚕️ Profissional</option>
                 <option value="Universitário">🎓 Universitário</option>
                 <option value="Voluntário">💪 Voluntário</option>
                 <option value="Beneficiário">👤 Beneficiário</option>
                 <option value="Outros">📌 Outros</option>
             </select>
+        </div>
+        <div id="grupoEspecialidade" style="display:none;">
+             <div class="form-group"><label>Especialidade</label><input type="text" id="especialidadeContato" placeholder="Ex: Fisioterapeuta, Psicólogo..."></div>
         </div>
         <div class="secao-titulo">📞 Contatos</div>
         <div class="form-row">
@@ -247,16 +246,16 @@
     <div class="modal modal-pequeno">
         <h2>🔐 Autenticação <button class="fechar" onclick="fecharAuth()">×</button></h2>
         <div id="authMsg" style="font-size:13px;color:var(--cinza);margin-bottom:16px;"></div>
-        <div class="form-group"><label>Usuário</label><input type="text" id="authUsuario" placeholder="Seu usuário"></div>
+        <div class="form-group"><label>Usuário</label><input type="text" id="authUsuario" placeholder="Seu usuário" autocomplete="off"></div>
         <div class="form-group">
             <label>Senha</label>
             <div class="senha-wrapper">
-                <input type="password" id="authSenha" placeholder="••••••••">
+                <input type="password" id="authSenha" placeholder="••••••••" autocomplete="new-password">
                 <button type="button" class="btn-olho" onclick="toggleOlhoSenha()">👁️</button>
             </div>
         </div>
         <div class="form-group"><label>Justificativa (mín 20 caracteres)</label>
-            <textarea id="authJust" rows="3" placeholder="Explique o motivo da alteração..."></textarea>
+            <textarea id="authJust" rows="3" placeholder="Explique o motivo da alteração..." autocomplete="off"></textarea>
             <div style="font-size:10px;color:var(--cinza);margin-top:4px;" id="contadorJust">0/20 caracteres</div>
         </div>
         <div class="btn-group">
@@ -268,10 +267,7 @@
 <script src="menu.js?v=20260904"></script>
 <script>
 // ============================================================
-// CRM SOCIAL - AMOVIN ERP (AERP)
-// Agenda de contatos: empresas, autônomos, fornecedores, 
-// beneficiários, profissionais (com especialidade), etc.
-// Coleção única: contatos
+// CRM SOCIAL - AMOVIN ERP (AERP) - CORRIGIDO
 // ============================================================
 
 var contatos = [];
@@ -443,27 +439,50 @@ async function gerarProximoCodigo() {
 }
 
 // ============================================================
-// RENDERIZAR MENU
+// RENDERIZAR MENU LATERAL (AGRUPADO)
 // ============================================================
 function renderizarMenu() {
-    var cats = {};
-    contatos.forEach(function(c) { cats[c.categoria || 'Outros'] = (cats[c.categoria || 'Outros'] || 0) + 1; });
-    var h = '<button class="cat-item ' + (categoriaAtual === 'todos' ? 'ativo' : '') + '" onclick="filtrarPorCat(\'todos\')">📋 Todos <span class="count">' + contatos.length + '</span></button>';
-    h += '<button class="cat-item ' + (categoriaAtual === 'favoritos' ? 'ativo' : '') + '" onclick="filtrarPorCat(\'favoritos\')">⭐ Favoritos <span class="count">' + contatos.filter(function(c) { return c.favorito; }).length + '</span></button>';
-    Object.keys(cats).sort().forEach(function(c) {
-        h += '<button class="cat-item ' + (categoriaAtual === c ? 'ativo' : '') + '" onclick="filtrarPorCat(\'' + escapeHtml(c) + '\')">' + escapeHtml(c) + ' <span class="count">' + cats[c] + '</span></button>';
+    // Categorias base
+    var catsBase = ['Todos', 'Favoritos', 'Empresa', 'Autônomo', 'Fornecedor', 'Beneficiário', 'Profissional', 'Voluntário', 'Universitário'];
+    var counts = {};
+    contatos.forEach(function(c) {
+        var cat = c.categoria || 'Outros';
+        // Agrupa profissionais (Fisio, Psico, etc) na categoria "Profissional" para o menu não ficar gigante
+        if (cat !== 'Beneficiário' && cat !== 'Voluntário' && cat !== 'Universitário' && cat !== 'Fornecedor' && cat !== 'Autônomo' && cat !== 'Empresa' && cat !== 'Doador' && cat !== 'Patrocinador' && cat !== 'Outros' && cat !== 'Prefeitura' && cat !== 'Fundação') {
+            cat = 'Profissional'; 
+        }
+        counts[cat] = (counts[cat] || 0) + 1;
     });
+
+    var h = '';
+    h += '<button class="cat-item ' + (categoriaAtual === 'todos' ? 'ativo' : '') + '" onclick="filtrarPorCat(\'todos\')">📋 Todos <span class="count">' + contatos.length + '</span></button>';
+    h += '<button class="cat-item ' + (categoriaAtual === 'favoritos' ? 'ativo' : '') + '" onclick="filtrarPorCat(\'favoritos\')">⭐ Favoritos <span class="count">' + contatos.filter(function(c) { return c.favorito; }).length + '</span></button>';
+    
+    catsBase.forEach(function(cat) {
+        if (cat === 'Todos' || cat === 'Favoritos') return;
+        if (counts[cat]) {
+            h += '<button class="cat-item ' + (categoriaAtual === cat ? 'ativo' : '') + '" onclick="filtrarPorCat(\'' + cat + '\')">' + cat + ' <span class="count">' + counts[cat] + '</span></button>';
+        }
+    });
+    
+    // Adiciona as outras categorias que não estão na base (Doador, Prefeitura, etc)
+    Object.keys(counts).sort().forEach(function(cat) {
+        if (catsBase.indexOf(cat) === -1) {
+            h += '<button class="cat-item ' + (categoriaAtual === cat ? 'ativo' : '') + '" onclick="filtrarPorCat(\'' + cat + '\')">' + cat + ' <span class="count">' + counts[cat] + '</span></button>';
+        }
+    });
+
     document.getElementById('menuCategorias').innerHTML = h;
 }
 window.filtrarPorCat = function(c) { categoriaAtual = c; renderizarMenu(); filtrar(); };
 
 // ============================================================
-// GET TAG
+// GET TAG COR
 // ============================================================
 function getTagClass(cat) {
     var c = normalizar(cat || '');
     if (c.indexOf('benefici') >= 0) return 'tag-beneficiario';
-    if (c.indexOf('profissi') >= 0 || c.indexOf('fisioterapeuta') >= 0 || c.indexOf('psicologo') >= 0 || c.indexOf('nutricionista') >= 0) return 'tag-profissional';
+    if (c.indexOf('profissi') >= 0 || c.indexOf('fisio') >= 0 || c.indexOf('psico') >= 0 || c.indexOf('nutri') >= 0) return 'tag-profissional';
     if (c.indexOf('volunt') >= 0) return 'tag-voluntario';
     if (c.indexOf('fornecedor') >= 0) return 'tag-fornecedor';
     if (c.indexOf('autonom') >= 0) return 'tag-autonomo';
@@ -472,14 +491,35 @@ function getTagClass(cat) {
 }
 
 // ============================================================
-// FILTRAR / RENDERIZAR
+// FILTRAR / RENDERIZAR (CORRIGIDO)
 // ============================================================
 function filtrar() {
     var l = contatos.slice();
-    if (categoriaAtual === 'favoritos') l = l.filter(function(c) { return c.favorito; });
-    else if (categoriaAtual !== 'todos') l = l.filter(function(c) { return c.categoria === categoriaAtual; });
+    
+    // Filtro por categoria do menu
+    if (categoriaAtual === 'favoritos') {
+        l = l.filter(function(c) { return c.favorito; });
+    } else if (categoriaAtual !== 'todos') {
+        l = l.filter(function(c) { 
+            var cat = c.categoria || 'Outros';
+            if (categoriaAtual === 'Profissional') {
+                 return cat !== 'Beneficiário' && cat !== 'Voluntário' && cat !== 'Universitário' && cat !== 'Fornecedor' && cat !== 'Autônomo' && cat !== 'Empresa' && cat !== 'Doador' && cat !== 'Patrocinador' && cat !== 'Outros' && cat !== 'Prefeitura' && cat !== 'Fundação';
+            }
+            return cat === categoriaAtual; 
+        });
+    }
 
-    var b = document.getElementById('buscaContato').value.toLowerCase();
+    // Filtro de Busca (evita autocomplete do navegador com "admin")
+    var inputBusca = document.getElementById('buscaContato');
+    var b = inputBusca ? inputBusca.value.trim().toLowerCase() : '';
+    
+    // Se o navegador preencheu "admin" sozinho e você não digitou, limpa
+    if (b === 'admin' && !inputBusca.dataset.digitado) {
+        inputBusca.value = '';
+        b = '';
+    }
+    if (b) inputBusca.dataset.digitado = 'true';
+
     if (b) {
         l = l.filter(function(c) {
             return (c.nome || '').toLowerCase().indexOf(b) >= 0 ||
@@ -495,24 +535,32 @@ function filtrar() {
         container.innerHTML = '<div class="sem-dados">Nenhum contato encontrado.</div>';
         return;
     }
+    
     container.innerHTML = l.map(function(x) {
         var tagClass = getTagClass(x.categoria);
         var numLogs = (x.historico || []).length;
         var telExibir = x.tel1 || x.whatsapp || '';
         var isWA = x.isWhatsApp === true || (x.whatsapp && x.whatsapp === x.tel1);
         var origemIdp = x.idpOrigem ? '<span class="tag tag-idp">📥 IDP</span>' : '';
-        var campoTravado = '';
-        if (x.vinculadoA) campoTravado = '<div style="font-size:10px;color:#1565C0;margin-top:4px;">🔒 Vinculado a: ' + escapeHtml(x.vinculadoA) + '</div>';
-        if (x.contatoEmergencia) campoTravado += '<div style="font-size:10px;color:#1565C0;margin-top:2px;">🔒 Contato emergência: ' + escapeHtml(x.contatoEmergencia) + '</div>';
+        
+        // Mostra o nome do responsável de forma destacada na lista (para beneficiários)
+        var nomeExibir = x.nome;
+        var subTexto = '';
+        if (x.vinculadoA) {
+            subTexto = '<div style="font-size:10px;color:#1565C0;margin-top:4px;">🔒 Vinculado a: ' + escapeHtml(x.vinculadoA) + '</div>';
+        }
+        if (x.contatoEmergencia) {
+            subTexto += '<div style="font-size:10px;color:#1565C0;margin-top:2px;">🔒 Contato emergência: ' + escapeHtml(x.contatoEmergencia) + '</div>';
+        }
 
         return '<div class="contato-card' + (x.favorito ? ' favorito' : '') + '">' +
             '<div class="contato-info">' +
             '<div class="codigo">' + (x.codigo || '—') + '</div>' +
-            '<h4>' + (x.favorito ? '⭐ ' : '') + escapeHtml(x.nome || '') +
+            '<h4>' + (x.favorito ? '⭐ ' : '') + escapeHtml(nomeExibir || '') +
                 ' <span class="tag ' + tagClass + '">' + escapeHtml(x.categoria || 'Outros') + '</span>' + origemIdp + '</h4>' +
             '<p>' + escapeHtml(x.cargo || '') + (x.instituicao ? ' | ' + escapeHtml(x.instituicao) : '') + '</p>' +
             '<p>📄 ' + escapeHtml(x.cnpjCpf || 'Sem doc') + ' | 📞 ' + escapeHtml(telExibir || '—') + ' | 📧 ' + escapeHtml(x.email || '—') + (isWA ? ' 📱' : '') + '</p>' +
-            campoTravado +
+            subTexto +
             '</div>' +
             '<div class="contato-acoes">' +
             (isWA && telExibir ? '<button class="btn-acao btn-wpp" onclick="event.stopPropagation();window.open(\'https://wa.me/55' + apenasNumeros(telExibir) + '\')">💬</button>' : '') +
@@ -613,6 +661,7 @@ async function abrirForm(fbId) {
     document.getElementById('avisoOrigemIdp').style.display = 'none';
     document.getElementById('grupoVinculado').style.display = 'none';
     document.getElementById('grupoEmergencia').style.display = 'none';
+    document.getElementById('grupoEspecialidade').style.display = 'none';
 
     if (fbId) {
         var c = contatos.find(function(x) { return x._fbId === fbId; });
@@ -629,6 +678,13 @@ async function abrirForm(fbId) {
             document.getElementById('emailContato').value = c.email || '';
             document.getElementById('cnpjCpfContato').value = c.cnpjCpf || '';
             document.getElementById('obsContato').value = c.obs || '';
+            
+            // Especialidade
+            if (c.categoria && c.categoria !== 'Profissional' && getTagClass(c.categoria) === 'tag-profissional') {
+                document.getElementById('grupoEspecialidade').style.display = 'block';
+                document.getElementById('especialidadeContato').value = c.categoria;
+                document.getElementById('categoriaContato').value = 'Profissional';
+            }
 
             // Campos travados (IDP)
             if (c.idpOrigem) {
@@ -679,13 +735,21 @@ async function salvarContatoFinal() {
     var idEdit = document.getElementById('contatoId').value;
     var tel1 = document.getElementById('tel1Contato').value.trim();
     var isWhatsApp = document.getElementById('isWhatsAppContato').checked;
+    var catSelecionada = document.getElementById('categoriaContato').value;
+    var especialidade = document.getElementById('especialidadeContato').value.trim();
+
+    // Lógica da categoria
+    var catFinal = catSelecionada;
+    if (catSelecionada === 'Profissional' && especialidade) {
+        catFinal = especialidade; // Fisioterapeuta, Psicólogo, etc.
+    }
 
     var dados = {
         codigo: document.getElementById('codigoContato').value,
         nome: document.getElementById('nomeContato').value.trim(),
         cargo: document.getElementById('cargoContato').value.trim(),
         instituicao: document.getElementById('instituicaoContato').value.trim(),
-        categoria: document.getElementById('categoriaContato').value,
+        categoria: catFinal,
         tel1: tel1,
         whatsapp: isWhatsApp ? tel1 : '',
         isWhatsApp: isWhatsApp,
